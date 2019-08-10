@@ -1,3 +1,3 @@
 class FilesRoute {
-  static final name = "files";
+  static const name = "files";
 }

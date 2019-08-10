@@ -1,3 +1,4 @@
+import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +11,16 @@ class FileWidget extends StatelessWidget {
 
   Widget _getThumbnail(BuildContext context) {
     if (file["ThumbnailUrl"] != null) {
-      return SizedBox(
-        width: 48.0,
-        child: Image.network(
-          '${SingletonStore.instance.hostName}/${file["ThumbnailUrl"]}',
-          headers: {
-            'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
-          },
+      return Hero(
+        tag: file["Id"],
+        child: SizedBox(
+          width: 48.0,
+          child: Image.network(
+            '${SingletonStore.instance.hostName}/${file["ThumbnailUrl"]}',
+            headers: {
+              'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
+            },
+          ),
         ),
       );
     } else {
@@ -26,30 +30,37 @@ class FileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        SizedBox(height: 6.0),
-        ListTile(
-          leading: _getThumbnail(context),
-          title: Text(file["Name"]),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Text(filesize(file["Size"])),
-              SizedBox(height: 4.0),
-              Text(DateFormat("dd MMM yyyy").format(
-                  DateTime.fromMillisecondsSinceEpoch(
-                      (file["LastModified"] * 1000))))
-            ],
+    return InkWell(
+      onTap: () => Navigator.pushNamed(
+        context,
+        FileViewerRoute.name,
+        arguments: FileViewerScreenArguments(file: file),
+      ),
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 6.0),
+          ListTile(
+            leading: _getThumbnail(context),
+            title: Text(file["Name"]),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Text(filesize(file["Size"])),
+                SizedBox(height: 4.0),
+                Text(DateFormat("dd MMM yyyy").format(
+                    DateTime.fromMillisecondsSinceEpoch(
+                        (file["LastModified"] * 1000))))
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: 6.0),
-        Padding(
-          padding: const EdgeInsets.only(left: 80.0),
-          child: Divider(height: 0.0),
-        ),
-      ],
+          SizedBox(height: 6.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 80.0),
+            child: Divider(height: 0.0),
+          ),
+        ],
+      ),
     );
   }
 }

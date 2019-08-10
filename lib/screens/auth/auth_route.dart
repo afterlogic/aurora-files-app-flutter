@@ -1,3 +1,3 @@
 class AuthRoute {
-  static final name = "auth";
+  static const name = "auth";
 }

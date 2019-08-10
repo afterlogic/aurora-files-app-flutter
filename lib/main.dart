@@ -1,5 +1,10 @@
 import 'package:aurorafiles/navigation/routes.dart';
 import 'package:aurorafiles/screens/auth/auth_repository.dart';
+import 'package:aurorafiles/screens/auth/auth_route.dart';
+import 'package:aurorafiles/screens/file_viewer/file_viewer_android.dart';
+import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
+import 'package:aurorafiles/screens/files/files_route.dart';
+import 'package:aurorafiles/shared_ui/fade_route.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/themimg/material_theme.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +25,19 @@ class MyApp extends StatelessWidget {
               title: 'Aurora.Files',
               theme: AppMaterialTheme.theme,
               darkTheme: AppMaterialTheme.darkTheme,
+              onGenerateRoute: (settings) {
+                print("VO: 1234");
+                switch (settings.name) {
+                  case FileViewerRoute.name:
+                    return FadeRoute(page: FileViewerAndroid());
+                    break;
+                  default:
+                    return null;
+                }
+              },
               initialRoute: snapshot.hasData && snapshot.data is String
-                  ? "files"
-                  : "auth",
+                  ? FilesRoute.name
+                  : AuthRoute.name,
               routes: androidRoutes,
               debugShowCheckedModeBanner: false,
             );

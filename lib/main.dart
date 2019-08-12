@@ -25,20 +25,11 @@ class MyApp extends StatelessWidget {
               title: 'Aurora.Files',
               theme: AppMaterialTheme.theme,
               darkTheme: AppMaterialTheme.darkTheme,
-              onGenerateRoute: (settings) {
-                print("VO: 1234");
-                switch (settings.name) {
-                  case FileViewerRoute.name:
-                    return FadeRoute(page: FileViewerAndroid());
-                    break;
-                  default:
-                    return null;
-                }
-              },
+              onGenerateRoute: onGenerateRoute,
               initialRoute: snapshot.hasData && snapshot.data is String
                   ? FilesRoute.name
                   : AuthRoute.name,
-              routes: androidRoutes,
+//              routes: androidRoutes,
               debugShowCheckedModeBanner: false,
             );
           } else {

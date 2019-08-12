@@ -4,9 +4,33 @@ import 'package:aurorafiles/screens/file_viewer/file_viewer_android.dart';
 import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/screens/files/files_android.dart';
 import 'package:aurorafiles/screens/files/files_route.dart';
+import 'package:aurorafiles/shared_ui/fade_route.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-final androidRoutes = {
-  AuthRoute.name: (context) => AuthAndroid(),
-  FilesRoute.name: (context) => FilesAndroid(),
-  FileViewerRoute.name: (context) => FileViewerAndroid(),
-};
+//final androidRoutes = {
+//  AuthRoute.name: (context) => AuthAndroid(),
+//  FilesRoute.name: (context) => FilesAndroid(),
+//  FileViewerRoute.name: (context) => FileViewerAndroid(),
+//};
+
+Route onGenerateRoute(RouteSettings settings) {
+  switch (settings.name) {
+    case AuthRoute.name:
+      return MaterialPageRoute(builder: (context) => AuthAndroid());
+
+    case FilesRoute.name:
+      return MaterialPageRoute(builder: (context) => FilesAndroid());
+
+    case FileViewerRoute.name:
+      final FileViewerScreenArguments args = settings.arguments;
+      return FadeRoute(page: FileViewerAndroid(file: args.file));
+
+    default:
+      return MaterialPageRoute(
+          builder: (_) => Scaffold(
+                body: Center(
+                    child: Text('No route defined for ${settings.name}')),
+              ));
+  }
+}

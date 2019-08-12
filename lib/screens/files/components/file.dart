@@ -20,6 +20,7 @@ class FileWidget extends StatelessWidget {
             headers: {
               'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
             },
+            fit: BoxFit.cover,
           ),
         ),
       );

@@ -5,6 +5,11 @@ import 'package:aurorafiles/store/app_state.dart';
 import 'package:flutter/material.dart';
 
 class FileViewerAndroid extends StatelessWidget {
+
+  final file;
+
+  const FileViewerAndroid({Key key, @required this.file}) : super(key: key);
+
   Widget _buildFileImage(file) {
     final img = Image.network(
       '${SingletonStore.instance.hostName}/${file["Actions"]["view"]["url"]}',
@@ -51,18 +56,15 @@ class FileViewerAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FileViewerScreenArguments args =
-        ModalRoute.of(context).settings.arguments;
-
     return Scaffold(
       appBar: AppBar(
         title: Text("File viewer"),
       ),
-      body: Column(
+      body: ListView(
         children: <Widget>[
-          _buildFileImage(args.file),
+          _buildFileImage(file),
           SizedBox(height: 30.0),
-          Text(args.file["Name"], style: Theme.of(context).textTheme.display1,)
+          Text(file["Name"], style: Theme.of(context).textTheme.display1,)
         ],
       ),
     );

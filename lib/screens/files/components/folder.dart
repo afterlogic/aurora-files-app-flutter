@@ -2,6 +2,8 @@ import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'files_item_tile.dart';
+
 class FolderWidget extends StatelessWidget {
   final folder;
 
@@ -12,20 +14,12 @@ class FolderWidget extends StatelessWidget {
     final filesState = Provider.of<FilesState>(context);
     return InkWell(
       onTap: () => filesState.onGetFiles(path: folder["FullPath"]),
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: 6.0),
-          ListTile(
-            leading: Icon(Icons.folder,
-                size: 48.0, color: Theme.of(context).accentColor),
-            title: Text(folder["Name"]),
-          ),
-          SizedBox(height: 6.0),
-          Padding(
-            padding: const EdgeInsets.only(left: 80.0),
-            child: Divider(height: 0.0),
-          ),
-        ],
+      child: FilesItemTile(
+        child: ListTile(
+          leading: Icon(Icons.folder,
+              size: 48.0, color: Theme.of(context).accentColor),
+          title: Text(folder["Name"]),
+        ),
       ),
     );
   }

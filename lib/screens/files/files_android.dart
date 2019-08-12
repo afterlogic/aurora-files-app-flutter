@@ -6,6 +6,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 import 'components/folder.dart';
+import 'components/skeleton_loader.dart';
 
 class FilesAndroid extends StatefulWidget {
   @override
@@ -29,7 +30,10 @@ class _FilesAndroidState extends State<FilesAndroid> {
 
   Widget _buildFiles(BuildContext context, FilesState filesState) {
     if (filesState.isFilesLoading) {
-      return Center(child: CircularProgressIndicator());
+      return ListView.builder(
+        itemBuilder: (_, index) => SkeletonLoader(),
+        itemCount: 6,
+      );
     } else if (filesState.currentFiles == null ||
         filesState.currentFiles.length <= 0) {
       return Center(child: Text("No files"));

@@ -1,11 +1,9 @@
 import 'dart:ui';
 
-import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:flutter/material.dart';
 
 class FileViewerAndroid extends StatelessWidget {
-
   final file;
 
   const FileViewerAndroid({Key key, @required this.file}) : super(key: key);
@@ -64,7 +62,10 @@ class FileViewerAndroid extends StatelessWidget {
         children: <Widget>[
           _buildFileImage(file),
           SizedBox(height: 30.0),
-          Text(file["Name"], style: Theme.of(context).textTheme.display1,)
+          Text(
+            file["Name"],
+            style: Theme.of(context).textTheme.display1,
+          )
         ],
       ),
     );

@@ -14,6 +14,8 @@ class FilesAndroid extends StatefulWidget {
 }
 
 class _FilesAndroidState extends State<FilesAndroid> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
   final _filesState = FilesState();
 
   @override
@@ -78,27 +80,35 @@ class _FilesAndroidState extends State<FilesAndroid> {
           ],
         ),
         body: Observer(builder: (_) {
-          return Column(
-            children: <Widget>[
-              Container(
-                width: double.infinity,
+          return RefreshIndicator(
+            key: _refreshIndicatorKey,
+            color: Theme.of(context).primaryColor,
+            onRefresh: () =>
+                _filesState.onGetFiles(path: _filesState.currentPath),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  width: double.infinity,
 //                height: double.minPositive,
-                color: Colors.black12,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(_filesState.currentPath == ""
-                      ? "/"
-                      : _filesState.currentPath),
+                  color: Colors.black12,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(_filesState.currentPath == ""
+                        ? "/"
+                        : _filesState.currentPath),
+                  ),
                 ),
-              ),
-              if (_filesState.currentPath != "")
-                ListTile(
-                  leading: Icon(Icons.arrow_upward),
-                  title: Text("Level Up"),
-                  onTap: _filesState.onLevelUp,
+                if (_filesState.currentPath != "")
+                  ListTile(
+                    leading: Icon(Icons.arrow_upward),
+                    title: Text("Level Up"),
+                    onTap: _filesState.onLevelUp,
+                  ),
+                Expanded(
+                  child: _buildFiles(context, _filesState),
                 ),
-              Expanded(child: _buildFiles(context, _filesState)),
-            ],
+              ],
+            ),
           );
         }),
       ),

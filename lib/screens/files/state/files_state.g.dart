@@ -43,6 +43,23 @@ mixin _$FilesState on _FilesState, Store {
     }, _$currentPathAtom, name: '${_$currentPathAtom.name}_set');
   }
 
+  final _$currentFilesTypeAtom = Atom(name: '_FilesState.currentFilesType');
+
+  @override
+  String get currentFilesType {
+    _$currentFilesTypeAtom.context.enforceReadPolicy(_$currentFilesTypeAtom);
+    _$currentFilesTypeAtom.reportObserved();
+    return super.currentFilesType;
+  }
+
+  @override
+  set currentFilesType(String value) {
+    _$currentFilesTypeAtom.context.conditionallyRunInAction(() {
+      super.currentFilesType = value;
+      _$currentFilesTypeAtom.reportChanged();
+    }, _$currentFilesTypeAtom, name: '${_$currentFilesTypeAtom.name}_set');
+  }
+
   final _$isFilesLoadingAtom = Atom(name: '_FilesState.isFilesLoading');
 
   @override
@@ -68,6 +85,16 @@ mixin _$FilesState on _FilesState, Store {
   }
 
   final _$_FilesStateActionController = ActionController(name: '_FilesState');
+
+  @override
+  void setCurrentFilesType(String filesType) {
+    final _$actionInfo = _$_FilesStateActionController.startAction();
+    try {
+      return super.setCurrentFilesType(filesType);
+    } finally {
+      _$_FilesStateActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void onLevelUp() {

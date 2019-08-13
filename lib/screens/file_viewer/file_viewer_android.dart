@@ -1,3 +1,4 @@
+import 'package:aurorafiles/screens/file_viewer/components/rename_dialog.dart';
 import 'package:aurorafiles/screens/file_viewer/state/file_viewer_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:filesize/filesize.dart';
@@ -67,7 +68,12 @@ class FileViewerAndroid extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.edit),
             tooltip: "Rename",
-            onPressed: () {},
+            onPressed: () => showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) =>
+                  RenameDialog(file: file, fileViewerState: fileViewerState),
+            ),
           ),
           IconButton(
             icon: Icon(Icons.delete_outline),

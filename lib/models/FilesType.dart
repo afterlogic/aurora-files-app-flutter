@@ -1,4 +1,4 @@
 class FilesType {
-  static final String personal = "personal";
-  static final String corporate = "corporate";
+  static const String personal = "personal";
+  static const String corporate = "corporate";
 }

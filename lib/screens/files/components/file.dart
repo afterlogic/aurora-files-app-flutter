@@ -1,8 +1,8 @@
 import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/store/app_state.dart';
+import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'files_item_tile.dart';
 
@@ -49,9 +49,9 @@ class FileWidget extends StatelessWidget {
             children: <Widget>[
               Text(filesize(file["Size"])),
               SizedBox(height: 4.0),
-              Text(DateFormat("dd MMM yyyy").format(
-                  DateTime.fromMillisecondsSinceEpoch(
-                      (file["LastModified"] * 1000))))
+              Text(DateFormatting.formatDateFromSeconds(
+                timestamp: file["LastModified"],
+              )),
             ],
           ),
         ),

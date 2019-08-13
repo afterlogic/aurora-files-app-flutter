@@ -1,8 +1,10 @@
-import 'dart:ui';
-
 import 'package:aurorafiles/screens/file_viewer/state/file_viewer_state.dart';
-import 'package:aurorafiles/store/app_state.dart';
+import 'package:aurorafiles/utils/date_formatting.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
+
+import 'components/image_viewer.dart';
+import 'components/info_list_tile.dart';
 
 class FileViewerAndroid extends StatelessWidget {
   final file;
@@ -30,80 +32,65 @@ class FileViewerAndroid extends StatelessWidget {
     _scaffoldKey.currentState.showSnackBar(snack);
   }
 
-  Widget _buildFileImage(file) {
-    final img = Image.network(
-      '${SingletonStore.instance.hostName}/${file["Actions"]["view"]["url"]}',
-      fit: BoxFit.cover,
-      headers: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
-    );
-    final placeholder = Image.network(
-      '${SingletonStore.instance.hostName}/${file["ThumbnailUrl"]}',
-      fit: BoxFit.cover,
-      headers: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
-    );
-
-    if (file["Actions"]["view"] != null &&
-        file["Actions"]["view"]["url"] != null) {
-      return Hero(
-          tag: file["Id"],
-          child: SizedBox(
-            width: double.infinity,
-            child: Stack(
-              fit: StackFit.passthrough,
-              children: <Widget>[
-                placeholder,
-                Positioned.fill(
-                  child: ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: 8.0,
-                        sigmaY: 8.0,
-                      ),
-                      child: Container(
-                        color: Colors.transparent,
-                      ),
-                    ),
-                  ),
-                ),
-                img,
-              ],
-            ),
-          ));
-    } else {
-      return SizedBox();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final fileViewerState = FileViewerState();
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("File viewer"),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            tooltip: "Move/Copy",
+            onPressed: () {},
+          ),
           if (file["Actions"]["download"] != null &&
               file["Actions"]["download"]["url"] != null)
             IconButton(
               icon: Icon(Icons.file_download),
+              tooltip: "Download",
               onPressed: () => fileViewerState.onDownloadFile(
                 url: file["Actions"]["download"]["url"],
                 fileName: file["Name"],
-                onStart: () => _showInfoSnack(context, "Downloading ${file["Name"]}"),
-                onSuccess: () => _showInfoSnack(context, "${file["Name"]} downloaded successfully"),
+                onStart: () =>
+                    _showInfoSnack(context, "Downloading ${file["Name"]}"),
+                onSuccess: () => _showInfoSnack(
+                    context, "${file["Name"]} downloaded successfully"),
                 onError: (err) => _showErrSnack(context, err.toString()),
               ),
-            )
+            ),
+          IconButton(
+            icon: Icon(Icons.link),
+            tooltip: "Get public link",
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.edit),
+            tooltip: "Rename",
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.delete_outline),
+            tooltip: "Delete file",
+            onPressed: () {},
+          ),
         ],
       ),
       body: ListView(
+        padding: const EdgeInsets.all(16.0),
         children: <Widget>[
-          _buildFileImage(file),
+          if (file["ContentType"].startsWith("image")) ImageViewer(file: file),
           SizedBox(height: 30.0),
-          Text(
-            file["Name"],
-            style: Theme.of(context).textTheme.display1,
-          )
+          InfoListTile(label: "Filename", content: file["Name"]),
+          InfoListTile(label: "Size", content: filesize(file["Size"])),
+          InfoListTile(
+            label: "Created",
+            content: DateFormatting.formatDateFromSeconds(
+              timestamp: file["LastModified"],
+            ),
+          ),
+          InfoListTile(label: "Owner", content: file["Owner"]),
+          InfoListTile(label: "Public link", content: "WIP"),
         ],
       ),
     );

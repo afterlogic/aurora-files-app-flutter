@@ -38,7 +38,7 @@ class _FilesAndroidState extends State<FilesAndroid> {
       );
     } else if (filesState.currentFiles == null ||
         filesState.currentFiles.length <= 0) {
-      return Center(child: Text("No files"));
+      return Center(child: Text("Empty here"));
     } else {
       return ListView.builder(
         itemCount: filesState.currentFiles.length,
@@ -68,8 +68,10 @@ class _FilesAndroidState extends State<FilesAndroid> {
             children: <Widget>[
               Text("Files"),
               SizedBox(height: 2),
-              Text("personal",
-                  style: TextStyle(fontSize: 10.0, color: Colors.white))
+              Observer(
+                builder: (_) => Text(_filesState.currentFilesType,
+                    style: TextStyle(fontSize: 10.0, color: Colors.white)),
+              )
             ],
           ),
           actions: <Widget>[
@@ -90,7 +92,7 @@ class _FilesAndroidState extends State<FilesAndroid> {
                 Container(
                   width: double.infinity,
 //                height: double.minPositive,
-                  color: Colors.black12,
+                  color: Colors.grey[300],
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(_filesState.currentPath == ""

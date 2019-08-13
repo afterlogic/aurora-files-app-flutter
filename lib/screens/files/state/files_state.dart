@@ -1,3 +1,4 @@
+import 'package:aurorafiles/models/FilesType.dart';
 import 'package:aurorafiles/screens/files/files_repository.dart';
 import 'package:mobx/mobx.dart';
 
@@ -15,14 +16,20 @@ abstract class _FilesState with Store {
   String currentPath = "";
 
   @observable
+  String currentFilesType = FilesType.personal;
+
+  @observable
   bool isFilesLoading = false;
+
+  @action
+  void setCurrentFilesType(String filesType) => currentFilesType = filesType;
 
   @action
   Future<void> onGetFiles({String path = ""}) async {
     currentPath = path;
     try {
       isFilesLoading = true;
-      currentFiles = await _repo.getFiles("personal", currentPath, "");
+      currentFiles = await _repo.getFiles(currentFilesType, currentPath, "");
     } catch (err) {
       print("VO: err, $err");
     } finally {
@@ -31,7 +38,7 @@ abstract class _FilesState with Store {
   }
 
   @action
-  void onLevelUp () {
+  void onLevelUp() {
     final List<String> pathArray = currentPath.split("/");
     pathArray.removeLast();
     currentPath = pathArray.join("/");

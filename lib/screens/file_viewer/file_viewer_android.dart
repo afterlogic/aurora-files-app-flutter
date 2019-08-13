@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aurorafiles/screens/file_viewer/state/file_viewer_state.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:flutter/material.dart';
 
@@ -54,9 +55,21 @@ class FileViewerAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fileViewerState = FileViewerState();
     return Scaffold(
       appBar: AppBar(
         title: Text("File viewer"),
+        actions: <Widget>[
+          if (file["Actions"]["download"] != null &&
+              file["Actions"]["download"]["url"] != null)
+            IconButton(
+              icon: Icon(Icons.file_download),
+              onPressed: () => fileViewerState.onDownloadFile(
+                file["Actions"]["download"]["url"],
+                file["Name"],
+              ),
+            )
+        ],
       ),
       body: ListView(
         children: <Widget>[

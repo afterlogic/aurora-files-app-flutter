@@ -69,3 +69,16 @@ const FileNotFound = 814;
 const CanNotUploadFileLimit = 815;
 const MailServerError = 901;
 const UnknownError = 999;
+
+
+
+DownloadTask Statuses
+
+Constants
+canceled → DownloadTaskStatus(5)
+complete → DownloadTaskStatus(3)
+enqueued → DownloadTaskStatus(1)
+failed → DownloadTaskStatus(4)
+paused → DownloadTaskStatus(6)
+running → DownloadTaskStatus(2)
+undefined → DownloadTaskStatus(0)

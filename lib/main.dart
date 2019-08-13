@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aurorafiles/navigation/routes.dart';
 import 'package:aurorafiles/screens/auth/auth_repository.dart';
 import 'package:aurorafiles/screens/auth/auth_route.dart';
@@ -8,6 +10,8 @@ import 'package:aurorafiles/shared_ui/fade_route.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/themimg/material_theme.dart';
 import 'package:flutter/material.dart';
+
+import 'themimg/cupertino_theme.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,7 +27,7 @@ class MyApp extends StatelessWidget {
 
             return MaterialApp(
               title: 'Aurora.Files',
-              theme: AppMaterialTheme.theme,
+              theme: Platform.isIOS ? AppCupertinoTheme.theme : AppMaterialTheme.theme,
               darkTheme: AppMaterialTheme.darkTheme,
               onGenerateRoute: onGenerateRoute,
               initialRoute: snapshot.hasData && snapshot.data is String

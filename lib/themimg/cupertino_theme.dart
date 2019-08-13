@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 
-class AppMaterialTheme {
+class AppCupertinoTheme {
   static final theme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Color(0xFF004166),
     accentColor: Color(0xFF72bbe4),
     errorColor: Colors.red[900],
     inputDecorationTheme: _inputTheme,
-    buttonTheme: _buttonTheme,
-  );
-
-  static final darkTheme = ThemeData(
-    brightness: Brightness.dark,
-    primaryColor: Colors.pink,
-    accentColor: Colors.blue,
-    errorColor: Colors.red[900],
-    inputDecorationTheme: _inputTheme,
+    highlightColor: Colors.transparent,
+    splashColor: Colors.transparent,
     buttonTheme: _buttonTheme,
   );
 

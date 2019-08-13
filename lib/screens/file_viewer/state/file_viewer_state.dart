@@ -8,13 +8,19 @@ class FileViewerState = _FileViewerState with _$FileViewerState;
 abstract class _FileViewerState with Store {
   final _repo = FileViewerRepository();
 
-  void onDownloadFile(String url, String fileName) async {
-    await _repo.downloadFile(url, fileName);
-
-//    Fluttertoast.cancel();
-//    Fluttertoast.showToast(
-//      msg: "Downloading file...",
-//      toastLength: Toast.LENGTH_SHORT,
-//    );
+  void onDownloadFile({
+    String url,
+    String fileName,
+    Function onStart,
+    Function onSuccess,
+    Function onError,
+  }) async {
+    try {
+      onStart();
+      await _repo.downloadFile(url, fileName);
+      _repo.getDownloadStatus(onSuccess);
+    } catch (err) {
+      onError(err);
+    }
   }
 }

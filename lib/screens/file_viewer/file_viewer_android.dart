@@ -7,7 +7,28 @@ import 'package:flutter/material.dart';
 class FileViewerAndroid extends StatelessWidget {
   final file;
 
-  const FileViewerAndroid({Key key, @required this.file}) : super(key: key);
+  FileViewerAndroid({Key key, @required this.file}) : super(key: key);
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _showErrSnack(BuildContext context, String msg) {
+    final snack = SnackBar(
+      content: Text(msg),
+      backgroundColor: Theme.of(context).errorColor,
+    );
+
+    _scaffoldKey.currentState.removeCurrentSnackBar();
+    _scaffoldKey.currentState.showSnackBar(snack);
+  }
+
+  void _showInfoSnack(BuildContext context, String msg) {
+    final snack = SnackBar(
+      content: Text(msg),
+    );
+
+    _scaffoldKey.currentState.removeCurrentSnackBar();
+    _scaffoldKey.currentState.showSnackBar(snack);
+  }
 
   Widget _buildFileImage(file) {
     final img = Image.network(
@@ -57,6 +78,7 @@ class FileViewerAndroid extends StatelessWidget {
   Widget build(BuildContext context) {
     final fileViewerState = FileViewerState();
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("File viewer"),
         actions: <Widget>[
@@ -65,8 +87,11 @@ class FileViewerAndroid extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.file_download),
               onPressed: () => fileViewerState.onDownloadFile(
-                file["Actions"]["download"]["url"],
-                file["Name"],
+                url: file["Actions"]["download"]["url"],
+                fileName: file["Name"],
+                onStart: () => _showInfoSnack(context, "Downloading ${file["Name"]}"),
+                onSuccess: () => _showInfoSnack(context, "${file["Name"]} downloaded successfully"),
+                onError: (err) => _showErrSnack(context, err.toString()),
               ),
             )
         ],

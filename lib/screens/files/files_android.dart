@@ -38,7 +38,17 @@ class _FilesAndroidState extends State<FilesAndroid> {
       );
     } else if (filesState.currentFiles == null ||
         filesState.currentFiles.length <= 0) {
-      return Center(child: Text("Empty here"));
+      return ListView(
+        physics: AlwaysScrollableScrollPhysics(),
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 68.0, horizontal: 16.0),
+            child: Center(
+              child: Text("Empty here"),
+            ),
+          ),
+        ],
+      );
     } else {
       return ListView.builder(
         itemCount: filesState.currentFiles.length,

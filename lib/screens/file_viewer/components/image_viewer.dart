@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aurorafiles/store/app_state.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageViewer extends StatelessWidget {
@@ -13,21 +14,21 @@ class ImageViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final img = Image.network(
-      '${SingletonStore.instance.hostName}/${file["Actions"]["view"]["url"]}',
+    final img = CachedNetworkImage(
+      imageUrl: '${SingletonStore.instance.hostName}/${file["Actions"]["view"]["url"]}',
       fit: BoxFit.cover,
-      headers: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
+      httpHeaders: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
     );
-    final placeholder = Image.network(
-      '${SingletonStore.instance.hostName}/${file["ThumbnailUrl"]}',
+    final placeholder = CachedNetworkImage(
+      imageUrl: '${SingletonStore.instance.hostName}/${file["ThumbnailUrl"]}',
       fit: BoxFit.cover,
-      headers: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
+      httpHeaders: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
     );
 
     if (file["Actions"]["view"] != null &&
         file["Actions"]["view"]["url"] != null) {
       return Hero(
-          tag: file["Size"],
+          tag: file["ThumbnailUrl"],
           child: SizedBox(
             width: double.infinity,
             child: Stack(

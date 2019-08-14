@@ -2,6 +2,7 @@ import 'package:aurorafiles/models/files_type.dart';
 import 'package:aurorafiles/screens/auth/auth_route.dart';
 import 'package:aurorafiles/screens/auth/state/auth_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,33 +14,97 @@ class MainDrawer extends StatelessWidget {
 
     return Drawer(
       child: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            ListTile(
-              selected: _filesState.currentFilesType == FilesType.personal,
-              leading: Icon(Icons.person),
-              title: Text('Personal files'),
-              onTap: () {
-                _filesState.setCurrentFilesType(FilesType.personal);
-                _filesState.onGetFiles();
-                Navigator.pop(context);
-              },
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.all(0.0),
+                children: <Widget>[
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          right: -10,
+                          bottom: -5,
+                          child: IconButton(
+                            icon: Icon(Icons.settings),
+                            color: Colors.white,
+                            onPressed: () {},
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 60,
+                              width: 60,
+                              child: CircleAvatar(
+                                child: Text("VO",
+                                    style: TextStyle(
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.w600,
+                                    )),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 45.0),
+                              child: Text(
+                                "v.osovskii@afterlogic.com",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16.0),
+                              ),
+                            ),
+
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: _filesState.currentFilesType == FilesType.personal
+                        ? Theme.of(context).selectedRowColor
+                        : null,
+                    child: ListTile(
+                      selected:
+                          _filesState.currentFilesType == FilesType.personal,
+                      title: Text('Personal'),
+                      onTap: () {
+                        _filesState.setCurrentFilesType(FilesType.personal);
+                        _filesState.onGetFiles();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  Container(
+                    color: _filesState.currentFilesType == FilesType.corporate
+                        ? Theme.of(context).selectedRowColor
+                        : null,
+                    child: ListTile(
+                      selected:
+                          _filesState.currentFilesType == FilesType.corporate,
+                      title: Text('Corporate'),
+                      onTap: () {
+                        _filesState.setCurrentFilesType(FilesType.corporate);
+                        _filesState.onGetFiles();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-            ListTile(
-              selected: _filesState.currentFilesType == FilesType.corporate,
-              leading: Icon(Icons.group),
-              title: Text('Corporate files'),
-              onTap: () {
-                _filesState.setCurrentFilesType(FilesType.corporate);
-                _filesState.onGetFiles();
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-              onTap: () {},
+            Divider(
+              height: 0,
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app),

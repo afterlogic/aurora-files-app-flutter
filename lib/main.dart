@@ -33,8 +33,6 @@ class MyApp extends StatelessWidget {
               initialRoute: snapshot.hasData && snapshot.data is String
                   ? FilesRoute.name
                   : AuthRoute.name,
-//              routes: androidRoutes,
-              debugShowCheckedModeBanner: false,
             );
           } else {
             return CircularProgressIndicator();

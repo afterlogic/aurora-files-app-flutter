@@ -2,6 +2,7 @@ import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -18,19 +19,28 @@ class FileWidget extends StatelessWidget {
     final thumbnailSize = Provider.of<FilesState>(context).filesTileLeadingSize;
 
     if (file["ThumbnailUrl"] != null) {
-      return Hero(
-        tag: file["Size"],
-        child: SizedBox(
-          width: thumbnailSize,
-          height: thumbnailSize,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(5.0),
-            child: Image.network(
-              '${SingletonStore.instance.hostName}/${file["ThumbnailUrl"]}',
-              headers: {
-                'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
-              },
-              fit: BoxFit.cover,
+      return SizedBox(
+        width: thumbnailSize,
+        height: thumbnailSize,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage("lib/assets/images/image_placeholder.jpg")
+              )
+            ),
+            child: Hero(
+              tag: file["ThumbnailUrl"],
+              child: CachedNetworkImage(
+                imageUrl: '${SingletonStore.instance.hostName}/${file["ThumbnailUrl"]}',
+                httpHeaders: {
+                  'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
+                },
+                fit: BoxFit.cover,
+                fadeInDuration: Duration(milliseconds: 200),
+              ),
             ),
           ),
         ),

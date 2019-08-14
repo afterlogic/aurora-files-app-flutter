@@ -35,8 +35,6 @@ class _RenameDialogState extends State<RenameDialog> {
 
     fileNameCtrl.text =
         splitFileName.sublist(0, splitFileName.length - 1).join(".");
-    print("VO: fileNameCtrl.text: ${fileNameCtrl.text}");
-    print("VO: fileExtension: ${fileExtension}");
     super.initState();
   }
 

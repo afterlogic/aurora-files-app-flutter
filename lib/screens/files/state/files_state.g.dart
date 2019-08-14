@@ -26,6 +26,23 @@ mixin _$FilesState on _FilesState, Store {
     }, _$currentFilesAtom, name: '${_$currentFilesAtom.name}_set');
   }
 
+  final _$selectedFilesIdsAtom = Atom(name: '_FilesState.selectedFilesIds');
+
+  @override
+  Set<String> get selectedFilesIds {
+    _$selectedFilesIdsAtom.context.enforceReadPolicy(_$selectedFilesIdsAtom);
+    _$selectedFilesIdsAtom.reportObserved();
+    return super.selectedFilesIds;
+  }
+
+  @override
+  set selectedFilesIds(Set<String> value) {
+    _$selectedFilesIdsAtom.context.conditionallyRunInAction(() {
+      super.selectedFilesIds = value;
+      _$selectedFilesIdsAtom.reportChanged();
+    }, _$selectedFilesIdsAtom, name: '${_$selectedFilesIdsAtom.name}_set');
+  }
+
   final _$currentPathAtom = Atom(name: '_FilesState.currentPath');
 
   @override
@@ -91,6 +108,16 @@ mixin _$FilesState on _FilesState, Store {
     final _$actionInfo = _$_FilesStateActionController.startAction();
     try {
       return super.setCurrentFilesType(filesType);
+    } finally {
+      _$_FilesStateActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void onSelectFile(String id) {
+    final _$actionInfo = _$_FilesStateActionController.startAction();
+    try {
+      return super.onSelectFile(id);
     } finally {
       _$_FilesStateActionController.endAction(_$actionInfo);
     }

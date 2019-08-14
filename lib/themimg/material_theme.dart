@@ -6,6 +6,7 @@ class AppMaterialTheme {
     primaryColor: Color(0xFF004166),
     accentColor: Color(0xFF72bbe4),
     errorColor: Colors.red[900],
+    selectedRowColor: Color(0x55DDDDDD),
     inputDecorationTheme: _inputTheme,
     buttonTheme: _buttonTheme,
   );

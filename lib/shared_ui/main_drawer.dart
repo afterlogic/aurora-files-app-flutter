@@ -1,4 +1,4 @@
-import 'package:aurorafiles/models/FilesType.dart';
+import 'package:aurorafiles/models/files_type.dart';
 import 'package:aurorafiles/screens/auth/auth_route.dart';
 import 'package:aurorafiles/screens/auth/state/auth_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';

@@ -1,4 +1,4 @@
-import 'package:aurorafiles/models/FilesType.dart';
+import 'package:aurorafiles/models/files_type.dart';
 import 'package:aurorafiles/screens/files/files_repository.dart';
 import 'package:mobx/mobx.dart';
 

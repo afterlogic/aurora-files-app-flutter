@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 class RenameDialog extends StatefulWidget {
   final file;
   final FileViewerState fileViewerState;
+  final Function({String path}) onUpdateFilesList;
 
-  const RenameDialog(
-      {Key key, @required this.file, @required this.fileViewerState})
-      : super(key: key);
+  const RenameDialog({
+    Key key,
+    @required this.file,
+    @required this.fileViewerState,
+    @required this.onUpdateFilesList,
+  }) : super(key: key);
 
   @override
   _RenameDialogState createState() => _RenameDialogState();
@@ -43,6 +47,7 @@ class _RenameDialogState extends State<RenameDialog> {
               key: _renameFormKey,
               child: TextFormField(
                 controller: fileNameCtrl,
+                autofocus: true,
                 decoration: InputDecoration(
                   hintText: "Enter new name",
                   border: UnderlineInputBorder(),
@@ -64,19 +69,22 @@ class _RenameDialogState extends State<RenameDialog> {
                     errMsg = "";
                     isRenaming = true;
                     widget.fileViewerState.onRename(
-                        type: widget.file["Type"],
-                        path: widget.file["Path"],
-                        name: widget.file["Name"],
-                        newName: fileNameCtrl.text,
-                        isFolder: widget.file["IsFolder"],
-                        isLink: widget.file["IsLink"],
-                        isFormValid: _renameFormKey.currentState.validate(),
-                        onError: (String err) {
-                          errMsg = err;
-                          isRenaming = false;
-                        },
-                        onSuccess: (String newNameFromServer) =>
-                            Navigator.pop(context));
+                      type: widget.file["Type"],
+                      path: widget.file["Path"],
+                      name: widget.file["Name"],
+                      newName: fileNameCtrl.text,
+                      isFolder: widget.file["IsFolder"],
+                      isLink: widget.file["IsLink"],
+                      isFormValid: _renameFormKey.currentState.validate(),
+                      onError: (String err) {
+                        errMsg = err;
+                        isRenaming = false;
+                      },
+                      onSuccess: (String newNameFromServer) {
+                        Navigator.pop(context, newNameFromServer);
+                        widget.onUpdateFilesList(path: widget.file["Path"]);
+                      },
+                    );
                   }),
       ],
     );

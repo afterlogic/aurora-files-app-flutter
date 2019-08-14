@@ -7,6 +7,7 @@ class FileViewerRoute {
 class FileViewerScreenArguments {
   // TODO fix type
   final Map<String, dynamic> file;
+  final Function({String path}) onUpdateFilesList;
 
-  FileViewerScreenArguments({@required this.file});
+  FileViewerScreenArguments({@required this.onUpdateFilesList, @required this.file});
 }

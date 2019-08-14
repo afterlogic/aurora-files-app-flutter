@@ -8,12 +8,6 @@ import 'package:aurorafiles/shared_ui/fade_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-//final androidRoutes = {
-//  AuthRoute.name: (context) => AuthAndroid(),
-//  FilesRoute.name: (context) => FilesAndroid(),
-//  FileViewerRoute.name: (context) => FileViewerAndroid(),
-//};
-
 Route onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
     case AuthRoute.name:
@@ -24,7 +18,11 @@ Route onGenerateRoute(RouteSettings settings) {
 
     case FileViewerRoute.name:
       final FileViewerScreenArguments args = settings.arguments;
-      return FadeRoute(page: FileViewerAndroid(file: args.file));
+      return FadeRoute(
+          page: FileViewerAndroid(
+        file: args.file,
+        onUpdateFilesList: args.onUpdateFilesList,
+      ));
 
     default:
       return MaterialPageRoute(

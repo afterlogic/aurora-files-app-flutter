@@ -1,8 +1,10 @@
 import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
+import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'files_item_tile.dart';
 
@@ -14,7 +16,7 @@ class FileWidget extends StatelessWidget {
   Widget _getThumbnail(BuildContext context) {
     if (file["ThumbnailUrl"] != null) {
       return Hero(
-        tag: file["Id"],
+        tag: file["Size"],
         child: SizedBox(
           width: 48.0,
           child: Image.network(
@@ -33,11 +35,15 @@ class FileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final filesState = Provider.of<FilesState>(context);
     return InkWell(
       onTap: () => Navigator.pushNamed(
         context,
         FileViewerRoute.name,
-        arguments: FileViewerScreenArguments(file: file),
+        arguments: FileViewerScreenArguments(
+          file: file,
+          onUpdateFilesList: filesState.onGetFiles,
+        ),
       ),
       child: FilesItemTile(
         child: ListTile(

@@ -27,7 +27,7 @@ class ImageViewer extends StatelessWidget {
     if (file["Actions"]["view"] != null &&
         file["Actions"]["view"]["url"] != null) {
       return Hero(
-          tag: file["Id"],
+          tag: file["Size"],
           child: SizedBox(
             width: double.infinity,
             child: Stack(

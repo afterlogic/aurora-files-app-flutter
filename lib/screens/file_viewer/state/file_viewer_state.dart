@@ -10,6 +10,9 @@ class FileViewerState = _FileViewerState with _$FileViewerState;
 abstract class _FileViewerState with Store {
   final _repo = FileViewerRepository();
 
+  @observable
+  String fileName;
+
   void onDownloadFile({
     String url,
     String fileName,

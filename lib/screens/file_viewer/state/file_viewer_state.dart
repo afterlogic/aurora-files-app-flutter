@@ -36,12 +36,9 @@ abstract class _FileViewerState with Store {
     @required String newName,
     @required bool isLink,
     @required bool isFolder,
-    @required bool isFormValid,
     @required Function onSuccess,
     @required Function onError,
   }) async {
-    if (!isFormValid) return;
-
     try {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
       final newNameFromServer = await _repo.renameFile(

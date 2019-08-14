@@ -25,9 +25,18 @@ class _RenameDialogState extends State<RenameDialog> {
   bool isRenaming = false;
   String errMsg = "";
 
+  // without .
+  String fileExtension;
+
   @override
   void initState() {
-    fileNameCtrl.text = widget.file["Name"];
+    final List<String> splitFileName = widget.file["Name"].split('.');
+    fileExtension = splitFileName[splitFileName.length - 1];
+
+    fileNameCtrl.text =
+        splitFileName.sublist(0, splitFileName.length - 1).join(".");
+    print("VO: fileNameCtrl.text: ${fileNameCtrl.text}");
+    print("VO: fileExtension: ${fileExtension}");
     super.initState();
   }
 
@@ -40,7 +49,7 @@ class _RenameDialogState extends State<RenameDialog> {
               children: <Widget>[
                 CircularProgressIndicator(),
                 SizedBox(width: 20.0),
-                Text("Renaming to ${fileNameCtrl.text}")
+                Text("Renaming to ${fileNameCtrl.text}.$fileExtension")
               ],
             )
           : Form(
@@ -66,19 +75,19 @@ class _RenameDialogState extends State<RenameDialog> {
             onPressed: isRenaming
                 ? null
                 : () {
+                    if (!_renameFormKey.currentState.validate()) return;
                     errMsg = "";
-                    isRenaming = true;
+                    setState(() => isRenaming = true);
                     widget.fileViewerState.onRename(
                       type: widget.file["Type"],
                       path: widget.file["Path"],
                       name: widget.file["Name"],
-                      newName: fileNameCtrl.text,
+                      newName: "${fileNameCtrl.text}.$fileExtension",
                       isFolder: widget.file["IsFolder"],
                       isLink: widget.file["IsLink"],
-                      isFormValid: _renameFormKey.currentState.validate(),
                       onError: (String err) {
                         errMsg = err;
-                        isRenaming = false;
+                        setState(() => isRenaming = false);
                       },
                       onSuccess: (String newNameFromServer) {
                         Navigator.pop(context, newNameFromServer);

@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthRepository {
   final String apiUrl = SingletonStore.instance.apiUrl;
 
-  Future<String> login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     final parameters =
         json.encode({"Login": email, "Password": password, "Pattern": ""});
 
@@ -22,7 +22,7 @@ class AuthRepository {
 
     final resBody = json.decode(res.body);
     if (resBody['Result'] != null && resBody['Result']['AuthToken'] is String) {
-      return resBody['Result']['AuthToken'];
+      return resBody;
     } else {
       throw CustomException(getErrMsg(resBody));
     }
@@ -41,5 +41,20 @@ class AuthRepository {
   Future<bool> deleteTokenFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.remove("authToken");
+  }
+
+  Future<int> getUserIdFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("userId");
+  }
+
+  Future<bool> setUserIdToStorage(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setInt("userId", value);
+  }
+
+  Future<bool> deleteUserIdFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove("userId");
   }
 }

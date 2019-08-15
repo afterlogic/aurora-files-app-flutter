@@ -19,6 +19,16 @@ abstract class _AuthState with Store {
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
 
+  Future<bool> initSharedPrefs() async {
+    final List results = await Future.wait([
+      _repo.getTokenFromStorage(),
+      _repo.getUserIdFromStorage(),
+    ]);
+    _appState.authToken = results[0];
+    _appState.userId = results[1];
+    return _appState.authToken is String && _appState.userId is int;
+  }
+
   Future<void> onLogin(
       {bool isFormValid, Function onSuccess, Function onError}) async {
     if (isFormValid) {
@@ -28,12 +38,17 @@ abstract class _AuthState with Store {
 
       try {
         isLoggingIn = true;
-        final String token = await _repo.login(email, password);
+        final Map<String, dynamic> res = await _repo.login(email, password);
+        final String token = res['Result']['AuthToken'];
+        final int userId = res['AuthenticatedUserId'];
+
         await _repo.setTokenToStorage(token);
+        await _repo.setUserIdToStorage(userId);
         _appState.authToken = token;
+        _appState.userId = userId;
         onSuccess();
       } catch (err) {
-        onError(err is String ? err : err.toString());
+        onError(err.toString());
       } finally {
         isLoggingIn = false;
       }
@@ -42,6 +57,7 @@ abstract class _AuthState with Store {
 
   void onLogout() {
     _repo.deleteTokenFromStorage();
+    _repo.deleteUserIdFromStorage();
     _appState.authToken = null;
   }
 }

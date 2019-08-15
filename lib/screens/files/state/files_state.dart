@@ -2,6 +2,7 @@ import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/files_type.dart';
 import 'package:aurorafiles/screens/files/files_repository.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 
 part 'files_state.g.dart';
@@ -73,7 +74,7 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future onDeleteFiles({Function onSuccess, Function(String) onError}) async {
+  void onDeleteFiles({Function onSuccess, Function(String) onError}) async {
     final List<Map<String, dynamic>> filesToDelete = [];
 
     // find selected files by their id
@@ -92,6 +93,36 @@ abstract class _FilesState with Store {
     } catch (err) {
       onError(err.toString());
       isFilesLoading = false;
+    }
+  }
+
+  Future onGetPublicLink({
+    @required String name,
+    @required int size,
+    @required bool isFolder,
+    @required Function onSuccess,
+    @required Function(String) onError,
+  }) async {
+    try {
+      final String link = await _repo.createPublicLink(
+          currentFilesType, currentPath, name, size, isFolder);
+      onSuccess();
+    } catch (err) {
+      onError(err.toString());
+    }
+  }
+
+  Future onDeletePublicLink({
+    @required String name,
+    @required Function onSuccess,
+    @required Function(String) onError,
+  }) async {
+    try {
+      await _repo.deletePublicLink(
+          currentFilesType, currentPath, name);
+      onSuccess();
+    } catch (err) {
+      onError(err.toString());
     }
   }
 }

@@ -7,8 +7,10 @@ import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:http/http.dart' as http;
 
 class FilesRepository {
+  final String hostName = SingletonStore.instance.hostName;
   final String apiUrl = SingletonStore.instance.apiUrl;
   final String authToken = SingletonStore.instance.authToken;
+  final int userId = SingletonStore.instance.userId;
 
   Future<List> getFiles(String type, String path, String pattern) async {
     final parameters =
@@ -72,6 +74,56 @@ class FilesRepository {
     final body =
         new ApiBody(module: "Files", method: "Delete", parameters: parameters)
             .toMap();
+
+    final res =
+        await http.post(apiUrl, headers: getHeader(authToken), body: body);
+
+    final resBody = json.decode(res.body);
+
+    if (resBody['Result']) {
+      return;
+    } else {
+      throw CustomException(getErrMsg(resBody));
+    }
+  }
+
+  Future<String> createPublicLink(
+      String type, String path, String name, int size, bool isFolder) async {
+    final parameters = json.encode({
+      "UserId": userId,
+      "Type": type,
+      "Path": path,
+      "Name": name,
+      "Size": size,
+      "IsFolder": isFolder,
+    });
+
+    final body = new ApiBody(
+            module: "Files", method: "CreatePublicLink", parameters: parameters)
+        .toMap();
+
+    final res =
+        await http.post(apiUrl, headers: getHeader(authToken), body: body);
+
+    final resBody = json.decode(res.body);
+
+    if (resBody['Result'] is String) {
+      return "$hostName/${resBody['Result']}";
+    } else {
+      throw CustomException(getErrMsg(resBody));
+    }
+  }
+
+  Future deletePublicLink(String type, String path, String name) async {
+    final parameters = json.encode({
+      "Type": type,
+      "Path": path,
+      "Name": name,
+    });
+
+    final body = new ApiBody(
+            module: "Files", method: "DeletePublicLink", parameters: parameters)
+        .toMap();
 
     final res =
         await http.post(apiUrl, headers: getHeader(authToken), body: body);

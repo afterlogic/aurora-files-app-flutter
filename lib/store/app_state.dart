@@ -14,4 +14,5 @@ abstract class _AppState with Store {
   String get apiUrl => '$hostName/?Api/';
 
   String authToken;
+  int userId;
 }

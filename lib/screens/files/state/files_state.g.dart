@@ -93,43 +93,4 @@ mixin _$FilesState on _FilesState, Store {
       _$isFilesLoadingAtom.reportChanged();
     }, _$isFilesLoadingAtom, name: '${_$isFilesLoadingAtom.name}_set');
   }
-
-  final _$onGetFilesAsyncAction = AsyncAction('onGetFiles');
-
-  @override
-  Future<void> onGetFiles({String path = ""}) {
-    return _$onGetFilesAsyncAction.run(() => super.onGetFiles(path: path));
-  }
-
-  final _$_FilesStateActionController = ActionController(name: '_FilesState');
-
-  @override
-  void setCurrentFilesType(String filesType) {
-    final _$actionInfo = _$_FilesStateActionController.startAction();
-    try {
-      return super.setCurrentFilesType(filesType);
-    } finally {
-      _$_FilesStateActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void onSelectFile(String id) {
-    final _$actionInfo = _$_FilesStateActionController.startAction();
-    try {
-      return super.onSelectFile(id);
-    } finally {
-      _$_FilesStateActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void onLevelUp() {
-    final _$actionInfo = _$_FilesStateActionController.startAction();
-    try {
-      return super.onLevelUp();
-    } finally {
-      _$_FilesStateActionController.endAction(_$actionInfo);
-    }
-  }
 }

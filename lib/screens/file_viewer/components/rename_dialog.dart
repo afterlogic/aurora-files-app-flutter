@@ -19,7 +19,7 @@ class RenameDialog extends StatefulWidget {
 }
 
 class _RenameDialogState extends State<RenameDialog> {
-  final fileNameCtrl = TextEditingController();
+  final _fileNameCtrl = TextEditingController();
   final _renameFormKey = GlobalKey<FormState>();
 
   bool isRenaming = false;
@@ -33,9 +33,15 @@ class _RenameDialogState extends State<RenameDialog> {
     final List<String> splitFileName = widget.file["Name"].split('.');
     fileExtension = splitFileName[splitFileName.length - 1];
 
-    fileNameCtrl.text =
+    _fileNameCtrl.text =
         splitFileName.sublist(0, splitFileName.length - 1).join(".");
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _fileNameCtrl.dispose();
   }
 
   @override
@@ -47,13 +53,13 @@ class _RenameDialogState extends State<RenameDialog> {
               children: <Widget>[
                 CircularProgressIndicator(),
                 SizedBox(width: 20.0),
-                Text("Renaming to ${fileNameCtrl.text}.$fileExtension")
+                Text("Renaming to ${_fileNameCtrl.text}.$fileExtension")
               ],
             )
           : Form(
               key: _renameFormKey,
               child: TextFormField(
-                controller: fileNameCtrl,
+                controller: _fileNameCtrl,
                 autofocus: true,
                 decoration: InputDecoration(
                   hintText: "Enter new name",
@@ -80,7 +86,7 @@ class _RenameDialogState extends State<RenameDialog> {
                       type: widget.file["Type"],
                       path: widget.file["Path"],
                       name: widget.file["Name"],
-                      newName: "${fileNameCtrl.text}.$fileExtension",
+                      newName: "${_fileNameCtrl.text}.$fileExtension",
                       isFolder: widget.file["IsFolder"],
                       isLink: widget.file["IsLink"],
                       onError: (String err) {

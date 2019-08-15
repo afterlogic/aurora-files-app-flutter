@@ -1,6 +1,7 @@
 enum ValidationTypes {
   empty,
   email,
+  folderSlash,
 }
 
 String validateInput(String value, List<ValidationTypes> types) {
@@ -9,6 +10,9 @@ String validateInput(String value, List<ValidationTypes> types) {
   }
   if (types.contains(ValidationTypes.email) && !_isEmailValid(value)) {
     return "The email is not valid";
+  }
+  if (types.contains(ValidationTypes.folderSlash) && value.contains("/")) {
+    return "Folder name cannot contain '/'";
   }
 
   // else the field is valid

@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/store/app_state.dart';
+import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:aurorafiles/utils/get_error_message.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -18,13 +19,13 @@ class FileViewerRepository {
     Directory dir = await DownloadsPathProvider.downloadsDirectory;
     if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
     if (!dir.existsSync())
-      throw CustomException(message: "Could not resolve save directory");
+      throw CustomException("Could not resolve save directory");
 
     return FlutterDownloader.enqueue(
       url: SingletonStore.instance.hostName + url,
       savedDir: dir.path,
       fileName: fileName,
-      headers: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
+      headers: getHeader(authToken),
       showNotification: true,
       openFileFromNotification: true,
     );
@@ -56,23 +57,19 @@ class FileViewerRepository {
       "IsFolder": isFolder,
     });
 
-    final res = await http.post(apiUrl, headers: {
-      'Authorization': 'Bearer $authToken'
-    }, body: {
-      'Module': 'Files',
-      'Method': 'Rename',
-      'Parameters': parameters
-    });
+    final body =
+        new ApiBody(module: "Files", method: "Rename", parameters: parameters)
+            .toMap();
+
+    final res =
+        await http.post(apiUrl, headers: getHeader(authToken), body: body);
 
     final resBody = json.decode(res.body);
 
     if (resBody['Result'] != null && resBody['Result']) {
       return newName;
     } else {
-      throw CustomException(
-          message: resBody["ErrorMessage"] != null
-              ? resBody["ErrorMessage"]
-              : getErrMsgFromCode(resBody["ErrorCode"]));
+      throw CustomException(getErrMsg(resBody));
     }
   }
 }

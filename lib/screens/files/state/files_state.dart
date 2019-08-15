@@ -1,5 +1,7 @@
+import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/files_type.dart';
 import 'package:aurorafiles/screens/files/files_repository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 
 part 'files_state.g.dart';
@@ -26,10 +28,6 @@ abstract class _FilesState with Store {
   @observable
   bool isFilesLoading = false;
 
-  @action
-  void setCurrentFilesType(String filesType) => currentFilesType = filesType;
-
-  @action
   void onSelectFile(String id) {
     // reassigning to update the observable
     final selectedIds = selectedFilesIds;
@@ -41,24 +39,59 @@ abstract class _FilesState with Store {
     selectedFilesIds = selectedIds;
   }
 
-  @action
-  Future<void> onGetFiles({String path = ""}) async {
+  Future<void> onGetFiles(
+      {@required String path, Function(String) onError}) async {
     currentPath = path;
     try {
       isFilesLoading = true;
       currentFiles = await _repo.getFiles(currentFilesType, currentPath, "");
     } catch (err) {
-      print("VO: err, $err");
+      onError(err.toString());
     } finally {
       isFilesLoading = false;
     }
   }
 
-  @action
-  void onLevelUp() {
+  void onLevelUp(Function getNewFiles) {
     final List<String> pathArray = currentPath.split("/");
     pathArray.removeLast();
     currentPath = pathArray.join("/");
-    onGetFiles(path: currentPath);
+    getNewFiles();
+  }
+
+  void onCreateNewFolder({
+    @required String folderName,
+    Function(String) onSuccess,
+    Function(String) onError,
+  }) async {
+    try {
+      final String newFolderNameFromServer =
+          await _repo.createFolder(currentFilesType, currentPath, folderName);
+      onSuccess(newFolderNameFromServer);
+    } catch (err) {
+      onError(err.toString());
+    }
+  }
+
+  Future onDeleteFiles({Function onSuccess, Function(String) onError}) async {
+    final List<Map<String, dynamic>> filesToDelete = [];
+
+    // find selected files by their id
+    currentFiles.forEach((file) {
+      if (selectedFilesIds.contains(file["Id"])) {
+        final fileToDelete = FileToDelete(
+            path: file["Path"], name: file["Name"], isFolder: file["IsFolder"]);
+        filesToDelete.add(fileToDelete.toMap());
+      }
+    });
+
+    try {
+      isFilesLoading = true;
+      await _repo.delete(currentFilesType, currentPath, filesToDelete);
+      onSuccess();
+    } catch (err) {
+      onError(err.toString());
+      isFilesLoading = false;
+    }
   }
 }

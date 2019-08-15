@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+import 'components/add_folder_dialog.dart';
+import 'components/delete_confirmation_dialog.dart';
 import 'components/folder.dart';
 import 'components/skeleton_loader.dart';
 
@@ -24,7 +26,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   @override
   void initState() {
     super.initState();
-    _filesState.onGetFiles();
+    _getFiles(context);
     _appBarIconAnimCtrl = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
@@ -36,6 +38,39 @@ class _FilesAndroidState extends State<FilesAndroid>
     super.dispose();
     _appBarIconAnimCtrl.dispose();
     _filesState.dispose();
+  }
+
+  _getFiles(BuildContext context) {
+    return _filesState.onGetFiles(
+      path: _filesState.currentPath,
+      onError: (String err) => _showErrSnack(context, err),
+    );
+  }
+
+  void _deleteSelected(context) async {
+    final bool shouldDelete = await showDialog(
+        context: context,
+        builder: (_) => DeleteConfirmationDialog(
+            itemsNumber: _filesState.selectedFilesIds.length));
+    if (shouldDelete != null && shouldDelete) {
+      _filesState.onDeleteFiles(
+        onSuccess: () {
+          _filesState.selectedFilesIds = new Set();
+          _getFiles(context);
+        },
+        onError: (String err) => _showErrSnack(context, err),
+      );
+    }
+  }
+
+  void _showErrSnack(BuildContext context, String msg) {
+    final snack = SnackBar(
+      content: Text(msg),
+      backgroundColor: Theme.of(context).errorColor,
+    );
+
+    _scaffoldKey.currentState.removeCurrentSnackBar();
+    _scaffoldKey.currentState.showSnackBar(snack);
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -78,7 +113,7 @@ class _FilesAndroidState extends State<FilesAndroid>
               IconButton(
                 icon: Icon(Icons.delete_outline),
                 tooltip: "Delete files",
-                onPressed: () {},
+                onPressed: () => _deleteSelected(context),
               ),
             ]
           : <Widget>[
@@ -140,8 +175,7 @@ class _FilesAndroidState extends State<FilesAndroid>
               builder: (_) => RefreshIndicator(
                     key: _refreshIndicatorKey,
                     color: Theme.of(context).primaryColor,
-                    onRefresh: () =>
-                        _filesState.onGetFiles(path: _filesState.currentPath),
+                    onRefresh: () => _getFiles(context),
                     child: Column(
                       children: <Widget>[
                         Container(
@@ -156,13 +190,17 @@ class _FilesAndroidState extends State<FilesAndroid>
                         ),
                         if (_filesState.currentPath != "")
                           Opacity(
-                            opacity: _filesState.selectedFilesIds.length > 0 ? 0.3 : 1,
+                            opacity: _filesState.selectedFilesIds.length > 0
+                                ? 0.3
+                                : 1,
                             child: ListTile(
                               leading: Icon(Icons.arrow_upward),
                               title: Text("Level Up"),
                               onTap: _filesState.selectedFilesIds.length > 0
                                   ? null
-                                  : _filesState.onLevelUp,
+                                  : () => _filesState.onLevelUp(
+                                        () => _getFiles(context),
+                                      ),
                             ),
                           ),
                         Expanded(
@@ -171,6 +209,18 @@ class _FilesAndroidState extends State<FilesAndroid>
                       ],
                     ),
                   )),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.create_new_folder),
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
+            onPressed: () => showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => AddFolderDialog(
+                      filesState: _filesState,
+                      onUpdateFilesList: () => _getFiles(context),
+                    )),
+          ),
         ),
       ),
     );

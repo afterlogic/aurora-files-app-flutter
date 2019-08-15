@@ -80,7 +80,7 @@ class MainDrawer extends StatelessWidget {
                       title: Text('Personal'),
                       onTap: () {
                         _filesState.currentFilesType = FilesType.personal;
-                        _filesState.onGetFiles();
+                        _filesState.onGetFiles(path: "");
                         Navigator.pop(context);
                       },
                     ),
@@ -95,7 +95,7 @@ class MainDrawer extends StatelessWidget {
                       title: Text('Corporate'),
                       onTap: () {
                         _filesState.currentFilesType = FilesType.corporate;
-                        _filesState.onGetFiles();
+                        _filesState.onGetFiles(path: "");
                         Navigator.pop(context);
                       },
                     ),

@@ -106,6 +106,7 @@ abstract class _FilesState with Store {
     try {
       final String link = await _repo.createPublicLink(
           currentFilesType, currentPath, name, size, isFolder);
+      Clipboard.setData(ClipboardData(text: link));
       onSuccess();
     } catch (err) {
       onError(err.toString());

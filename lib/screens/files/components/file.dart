@@ -16,8 +16,8 @@ class FileWidget extends StatelessWidget {
 
   const FileWidget({Key key, @required this.file}) : super(key: key);
 
-  void _showModalBottomSheet(context) {
-    showModalBottomSheet(
+  Future _showModalBottomSheet(context) async {
+    final String result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
@@ -26,6 +26,10 @@ class FileWidget extends StatelessWidget {
       builder: (_) => FileOptionsBottomSheet(
           file: file, filesState: Provider.of<FilesState>(context)),
     );
+
+    if (result is String) {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text(result)));
+    }
   }
 
   Widget _getThumbnail(BuildContext context) {

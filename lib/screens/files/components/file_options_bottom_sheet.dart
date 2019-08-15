@@ -23,6 +23,36 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
     _hasPublicLink = widget.file["Published"];
   }
 
+  void _getLink() {
+    widget.filesState.onGetPublicLink(
+      name: widget.file["Name"],
+      size: widget.file["Size"],
+      isFolder: widget.file["IsFolder"],
+      onSuccess: () {
+        setState(() => _isGettingPublicLink = false);
+        Navigator.pop(context, "Link coppied to clipboard");
+      },
+      onError: (String err) => setState(() {
+        _isGettingPublicLink = false;
+        _hasPublicLink = false;
+        widget.file["Published"] = false;
+      }),
+    );
+  }
+
+  void _deleteLink() {
+    widget.filesState.onDeletePublicLink(
+      name: widget.file["Name"],
+      onSuccess: () =>
+          setState(() => _isGettingPublicLink = false),
+      onError: (String err) => setState(() {
+        _isGettingPublicLink = false;
+        _hasPublicLink = true;
+        widget.file["Published"] = true;
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -45,8 +75,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                 title: ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: Icon(Icons.link),
-                  title: Text("Get public link"),
+                  title: Text("Public link access"),
                 ),
+                activeColor: Theme.of(context).primaryColor,
                 value: _hasPublicLink,
                 onChanged: _isGettingPublicLink
                     ? null
@@ -57,37 +88,20 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                           widget.file["Published"] = val;
                         });
                         if (val) {
-                          widget.filesState.onGetPublicLink(
-                            name: widget.file["Name"],
-                            size: widget.file["Size"],
-                            isFolder: widget.file["IsFolder"],
-                            onSuccess: () =>
-                                setState(() => _isGettingPublicLink = false),
-                            onError: (String err) => setState(() {
-                              _isGettingPublicLink = false;
-                              _hasPublicLink = !val;
-                              widget.file["Published"] = !val;
-                            }),
-                          );
+                          _getLink();
                         } else {
-                          widget.filesState.onDeletePublicLink(
-                            name: widget.file["Name"],
-                            onSuccess: () =>
-                                setState(() => _isGettingPublicLink = false),
-                            onError: (String err) => setState(() {
-                              _isGettingPublicLink = false;
-                              _hasPublicLink = !val;
-                              widget.file["Published"] = !val;
-                            }),
-                          );
+                          _deleteLink();
                         }
                       },
               ),
-              if (_hasPublicLink && !_isGettingPublicLink)
+              if (_hasPublicLink)
                 ListTile(
                   leading: Icon(Icons.content_copy),
                   title: Text("Copy public link"),
-                  onTap: () => {},
+                  onTap: _isGettingPublicLink ? null : () {
+                    setState(() => _isGettingPublicLink = true);
+                    _getLink();
+                  },
                 ),
               Divider(height: 0),
               ListTile(

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-import 'package:aurorafiles/screens/files/dialogs/add_folder_dialog_android.dart';
-import 'package:aurorafiles/screens/files/dialogs/delete_confirmation_dialog.dart';
+import 'package:aurorafiles/screens/files/dialogs_android/add_folder_dialog_android.dart';
+import 'package:aurorafiles/screens/files/dialogs_android/delete_confirmation_dialog.dart';
 import 'components/folder.dart';
 import 'components/skeleton_loader.dart';
 
@@ -26,7 +26,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   @override
   void initState() {
     super.initState();
-    _getFiles(context);
+    _getFiles(context, true);
     _appBarIconAnimCtrl = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
@@ -40,9 +40,10 @@ class _FilesAndroidState extends State<FilesAndroid>
     _filesState.dispose();
   }
 
-  _getFiles(BuildContext context) {
+  _getFiles(BuildContext context, [showLoading = false]) {
     return _filesState.onGetFiles(
       path: _filesState.currentPath,
+      showLoading: showLoading,
       onError: (String err) => _showErrSnack(context, err),
     );
   }
@@ -151,10 +152,10 @@ class _FilesAndroidState extends State<FilesAndroid>
         itemCount: _filesState.currentFiles.length,
         itemBuilder: (BuildContext context, int index) {
           final item = _filesState.currentFiles[index];
-          if (item["IsFolder"]) {
-            return FolderWidget(key: Key(item["Id"]), folder: item);
+          if (item.isFolder) {
+            return FolderWidget(key: Key(item.id), folder: item);
           } else {
-            return FileWidget(key: Key(item["Id"]), file: item);
+            return FileWidget(key: Key(item.id), file: item);
           }
         },
       );
@@ -167,58 +168,61 @@ class _FilesAndroidState extends State<FilesAndroid>
       builder: (_) => _filesState,
       dispose: (_, value) => value.dispose(),
       child: Observer(
-        builder: (_) => Scaffold(
-          key: _scaffoldKey,
-          drawer: MainDrawer(),
-          appBar: _buildAppBar(context),
-          body: Observer(
-              builder: (_) => RefreshIndicator(
-                    key: _refreshIndicatorKey,
-                    color: Theme.of(context).primaryColor,
-                    onRefresh: () => _getFiles(context),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          width: double.infinity,
-                          color: Theme.of(context).highlightColor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(_filesState.currentPath == ""
-                                ? "/"
-                                : _filesState.currentPath),
-                          ),
-                        ),
-                        if (_filesState.currentPath != "")
-                          Opacity(
-                            opacity: _filesState.selectedFilesIds.length > 0
-                                ? 0.3
-                                : 1,
-                            child: ListTile(
-                              leading: Icon(Icons.arrow_upward),
-                              title: Text("Level Up"),
-                              onTap: _filesState.selectedFilesIds.length > 0
-                                  ? null
-                                  : () => _filesState.onLevelUp(
-                                        () => _getFiles(context),
-                                      ),
+        builder: (_) => SafeArea(
+          top: false,
+          child: Scaffold(
+            key: _scaffoldKey,
+            drawer: MainDrawer(),
+            appBar: _buildAppBar(context),
+            body: Observer(
+                builder: (_) => RefreshIndicator(
+                      key: _refreshIndicatorKey,
+                      color: Theme.of(context).primaryColor,
+                      onRefresh: () => _getFiles(context),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: double.infinity,
+                            color: Theme.of(context).highlightColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(_filesState.currentPath == ""
+                                  ? "/"
+                                  : _filesState.currentPath),
                             ),
                           ),
-                        Expanded(
-                          child: _buildFiles(context),
-                        ),
-                      ],
-                    ),
-                  )),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.create_new_folder),
-            backgroundColor: Theme.of(context).primaryColor,
-            foregroundColor: Colors.white,
-            onPressed: () => showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) => AddFolderDialogAndroid(
-                      filesState: _filesState,
+                          if (_filesState.currentPath != "")
+                            Opacity(
+                              opacity: _filesState.selectedFilesIds.length > 0
+                                  ? 0.3
+                                  : 1,
+                              child: ListTile(
+                                leading: Icon(Icons.arrow_upward),
+                                title: Text("Level Up"),
+                                onTap: _filesState.selectedFilesIds.length > 0
+                                    ? null
+                                    : () => _filesState.onLevelUp(
+                                          () => _getFiles(context, true),
+                                        ),
+                              ),
+                            ),
+                          Expanded(
+                            child: _buildFiles(context),
+                          ),
+                        ],
+                      ),
                     )),
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.create_new_folder),
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+              onPressed: () => showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => AddFolderDialogAndroid(
+                        filesState: _filesState,
+                      )),
+            ),
           ),
         ),
       ),

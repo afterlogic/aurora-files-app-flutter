@@ -1,9 +1,10 @@
-import 'package:aurorafiles/screens/files/dialogs/rename_dialog_android.dart';
+import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
 
 class FileOptionsBottomSheet extends StatefulWidget {
-  final file;
+  final File file;
   final FilesState filesState;
 
   const FileOptionsBottomSheet(
@@ -21,34 +22,36 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _hasPublicLink = widget.file["Published"];
+    _hasPublicLink = widget.file.published;
   }
 
   void _getLink() {
     widget.filesState.onGetPublicLink(
-      name: widget.file["Name"],
-      size: widget.file["Size"],
-      isFolder: widget.file["IsFolder"],
-      onSuccess: () {
+      name: widget.file.name,
+      size: widget.file.size,
+      isFolder: widget.file.isFolder,
+      onSuccess: () async {
+        await widget.filesState.onGetFiles(path: widget.filesState.currentPath);
         setState(() => _isGettingPublicLink = false);
         Navigator.pop(context, "Link coppied to clipboard");
       },
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = false;
-        widget.file["Published"] = false;
       }),
     );
   }
 
   void _deleteLink() {
     widget.filesState.onDeletePublicLink(
-      name: widget.file["Name"],
-      onSuccess: () => setState(() => _isGettingPublicLink = false),
+      name: widget.file.name,
+      onSuccess: () async {
+        await widget.filesState.onGetFiles(path: widget.filesState.currentPath);
+        setState(() => _isGettingPublicLink = false);
+      },
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = true;
-        widget.file["Published"] = true;
       }),
     );
   }
@@ -62,7 +65,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            widget.file["Name"],
+            widget.file.name,
             style: Theme.of(context).textTheme.title,
           ),
         ),
@@ -85,7 +88,6 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                         setState(() {
                           _isGettingPublicLink = true;
                           _hasPublicLink = val;
-                          widget.file["Published"] = val;
                         });
                         if (val) {
                           _getLink();

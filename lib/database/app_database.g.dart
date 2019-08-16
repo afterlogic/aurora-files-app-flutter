@@ -9,54 +9,52 @@ part of 'app_database.dart';
 // ignore_for_file: unnecessary_brace_in_string_interps
 class File extends DataClass implements Insertable<File> {
   final int localId;
-  final String Id;
-  final String Type;
-  final String Path;
-  final String FullPath;
-  final String Name;
-  final int Size;
-  final bool IsFolder;
-  final bool IsLink;
-  final String LinkType;
-  final String LinkUrl;
-  final int LastModified;
-  final String ContentType;
-  final bool Thumb;
-  final String ThumbnailLink;
-  final String OembedHtml;
-  final bool Shared;
-  final String Owner;
-  final String Content;
-  final String ViewUrl;
-  final String DownloadUrl;
-  final String ThumbnailUrl;
-  final String Hash;
-  final bool IsExternal;
+  final String id;
+  final String type;
+  final String path;
+  final String fullPath;
+  final String name;
+  final int size;
+  final bool isFolder;
+  final bool isLink;
+  final String linkType;
+  final String linkUrl;
+  final int lastModified;
+  final String contentType;
+  final String oEmbedHtml;
+  final bool published;
+  final String owner;
+  final String content;
+  final String viewUrl;
+  final String downloadUrl;
+  final String thumbnailUrl;
+  final String hash;
+  final String extendedProps;
+  final bool isExternal;
   File(
       {@required this.localId,
-      @required this.Id,
-      @required this.Type,
-      @required this.Path,
-      @required this.FullPath,
-      @required this.Name,
-      @required this.Size,
-      @required this.IsFolder,
-      @required this.IsLink,
-      @required this.LinkType,
-      @required this.LinkUrl,
-      @required this.LastModified,
-      @required this.ContentType,
-      @required this.Thumb,
-      @required this.ThumbnailLink,
-      @required this.OembedHtml,
-      @required this.Shared,
-      @required this.Owner,
-      @required this.Content,
-      @required this.ViewUrl,
-      @required this.DownloadUrl,
-      @required this.ThumbnailUrl,
-      @required this.Hash,
-      @required this.IsExternal});
+      @required this.id,
+      @required this.type,
+      @required this.path,
+      @required this.fullPath,
+      @required this.name,
+      @required this.size,
+      @required this.isFolder,
+      @required this.isLink,
+      @required this.linkType,
+      @required this.linkUrl,
+      @required this.lastModified,
+      @required this.contentType,
+      @required this.oEmbedHtml,
+      @required this.published,
+      @required this.owner,
+      @required this.content,
+      @required this.viewUrl,
+      @required this.downloadUrl,
+      @required this.thumbnailUrl,
+      @required this.hash,
+      @required this.extendedProps,
+      @required this.isExternal});
   factory File.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -66,44 +64,43 @@ class File extends DataClass implements Insertable<File> {
     return File(
       localId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
-      Id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      Type: stringType.mapFromDatabaseResponse(data['${effectivePrefix}type']),
-      Path: stringType.mapFromDatabaseResponse(data['${effectivePrefix}path']),
-      FullPath: stringType
+      id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      type: stringType.mapFromDatabaseResponse(data['${effectivePrefix}type']),
+      path: stringType.mapFromDatabaseResponse(data['${effectivePrefix}path']),
+      fullPath: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}full_path']),
-      Name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
-      Size: intType.mapFromDatabaseResponse(data['${effectivePrefix}size']),
-      IsFolder:
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      size: intType.mapFromDatabaseResponse(data['${effectivePrefix}size']),
+      isFolder:
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_folder']),
-      IsLink:
+      isLink:
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_link']),
-      LinkType: stringType
+      linkType: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}link_type']),
-      LinkUrl: stringType
+      linkUrl: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}link_url']),
-      LastModified: intType
+      lastModified: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}last_modified']),
-      ContentType: stringType
+      contentType: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}content_type']),
-      Thumb: boolType.mapFromDatabaseResponse(data['${effectivePrefix}thumb']),
-      ThumbnailLink: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}thumbnail_link']),
-      OembedHtml: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}oembed_html']),
-      Shared:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}shared']),
-      Owner:
+      oEmbedHtml: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}o_embed_html']),
+      published:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}published']),
+      owner:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}owner']),
-      Content:
+      content:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}content']),
-      ViewUrl: stringType
+      viewUrl: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}view_url']),
-      DownloadUrl: stringType
+      downloadUrl: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}download_url']),
-      ThumbnailUrl: stringType
+      thumbnailUrl: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}thumbnail_url']),
-      Hash: stringType.mapFromDatabaseResponse(data['${effectivePrefix}hash']),
-      IsExternal: boolType
+      hash: stringType.mapFromDatabaseResponse(data['${effectivePrefix}hash']),
+      extendedProps: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}extended_props']),
+      isExternal: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_external']),
     );
   }
@@ -111,29 +108,28 @@ class File extends DataClass implements Insertable<File> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return File(
       localId: serializer.fromJson<int>(json['localId']),
-      Id: serializer.fromJson<String>(json['Id']),
-      Type: serializer.fromJson<String>(json['Type']),
-      Path: serializer.fromJson<String>(json['Path']),
-      FullPath: serializer.fromJson<String>(json['FullPath']),
-      Name: serializer.fromJson<String>(json['Name']),
-      Size: serializer.fromJson<int>(json['Size']),
-      IsFolder: serializer.fromJson<bool>(json['IsFolder']),
-      IsLink: serializer.fromJson<bool>(json['IsLink']),
-      LinkType: serializer.fromJson<String>(json['LinkType']),
-      LinkUrl: serializer.fromJson<String>(json['LinkUrl']),
-      LastModified: serializer.fromJson<int>(json['LastModified']),
-      ContentType: serializer.fromJson<String>(json['ContentType']),
-      Thumb: serializer.fromJson<bool>(json['Thumb']),
-      ThumbnailLink: serializer.fromJson<String>(json['ThumbnailLink']),
-      OembedHtml: serializer.fromJson<String>(json['OembedHtml']),
-      Shared: serializer.fromJson<bool>(json['Shared']),
-      Owner: serializer.fromJson<String>(json['Owner']),
-      Content: serializer.fromJson<String>(json['Content']),
-      ViewUrl: serializer.fromJson<String>(json['ViewUrl']),
-      DownloadUrl: serializer.fromJson<String>(json['DownloadUrl']),
-      ThumbnailUrl: serializer.fromJson<String>(json['ThumbnailUrl']),
-      Hash: serializer.fromJson<String>(json['Hash']),
-      IsExternal: serializer.fromJson<bool>(json['IsExternal']),
+      id: serializer.fromJson<String>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      path: serializer.fromJson<String>(json['path']),
+      fullPath: serializer.fromJson<String>(json['fullPath']),
+      name: serializer.fromJson<String>(json['name']),
+      size: serializer.fromJson<int>(json['size']),
+      isFolder: serializer.fromJson<bool>(json['isFolder']),
+      isLink: serializer.fromJson<bool>(json['isLink']),
+      linkType: serializer.fromJson<String>(json['linkType']),
+      linkUrl: serializer.fromJson<String>(json['linkUrl']),
+      lastModified: serializer.fromJson<int>(json['lastModified']),
+      contentType: serializer.fromJson<String>(json['contentType']),
+      oEmbedHtml: serializer.fromJson<String>(json['oEmbedHtml']),
+      published: serializer.fromJson<bool>(json['published']),
+      owner: serializer.fromJson<String>(json['owner']),
+      content: serializer.fromJson<String>(json['content']),
+      viewUrl: serializer.fromJson<String>(json['viewUrl']),
+      downloadUrl: serializer.fromJson<String>(json['downloadUrl']),
+      thumbnailUrl: serializer.fromJson<String>(json['thumbnailUrl']),
+      hash: serializer.fromJson<String>(json['hash']),
+      extendedProps: serializer.fromJson<String>(json['extendedProps']),
+      isExternal: serializer.fromJson<bool>(json['isExternal']),
     );
   }
   @override
@@ -141,29 +137,28 @@ class File extends DataClass implements Insertable<File> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return {
       'localId': serializer.toJson<int>(localId),
-      'Id': serializer.toJson<String>(Id),
-      'Type': serializer.toJson<String>(Type),
-      'Path': serializer.toJson<String>(Path),
-      'FullPath': serializer.toJson<String>(FullPath),
-      'Name': serializer.toJson<String>(Name),
-      'Size': serializer.toJson<int>(Size),
-      'IsFolder': serializer.toJson<bool>(IsFolder),
-      'IsLink': serializer.toJson<bool>(IsLink),
-      'LinkType': serializer.toJson<String>(LinkType),
-      'LinkUrl': serializer.toJson<String>(LinkUrl),
-      'LastModified': serializer.toJson<int>(LastModified),
-      'ContentType': serializer.toJson<String>(ContentType),
-      'Thumb': serializer.toJson<bool>(Thumb),
-      'ThumbnailLink': serializer.toJson<String>(ThumbnailLink),
-      'OembedHtml': serializer.toJson<String>(OembedHtml),
-      'Shared': serializer.toJson<bool>(Shared),
-      'Owner': serializer.toJson<String>(Owner),
-      'Content': serializer.toJson<String>(Content),
-      'ViewUrl': serializer.toJson<String>(ViewUrl),
-      'DownloadUrl': serializer.toJson<String>(DownloadUrl),
-      'ThumbnailUrl': serializer.toJson<String>(ThumbnailUrl),
-      'Hash': serializer.toJson<String>(Hash),
-      'IsExternal': serializer.toJson<bool>(IsExternal),
+      'id': serializer.toJson<String>(id),
+      'type': serializer.toJson<String>(type),
+      'path': serializer.toJson<String>(path),
+      'fullPath': serializer.toJson<String>(fullPath),
+      'name': serializer.toJson<String>(name),
+      'size': serializer.toJson<int>(size),
+      'isFolder': serializer.toJson<bool>(isFolder),
+      'isLink': serializer.toJson<bool>(isLink),
+      'linkType': serializer.toJson<String>(linkType),
+      'linkUrl': serializer.toJson<String>(linkUrl),
+      'lastModified': serializer.toJson<int>(lastModified),
+      'contentType': serializer.toJson<String>(contentType),
+      'oEmbedHtml': serializer.toJson<String>(oEmbedHtml),
+      'published': serializer.toJson<bool>(published),
+      'owner': serializer.toJson<String>(owner),
+      'content': serializer.toJson<String>(content),
+      'viewUrl': serializer.toJson<String>(viewUrl),
+      'downloadUrl': serializer.toJson<String>(downloadUrl),
+      'thumbnailUrl': serializer.toJson<String>(thumbnailUrl),
+      'hash': serializer.toJson<String>(hash),
+      'extendedProps': serializer.toJson<String>(extendedProps),
+      'isExternal': serializer.toJson<bool>(isExternal),
     };
   }
 
@@ -173,140 +168,136 @@ class File extends DataClass implements Insertable<File> {
       localId: localId == null && nullToAbsent
           ? const Value.absent()
           : Value(localId),
-      Id: Id == null && nullToAbsent ? const Value.absent() : Value(Id),
-      Type: Type == null && nullToAbsent ? const Value.absent() : Value(Type),
-      Path: Path == null && nullToAbsent ? const Value.absent() : Value(Path),
-      FullPath: FullPath == null && nullToAbsent
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      type: type == null && nullToAbsent ? const Value.absent() : Value(type),
+      path: path == null && nullToAbsent ? const Value.absent() : Value(path),
+      fullPath: fullPath == null && nullToAbsent
           ? const Value.absent()
-          : Value(FullPath),
-      Name: Name == null && nullToAbsent ? const Value.absent() : Value(Name),
-      Size: Size == null && nullToAbsent ? const Value.absent() : Value(Size),
-      IsFolder: IsFolder == null && nullToAbsent
+          : Value(fullPath),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      size: size == null && nullToAbsent ? const Value.absent() : Value(size),
+      isFolder: isFolder == null && nullToAbsent
           ? const Value.absent()
-          : Value(IsFolder),
-      IsLink:
-          IsLink == null && nullToAbsent ? const Value.absent() : Value(IsLink),
-      LinkType: LinkType == null && nullToAbsent
+          : Value(isFolder),
+      isLink:
+          isLink == null && nullToAbsent ? const Value.absent() : Value(isLink),
+      linkType: linkType == null && nullToAbsent
           ? const Value.absent()
-          : Value(LinkType),
-      LinkUrl: LinkUrl == null && nullToAbsent
+          : Value(linkType),
+      linkUrl: linkUrl == null && nullToAbsent
           ? const Value.absent()
-          : Value(LinkUrl),
-      LastModified: LastModified == null && nullToAbsent
+          : Value(linkUrl),
+      lastModified: lastModified == null && nullToAbsent
           ? const Value.absent()
-          : Value(LastModified),
-      ContentType: ContentType == null && nullToAbsent
+          : Value(lastModified),
+      contentType: contentType == null && nullToAbsent
           ? const Value.absent()
-          : Value(ContentType),
-      Thumb:
-          Thumb == null && nullToAbsent ? const Value.absent() : Value(Thumb),
-      ThumbnailLink: ThumbnailLink == null && nullToAbsent
+          : Value(contentType),
+      oEmbedHtml: oEmbedHtml == null && nullToAbsent
           ? const Value.absent()
-          : Value(ThumbnailLink),
-      OembedHtml: OembedHtml == null && nullToAbsent
+          : Value(oEmbedHtml),
+      published: published == null && nullToAbsent
           ? const Value.absent()
-          : Value(OembedHtml),
-      Shared:
-          Shared == null && nullToAbsent ? const Value.absent() : Value(Shared),
-      Owner:
-          Owner == null && nullToAbsent ? const Value.absent() : Value(Owner),
-      Content: Content == null && nullToAbsent
+          : Value(published),
+      owner:
+          owner == null && nullToAbsent ? const Value.absent() : Value(owner),
+      content: content == null && nullToAbsent
           ? const Value.absent()
-          : Value(Content),
-      ViewUrl: ViewUrl == null && nullToAbsent
+          : Value(content),
+      viewUrl: viewUrl == null && nullToAbsent
           ? const Value.absent()
-          : Value(ViewUrl),
-      DownloadUrl: DownloadUrl == null && nullToAbsent
+          : Value(viewUrl),
+      downloadUrl: downloadUrl == null && nullToAbsent
           ? const Value.absent()
-          : Value(DownloadUrl),
-      ThumbnailUrl: ThumbnailUrl == null && nullToAbsent
+          : Value(downloadUrl),
+      thumbnailUrl: thumbnailUrl == null && nullToAbsent
           ? const Value.absent()
-          : Value(ThumbnailUrl),
-      Hash: Hash == null && nullToAbsent ? const Value.absent() : Value(Hash),
-      IsExternal: IsExternal == null && nullToAbsent
+          : Value(thumbnailUrl),
+      hash: hash == null && nullToAbsent ? const Value.absent() : Value(hash),
+      extendedProps: extendedProps == null && nullToAbsent
           ? const Value.absent()
-          : Value(IsExternal),
+          : Value(extendedProps),
+      isExternal: isExternal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isExternal),
     ) as T;
   }
 
   File copyWith(
           {int localId,
-          String Id,
-          String Type,
-          String Path,
-          String FullPath,
-          String Name,
-          int Size,
-          bool IsFolder,
-          bool IsLink,
-          String LinkType,
-          String LinkUrl,
-          int LastModified,
-          String ContentType,
-          bool Thumb,
-          String ThumbnailLink,
-          String OembedHtml,
-          bool Shared,
-          String Owner,
-          String Content,
-          String ViewUrl,
-          String DownloadUrl,
-          String ThumbnailUrl,
-          String Hash,
-          bool IsExternal}) =>
+          String id,
+          String type,
+          String path,
+          String fullPath,
+          String name,
+          int size,
+          bool isFolder,
+          bool isLink,
+          String linkType,
+          String linkUrl,
+          int lastModified,
+          String contentType,
+          String oEmbedHtml,
+          bool published,
+          String owner,
+          String content,
+          String viewUrl,
+          String downloadUrl,
+          String thumbnailUrl,
+          String hash,
+          String extendedProps,
+          bool isExternal}) =>
       File(
         localId: localId ?? this.localId,
-        Id: Id ?? this.Id,
-        Type: Type ?? this.Type,
-        Path: Path ?? this.Path,
-        FullPath: FullPath ?? this.FullPath,
-        Name: Name ?? this.Name,
-        Size: Size ?? this.Size,
-        IsFolder: IsFolder ?? this.IsFolder,
-        IsLink: IsLink ?? this.IsLink,
-        LinkType: LinkType ?? this.LinkType,
-        LinkUrl: LinkUrl ?? this.LinkUrl,
-        LastModified: LastModified ?? this.LastModified,
-        ContentType: ContentType ?? this.ContentType,
-        Thumb: Thumb ?? this.Thumb,
-        ThumbnailLink: ThumbnailLink ?? this.ThumbnailLink,
-        OembedHtml: OembedHtml ?? this.OembedHtml,
-        Shared: Shared ?? this.Shared,
-        Owner: Owner ?? this.Owner,
-        Content: Content ?? this.Content,
-        ViewUrl: ViewUrl ?? this.ViewUrl,
-        DownloadUrl: DownloadUrl ?? this.DownloadUrl,
-        ThumbnailUrl: ThumbnailUrl ?? this.ThumbnailUrl,
-        Hash: Hash ?? this.Hash,
-        IsExternal: IsExternal ?? this.IsExternal,
+        id: id ?? this.id,
+        type: type ?? this.type,
+        path: path ?? this.path,
+        fullPath: fullPath ?? this.fullPath,
+        name: name ?? this.name,
+        size: size ?? this.size,
+        isFolder: isFolder ?? this.isFolder,
+        isLink: isLink ?? this.isLink,
+        linkType: linkType ?? this.linkType,
+        linkUrl: linkUrl ?? this.linkUrl,
+        lastModified: lastModified ?? this.lastModified,
+        contentType: contentType ?? this.contentType,
+        oEmbedHtml: oEmbedHtml ?? this.oEmbedHtml,
+        published: published ?? this.published,
+        owner: owner ?? this.owner,
+        content: content ?? this.content,
+        viewUrl: viewUrl ?? this.viewUrl,
+        downloadUrl: downloadUrl ?? this.downloadUrl,
+        thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+        hash: hash ?? this.hash,
+        extendedProps: extendedProps ?? this.extendedProps,
+        isExternal: isExternal ?? this.isExternal,
       );
   @override
   String toString() {
     return (StringBuffer('File(')
           ..write('localId: $localId, ')
-          ..write('Id: $Id, ')
-          ..write('Type: $Type, ')
-          ..write('Path: $Path, ')
-          ..write('FullPath: $FullPath, ')
-          ..write('Name: $Name, ')
-          ..write('Size: $Size, ')
-          ..write('IsFolder: $IsFolder, ')
-          ..write('IsLink: $IsLink, ')
-          ..write('LinkType: $LinkType, ')
-          ..write('LinkUrl: $LinkUrl, ')
-          ..write('LastModified: $LastModified, ')
-          ..write('ContentType: $ContentType, ')
-          ..write('Thumb: $Thumb, ')
-          ..write('ThumbnailLink: $ThumbnailLink, ')
-          ..write('OembedHtml: $OembedHtml, ')
-          ..write('Shared: $Shared, ')
-          ..write('Owner: $Owner, ')
-          ..write('Content: $Content, ')
-          ..write('ViewUrl: $ViewUrl, ')
-          ..write('DownloadUrl: $DownloadUrl, ')
-          ..write('ThumbnailUrl: $ThumbnailUrl, ')
-          ..write('Hash: $Hash, ')
-          ..write('IsExternal: $IsExternal')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('path: $path, ')
+          ..write('fullPath: $fullPath, ')
+          ..write('name: $name, ')
+          ..write('size: $size, ')
+          ..write('isFolder: $isFolder, ')
+          ..write('isLink: $isLink, ')
+          ..write('linkType: $linkType, ')
+          ..write('linkUrl: $linkUrl, ')
+          ..write('lastModified: $lastModified, ')
+          ..write('contentType: $contentType, ')
+          ..write('oEmbedHtml: $oEmbedHtml, ')
+          ..write('published: $published, ')
+          ..write('owner: $owner, ')
+          ..write('content: $content, ')
+          ..write('viewUrl: $viewUrl, ')
+          ..write('downloadUrl: $downloadUrl, ')
+          ..write('thumbnailUrl: $thumbnailUrl, ')
+          ..write('hash: $hash, ')
+          ..write('extendedProps: $extendedProps, ')
+          ..write('isExternal: $isExternal')
           ..write(')'))
         .toString();
   }
@@ -331,106 +322,103 @@ class File extends DataClass implements Insertable<File> {
                                                                   $mrjc(
                                                                       $mrjc(
                                                                           $mrjc(
-                                                                              $mrjc($mrjc($mrjc($mrjc($mrjc(0, localId.hashCode), Id.hashCode), Type.hashCode), Path.hashCode), FullPath.hashCode),
-                                                                              Name.hashCode),
-                                                                          Size.hashCode),
-                                                                      IsFolder.hashCode),
-                                                                  IsLink.hashCode),
-                                                              LinkType.hashCode),
-                                                          LinkUrl.hashCode),
-                                                      LastModified.hashCode),
-                                                  ContentType.hashCode),
-                                              Thumb.hashCode),
-                                          ThumbnailLink.hashCode),
-                                      OembedHtml.hashCode),
-                                  Shared.hashCode),
-                              Owner.hashCode),
-                          Content.hashCode),
-                      ViewUrl.hashCode),
-                  DownloadUrl.hashCode),
-              ThumbnailUrl.hashCode),
-          Hash.hashCode),
-      IsExternal.hashCode));
+                                                                              $mrjc($mrjc($mrjc($mrjc(0, localId.hashCode), id.hashCode), type.hashCode), path.hashCode),
+                                                                              fullPath.hashCode),
+                                                                          name.hashCode),
+                                                                      size.hashCode),
+                                                                  isFolder.hashCode),
+                                                              isLink.hashCode),
+                                                          linkType.hashCode),
+                                                      linkUrl.hashCode),
+                                                  lastModified.hashCode),
+                                              contentType.hashCode),
+                                          oEmbedHtml.hashCode),
+                                      published.hashCode),
+                                  owner.hashCode),
+                              content.hashCode),
+                          viewUrl.hashCode),
+                      downloadUrl.hashCode),
+                  thumbnailUrl.hashCode),
+              hash.hashCode),
+          extendedProps.hashCode),
+      isExternal.hashCode));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
       (other is File &&
           other.localId == localId &&
-          other.Id == Id &&
-          other.Type == Type &&
-          other.Path == Path &&
-          other.FullPath == FullPath &&
-          other.Name == Name &&
-          other.Size == Size &&
-          other.IsFolder == IsFolder &&
-          other.IsLink == IsLink &&
-          other.LinkType == LinkType &&
-          other.LinkUrl == LinkUrl &&
-          other.LastModified == LastModified &&
-          other.ContentType == ContentType &&
-          other.Thumb == Thumb &&
-          other.ThumbnailLink == ThumbnailLink &&
-          other.OembedHtml == OembedHtml &&
-          other.Shared == Shared &&
-          other.Owner == Owner &&
-          other.Content == Content &&
-          other.ViewUrl == ViewUrl &&
-          other.DownloadUrl == DownloadUrl &&
-          other.ThumbnailUrl == ThumbnailUrl &&
-          other.Hash == Hash &&
-          other.IsExternal == IsExternal);
+          other.id == id &&
+          other.type == type &&
+          other.path == path &&
+          other.fullPath == fullPath &&
+          other.name == name &&
+          other.size == size &&
+          other.isFolder == isFolder &&
+          other.isLink == isLink &&
+          other.linkType == linkType &&
+          other.linkUrl == linkUrl &&
+          other.lastModified == lastModified &&
+          other.contentType == contentType &&
+          other.oEmbedHtml == oEmbedHtml &&
+          other.published == published &&
+          other.owner == owner &&
+          other.content == content &&
+          other.viewUrl == viewUrl &&
+          other.downloadUrl == downloadUrl &&
+          other.thumbnailUrl == thumbnailUrl &&
+          other.hash == hash &&
+          other.extendedProps == extendedProps &&
+          other.isExternal == isExternal);
 }
 
 class FilesCompanion extends UpdateCompanion<File> {
   final Value<int> localId;
-  final Value<String> Id;
-  final Value<String> Type;
-  final Value<String> Path;
-  final Value<String> FullPath;
-  final Value<String> Name;
-  final Value<int> Size;
-  final Value<bool> IsFolder;
-  final Value<bool> IsLink;
-  final Value<String> LinkType;
-  final Value<String> LinkUrl;
-  final Value<int> LastModified;
-  final Value<String> ContentType;
-  final Value<bool> Thumb;
-  final Value<String> ThumbnailLink;
-  final Value<String> OembedHtml;
-  final Value<bool> Shared;
-  final Value<String> Owner;
-  final Value<String> Content;
-  final Value<String> ViewUrl;
-  final Value<String> DownloadUrl;
-  final Value<String> ThumbnailUrl;
-  final Value<String> Hash;
-  final Value<bool> IsExternal;
+  final Value<String> id;
+  final Value<String> type;
+  final Value<String> path;
+  final Value<String> fullPath;
+  final Value<String> name;
+  final Value<int> size;
+  final Value<bool> isFolder;
+  final Value<bool> isLink;
+  final Value<String> linkType;
+  final Value<String> linkUrl;
+  final Value<int> lastModified;
+  final Value<String> contentType;
+  final Value<String> oEmbedHtml;
+  final Value<bool> published;
+  final Value<String> owner;
+  final Value<String> content;
+  final Value<String> viewUrl;
+  final Value<String> downloadUrl;
+  final Value<String> thumbnailUrl;
+  final Value<String> hash;
+  final Value<String> extendedProps;
+  final Value<bool> isExternal;
   const FilesCompanion({
     this.localId = const Value.absent(),
-    this.Id = const Value.absent(),
-    this.Type = const Value.absent(),
-    this.Path = const Value.absent(),
-    this.FullPath = const Value.absent(),
-    this.Name = const Value.absent(),
-    this.Size = const Value.absent(),
-    this.IsFolder = const Value.absent(),
-    this.IsLink = const Value.absent(),
-    this.LinkType = const Value.absent(),
-    this.LinkUrl = const Value.absent(),
-    this.LastModified = const Value.absent(),
-    this.ContentType = const Value.absent(),
-    this.Thumb = const Value.absent(),
-    this.ThumbnailLink = const Value.absent(),
-    this.OembedHtml = const Value.absent(),
-    this.Shared = const Value.absent(),
-    this.Owner = const Value.absent(),
-    this.Content = const Value.absent(),
-    this.ViewUrl = const Value.absent(),
-    this.DownloadUrl = const Value.absent(),
-    this.ThumbnailUrl = const Value.absent(),
-    this.Hash = const Value.absent(),
-    this.IsExternal = const Value.absent(),
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.path = const Value.absent(),
+    this.fullPath = const Value.absent(),
+    this.name = const Value.absent(),
+    this.size = const Value.absent(),
+    this.isFolder = const Value.absent(),
+    this.isLink = const Value.absent(),
+    this.linkType = const Value.absent(),
+    this.linkUrl = const Value.absent(),
+    this.lastModified = const Value.absent(),
+    this.contentType = const Value.absent(),
+    this.oEmbedHtml = const Value.absent(),
+    this.published = const Value.absent(),
+    this.owner = const Value.absent(),
+    this.content = const Value.absent(),
+    this.viewUrl = const Value.absent(),
+    this.downloadUrl = const Value.absent(),
+    this.thumbnailUrl = const Value.absent(),
+    this.hash = const Value.absent(),
+    this.extendedProps = const Value.absent(),
+    this.isExternal = const Value.absent(),
   });
 }
 
@@ -447,10 +435,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
         hasAutoIncrement: true);
   }
 
-  final VerificationMeta _IdMeta = const VerificationMeta('Id');
-  GeneratedTextColumn _Id;
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedTextColumn _id;
   @override
-  GeneratedTextColumn get Id => _Id ??= _constructId();
+  GeneratedTextColumn get id => _id ??= _constructId();
   GeneratedTextColumn _constructId() {
     return GeneratedTextColumn(
       'id',
@@ -459,10 +447,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _TypeMeta = const VerificationMeta('Type');
-  GeneratedTextColumn _Type;
+  final VerificationMeta _typeMeta = const VerificationMeta('type');
+  GeneratedTextColumn _type;
   @override
-  GeneratedTextColumn get Type => _Type ??= _constructType();
+  GeneratedTextColumn get type => _type ??= _constructType();
   GeneratedTextColumn _constructType() {
     return GeneratedTextColumn(
       'type',
@@ -471,10 +459,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _PathMeta = const VerificationMeta('Path');
-  GeneratedTextColumn _Path;
+  final VerificationMeta _pathMeta = const VerificationMeta('path');
+  GeneratedTextColumn _path;
   @override
-  GeneratedTextColumn get Path => _Path ??= _constructPath();
+  GeneratedTextColumn get path => _path ??= _constructPath();
   GeneratedTextColumn _constructPath() {
     return GeneratedTextColumn(
       'path',
@@ -483,10 +471,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _FullPathMeta = const VerificationMeta('FullPath');
-  GeneratedTextColumn _FullPath;
+  final VerificationMeta _fullPathMeta = const VerificationMeta('fullPath');
+  GeneratedTextColumn _fullPath;
   @override
-  GeneratedTextColumn get FullPath => _FullPath ??= _constructFullPath();
+  GeneratedTextColumn get fullPath => _fullPath ??= _constructFullPath();
   GeneratedTextColumn _constructFullPath() {
     return GeneratedTextColumn(
       'full_path',
@@ -495,10 +483,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _NameMeta = const VerificationMeta('Name');
-  GeneratedTextColumn _Name;
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
   @override
-  GeneratedTextColumn get Name => _Name ??= _constructName();
+  GeneratedTextColumn get name => _name ??= _constructName();
   GeneratedTextColumn _constructName() {
     return GeneratedTextColumn(
       'name',
@@ -507,10 +495,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _SizeMeta = const VerificationMeta('Size');
-  GeneratedIntColumn _Size;
+  final VerificationMeta _sizeMeta = const VerificationMeta('size');
+  GeneratedIntColumn _size;
   @override
-  GeneratedIntColumn get Size => _Size ??= _constructSize();
+  GeneratedIntColumn get size => _size ??= _constructSize();
   GeneratedIntColumn _constructSize() {
     return GeneratedIntColumn(
       'size',
@@ -519,10 +507,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _IsFolderMeta = const VerificationMeta('IsFolder');
-  GeneratedBoolColumn _IsFolder;
+  final VerificationMeta _isFolderMeta = const VerificationMeta('isFolder');
+  GeneratedBoolColumn _isFolder;
   @override
-  GeneratedBoolColumn get IsFolder => _IsFolder ??= _constructIsFolder();
+  GeneratedBoolColumn get isFolder => _isFolder ??= _constructIsFolder();
   GeneratedBoolColumn _constructIsFolder() {
     return GeneratedBoolColumn(
       'is_folder',
@@ -531,10 +519,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _IsLinkMeta = const VerificationMeta('IsLink');
-  GeneratedBoolColumn _IsLink;
+  final VerificationMeta _isLinkMeta = const VerificationMeta('isLink');
+  GeneratedBoolColumn _isLink;
   @override
-  GeneratedBoolColumn get IsLink => _IsLink ??= _constructIsLink();
+  GeneratedBoolColumn get isLink => _isLink ??= _constructIsLink();
   GeneratedBoolColumn _constructIsLink() {
     return GeneratedBoolColumn(
       'is_link',
@@ -543,10 +531,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _LinkTypeMeta = const VerificationMeta('LinkType');
-  GeneratedTextColumn _LinkType;
+  final VerificationMeta _linkTypeMeta = const VerificationMeta('linkType');
+  GeneratedTextColumn _linkType;
   @override
-  GeneratedTextColumn get LinkType => _LinkType ??= _constructLinkType();
+  GeneratedTextColumn get linkType => _linkType ??= _constructLinkType();
   GeneratedTextColumn _constructLinkType() {
     return GeneratedTextColumn(
       'link_type',
@@ -555,10 +543,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _LinkUrlMeta = const VerificationMeta('LinkUrl');
-  GeneratedTextColumn _LinkUrl;
+  final VerificationMeta _linkUrlMeta = const VerificationMeta('linkUrl');
+  GeneratedTextColumn _linkUrl;
   @override
-  GeneratedTextColumn get LinkUrl => _LinkUrl ??= _constructLinkUrl();
+  GeneratedTextColumn get linkUrl => _linkUrl ??= _constructLinkUrl();
   GeneratedTextColumn _constructLinkUrl() {
     return GeneratedTextColumn(
       'link_url',
@@ -567,12 +555,12 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _LastModifiedMeta =
-      const VerificationMeta('LastModified');
-  GeneratedIntColumn _LastModified;
+  final VerificationMeta _lastModifiedMeta =
+      const VerificationMeta('lastModified');
+  GeneratedIntColumn _lastModified;
   @override
-  GeneratedIntColumn get LastModified =>
-      _LastModified ??= _constructLastModified();
+  GeneratedIntColumn get lastModified =>
+      _lastModified ??= _constructLastModified();
   GeneratedIntColumn _constructLastModified() {
     return GeneratedIntColumn(
       'last_modified',
@@ -581,12 +569,12 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _ContentTypeMeta =
-      const VerificationMeta('ContentType');
-  GeneratedTextColumn _ContentType;
+  final VerificationMeta _contentTypeMeta =
+      const VerificationMeta('contentType');
+  GeneratedTextColumn _contentType;
   @override
-  GeneratedTextColumn get ContentType =>
-      _ContentType ??= _constructContentType();
+  GeneratedTextColumn get contentType =>
+      _contentType ??= _constructContentType();
   GeneratedTextColumn _constructContentType() {
     return GeneratedTextColumn(
       'content_type',
@@ -595,60 +583,34 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _ThumbMeta = const VerificationMeta('Thumb');
-  GeneratedBoolColumn _Thumb;
+  final VerificationMeta _oEmbedHtmlMeta = const VerificationMeta('oEmbedHtml');
+  GeneratedTextColumn _oEmbedHtml;
   @override
-  GeneratedBoolColumn get Thumb => _Thumb ??= _constructThumb();
-  GeneratedBoolColumn _constructThumb() {
-    return GeneratedBoolColumn(
-      'thumb',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _ThumbnailLinkMeta =
-      const VerificationMeta('ThumbnailLink');
-  GeneratedTextColumn _ThumbnailLink;
-  @override
-  GeneratedTextColumn get ThumbnailLink =>
-      _ThumbnailLink ??= _constructThumbnailLink();
-  GeneratedTextColumn _constructThumbnailLink() {
+  GeneratedTextColumn get oEmbedHtml => _oEmbedHtml ??= _constructOEmbedHtml();
+  GeneratedTextColumn _constructOEmbedHtml() {
     return GeneratedTextColumn(
-      'thumbnail_link',
+      'o_embed_html',
       $tableName,
       false,
     );
   }
 
-  final VerificationMeta _OembedHtmlMeta = const VerificationMeta('OembedHtml');
-  GeneratedTextColumn _OembedHtml;
+  final VerificationMeta _publishedMeta = const VerificationMeta('published');
+  GeneratedBoolColumn _published;
   @override
-  GeneratedTextColumn get OembedHtml => _OembedHtml ??= _constructOembedHtml();
-  GeneratedTextColumn _constructOembedHtml() {
-    return GeneratedTextColumn(
-      'oembed_html',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _SharedMeta = const VerificationMeta('Shared');
-  GeneratedBoolColumn _Shared;
-  @override
-  GeneratedBoolColumn get Shared => _Shared ??= _constructShared();
-  GeneratedBoolColumn _constructShared() {
+  GeneratedBoolColumn get published => _published ??= _constructPublished();
+  GeneratedBoolColumn _constructPublished() {
     return GeneratedBoolColumn(
-      'shared',
+      'published',
       $tableName,
       false,
     );
   }
 
-  final VerificationMeta _OwnerMeta = const VerificationMeta('Owner');
-  GeneratedTextColumn _Owner;
+  final VerificationMeta _ownerMeta = const VerificationMeta('owner');
+  GeneratedTextColumn _owner;
   @override
-  GeneratedTextColumn get Owner => _Owner ??= _constructOwner();
+  GeneratedTextColumn get owner => _owner ??= _constructOwner();
   GeneratedTextColumn _constructOwner() {
     return GeneratedTextColumn(
       'owner',
@@ -657,10 +619,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _ContentMeta = const VerificationMeta('Content');
-  GeneratedTextColumn _Content;
+  final VerificationMeta _contentMeta = const VerificationMeta('content');
+  GeneratedTextColumn _content;
   @override
-  GeneratedTextColumn get Content => _Content ??= _constructContent();
+  GeneratedTextColumn get content => _content ??= _constructContent();
   GeneratedTextColumn _constructContent() {
     return GeneratedTextColumn(
       'content',
@@ -669,10 +631,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _ViewUrlMeta = const VerificationMeta('ViewUrl');
-  GeneratedTextColumn _ViewUrl;
+  final VerificationMeta _viewUrlMeta = const VerificationMeta('viewUrl');
+  GeneratedTextColumn _viewUrl;
   @override
-  GeneratedTextColumn get ViewUrl => _ViewUrl ??= _constructViewUrl();
+  GeneratedTextColumn get viewUrl => _viewUrl ??= _constructViewUrl();
   GeneratedTextColumn _constructViewUrl() {
     return GeneratedTextColumn(
       'view_url',
@@ -681,12 +643,12 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _DownloadUrlMeta =
-      const VerificationMeta('DownloadUrl');
-  GeneratedTextColumn _DownloadUrl;
+  final VerificationMeta _downloadUrlMeta =
+      const VerificationMeta('downloadUrl');
+  GeneratedTextColumn _downloadUrl;
   @override
-  GeneratedTextColumn get DownloadUrl =>
-      _DownloadUrl ??= _constructDownloadUrl();
+  GeneratedTextColumn get downloadUrl =>
+      _downloadUrl ??= _constructDownloadUrl();
   GeneratedTextColumn _constructDownloadUrl() {
     return GeneratedTextColumn(
       'download_url',
@@ -695,12 +657,12 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _ThumbnailUrlMeta =
-      const VerificationMeta('ThumbnailUrl');
-  GeneratedTextColumn _ThumbnailUrl;
+  final VerificationMeta _thumbnailUrlMeta =
+      const VerificationMeta('thumbnailUrl');
+  GeneratedTextColumn _thumbnailUrl;
   @override
-  GeneratedTextColumn get ThumbnailUrl =>
-      _ThumbnailUrl ??= _constructThumbnailUrl();
+  GeneratedTextColumn get thumbnailUrl =>
+      _thumbnailUrl ??= _constructThumbnailUrl();
   GeneratedTextColumn _constructThumbnailUrl() {
     return GeneratedTextColumn(
       'thumbnail_url',
@@ -709,10 +671,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _HashMeta = const VerificationMeta('Hash');
-  GeneratedTextColumn _Hash;
+  final VerificationMeta _hashMeta = const VerificationMeta('hash');
+  GeneratedTextColumn _hash;
   @override
-  GeneratedTextColumn get Hash => _Hash ??= _constructHash();
+  GeneratedTextColumn get hash => _hash ??= _constructHash();
   GeneratedTextColumn _constructHash() {
     return GeneratedTextColumn(
       'hash',
@@ -721,10 +683,24 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
-  final VerificationMeta _IsExternalMeta = const VerificationMeta('IsExternal');
-  GeneratedBoolColumn _IsExternal;
+  final VerificationMeta _extendedPropsMeta =
+      const VerificationMeta('extendedProps');
+  GeneratedTextColumn _extendedProps;
   @override
-  GeneratedBoolColumn get IsExternal => _IsExternal ??= _constructIsExternal();
+  GeneratedTextColumn get extendedProps =>
+      _extendedProps ??= _constructExtendedProps();
+  GeneratedTextColumn _constructExtendedProps() {
+    return GeneratedTextColumn(
+      'extended_props',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _isExternalMeta = const VerificationMeta('isExternal');
+  GeneratedBoolColumn _isExternal;
+  @override
+  GeneratedBoolColumn get isExternal => _isExternal ??= _constructIsExternal();
   GeneratedBoolColumn _constructIsExternal() {
     return GeneratedBoolColumn(
       'is_external',
@@ -736,29 +712,28 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
   @override
   List<GeneratedColumn> get $columns => [
         localId,
-        Id,
-        Type,
-        Path,
-        FullPath,
-        Name,
-        Size,
-        IsFolder,
-        IsLink,
-        LinkType,
-        LinkUrl,
-        LastModified,
-        ContentType,
-        Thumb,
-        ThumbnailLink,
-        OembedHtml,
-        Shared,
-        Owner,
-        Content,
-        ViewUrl,
-        DownloadUrl,
-        ThumbnailUrl,
-        Hash,
-        IsExternal
+        id,
+        type,
+        path,
+        fullPath,
+        name,
+        size,
+        isFolder,
+        isLink,
+        linkType,
+        linkUrl,
+        lastModified,
+        contentType,
+        oEmbedHtml,
+        published,
+        owner,
+        content,
+        viewUrl,
+        downloadUrl,
+        thumbnailUrl,
+        hash,
+        extendedProps,
+        isExternal
       ];
   @override
   $FilesTable get asDslTable => this;
@@ -776,148 +751,142 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     } else if (localId.isRequired && isInserting) {
       context.missing(_localIdMeta);
     }
-    if (d.Id.present) {
-      context.handle(_IdMeta, Id.isAcceptableValue(d.Id.value, _IdMeta));
-    } else if (Id.isRequired && isInserting) {
-      context.missing(_IdMeta);
+    if (d.id.present) {
+      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
+    } else if (id.isRequired && isInserting) {
+      context.missing(_idMeta);
     }
-    if (d.Type.present) {
+    if (d.type.present) {
       context.handle(
-          _TypeMeta, Type.isAcceptableValue(d.Type.value, _TypeMeta));
-    } else if (Type.isRequired && isInserting) {
-      context.missing(_TypeMeta);
+          _typeMeta, type.isAcceptableValue(d.type.value, _typeMeta));
+    } else if (type.isRequired && isInserting) {
+      context.missing(_typeMeta);
     }
-    if (d.Path.present) {
+    if (d.path.present) {
       context.handle(
-          _PathMeta, Path.isAcceptableValue(d.Path.value, _PathMeta));
-    } else if (Path.isRequired && isInserting) {
-      context.missing(_PathMeta);
+          _pathMeta, path.isAcceptableValue(d.path.value, _pathMeta));
+    } else if (path.isRequired && isInserting) {
+      context.missing(_pathMeta);
     }
-    if (d.FullPath.present) {
-      context.handle(_FullPathMeta,
-          FullPath.isAcceptableValue(d.FullPath.value, _FullPathMeta));
-    } else if (FullPath.isRequired && isInserting) {
-      context.missing(_FullPathMeta);
+    if (d.fullPath.present) {
+      context.handle(_fullPathMeta,
+          fullPath.isAcceptableValue(d.fullPath.value, _fullPathMeta));
+    } else if (fullPath.isRequired && isInserting) {
+      context.missing(_fullPathMeta);
     }
-    if (d.Name.present) {
+    if (d.name.present) {
       context.handle(
-          _NameMeta, Name.isAcceptableValue(d.Name.value, _NameMeta));
-    } else if (Name.isRequired && isInserting) {
-      context.missing(_NameMeta);
+          _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
+    } else if (name.isRequired && isInserting) {
+      context.missing(_nameMeta);
     }
-    if (d.Size.present) {
+    if (d.size.present) {
       context.handle(
-          _SizeMeta, Size.isAcceptableValue(d.Size.value, _SizeMeta));
-    } else if (Size.isRequired && isInserting) {
-      context.missing(_SizeMeta);
+          _sizeMeta, size.isAcceptableValue(d.size.value, _sizeMeta));
+    } else if (size.isRequired && isInserting) {
+      context.missing(_sizeMeta);
     }
-    if (d.IsFolder.present) {
-      context.handle(_IsFolderMeta,
-          IsFolder.isAcceptableValue(d.IsFolder.value, _IsFolderMeta));
-    } else if (IsFolder.isRequired && isInserting) {
-      context.missing(_IsFolderMeta);
+    if (d.isFolder.present) {
+      context.handle(_isFolderMeta,
+          isFolder.isAcceptableValue(d.isFolder.value, _isFolderMeta));
+    } else if (isFolder.isRequired && isInserting) {
+      context.missing(_isFolderMeta);
     }
-    if (d.IsLink.present) {
+    if (d.isLink.present) {
       context.handle(
-          _IsLinkMeta, IsLink.isAcceptableValue(d.IsLink.value, _IsLinkMeta));
-    } else if (IsLink.isRequired && isInserting) {
-      context.missing(_IsLinkMeta);
+          _isLinkMeta, isLink.isAcceptableValue(d.isLink.value, _isLinkMeta));
+    } else if (isLink.isRequired && isInserting) {
+      context.missing(_isLinkMeta);
     }
-    if (d.LinkType.present) {
-      context.handle(_LinkTypeMeta,
-          LinkType.isAcceptableValue(d.LinkType.value, _LinkTypeMeta));
-    } else if (LinkType.isRequired && isInserting) {
-      context.missing(_LinkTypeMeta);
+    if (d.linkType.present) {
+      context.handle(_linkTypeMeta,
+          linkType.isAcceptableValue(d.linkType.value, _linkTypeMeta));
+    } else if (linkType.isRequired && isInserting) {
+      context.missing(_linkTypeMeta);
     }
-    if (d.LinkUrl.present) {
-      context.handle(_LinkUrlMeta,
-          LinkUrl.isAcceptableValue(d.LinkUrl.value, _LinkUrlMeta));
-    } else if (LinkUrl.isRequired && isInserting) {
-      context.missing(_LinkUrlMeta);
+    if (d.linkUrl.present) {
+      context.handle(_linkUrlMeta,
+          linkUrl.isAcceptableValue(d.linkUrl.value, _linkUrlMeta));
+    } else if (linkUrl.isRequired && isInserting) {
+      context.missing(_linkUrlMeta);
     }
-    if (d.LastModified.present) {
+    if (d.lastModified.present) {
       context.handle(
-          _LastModifiedMeta,
-          LastModified.isAcceptableValue(
-              d.LastModified.value, _LastModifiedMeta));
-    } else if (LastModified.isRequired && isInserting) {
-      context.missing(_LastModifiedMeta);
+          _lastModifiedMeta,
+          lastModified.isAcceptableValue(
+              d.lastModified.value, _lastModifiedMeta));
+    } else if (lastModified.isRequired && isInserting) {
+      context.missing(_lastModifiedMeta);
     }
-    if (d.ContentType.present) {
-      context.handle(_ContentTypeMeta,
-          ContentType.isAcceptableValue(d.ContentType.value, _ContentTypeMeta));
-    } else if (ContentType.isRequired && isInserting) {
-      context.missing(_ContentTypeMeta);
+    if (d.contentType.present) {
+      context.handle(_contentTypeMeta,
+          contentType.isAcceptableValue(d.contentType.value, _contentTypeMeta));
+    } else if (contentType.isRequired && isInserting) {
+      context.missing(_contentTypeMeta);
     }
-    if (d.Thumb.present) {
+    if (d.oEmbedHtml.present) {
+      context.handle(_oEmbedHtmlMeta,
+          oEmbedHtml.isAcceptableValue(d.oEmbedHtml.value, _oEmbedHtmlMeta));
+    } else if (oEmbedHtml.isRequired && isInserting) {
+      context.missing(_oEmbedHtmlMeta);
+    }
+    if (d.published.present) {
+      context.handle(_publishedMeta,
+          published.isAcceptableValue(d.published.value, _publishedMeta));
+    } else if (published.isRequired && isInserting) {
+      context.missing(_publishedMeta);
+    }
+    if (d.owner.present) {
       context.handle(
-          _ThumbMeta, Thumb.isAcceptableValue(d.Thumb.value, _ThumbMeta));
-    } else if (Thumb.isRequired && isInserting) {
-      context.missing(_ThumbMeta);
+          _ownerMeta, owner.isAcceptableValue(d.owner.value, _ownerMeta));
+    } else if (owner.isRequired && isInserting) {
+      context.missing(_ownerMeta);
     }
-    if (d.ThumbnailLink.present) {
+    if (d.content.present) {
+      context.handle(_contentMeta,
+          content.isAcceptableValue(d.content.value, _contentMeta));
+    } else if (content.isRequired && isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (d.viewUrl.present) {
+      context.handle(_viewUrlMeta,
+          viewUrl.isAcceptableValue(d.viewUrl.value, _viewUrlMeta));
+    } else if (viewUrl.isRequired && isInserting) {
+      context.missing(_viewUrlMeta);
+    }
+    if (d.downloadUrl.present) {
+      context.handle(_downloadUrlMeta,
+          downloadUrl.isAcceptableValue(d.downloadUrl.value, _downloadUrlMeta));
+    } else if (downloadUrl.isRequired && isInserting) {
+      context.missing(_downloadUrlMeta);
+    }
+    if (d.thumbnailUrl.present) {
       context.handle(
-          _ThumbnailLinkMeta,
-          ThumbnailLink.isAcceptableValue(
-              d.ThumbnailLink.value, _ThumbnailLinkMeta));
-    } else if (ThumbnailLink.isRequired && isInserting) {
-      context.missing(_ThumbnailLinkMeta);
+          _thumbnailUrlMeta,
+          thumbnailUrl.isAcceptableValue(
+              d.thumbnailUrl.value, _thumbnailUrlMeta));
+    } else if (thumbnailUrl.isRequired && isInserting) {
+      context.missing(_thumbnailUrlMeta);
     }
-    if (d.OembedHtml.present) {
-      context.handle(_OembedHtmlMeta,
-          OembedHtml.isAcceptableValue(d.OembedHtml.value, _OembedHtmlMeta));
-    } else if (OembedHtml.isRequired && isInserting) {
-      context.missing(_OembedHtmlMeta);
-    }
-    if (d.Shared.present) {
+    if (d.hash.present) {
       context.handle(
-          _SharedMeta, Shared.isAcceptableValue(d.Shared.value, _SharedMeta));
-    } else if (Shared.isRequired && isInserting) {
-      context.missing(_SharedMeta);
+          _hashMeta, hash.isAcceptableValue(d.hash.value, _hashMeta));
+    } else if (hash.isRequired && isInserting) {
+      context.missing(_hashMeta);
     }
-    if (d.Owner.present) {
+    if (d.extendedProps.present) {
       context.handle(
-          _OwnerMeta, Owner.isAcceptableValue(d.Owner.value, _OwnerMeta));
-    } else if (Owner.isRequired && isInserting) {
-      context.missing(_OwnerMeta);
+          _extendedPropsMeta,
+          extendedProps.isAcceptableValue(
+              d.extendedProps.value, _extendedPropsMeta));
+    } else if (extendedProps.isRequired && isInserting) {
+      context.missing(_extendedPropsMeta);
     }
-    if (d.Content.present) {
-      context.handle(_ContentMeta,
-          Content.isAcceptableValue(d.Content.value, _ContentMeta));
-    } else if (Content.isRequired && isInserting) {
-      context.missing(_ContentMeta);
-    }
-    if (d.ViewUrl.present) {
-      context.handle(_ViewUrlMeta,
-          ViewUrl.isAcceptableValue(d.ViewUrl.value, _ViewUrlMeta));
-    } else if (ViewUrl.isRequired && isInserting) {
-      context.missing(_ViewUrlMeta);
-    }
-    if (d.DownloadUrl.present) {
-      context.handle(_DownloadUrlMeta,
-          DownloadUrl.isAcceptableValue(d.DownloadUrl.value, _DownloadUrlMeta));
-    } else if (DownloadUrl.isRequired && isInserting) {
-      context.missing(_DownloadUrlMeta);
-    }
-    if (d.ThumbnailUrl.present) {
-      context.handle(
-          _ThumbnailUrlMeta,
-          ThumbnailUrl.isAcceptableValue(
-              d.ThumbnailUrl.value, _ThumbnailUrlMeta));
-    } else if (ThumbnailUrl.isRequired && isInserting) {
-      context.missing(_ThumbnailUrlMeta);
-    }
-    if (d.Hash.present) {
-      context.handle(
-          _HashMeta, Hash.isAcceptableValue(d.Hash.value, _HashMeta));
-    } else if (Hash.isRequired && isInserting) {
-      context.missing(_HashMeta);
-    }
-    if (d.IsExternal.present) {
-      context.handle(_IsExternalMeta,
-          IsExternal.isAcceptableValue(d.IsExternal.value, _IsExternalMeta));
-    } else if (IsExternal.isRequired && isInserting) {
-      context.missing(_IsExternalMeta);
+    if (d.isExternal.present) {
+      context.handle(_isExternalMeta,
+          isExternal.isAcceptableValue(d.isExternal.value, _isExternalMeta));
+    } else if (isExternal.isRequired && isInserting) {
+      context.missing(_isExternalMeta);
     }
     return context;
   }
@@ -936,75 +905,72 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     if (d.localId.present) {
       map['local_id'] = Variable<int, IntType>(d.localId.value);
     }
-    if (d.Id.present) {
-      map['id'] = Variable<String, StringType>(d.Id.value);
+    if (d.id.present) {
+      map['id'] = Variable<String, StringType>(d.id.value);
     }
-    if (d.Type.present) {
-      map['type'] = Variable<String, StringType>(d.Type.value);
+    if (d.type.present) {
+      map['type'] = Variable<String, StringType>(d.type.value);
     }
-    if (d.Path.present) {
-      map['path'] = Variable<String, StringType>(d.Path.value);
+    if (d.path.present) {
+      map['path'] = Variable<String, StringType>(d.path.value);
     }
-    if (d.FullPath.present) {
-      map['full_path'] = Variable<String, StringType>(d.FullPath.value);
+    if (d.fullPath.present) {
+      map['full_path'] = Variable<String, StringType>(d.fullPath.value);
     }
-    if (d.Name.present) {
-      map['name'] = Variable<String, StringType>(d.Name.value);
+    if (d.name.present) {
+      map['name'] = Variable<String, StringType>(d.name.value);
     }
-    if (d.Size.present) {
-      map['size'] = Variable<int, IntType>(d.Size.value);
+    if (d.size.present) {
+      map['size'] = Variable<int, IntType>(d.size.value);
     }
-    if (d.IsFolder.present) {
-      map['is_folder'] = Variable<bool, BoolType>(d.IsFolder.value);
+    if (d.isFolder.present) {
+      map['is_folder'] = Variable<bool, BoolType>(d.isFolder.value);
     }
-    if (d.IsLink.present) {
-      map['is_link'] = Variable<bool, BoolType>(d.IsLink.value);
+    if (d.isLink.present) {
+      map['is_link'] = Variable<bool, BoolType>(d.isLink.value);
     }
-    if (d.LinkType.present) {
-      map['link_type'] = Variable<String, StringType>(d.LinkType.value);
+    if (d.linkType.present) {
+      map['link_type'] = Variable<String, StringType>(d.linkType.value);
     }
-    if (d.LinkUrl.present) {
-      map['link_url'] = Variable<String, StringType>(d.LinkUrl.value);
+    if (d.linkUrl.present) {
+      map['link_url'] = Variable<String, StringType>(d.linkUrl.value);
     }
-    if (d.LastModified.present) {
-      map['last_modified'] = Variable<int, IntType>(d.LastModified.value);
+    if (d.lastModified.present) {
+      map['last_modified'] = Variable<int, IntType>(d.lastModified.value);
     }
-    if (d.ContentType.present) {
-      map['content_type'] = Variable<String, StringType>(d.ContentType.value);
+    if (d.contentType.present) {
+      map['content_type'] = Variable<String, StringType>(d.contentType.value);
     }
-    if (d.Thumb.present) {
-      map['thumb'] = Variable<bool, BoolType>(d.Thumb.value);
+    if (d.oEmbedHtml.present) {
+      map['o_embed_html'] = Variable<String, StringType>(d.oEmbedHtml.value);
     }
-    if (d.ThumbnailLink.present) {
-      map['thumbnail_link'] =
-          Variable<String, StringType>(d.ThumbnailLink.value);
+    if (d.published.present) {
+      map['published'] = Variable<bool, BoolType>(d.published.value);
     }
-    if (d.OembedHtml.present) {
-      map['oembed_html'] = Variable<String, StringType>(d.OembedHtml.value);
+    if (d.owner.present) {
+      map['owner'] = Variable<String, StringType>(d.owner.value);
     }
-    if (d.Shared.present) {
-      map['shared'] = Variable<bool, BoolType>(d.Shared.value);
+    if (d.content.present) {
+      map['content'] = Variable<String, StringType>(d.content.value);
     }
-    if (d.Owner.present) {
-      map['owner'] = Variable<String, StringType>(d.Owner.value);
+    if (d.viewUrl.present) {
+      map['view_url'] = Variable<String, StringType>(d.viewUrl.value);
     }
-    if (d.Content.present) {
-      map['content'] = Variable<String, StringType>(d.Content.value);
+    if (d.downloadUrl.present) {
+      map['download_url'] = Variable<String, StringType>(d.downloadUrl.value);
     }
-    if (d.ViewUrl.present) {
-      map['view_url'] = Variable<String, StringType>(d.ViewUrl.value);
+    if (d.thumbnailUrl.present) {
+      map['thumbnail_url'] = Variable<String, StringType>(d.thumbnailUrl.value);
     }
-    if (d.DownloadUrl.present) {
-      map['download_url'] = Variable<String, StringType>(d.DownloadUrl.value);
+    if (d.hash.present) {
+      map['hash'] = Variable<String, StringType>(d.hash.value);
     }
-    if (d.ThumbnailUrl.present) {
-      map['thumbnail_url'] = Variable<String, StringType>(d.ThumbnailUrl.value);
+    if (d.extendedProps.present) {
+      map['extended_props'] =
+          Variable<String, StringType>(d.extendedProps.value);
     }
-    if (d.Hash.present) {
-      map['hash'] = Variable<String, StringType>(d.Hash.value);
-    }
-    if (d.IsExternal.present) {
-      map['is_external'] = Variable<bool, BoolType>(d.IsExternal.value);
+    if (d.isExternal.present) {
+      map['is_external'] = Variable<bool, BoolType>(d.isExternal.value);
     }
     return map;
   }

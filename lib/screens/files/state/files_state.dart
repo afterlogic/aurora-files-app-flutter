@@ -1,3 +1,4 @@
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/files_type.dart';
 import 'package:aurorafiles/screens/files/repository/files_api.dart';
@@ -16,8 +17,7 @@ abstract class _FilesState with Store {
 
   final filesTileLeadingSize = 48.0;
 
-  @observable
-  List<dynamic> currentFiles;
+  List<File> currentFiles;
 
   @observable
   Set<String> selectedFilesIds = new Set();
@@ -42,13 +42,18 @@ abstract class _FilesState with Store {
     selectedFilesIds = selectedIds;
   }
 
-  Future<void> onGetFiles(
-      {@required String path, Function(String) onError}) async {
+  Future<void> onGetFiles({
+    @required String path,
+    bool showLoading = false,
+    Function(String) onError,
+  }) async {
     currentPath = path;
     try {
-      isFilesLoading = true;
-      currentFiles = await _filesApi.getFiles(currentFilesType, currentPath, "");
+      if (showLoading) isFilesLoading = true;
+      currentFiles =
+          await _filesApi.getFiles(currentFilesType, currentPath, "");
     } catch (err) {
+      print("VO: : ${err}");
       onError(err.toString());
     } finally {
       isFilesLoading = false;
@@ -68,8 +73,8 @@ abstract class _FilesState with Store {
     Function(String) onError,
   }) async {
     try {
-      final String newFolderNameFromServer =
-          await _filesApi.createFolder(currentFilesType, currentPath, folderName);
+      final String newFolderNameFromServer = await _filesApi.createFolder(
+          currentFilesType, currentPath, folderName);
       onSuccess(newFolderNameFromServer);
     } catch (err) {
       onError(err.toString());
@@ -81,9 +86,9 @@ abstract class _FilesState with Store {
 
     // find selected files by their id
     currentFiles.forEach((file) {
-      if (selectedFilesIds.contains(file["Id"])) {
+      if (selectedFilesIds.contains(file.id)) {
         final fileToDelete = FileToDelete(
-            path: file["Path"], name: file["Name"], isFolder: file["IsFolder"]);
+            path: file.path, name: file.name, isFolder: file.isFolder);
         filesToDelete.add(fileToDelete.toMap());
       }
     });
@@ -121,8 +126,7 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     try {
-      await _filesApi.deletePublicLink(
-          currentFilesType, currentPath, name);
+      await _filesApi.deletePublicLink(currentFilesType, currentPath, name);
       onSuccess();
     } catch (err) {
       onError(err.toString());
@@ -130,24 +134,20 @@ abstract class _FilesState with Store {
   }
 
   Future onRename({
-    @required String type,
-    @required String path,
-    @required String name,
+    @required File file,
     @required String newName,
-    @required bool isLink,
-    @required bool isFolder,
     @required Function onSuccess,
     @required Function onError,
   }) async {
     try {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
       final newNameFromServer = await _filesApi.renameFile(
-        type: type,
-        path: path,
-        name: name,
+        type: file.type,
+        path: file.path,
+        name: file.name,
         newName: newName,
-        isLink: isLink,
-        isFolder: isFolder,
+        isLink: file.isLink,
+        isFolder: file.isFolder,
       );
       onSuccess(newNameFromServer);
     } catch (err) {

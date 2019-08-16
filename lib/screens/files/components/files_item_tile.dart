@@ -1,3 +1,4 @@
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +6,7 @@ import 'package:provider/provider.dart';
 // wrapper for file items
 class SelectableFilesItemTile extends StatelessWidget {
   final ListTile child;
-  final file;
+  final File file;
   final bool isSelected;
   final Function onTap;
 
@@ -44,11 +45,11 @@ class SelectableFilesItemTile extends StatelessWidget {
 
     return InkWell(
       onTap: filesState.selectedFilesIds.length > 0
-          ? () => filesState.onSelectFile(file["Id"])
+          ? () => filesState.onSelectFile(file.id)
           : onTap,
       onLongPress: file == null || filesState.selectedFilesIds.length > 0
           ? null
-          : () => filesState.onSelectFile(file["Id"]),
+          : () => filesState.onSelectFile(file.id),
       child: Stack(
         children: <Widget>[
           Column(

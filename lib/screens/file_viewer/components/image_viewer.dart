@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -10,25 +11,25 @@ class ImageViewer extends StatelessWidget {
     @required this.file,
   }) : super(key: key);
 
-  final file;
+  final File file;
 
   @override
   Widget build(BuildContext context) {
     final img = CachedNetworkImage(
-      imageUrl: '${SingletonStore.instance.hostName}/${file["Actions"]["view"]["url"]}',
+      imageUrl: '${SingletonStore.instance.hostName}/${file.viewUrl}',
       fit: BoxFit.cover,
+      fadeInDuration: Duration(milliseconds: 100),
       httpHeaders: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
     );
     final placeholder = CachedNetworkImage(
-      imageUrl: '${SingletonStore.instance.hostName}/${file["ThumbnailUrl"]}',
+      imageUrl: '${SingletonStore.instance.hostName}/${file.thumbnailUrl}',
       fit: BoxFit.cover,
       httpHeaders: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
     );
 
-    if (file["Actions"]["view"] != null &&
-        file["Actions"]["view"]["url"] != null) {
+    if (file.viewUrl != null) {
       return Hero(
-          tag: file["ThumbnailUrl"],
+          tag: file.thumbnailUrl,
           child: SizedBox(
             width: double.infinity,
             child: Stack(

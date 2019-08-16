@@ -63,7 +63,7 @@ packages:
       name: build_runner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.5"
+    version: "1.6.6"
   build_runner_core:
     dependency: transitive
     description:
@@ -339,14 +339,14 @@ packages:
       name: mobx
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.5"
+    version: "0.3.5+1"
   mobx_codegen:
     dependency: "direct dev"
     description:
       name: mobx_codegen
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.3+1"
+    version: "0.3.4"
   moor:
     dependency: transitive
     description:

@@ -1,17 +1,16 @@
-import 'package:aurorafiles/screens/file_viewer/state/file_viewer_state.dart';
-import 'package:aurorafiles/screens/files/dialogs/rename_dialog_android.dart';
+import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 import 'components/image_viewer.dart';
 import 'components/info_list_tile.dart';
 
-class FileViewerAndroid extends StatelessWidget {
-  final file;
+class FileViewerAndroid extends StatefulWidget {
+  final File file;
 
   // this is to update files on the files screen after file renaming
   final FilesState filesState;
@@ -22,7 +21,20 @@ class FileViewerAndroid extends StatelessWidget {
     @required this.filesState,
   }) : super(key: key);
 
+  @override
+  _FileViewerAndroidState createState() => _FileViewerAndroidState();
+}
+
+class _FileViewerAndroidState extends State<FileViewerAndroid> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  File file;
+
+  @override
+  void initState() {
+    super.initState();
+    file = widget.file;
+  }
 
   void _showErrSnack(BuildContext context, String msg) {
     final snack = SnackBar(
@@ -45,20 +57,9 @@ class FileViewerAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FileViewerState fileViewerState = FileViewerState();
-    fileViewerState.fileName = file["Name"];
-
-    return MultiProvider(
-      providers: [
-        Provider(
-          builder: (_) => fileViewerState,
-          dispose: (_, val) => val.dispose(),
-        ),
-        Provider(
-          builder: (_) => filesState,
-          dispose: (_, val) => val.dispose(),
-        ),
-      ],
+    return Provider(
+      builder: (_) => widget.filesState,
+      dispose: (_, val) => val.dispose(),
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -68,18 +69,17 @@ class FileViewerAndroid extends StatelessWidget {
               tooltip: "Move/Copy",
               onPressed: () {},
             ),
-            if (file["Actions"]["download"] != null &&
-                file["Actions"]["download"]["url"] != null)
+            if (widget.file.downloadUrl != null)
               IconButton(
                 icon: Icon(Icons.file_download),
                 tooltip: "Download",
-                onPressed: () => filesState.onDownloadFile(
-                  url: file["Actions"]["download"]["url"],
-                  fileName: file["Name"],
-                  onStart: () =>
-                      _showInfoSnack(context, "Downloading ${file["Name"]}"),
+                onPressed: () => widget.filesState.onDownloadFile(
+                  url: widget.file.downloadUrl,
+                  fileName: widget.file.name,
+                  onStart: () => _showInfoSnack(
+                      context, "Downloading ${widget.file.name}"),
                   onSuccess: () => _showInfoSnack(
-                      context, "${file["Name"]} downloaded successfully"),
+                      context, "${widget.file.name} downloaded successfully"),
                   onError: (err) => _showErrSnack(context, err.toString()),
                 ),
               ),
@@ -96,13 +96,18 @@ class FileViewerAndroid extends StatelessWidget {
                   context: context,
                   barrierDismissible: false,
                   builder: (_) => RenameDialog(
-                    file: file,
-                    filesState: filesState,
+                    file: widget.file,
+                    filesState: widget.filesState,
                   ),
                 );
                 if (result is String) {
-                  file["Name"] = result;
-                  fileViewerState.fileName = result;
+                  widget.filesState.currentFiles.forEach((updatedFile) {
+                    if (updatedFile.id == result) {
+                      setState(() => file = updatedFile);
+                    }
+                  });
+                } else {
+                  Navigator.pop(context);
                 }
               },
             ),
@@ -116,20 +121,18 @@ class FileViewerAndroid extends StatelessWidget {
         body: ListView(
           padding: const EdgeInsets.all(16.0),
           children: <Widget>[
-            if (file["ContentType"].startsWith("image"))
-              ImageViewer(file: file),
+            if (widget.file.contentType.startsWith("image"))
+              ImageViewer(file: widget.file),
             SizedBox(height: 30.0),
-            Observer(
-                builder: (_) => InfoListTile(
-                    label: "Filename", content: fileViewerState.fileName)),
-            InfoListTile(label: "Size", content: filesize(file["Size"])),
+            InfoListTile(label: "Filename", content: file.name),
+            InfoListTile(label: "Size", content: filesize(widget.file.size)),
             InfoListTile(
               label: "Created",
               content: DateFormatting.formatDateFromSeconds(
-                timestamp: file["LastModified"],
+                timestamp: widget.file.lastModified,
               ),
             ),
-            InfoListTile(label: "Owner", content: file["Owner"]),
+            InfoListTile(label: "Owner", content: widget.file.owner),
             InfoListTile(label: "Public link", content: "WIP"),
           ],
         ),

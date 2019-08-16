@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -13,12 +14,12 @@ class FilesApi {
   final String authToken = SingletonStore.instance.authToken;
   final int userId = SingletonStore.instance.userId;
 
-  List _sortFiles(List unsortedFiles) {
-    final List folders = List();
-    final List files = List();
+  List<File> _sortFiles(List<File> unsortedFiles) {
+    final List<File> folders = List();
+    final List<File> files = List();
 
     unsortedFiles.forEach((item) {
-      if (item["IsFolder"])
+      if (item.isFolder)
         folders.add(item);
       else
         files.add(item);
@@ -27,7 +28,7 @@ class FilesApi {
     return [...folders, ...files].toList();
   }
 
-  Future<List> getFiles(String type, String path, String pattern) async {
+  Future<List<File>> getFiles(String type, String path, String pattern) async {
     final parameters =
         json.encode({"Type": type, "Path": path, "Pattern": pattern});
 
@@ -41,7 +42,10 @@ class FilesApi {
     final resBody = json.decode(res.body);
 
     if (resBody['Result'] != null && resBody['Result']['Items'] is List) {
-      return _sortFiles(resBody['Result']['Items']);
+      final List<File> unsortedList = [];
+      resBody['Result']['Items']
+          .forEach((file) => unsortedList.add(getFileObjFromResponse(file)));
+      return _sortFiles(unsortedList);
     } else {
       throw CustomException(getErrMsg(resBody));
     }
@@ -65,11 +69,11 @@ class FilesApi {
     });
 
     final body =
-    new ApiBody(module: "Files", method: "Rename", parameters: parameters)
-        .toMap();
+        new ApiBody(module: "Files", method: "Rename", parameters: parameters)
+            .toMap();
 
     final res =
-    await http.post(apiUrl, headers: getHeader(authToken), body: body);
+        await http.post(apiUrl, headers: getHeader(authToken), body: body);
 
     final resBody = json.decode(res.body);
 

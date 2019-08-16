@@ -3,49 +3,47 @@ import 'package:moor_flutter/moor_flutter.dart';
 class Files extends Table {
   IntColumn get localId => integer().autoIncrement()();
 
-  TextColumn get Id => text()();
+  TextColumn get id => text()();
 
-  TextColumn get Type => text()();
+  TextColumn get type => text()();
 
-  TextColumn get Path => text()();
+  TextColumn get path => text()();
 
-  TextColumn get FullPath => text()();
+  TextColumn get fullPath => text()();
 
-  TextColumn get Name => text()();
+  TextColumn get name => text()();
 
-  IntColumn get Size => integer()();
+  IntColumn get size => integer()();
 
-  BoolColumn get IsFolder => boolean()();
+  BoolColumn get isFolder => boolean()();
 
-  BoolColumn get IsLink => boolean()();
+  BoolColumn get isLink => boolean()();
 
-  TextColumn get LinkType => text()();
+  TextColumn get linkType => text()();
 
-  TextColumn get LinkUrl => text()();
+  TextColumn get linkUrl => text()();
 
-  IntColumn get LastModified => integer()();
+  IntColumn get lastModified => integer()();
 
-  TextColumn get ContentType => text()();
+  TextColumn get contentType => text()();
 
-  BoolColumn get Thumb => boolean()();
+  TextColumn get oEmbedHtml => text()();
 
-  TextColumn get ThumbnailLink => text()();
+  BoolColumn get published => boolean()();
 
-  TextColumn get OembedHtml => text()();
+  TextColumn get owner => text()();
 
-  BoolColumn get Shared => boolean()();
+  TextColumn get content => text()();
 
-  TextColumn get Owner => text()();
+  TextColumn get viewUrl => text()();
 
-  TextColumn get Content => text()();
+  TextColumn get downloadUrl => text()();
 
-  TextColumn get ViewUrl => text()();
+  TextColumn get thumbnailUrl => text()();
 
-  TextColumn get DownloadUrl => text()();
+  TextColumn get hash => text()();
 
-  TextColumn get ThumbnailUrl => text()();
+  TextColumn get extendedProps => text()();
 
-  TextColumn get Hash => text()();
-
-  BoolColumn get IsExternal => boolean()();
+  BoolColumn get isExternal => boolean()();
 }

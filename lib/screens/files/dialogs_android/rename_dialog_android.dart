@@ -1,9 +1,10 @@
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
 
 class RenameDialog extends StatefulWidget {
-  final file;
+  final File file;
   final FilesState filesState;
 
   const RenameDialog({
@@ -28,7 +29,7 @@ class _RenameDialogState extends State<RenameDialog> {
 
   @override
   void initState() {
-    final List<String> splitFileName = widget.file["Name"].split('.');
+    final List<String> splitFileName = widget.file.name.split('.');
     fileExtension = splitFileName[splitFileName.length - 1];
 
     _fileNameCtrl.text =
@@ -45,7 +46,7 @@ class _RenameDialogState extends State<RenameDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Rename ${widget.file["Name"]}"),
+      title: Text("Rename ${widget.file.name}"),
       content: isRenaming
           ? Row(
               children: <Widget>[
@@ -85,19 +86,16 @@ class _RenameDialogState extends State<RenameDialog> {
                     errMsg = "";
                     setState(() => isRenaming = true);
                     widget.filesState.onRename(
-                      type: widget.file["Type"],
-                      path: widget.file["Path"],
-                      name: widget.file["Name"],
+                      file: widget.file,
                       newName: "${_fileNameCtrl.text}.$fileExtension",
-                      isFolder: widget.file["IsFolder"],
-                      isLink: widget.file["IsLink"],
                       onError: (String err) {
                         errMsg = err;
                         setState(() => isRenaming = false);
                       },
-                      onSuccess: (String newNameFromServer) {
+                      onSuccess: (String newNameFromServer) async {
+                        await widget.filesState
+                            .onGetFiles(path: widget.file.path);
                         Navigator.pop(context, newNameFromServer);
-                        widget.filesState.onGetFiles(path: widget.file["Path"]);
                       },
                     );
                   }),

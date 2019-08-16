@@ -6,26 +6,9 @@ part of 'files_state.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FilesState on _FilesState, Store {
-  final _$currentFilesAtom = Atom(name: '_FilesState.currentFiles');
-
-  @override
-  List get currentFiles {
-    _$currentFilesAtom.context.enforceReadPolicy(_$currentFilesAtom);
-    _$currentFilesAtom.reportObserved();
-    return super.currentFiles;
-  }
-
-  @override
-  set currentFiles(List value) {
-    _$currentFilesAtom.context.conditionallyRunInAction(() {
-      super.currentFiles = value;
-      _$currentFilesAtom.reportChanged();
-    }, _$currentFilesAtom, name: '${_$currentFilesAtom.name}_set');
-  }
-
   final _$selectedFilesIdsAtom = Atom(name: '_FilesState.selectedFilesIds');
 
   @override

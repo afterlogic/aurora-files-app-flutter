@@ -3,7 +3,7 @@ import 'package:aurorafiles/database/app_database.dart';
 enum ValidationTypes {
   empty,
   email,
-  folderSlash,
+  fileName,
   uniqueName,
 }
 
@@ -23,12 +23,13 @@ String validateInput(
   if (types.contains(ValidationTypes.email) && !_isEmailValid(value)) {
     return "The email is not valid";
   }
-  if (types.contains(ValidationTypes.folderSlash) && value.contains("/")) {
-    return "Folder name cannot contain '/'";
+  if (types.contains(ValidationTypes.fileName) && !_isFileNameValid(value)) {
+    return 'Name cannot contain "/\\*?<>|:';
   }
   if (files is List<File> && types.contains(ValidationTypes.uniqueName)) {
     bool exists = false;
-    final valueToCheck = fileExtension != null ? "$value.$fileExtension" : value;
+    final valueToCheck =
+        fileExtension != null ? "$value.$fileExtension" : value;
     files.forEach((file) {
       if (file.name == valueToCheck) exists = true;
     });
@@ -38,6 +39,12 @@ String validateInput(
 
   // else the field is valid
   return null;
+}
+
+bool _isFileNameValid(String fileName) {
+  final regExp = new RegExp(r'["\/\\*?<>|:]');
+
+  return !regExp.hasMatch(fileName);
 }
 
 bool _isEmailValid(String email) {

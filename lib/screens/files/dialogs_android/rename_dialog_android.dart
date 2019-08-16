@@ -66,7 +66,11 @@ class _RenameDialogState extends State<RenameDialog> {
                 ),
                 validator: (value) => validateInput(
                   value,
-                  [ValidationTypes.empty, ValidationTypes.uniqueName],
+                  [
+                    ValidationTypes.empty,
+                    ValidationTypes.uniqueName,
+                    ValidationTypes.fileName,
+                  ],
                   widget.filesState.currentFiles,
                   fileExtension,
                 ),

@@ -58,7 +58,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                       value,
                       [
                         ValidationTypes.empty,
-                        ValidationTypes.folderSlash,
+                        ValidationTypes.fileName,
                         ValidationTypes.uniqueName,
                       ],
                       widget.filesState.currentFiles,

@@ -1,3 +1,4 @@
+import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/widgets.dart';
 
 class FileViewerRoute {
@@ -7,7 +8,7 @@ class FileViewerRoute {
 class FileViewerScreenArguments {
   // TODO fix type
   final Map<String, dynamic> file;
-  final Function({String path}) onUpdateFilesList;
+  final FilesState filesState;
 
-  FileViewerScreenArguments({@required this.onUpdateFilesList, @required this.file});
+  FileViewerScreenArguments({@required this.filesState, @required this.file});
 }

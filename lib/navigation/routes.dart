@@ -21,7 +21,7 @@ Route onGenerateRoute(RouteSettings settings) {
       return FadeRoute(
           page: FileViewerAndroid(
         file: args.file,
-        onUpdateFilesList: args.onUpdateFilesList,
+        filesState: args.filesState,
       ));
 
     default:

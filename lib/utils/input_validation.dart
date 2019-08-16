@@ -2,9 +2,19 @@ enum ValidationTypes {
   empty,
   email,
   folderSlash,
+  uniqueName,
 }
 
-String validateInput(String value, List<ValidationTypes> types) {
+String validateInput(
+  String value,
+  List<ValidationTypes> types, [
+  List files,
+  String fileExtension,
+]) {
+  if (types.contains(ValidationTypes.uniqueName) && files is! List) {
+    throw Exception(
+        "In order to check if a name is unique the list must be provided");
+  }
   if (types.contains(ValidationTypes.empty) && value.isEmpty) {
     return "This field is required";
   }
@@ -13,6 +23,15 @@ String validateInput(String value, List<ValidationTypes> types) {
   }
   if (types.contains(ValidationTypes.folderSlash) && value.contains("/")) {
     return "Folder name cannot contain '/'";
+  }
+  if (files is List && types.contains(ValidationTypes.uniqueName)) {
+    bool exists = false;
+    final valueToCheck = fileExtension != null ? "$value.$fileExtension" : value;
+    files.forEach((file) {
+      if (file["Name"] == valueToCheck) exists = true;
+    });
+
+    if (exists) return "This name already exists";
   }
 
   // else the field is valid

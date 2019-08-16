@@ -4,7 +4,7 @@ class AppMaterialTheme {
   static final theme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Color(0xFF004166),
-    accentColor: Color(0xFF72bbe4),
+    primaryColorLight: Color(0xFF72bbe4),
     errorColor: Colors.red[900],
     selectedRowColor: Color(0x11004166),
     inputDecorationTheme: _inputTheme,

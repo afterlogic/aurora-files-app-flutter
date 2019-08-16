@@ -1,6 +1,7 @@
 import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/files_type.dart';
-import 'package:aurorafiles/screens/files/files_repository.dart';
+import 'package:aurorafiles/screens/files/repository/files_api.dart';
+import 'package:aurorafiles/screens/files/repository/files_local_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
@@ -10,7 +11,8 @@ part 'files_state.g.dart';
 class FilesState = _FilesState with _$FilesState;
 
 abstract class _FilesState with Store {
-  final _repo = FilesRepository();
+  final _filesApi = FilesApi();
+  final _filesLocal = FilesLocalStorage();
 
   final filesTileLeadingSize = 48.0;
 
@@ -45,7 +47,7 @@ abstract class _FilesState with Store {
     currentPath = path;
     try {
       isFilesLoading = true;
-      currentFiles = await _repo.getFiles(currentFilesType, currentPath, "");
+      currentFiles = await _filesApi.getFiles(currentFilesType, currentPath, "");
     } catch (err) {
       onError(err.toString());
     } finally {
@@ -67,7 +69,7 @@ abstract class _FilesState with Store {
   }) async {
     try {
       final String newFolderNameFromServer =
-          await _repo.createFolder(currentFilesType, currentPath, folderName);
+          await _filesApi.createFolder(currentFilesType, currentPath, folderName);
       onSuccess(newFolderNameFromServer);
     } catch (err) {
       onError(err.toString());
@@ -88,7 +90,7 @@ abstract class _FilesState with Store {
 
     try {
       isFilesLoading = true;
-      await _repo.delete(currentFilesType, currentPath, filesToDelete);
+      await _filesApi.delete(currentFilesType, currentPath, filesToDelete);
       onSuccess();
     } catch (err) {
       onError(err.toString());
@@ -104,7 +106,7 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     try {
-      final String link = await _repo.createPublicLink(
+      final String link = await _filesApi.createPublicLink(
           currentFilesType, currentPath, name, size, isFolder);
       Clipboard.setData(ClipboardData(text: link));
       onSuccess();
@@ -119,11 +121,53 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     try {
-      await _repo.deletePublicLink(
+      await _filesApi.deletePublicLink(
           currentFilesType, currentPath, name);
       onSuccess();
     } catch (err) {
       onError(err.toString());
+    }
+  }
+
+  Future onRename({
+    @required String type,
+    @required String path,
+    @required String name,
+    @required String newName,
+    @required bool isLink,
+    @required bool isFolder,
+    @required Function onSuccess,
+    @required Function onError,
+  }) async {
+    try {
+      SystemChannels.textInput.invokeMethod('TextInput.hide');
+      final newNameFromServer = await _filesApi.renameFile(
+        type: type,
+        path: path,
+        name: name,
+        newName: newName,
+        isLink: isLink,
+        isFolder: isFolder,
+      );
+      onSuccess(newNameFromServer);
+    } catch (err) {
+      onError(err.toString());
+    }
+  }
+
+  void onDownloadFile({
+    String url,
+    String fileName,
+    Function onStart,
+    Function onSuccess,
+    Function onError,
+  }) async {
+    try {
+      onStart();
+      await _filesLocal.downloadFile(url, fileName);
+      _filesLocal.getDownloadStatus(onSuccess);
+    } catch (err) {
+      onError(err);
     }
   }
 }

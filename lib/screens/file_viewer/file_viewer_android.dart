@@ -1,5 +1,6 @@
-import 'package:aurorafiles/screens/file_viewer/components/rename_dialog.dart';
 import 'package:aurorafiles/screens/file_viewer/state/file_viewer_state.dart';
+import 'package:aurorafiles/screens/files/dialogs/rename_dialog_android.dart';
+import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +14,12 @@ class FileViewerAndroid extends StatelessWidget {
   final file;
 
   // this is to update files on the files screen after file renaming
-  final Function({String path}) onUpdateFilesList;
+  final FilesState filesState;
 
   FileViewerAndroid({
     Key key,
     @required this.file,
-    @required this.onUpdateFilesList,
+    @required this.filesState,
   }) : super(key: key);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -44,12 +45,20 @@ class FileViewerAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fileViewerState = FileViewerState();
+    final FileViewerState fileViewerState = FileViewerState();
     fileViewerState.fileName = file["Name"];
 
-    return Provider(
-      builder: (_) => fileViewerState,
-      dispose: (_, val) => val.dispose(),
+    return MultiProvider(
+      providers: [
+        Provider(
+          builder: (_) => fileViewerState,
+          dispose: (_, val) => val.dispose(),
+        ),
+        Provider(
+          builder: (_) => filesState,
+          dispose: (_, val) => val.dispose(),
+        ),
+      ],
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -64,7 +73,7 @@ class FileViewerAndroid extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.file_download),
                 tooltip: "Download",
-                onPressed: () => fileViewerState.onDownloadFile(
+                onPressed: () => filesState.onDownloadFile(
                   url: file["Actions"]["download"]["url"],
                   fileName: file["Name"],
                   onStart: () =>
@@ -88,8 +97,7 @@ class FileViewerAndroid extends StatelessWidget {
                   barrierDismissible: false,
                   builder: (_) => RenameDialog(
                     file: file,
-                    fileViewerState: fileViewerState,
-                    onUpdateFilesList: onUpdateFilesList,
+                    filesState: filesState,
                   ),
                 );
                 if (result is String) {

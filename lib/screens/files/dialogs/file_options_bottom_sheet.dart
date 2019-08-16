@@ -1,3 +1,4 @@
+import 'package:aurorafiles/screens/files/dialogs/rename_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
 
@@ -43,8 +44,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
   void _deleteLink() {
     widget.filesState.onDeletePublicLink(
       name: widget.file["Name"],
-      onSuccess: () =>
-          setState(() => _isGettingPublicLink = false),
+      onSuccess: () => setState(() => _isGettingPublicLink = false),
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = true;
@@ -98,10 +98,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                 ListTile(
                   leading: Icon(Icons.content_copy),
                   title: Text("Copy public link"),
-                  onTap: _isGettingPublicLink ? null : () {
-                    setState(() => _isGettingPublicLink = true);
-                    _getLink();
-                  },
+                  onTap: _isGettingPublicLink
+                      ? null
+                      : () {
+                          setState(() => _isGettingPublicLink = true);
+                          _getLink();
+                        },
                 ),
               Divider(height: 0),
               ListTile(
@@ -117,7 +119,21 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
               ListTile(
                 leading: Icon(Icons.edit),
                 title: Text("Rename"),
-                onTap: () => {},
+                onTap: () async {
+                  Navigator.pop(context);
+                  final result = await showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => RenameDialog(
+                      file: widget.file,
+                      filesState: widget.filesState,
+                    ),
+                  );
+                  if (result is String) {
+                    widget.filesState
+                        .onGetFiles(path: widget.filesState.currentPath);
+                  }
+                },
               ),
             ],
           ),

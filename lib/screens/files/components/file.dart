@@ -1,5 +1,5 @@
 import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
-import 'package:aurorafiles/screens/files/components/file_options_bottom_sheet.dart';
+import 'package:aurorafiles/screens/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
@@ -81,7 +81,7 @@ class FileWidget extends StatelessWidget {
           FileViewerRoute.name,
           arguments: FileViewerScreenArguments(
             file: file,
-            onUpdateFilesList: filesState.onGetFiles,
+            filesState: filesState,
           ),
         ),
         isSelected: filesState.selectedFilesIds.contains(file["Id"]),

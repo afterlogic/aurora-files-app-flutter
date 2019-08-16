@@ -1,17 +1,15 @@
-import 'package:aurorafiles/screens/file_viewer/state/file_viewer_state.dart';
+import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
 
 class RenameDialog extends StatefulWidget {
   final file;
-  final FileViewerState fileViewerState;
-  final Function({String path}) onUpdateFilesList;
+  final FilesState filesState;
 
   const RenameDialog({
     Key key,
     @required this.file,
-    @required this.fileViewerState,
-    @required this.onUpdateFilesList,
+    @required this.filesState,
   }) : super(key: key);
 
   @override
@@ -65,8 +63,12 @@ class _RenameDialogState extends State<RenameDialog> {
                   hintText: "Enter new name",
                   border: UnderlineInputBorder(),
                 ),
-                validator: (value) =>
-                    validateInput(value, [ValidationTypes.empty]),
+                validator: (value) => validateInput(
+                  value,
+                  [ValidationTypes.empty, ValidationTypes.uniqueName],
+                  widget.filesState.currentFiles,
+                  fileExtension,
+                ),
               ),
             ),
       actions: <Widget>[
@@ -82,7 +84,7 @@ class _RenameDialogState extends State<RenameDialog> {
                     if (!_renameFormKey.currentState.validate()) return;
                     errMsg = "";
                     setState(() => isRenaming = true);
-                    widget.fileViewerState.onRename(
+                    widget.filesState.onRename(
                       type: widget.file["Type"],
                       path: widget.file["Path"],
                       name: widget.file["Name"],
@@ -95,7 +97,7 @@ class _RenameDialogState extends State<RenameDialog> {
                       },
                       onSuccess: (String newNameFromServer) {
                         Navigator.pop(context, newNameFromServer);
-                        widget.onUpdateFilesList(path: widget.file["Path"]);
+                        widget.filesState.onGetFiles(path: widget.file["Path"]);
                       },
                     );
                   }),

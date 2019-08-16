@@ -4,13 +4,28 @@ import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
-class FilesRepository {
+class FilesApi {
   final String hostName = SingletonStore.instance.hostName;
   final String apiUrl = SingletonStore.instance.apiUrl;
   final String authToken = SingletonStore.instance.authToken;
   final int userId = SingletonStore.instance.userId;
+
+  List _sortFiles(List unsortedFiles) {
+    final List folders = List();
+    final List files = List();
+
+    unsortedFiles.forEach((item) {
+      if (item["IsFolder"])
+        folders.add(item);
+      else
+        files.add(item);
+    });
+
+    return [...folders, ...files].toList();
+  }
 
   Future<List> getFiles(String type, String path, String pattern) async {
     final parameters =
@@ -32,18 +47,37 @@ class FilesRepository {
     }
   }
 
-  List _sortFiles(List unsortedFiles) {
-    final List folders = List();
-    final List files = List();
-
-    unsortedFiles.forEach((item) {
-      if (item["IsFolder"])
-        folders.add(item);
-      else
-        files.add(item);
+  Future<String> renameFile({
+    @required String type,
+    @required String path,
+    @required String name,
+    @required String newName,
+    @required bool isLink,
+    @required bool isFolder,
+  }) async {
+    final parameters = json.encode({
+      "Type": type,
+      "Path": path,
+      "Name": name,
+      "NewName": newName,
+      "IsLink": isLink,
+      "IsFolder": isFolder,
     });
 
-    return [...folders, ...files].toList();
+    final body =
+    new ApiBody(module: "Files", method: "Rename", parameters: parameters)
+        .toMap();
+
+    final res =
+    await http.post(apiUrl, headers: getHeader(authToken), body: body);
+
+    final resBody = json.decode(res.body);
+
+    if (resBody['Result'] != null && resBody['Result']) {
+      return newName;
+    } else {
+      throw CustomException(getErrMsg(resBody));
+    }
   }
 
   Future createFolder(String type, String path, String folderName) async {

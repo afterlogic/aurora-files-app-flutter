@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-import 'components/add_folder_dialog.dart';
-import 'components/delete_confirmation_dialog.dart';
+import 'package:aurorafiles/screens/files/dialogs/add_folder_dialog_android.dart';
+import 'package:aurorafiles/screens/files/dialogs/delete_confirmation_dialog.dart';
 import 'components/folder.dart';
 import 'components/skeleton_loader.dart';
 
@@ -216,9 +216,8 @@ class _FilesAndroidState extends State<FilesAndroid>
             onPressed: () => showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (_) => AddFolderDialog(
+                builder: (_) => AddFolderDialogAndroid(
                       filesState: _filesState,
-                      onUpdateFilesList: () => _getFiles(context),
                     )),
           ),
         ),

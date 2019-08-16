@@ -2,21 +2,19 @@ import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
 
-class AddFolderDialog extends StatefulWidget {
+class AddFolderDialogAndroid extends StatefulWidget {
   final FilesState filesState;
-  final Function() onUpdateFilesList;
 
-  const AddFolderDialog({
+  const AddFolderDialogAndroid({
     Key key,
     @required this.filesState,
-    @required this.onUpdateFilesList,
   }) : super(key: key);
 
   @override
-  _AddFolderDialogState createState() => _AddFolderDialogState();
+  _AddFolderDialogAndroidState createState() => _AddFolderDialogAndroidState();
 }
 
-class _AddFolderDialogState extends State<AddFolderDialog> {
+class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
   final _folderNameCtrl = TextEditingController();
   final _addFolderFormKey = GlobalKey<FormState>();
 
@@ -58,7 +56,12 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
                     ),
                     validator: (value) => validateInput(
                       value,
-                      [ValidationTypes.empty, ValidationTypes.folderSlash],
+                      [
+                        ValidationTypes.empty,
+                        ValidationTypes.folderSlash,
+                        ValidationTypes.uniqueName,
+                      ],
+                      widget.filesState.currentFiles,
                     ),
                   ),
                 ],
@@ -85,7 +88,8 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
                       },
                       onSuccess: (String newNameFromServer) {
                         Navigator.pop(context, newNameFromServer);
-                        widget.onUpdateFilesList();
+                        widget.filesState
+                            .onGetFiles(path: widget.filesState.currentPath);
                       },
                     );
                   }),

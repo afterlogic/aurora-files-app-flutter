@@ -86,10 +86,10 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                         errMsg = err;
                         setState(() => isAdding = false);
                       },
-                      onSuccess: (String newNameFromServer) {
-                        Navigator.pop(context, newNameFromServer);
-                        widget.filesState
+                      onSuccess: (String newNameFromServer) async {
+                        await widget.filesState
                             .onGetFiles(path: widget.filesState.currentPath);
+                        Navigator.pop(context, newNameFromServer);
                       },
                     );
                   }),

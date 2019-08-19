@@ -18,7 +18,7 @@ class FolderWidget extends StatelessWidget {
       builder: (_) => SelectableFilesItemTile(
         file: folder,
         isSelected: filesState.selectedFilesIds.contains(folder.id),
-        onTap: () => filesState.onGetFiles(path: folder.fullPath, showLoading: true),
+        onTap: () => filesState.onGetFiles(path: folder.fullPath, showLoading: FilesLoadingType.filesHidden),
         child: ListTile(
           leading: Icon(
             Icons.folder,

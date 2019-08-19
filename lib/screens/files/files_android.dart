@@ -18,15 +18,12 @@ class FilesAndroid extends StatefulWidget {
 
 class _FilesAndroidState extends State<FilesAndroid>
     with TickerProviderStateMixin {
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      new GlobalKey<RefreshIndicatorState>();
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _filesState = FilesState();
 
   @override
   void initState() {
     super.initState();
-    _getFiles(context, true);
+    _getFiles(context, FilesLoadingType.filesHidden);
   }
 
   @override
@@ -35,7 +32,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     _filesState.dispose();
   }
 
-  Future<void> _getFiles(BuildContext context, [showLoading = false]) {
+  Future<void> _getFiles(BuildContext context, [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) {
     return _filesState.onGetFiles(
       path: _filesState.currentPath,
       showLoading: showLoading,
@@ -65,12 +62,12 @@ class _FilesAndroidState extends State<FilesAndroid>
       backgroundColor: Theme.of(context).errorColor,
     );
 
-    _scaffoldKey.currentState.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(snack);
+    _filesState.scaffoldKey.currentState.removeCurrentSnackBar();
+    _filesState.scaffoldKey.currentState.showSnackBar(snack);
   }
 
   Widget _buildFiles(BuildContext context) {
-    if (_filesState.isFilesLoading) {
+    if (_filesState.isFilesLoading == FilesLoadingType.filesHidden) {
       return ListView.builder(
         itemBuilder: (_, index) => SkeletonLoader(),
         itemCount: 6,
@@ -113,14 +110,14 @@ class _FilesAndroidState extends State<FilesAndroid>
         top: false,
         child: Observer(
           builder: (_) => Scaffold(
-            key: _scaffoldKey,
+            key: _filesState.scaffoldKey,
             drawer: MainDrawer(),
             appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
             body: Observer(
                 builder: (_) => RefreshIndicator(
-                      key: _refreshIndicatorKey,
+                      key: _filesState.refreshIndicatorKey,
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () => _getFiles(context),
+                      onRefresh: () => _getFiles(context, FilesLoadingType.none),
                       child: Column(
                         children: <Widget>[
                           Container(
@@ -133,6 +130,14 @@ class _FilesAndroidState extends State<FilesAndroid>
                                   : _filesState.currentPath),
                             ),
                           ),
+                          AnimatedOpacity(
+                            duration: Duration(milliseconds: 150),
+                            opacity: _filesState.isFilesLoading ==
+                                    FilesLoadingType.filesVisible
+                                ? 1.0
+                                : 0.0,
+                            child: LinearProgressIndicator(),
+                          ),
                           if (_filesState.currentPath != "")
                             Opacity(
                               opacity: _filesState.selectedFilesIds.length > 0
@@ -144,7 +149,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                                 onTap: _filesState.selectedFilesIds.length > 0
                                     ? null
                                     : () => _filesState.onLevelUp(
-                                          () => _getFiles(context, true),
+                                          () => _getFiles(context, FilesLoadingType.filesHidden),
                                         ),
                               ),
                             ),

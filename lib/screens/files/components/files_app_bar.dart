@@ -37,7 +37,7 @@ class _FilesAppBarState extends State<FilesAppBar>
     _appBarIconAnimCtrl.dispose();
   }
 
-  Future _showPersistentBottomSheet(context) async {
+  void _showPersistentBottomSheet(context) {
     showBottomSheet(
       context: context,
       builder: (_) => MoveOptionsBottomSheet(filesState: _filesState),
@@ -122,26 +122,29 @@ class _FilesAppBarState extends State<FilesAppBar>
   @override
   Widget build(BuildContext context) {
     _filesState = Provider.of<FilesState>(context);
-    final bool isSelectMode = _filesState.selectedFilesIds.length > 0;
-    if (isSelectMode)
-      _appBarIconAnimCtrl.forward();
-    else
-      _appBarIconAnimCtrl.reverse();
 
     return Observer(
-      builder: (_) => AppBar(
-        leading: IconButton(
-          icon: AnimatedIcon(
-            icon: AnimatedIcons.menu_close,
-            progress: _appBarIconAnimCtrl,
+      builder: (_) {
+        final bool isSelectMode = _filesState.selectedFilesIds.length > 0;
+        if (isSelectMode)
+          _appBarIconAnimCtrl.forward();
+        else
+          _appBarIconAnimCtrl.reverse();
+
+        return AppBar(
+          leading: IconButton(
+            icon: AnimatedIcon(
+              icon: AnimatedIcons.menu_close,
+              progress: _appBarIconAnimCtrl,
+            ),
+            onPressed: isSelectMode
+                ? () => _filesState.selectedFilesIds = new Set()
+                : () => Scaffold.of(context).openDrawer(),
           ),
-          onPressed: isSelectMode
-              ? () => _filesState.selectedFilesIds = new Set()
-              : () => Scaffold.of(context).openDrawer(),
-        ),
-        title: _getTitle(context),
-        actions: _getAppbarActions(context),
-      ),
+          title: _getTitle(context),
+          actions: _getAppbarActions(context),
+        );
+      },
     );
   }
 }

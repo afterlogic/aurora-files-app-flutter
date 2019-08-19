@@ -7,17 +7,16 @@ class MoveOptionsBottomSheet extends StatelessWidget {
   const MoveOptionsBottomSheet({Key key, this.filesState}) : super(key: key);
 
   void _moveFiles(BuildContext context, bool copy) {
-    filesState.isFilesLoading = true;
+    filesState.isFilesLoading = FilesLoadingType.filesVisible;
     filesState.onCopyMoveFiles(
         copy: copy,
         onSuccess: () async {
           await filesState.onGetFiles(path: filesState.currentPath);
           filesState.disableMoveMode();
           Navigator.pop(context);
-          filesState.isFilesLoading = false;
         },
         onError: (err) {
-          filesState.isFilesLoading = false;
+          filesState.isFilesLoading = FilesLoadingType.none;
         });
   }
 

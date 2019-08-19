@@ -5,6 +5,7 @@ import 'package:aurorafiles/models/files_type.dart';
 import 'package:aurorafiles/screens/files/repository/files_api.dart';
 import 'package:aurorafiles/screens/files/repository/files_local_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 
@@ -12,9 +13,18 @@ part 'files_state.g.dart';
 
 class FilesState = _FilesState with _$FilesState;
 
+enum FilesLoadingType {
+  none,
+  filesVisible,
+  filesHidden,
+}
+
 abstract class _FilesState with Store {
   final _filesApi = FilesApi();
   final _filesLocal = FilesLocalStorage();
+
+  final refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final filesTileLeadingSize = 48.0;
 
@@ -30,7 +40,7 @@ abstract class _FilesState with Store {
   String currentFilesType = FilesType.personal;
 
   @observable
-  bool isFilesLoading = false;
+  FilesLoadingType isFilesLoading = FilesLoadingType.none;
 
   @observable
   bool isMoveModeEnabled = false;
@@ -71,18 +81,18 @@ abstract class _FilesState with Store {
 
   Future<void> onGetFiles({
     @required String path,
-    bool showLoading = false,
+    FilesLoadingType showLoading = FilesLoadingType.filesVisible,
     Function(String) onError,
   }) async {
     currentPath = path;
     try {
-      if (showLoading) isFilesLoading = true;
+      isFilesLoading = showLoading;
       currentFiles =
           await _filesApi.getFiles(currentFilesType, currentPath, "");
     } catch (err) {
       onError(err.toString());
     } finally {
-      isFilesLoading = false;
+      isFilesLoading = FilesLoadingType.none;
     }
   }
 
@@ -133,13 +143,13 @@ abstract class _FilesState with Store {
     }
 
     try {
-      isFilesLoading = true;
+      isFilesLoading = FilesLoadingType.filesVisible;
       await _filesApi.delete(
           currentFilesType, currentPath, mappedFilesToDelete);
       onSuccess();
     } catch (err) {
       onError(err.toString());
-      isFilesLoading = false;
+      isFilesLoading = FilesLoadingType.none;
     }
   }
 

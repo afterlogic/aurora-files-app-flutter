@@ -63,14 +63,14 @@ mixin _$FilesState on _FilesState, Store {
   final _$isFilesLoadingAtom = Atom(name: '_FilesState.isFilesLoading');
 
   @override
-  bool get isFilesLoading {
+  FilesLoadingType get isFilesLoading {
     _$isFilesLoadingAtom.context.enforceReadPolicy(_$isFilesLoadingAtom);
     _$isFilesLoadingAtom.reportObserved();
     return super.isFilesLoading;
   }
 
   @override
-  set isFilesLoading(bool value) {
+  set isFilesLoading(FilesLoadingType value) {
     _$isFilesLoadingAtom.context.conditionallyRunInAction(() {
       super.isFilesLoading = value;
       _$isFilesLoadingAtom.reportChanged();

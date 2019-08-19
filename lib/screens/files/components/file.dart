@@ -27,7 +27,6 @@ class FileWidget extends StatelessWidget {
       builder: (_) => FileOptionsBottomSheet(
         file: file,
         filesState: Provider.of<FilesState>(context),
-        scaffoldState: Scaffold.of(context),
       ),
     );
 
@@ -129,7 +128,7 @@ class FileWidget extends StatelessWidget {
               )
             ],
           ),
-          trailing: IconButton(
+          trailing: filesState.isMoveModeEnabled ? null : IconButton(
             padding: EdgeInsets.only(left: 30.0),
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,

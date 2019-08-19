@@ -7,13 +7,11 @@ import 'package:flutter/material.dart';
 class FileOptionsBottomSheet extends StatefulWidget {
   final File file;
   final FilesState filesState;
-  final ScaffoldState scaffoldState;
 
   const FileOptionsBottomSheet({
     Key key,
     @required this.file,
     @required this.filesState,
-    @required this.scaffoldState,
   }) : super(key: key);
 
   @override
@@ -36,7 +34,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
       size: widget.file.size,
       isFolder: widget.file.isFolder,
       onSuccess: () async {
-        await widget.filesState.onGetFiles(path: widget.filesState.currentPath);
+        widget.filesState.onGetFiles(path: widget.filesState.currentPath);
         setState(() => _isGettingPublicLink = false);
         Navigator.pop(context, "Link coppied to clipboard");
       },
@@ -51,7 +49,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
     widget.filesState.onDeletePublicLink(
       name: widget.file.name,
       onSuccess: () async {
-        await widget.filesState.onGetFiles(path: widget.filesState.currentPath);
+        widget.filesState.onGetFiles(path: widget.filesState.currentPath);
         setState(() => _isGettingPublicLink = false);
       },
       onError: (String err) => setState(() {
@@ -119,7 +117,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                 onTap: () {
                   Navigator.pop(context);
                   widget.filesState.enableMoveMode([widget.file]);
-                  widget.scaffoldState.showBottomSheet(
+                  widget.filesState.scaffoldKey.currentState.showBottomSheet(
                     (_) =>
                         MoveOptionsBottomSheet(filesState: widget.filesState),
                   );

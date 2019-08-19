@@ -14,6 +14,16 @@ class SelectableFilesItemTile extends StatelessWidget {
       {Key key, @required this.child, this.isSelected = false, this.file, this.onTap})
       : super(key: key);
 
+  Function _getOnTapCb(FilesState filesState) {
+    if (filesState.isMoveModeEnabled && file != null && !file.isFolder) {
+      return null;
+    } else if (filesState.selectedFilesIds.length > 0) {
+      return () => filesState.onSelectFile(file.id);
+    } else {
+      return () => onTap();
+    }
+  }
+
   Widget _buildSelectionOverlay(BuildContext context) {
     final thumbnailSize = Provider.of<FilesState>(context).filesTileLeadingSize;
     return Container(
@@ -44,10 +54,8 @@ class SelectableFilesItemTile extends StatelessWidget {
     final filesState = Provider.of<FilesState>(context);
 
     return InkWell(
-      onTap: filesState.selectedFilesIds.length > 0
-          ? () => filesState.onSelectFile(file.id)
-          : onTap,
-      onLongPress: file == null || filesState.selectedFilesIds.length > 0
+      onTap: _getOnTapCb(filesState),
+      onLongPress: filesState.isMoveModeEnabled || file == null || filesState.selectedFilesIds.length > 0
           ? null
           : () => filesState.onSelectFile(file.id),
       child: Stack(

@@ -8,14 +8,14 @@ class ApiBody {
   ApiBody({
     @required this.module,
     @required this.method,
-    @required this.parameters,
+    this.parameters,
   });
 
   Map<String, String> toMap() {
-    return {
-      'Module': module,
-      'Method': method,
-      'Parameters': parameters
-    };
+    if (parameters != null) {
+      return {'Module': module, 'Method': method, 'Parameters': parameters};
+    } else {
+      return {'Module': module, 'Method': method};
+    }
   }
 }

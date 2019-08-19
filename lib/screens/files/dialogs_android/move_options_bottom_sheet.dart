@@ -8,7 +8,7 @@ class MoveOptionsBottomSheet extends StatelessWidget {
 
   void _showErrSnack(BuildContext context, String err) {
     filesState.scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text(err), backgroundColor: Theme.of(context).errorColor));
+        elevation: 80.0, content: Text(err), backgroundColor: Theme.of(context).errorColor));
   }
 
   void _moveFiles(BuildContext context, bool copy) {

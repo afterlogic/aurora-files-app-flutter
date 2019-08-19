@@ -23,6 +23,14 @@ class _FilesAndroidState extends State<FilesAndroid>
   @override
   void initState() {
     super.initState();
+    _initFiles();
+  }
+
+  Future<void> _initFiles() async {
+    _filesState.isFilesLoading = FilesLoadingType.filesHidden;
+    await _filesState.onGetStorages(
+      onError: (String err) => _showErrSnack(context, err),
+    );
     _getFiles(context, FilesLoadingType.filesHidden);
   }
 
@@ -32,7 +40,8 @@ class _FilesAndroidState extends State<FilesAndroid>
     _filesState.dispose();
   }
 
-  Future<void> _getFiles(BuildContext context, [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) {
+  Future<void> _getFiles(BuildContext context,
+      [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) {
     return _filesState.onGetFiles(
       path: _filesState.currentPath,
       showLoading: showLoading,
@@ -117,7 +126,8 @@ class _FilesAndroidState extends State<FilesAndroid>
                 builder: (_) => RefreshIndicator(
                       key: _filesState.refreshIndicatorKey,
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () => _getFiles(context, FilesLoadingType.none),
+                      onRefresh: () =>
+                          _getFiles(context, FilesLoadingType.none),
                       child: Column(
                         children: <Widget>[
                           Container(
@@ -149,7 +159,8 @@ class _FilesAndroidState extends State<FilesAndroid>
                                 onTap: _filesState.selectedFilesIds.length > 0
                                     ? null
                                     : () => _filesState.onLevelUp(
-                                          () => _getFiles(context, FilesLoadingType.filesHidden),
+                                          () => _getFiles(context,
+                                              FilesLoadingType.filesHidden),
                                         ),
                               ),
                             ),

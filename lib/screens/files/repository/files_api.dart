@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
+import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
@@ -25,6 +26,20 @@ class FilesApi {
     });
 
     return [...folders, ...files].toList();
+  }
+
+  Future<List<Storage>> getStorages() async {
+    final body = new ApiBody(module: "Files", method: "GetStorages");
+    final res = await sendRequest(body);
+
+    if (res['Result'] is List) {
+      final List<Storage> storages = [];
+      res['Result'].forEach((rawStorage) =>
+          storages.add(Storage.fromMap(rawStorage)));
+      return storages;
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
   }
 
   Future<List<File>> getFiles(String type, String path, String pattern) async {
@@ -173,7 +188,6 @@ class FilesApi {
     );
 
     final res = await sendRequest(body);
-
     if (res['Result']) {
       return;
     } else {

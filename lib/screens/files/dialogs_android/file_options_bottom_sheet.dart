@@ -134,12 +134,13 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                   );
                 },
               ),
-              ListTile(
-                leading: Icon(Icons.share),
-                title: Text("Share"),
-                onTap: () => {},
-              ),
-              if (!Platform.isIOS)
+              if (!widget.file.isFolder)
+                ListTile(
+                  leading: Icon(Icons.share),
+                  title: Text("Share"),
+                  onTap: () => {},
+                ),
+              if (!Platform.isIOS && !widget.file.isFolder)
                 ListTile(
                   leading: Icon(Icons.file_download),
                   title: Text("Download"),

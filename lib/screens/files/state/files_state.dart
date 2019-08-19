@@ -1,7 +1,7 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
-import 'package:aurorafiles/models/files_type.dart';
+import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/screens/files/repository/files_api.dart';
 import 'package:aurorafiles/screens/files/repository/files_local_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,16 +28,18 @@ abstract class _FilesState with Store {
 
   final filesTileLeadingSize = 48.0;
 
-  List<File> currentFiles;
+  List<File> currentFiles = [];
+  List<Storage> currentStorages = [];
+
+  @observable
+  Storage selectedStorage =
+      new Storage(type: "", displayName: "", isExternal: false);
 
   @observable
   Set<String> selectedFilesIds = new Set();
 
   @observable
   String currentPath = "";
-
-  @observable
-  String currentFilesType = FilesType.personal;
 
   @observable
   FilesLoadingType isFilesLoading = FilesLoadingType.none;
@@ -79,6 +81,17 @@ abstract class _FilesState with Store {
     selectedFilesIds = selectedIds;
   }
 
+  Future<void> onGetStorages({Function(String) onError}) async {
+    try {
+      currentStorages = await _filesApi.getStorages();
+      if (currentStorages.length > 0) {
+        selectedStorage = currentStorages[0];
+      }
+    } catch (err) {
+      onError(err.toString());
+    }
+  }
+
   Future<void> onGetFiles({
     @required String path,
     FilesLoadingType showLoading = FilesLoadingType.filesVisible,
@@ -88,7 +101,7 @@ abstract class _FilesState with Store {
     try {
       isFilesLoading = showLoading;
       currentFiles =
-          await _filesApi.getFiles(currentFilesType, currentPath, "");
+          await _filesApi.getFiles(selectedStorage.type, currentPath, "");
     } catch (err) {
       onError(err.toString());
     } finally {
@@ -110,7 +123,7 @@ abstract class _FilesState with Store {
   }) async {
     try {
       final String newFolderNameFromServer = await _filesApi.createFolder(
-          currentFilesType, currentPath, folderName);
+          selectedStorage.type, currentPath, folderName);
       onSuccess(newFolderNameFromServer);
     } catch (err) {
       onError(err.toString());
@@ -145,7 +158,7 @@ abstract class _FilesState with Store {
     try {
       isFilesLoading = FilesLoadingType.filesVisible;
       await _filesApi.delete(
-          currentFilesType, currentPath, mappedFilesToDelete);
+          selectedStorage.type, currentPath, mappedFilesToDelete);
       onSuccess();
     } catch (err) {
       onError(err.toString());
@@ -175,7 +188,7 @@ abstract class _FilesState with Store {
         copy: copy,
         files: mappedFiles,
         fromType: filesToMoveCopy[0].type,
-        toType: currentFilesType,
+        toType: selectedStorage.type,
         fromPath: filesToMoveCopy[0].path,
         toPath: currentPath,
       );
@@ -194,7 +207,7 @@ abstract class _FilesState with Store {
   }) async {
     try {
       final String link = await _filesApi.createPublicLink(
-          currentFilesType, currentPath, name, size, isFolder);
+          selectedStorage.type, currentPath, name, size, isFolder);
       Clipboard.setData(ClipboardData(text: link));
       onSuccess();
     } catch (err) {
@@ -208,7 +221,7 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     try {
-      await _filesApi.deletePublicLink(currentFilesType, currentPath, name);
+      await _filesApi.deletePublicLink(selectedStorage.type, currentPath, name);
       onSuccess();
     } catch (err) {
       onError(err.toString());

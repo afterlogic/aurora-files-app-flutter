@@ -1,4 +1,4 @@
-import 'package:aurorafiles/models/files_type.dart';
+import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/screens/auth/auth_route.dart';
 import 'package:aurorafiles/screens/auth/state/auth_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
@@ -63,43 +63,28 @@ class MainDrawer extends StatelessWidget {
                                     color: Colors.white, fontSize: 16.0),
                               ),
                             ),
-
                             SizedBox(height: 10),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    color: _filesState.currentFilesType == FilesType.personal
-                        ? Theme.of(context).selectedRowColor
-                        : null,
-                    child: ListTile(
-                      selected:
-                          _filesState.currentFilesType == FilesType.personal,
-                      title: Text('Personal'),
-                      onTap: () {
-                        _filesState.currentFilesType = FilesType.personal;
-                        _filesState.onGetFiles(path: "");
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  Container(
-                    color: _filesState.currentFilesType == FilesType.corporate
-                        ? Theme.of(context).selectedRowColor
-                        : null,
-                    child: ListTile(
-                      selected:
-                          _filesState.currentFilesType == FilesType.corporate,
-                      title: Text('Corporate'),
-                      onTap: () {
-                        _filesState.currentFilesType = FilesType.corporate;
-                        _filesState.onGetFiles(path: "");
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
+                  ..._filesState.currentStorages.map((Storage storage) {
+                    return Container(
+                      color: _filesState.selectedStorage.type == storage.type
+                          ? Theme.of(context).selectedRowColor
+                          : null,
+                      child: ListTile(
+                        selected: _filesState.selectedStorage.type == storage.type,
+                        title: Text(storage.displayName),
+                        onTap: () {
+                          _filesState.selectedStorage = storage;
+                          _filesState.onGetFiles(path: "");
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  })
                 ],
               ),
             ),

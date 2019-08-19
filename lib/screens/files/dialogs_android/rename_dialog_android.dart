@@ -24,23 +24,28 @@ class _RenameDialogState extends State<RenameDialog> {
   bool isRenaming = false;
   String errMsg = "";
 
-  // without .
-  String fileExtension;
+  // with .
+  String fileExtension = "";
 
   @override
   void initState() {
-    final List<String> splitFileName = widget.file.name.split('.');
-    fileExtension = splitFileName[splitFileName.length - 1];
-
-    _fileNameCtrl.text =
-        splitFileName.sublist(0, splitFileName.length - 1).join(".");
     super.initState();
+    _fileNameCtrl.text = widget.file.isFolder
+        ? widget.file.name
+        : _getFileNameWithoutExtension();
   }
 
   @override
   void dispose() {
     super.dispose();
     _fileNameCtrl.dispose();
+  }
+
+  String _getFileNameWithoutExtension() {
+    final List<String> splitFileName = widget.file.name.split('.');
+    fileExtension = ".${splitFileName[splitFileName.length - 1]}";
+
+    return splitFileName.sublist(0, splitFileName.length - 1).join(".");
   }
 
   @override
@@ -91,14 +96,13 @@ class _RenameDialogState extends State<RenameDialog> {
                     setState(() => isRenaming = true);
                     widget.filesState.onRename(
                       file: widget.file,
-                      newName: "${_fileNameCtrl.text}.$fileExtension",
+                      newName: _fileNameCtrl.text + fileExtension,
                       onError: (String err) {
                         errMsg = err;
                         setState(() => isRenaming = false);
                       },
                       onSuccess: (String newNameFromServer) {
-                        widget.filesState
-                            .onGetFiles(path: widget.file.path);
+                        widget.filesState.onGetFiles(path: widget.file.path);
                         Navigator.pop(context, newNameFromServer);
                       },
                     );

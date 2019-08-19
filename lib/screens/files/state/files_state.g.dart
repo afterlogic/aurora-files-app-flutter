@@ -9,6 +9,23 @@ part of 'files_state.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FilesState on _FilesState, Store {
+  final _$selectedStorageAtom = Atom(name: '_FilesState.selectedStorage');
+
+  @override
+  Storage get selectedStorage {
+    _$selectedStorageAtom.context.enforceReadPolicy(_$selectedStorageAtom);
+    _$selectedStorageAtom.reportObserved();
+    return super.selectedStorage;
+  }
+
+  @override
+  set selectedStorage(Storage value) {
+    _$selectedStorageAtom.context.conditionallyRunInAction(() {
+      super.selectedStorage = value;
+      _$selectedStorageAtom.reportChanged();
+    }, _$selectedStorageAtom, name: '${_$selectedStorageAtom.name}_set');
+  }
+
   final _$selectedFilesIdsAtom = Atom(name: '_FilesState.selectedFilesIds');
 
   @override
@@ -41,23 +58,6 @@ mixin _$FilesState on _FilesState, Store {
       super.currentPath = value;
       _$currentPathAtom.reportChanged();
     }, _$currentPathAtom, name: '${_$currentPathAtom.name}_set');
-  }
-
-  final _$currentFilesTypeAtom = Atom(name: '_FilesState.currentFilesType');
-
-  @override
-  String get currentFilesType {
-    _$currentFilesTypeAtom.context.enforceReadPolicy(_$currentFilesTypeAtom);
-    _$currentFilesTypeAtom.reportObserved();
-    return super.currentFilesType;
-  }
-
-  @override
-  set currentFilesType(String value) {
-    _$currentFilesTypeAtom.context.conditionallyRunInAction(() {
-      super.currentFilesType = value;
-      _$currentFilesTypeAtom.reportChanged();
-    }, _$currentFilesTypeAtom, name: '${_$currentFilesTypeAtom.name}_set');
   }
 
   final _$isFilesLoadingAtom = Atom(name: '_FilesState.isFilesLoading');

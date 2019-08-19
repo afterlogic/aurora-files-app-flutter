@@ -54,7 +54,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           Text("Move files/folders"),
           SizedBox(height: 2),
           Text(
-            _filesState.currentFilesType,
+            _filesState.selectedStorage.displayName,
             style: TextStyle(fontSize: 10.0),
           )
         ],
@@ -69,7 +69,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           Text("Files"),
           SizedBox(height: 2),
           Text(
-            _filesState.currentFilesType,
+            _filesState.selectedStorage.displayName,
             style: TextStyle(fontSize: 10.0),
           )
         ],

@@ -1,12 +1,13 @@
 import 'package:aurorafiles/screens/files/components/file.dart';
+import 'package:aurorafiles/screens/files/components/files_app_bar.dart';
+import 'package:aurorafiles/screens/files/dialogs_android/add_folder_dialog_android.dart';
+import 'package:aurorafiles/screens/files/dialogs_android/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-import 'package:aurorafiles/screens/files/dialogs_android/add_folder_dialog_android.dart';
-import 'package:aurorafiles/screens/files/dialogs_android/delete_confirmation_dialog.dart';
 import 'components/folder.dart';
 import 'components/skeleton_loader.dart';
 
@@ -21,26 +22,20 @@ class _FilesAndroidState extends State<FilesAndroid>
       new GlobalKey<RefreshIndicatorState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _filesState = FilesState();
-  AnimationController _appBarIconAnimCtrl;
 
   @override
   void initState() {
     super.initState();
     _getFiles(context, true);
-    _appBarIconAnimCtrl = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300),
-    );
   }
 
   @override
   void dispose() {
     super.dispose();
-    _appBarIconAnimCtrl.dispose();
     _filesState.dispose();
   }
 
-  _getFiles(BuildContext context, [showLoading = false]) {
+  Future<void> _getFiles(BuildContext context, [showLoading = false]) {
     return _filesState.onGetFiles(
       path: _filesState.currentPath,
       showLoading: showLoading,
@@ -72,59 +67,6 @@ class _FilesAndroidState extends State<FilesAndroid>
 
     _scaffoldKey.currentState.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(snack);
-  }
-
-  AppBar _buildAppBar(BuildContext context) {
-    final bool isSelectMode = _filesState.selectedFilesIds.length > 0;
-    if (isSelectMode)
-      _appBarIconAnimCtrl.forward();
-    else
-      _appBarIconAnimCtrl.reverse();
-    return AppBar(
-      leading: IconButton(
-        icon: AnimatedIcon(
-          icon: AnimatedIcons.menu_close,
-          progress: _appBarIconAnimCtrl,
-        ),
-        onPressed: isSelectMode
-            ? () => _filesState.selectedFilesIds = new Set()
-            : () => _scaffoldKey.currentState.openDrawer(),
-      ),
-      title: isSelectMode
-          ? Text("Selected: ${_filesState.selectedFilesIds.length}")
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Files"),
-                SizedBox(height: 2),
-                Observer(
-                  builder: (_) => Text(_filesState.currentFilesType,
-                      style: TextStyle(fontSize: 10.0, color: Colors.white)),
-                )
-              ],
-            ),
-      actions: isSelectMode
-          ? <Widget>[
-              IconButton(
-                icon: Icon(Icons.exit_to_app),
-                tooltip: "Move/Copy files",
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.delete_outline),
-                tooltip: "Delete files",
-                onPressed: () => _deleteSelected(context),
-              ),
-            ]
-          : <Widget>[
-              IconButton(
-                icon: Icon(Icons.search),
-                tooltip: "Search",
-                onPressed: () {},
-              ),
-            ],
-    );
   }
 
   Widget _buildFiles(BuildContext context) {
@@ -167,13 +109,13 @@ class _FilesAndroidState extends State<FilesAndroid>
     return Provider<FilesState>(
       builder: (_) => _filesState,
       dispose: (_, value) => value.dispose(),
-      child: Observer(
-        builder: (_) => SafeArea(
-          top: false,
-          child: Scaffold(
+      child: SafeArea(
+        top: false,
+        child: Observer(
+          builder: (_) => Scaffold(
             key: _scaffoldKey,
             drawer: MainDrawer(),
-            appBar: _buildAppBar(context),
+            appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
             body: Observer(
                 builder: (_) => RefreshIndicator(
                       key: _refreshIndicatorKey,
@@ -212,17 +154,20 @@ class _FilesAndroidState extends State<FilesAndroid>
                         ],
                       ),
                     )),
-            floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.create_new_folder),
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.white,
-              onPressed: () => showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (_) => AddFolderDialogAndroid(
+            floatingActionButton: _filesState.isMoveModeEnabled
+                ? null
+                : FloatingActionButton(
+                    child: Icon(Icons.create_new_folder),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                    onPressed: () => showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) => AddFolderDialogAndroid(
                         filesState: _filesState,
-                      )),
-            ),
+                      ),
+                    ),
+                  ),
           ),
         ),
       ),

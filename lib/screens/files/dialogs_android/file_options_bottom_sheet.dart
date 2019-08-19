@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/screens/files/dialogs_android/move_options_bottom_sheet.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,14 @@ import 'package:flutter/material.dart';
 class FileOptionsBottomSheet extends StatefulWidget {
   final File file;
   final FilesState filesState;
+  final ScaffoldState scaffoldState;
 
-  const FileOptionsBottomSheet(
-      {Key key, @required this.file, @required this.filesState})
-      : super(key: key);
+  const FileOptionsBottomSheet({
+    Key key,
+    @required this.file,
+    @required this.filesState,
+    @required this.scaffoldState,
+  }) : super(key: key);
 
   @override
   _FileOptionsBottomSheetState createState() => _FileOptionsBottomSheetState();
@@ -111,7 +116,14 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
               ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: Text("Move"),
-                onTap: () => {},
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.filesState.enableMoveMode([widget.file]);
+                  widget.scaffoldState.showBottomSheet(
+                    (_) =>
+                        MoveOptionsBottomSheet(filesState: widget.filesState),
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.share),

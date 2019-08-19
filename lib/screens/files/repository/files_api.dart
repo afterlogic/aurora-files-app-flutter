@@ -6,7 +6,6 @@ import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
 
 class FilesApi {
   final String hostName = SingletonStore.instance.hostName;
@@ -32,22 +31,18 @@ class FilesApi {
     final parameters =
         json.encode({"Type": type, "Path": path, "Pattern": pattern});
 
-    final body =
-        new ApiBody(module: "Files", method: "GetFiles", parameters: parameters)
-            .toMap();
+    final body = new ApiBody(
+        module: "Files", method: "GetFiles", parameters: parameters);
 
-    final res =
-        await http.post(apiUrl, headers: getHeader(authToken), body: body);
+    final res = await sendRequest(body);
 
-    final resBody = json.decode(res.body);
-
-    if (resBody['Result'] != null && resBody['Result']['Items'] is List) {
+    if (res['Result'] != null && res['Result']['Items'] is List) {
       final List<File> unsortedList = [];
-      resBody['Result']['Items']
+      res['Result']['Items']
           .forEach((file) => unsortedList.add(getFileObjFromResponse(file)));
       return _sortFiles(unsortedList);
     } else {
-      throw CustomException(getErrMsg(resBody));
+      throw CustomException(getErrMsg(res));
     }
   }
 
@@ -69,18 +64,14 @@ class FilesApi {
     });
 
     final body =
-        new ApiBody(module: "Files", method: "Rename", parameters: parameters)
-            .toMap();
+        new ApiBody(module: "Files", method: "Rename", parameters: parameters);
 
-    final res =
-        await http.post(apiUrl, headers: getHeader(authToken), body: body);
+    final res = await sendRequest(body);
 
-    final resBody = json.decode(res.body);
-
-    if (resBody['Result'] != null && resBody['Result']) {
+    if (res['Result'] != null && res['Result']) {
       return newName;
     } else {
-      throw CustomException(getErrMsg(resBody));
+      throw CustomException(getErrMsg(res));
     }
   }
 
@@ -89,18 +80,14 @@ class FilesApi {
         json.encode({"Type": type, "Path": path, "FolderName": folderName});
 
     final body = new ApiBody(
-            module: "Files", method: "CreateFolder", parameters: parameters)
-        .toMap();
+        module: "Files", method: "CreateFolder", parameters: parameters);
 
-    final res =
-        await http.post(apiUrl, headers: getHeader(authToken), body: body);
+    final res = await sendRequest(body);
 
-    final resBody = json.decode(res.body);
-
-    if (resBody['Result']) {
+    if (res['Result']) {
       return;
     } else {
-      throw CustomException(getErrMsg(resBody));
+      throw CustomException(getErrMsg(res));
     }
   }
 
@@ -110,18 +97,14 @@ class FilesApi {
         json.encode({"Type": type, "Path": path, "Items": filesToDelete});
 
     final body =
-        new ApiBody(module: "Files", method: "Delete", parameters: parameters)
-            .toMap();
+        new ApiBody(module: "Files", method: "Delete", parameters: parameters);
 
-    final res =
-        await http.post(apiUrl, headers: getHeader(authToken), body: body);
+    final res = await sendRequest(body);
 
-    final resBody = json.decode(res.body);
-
-    if (resBody['Result']) {
+    if (res['Result']) {
       return;
     } else {
-      throw CustomException(getErrMsg(resBody));
+      throw CustomException(getErrMsg(res));
     }
   }
 
@@ -137,18 +120,14 @@ class FilesApi {
     });
 
     final body = new ApiBody(
-            module: "Files", method: "CreatePublicLink", parameters: parameters)
-        .toMap();
+        module: "Files", method: "CreatePublicLink", parameters: parameters);
 
-    final res =
-        await http.post(apiUrl, headers: getHeader(authToken), body: body);
+    final res = await sendRequest(body);
 
-    final resBody = json.decode(res.body);
-
-    if (resBody['Result'] is String) {
-      return "$hostName/${resBody['Result']}";
+    if (res['Result'] is String) {
+      return "$hostName/${res['Result']}";
     } else {
-      throw CustomException(getErrMsg(resBody));
+      throw CustomException(getErrMsg(res));
     }
   }
 
@@ -160,18 +139,45 @@ class FilesApi {
     });
 
     final body = new ApiBody(
-            module: "Files", method: "DeletePublicLink", parameters: parameters)
-        .toMap();
+        module: "Files", method: "DeletePublicLink", parameters: parameters);
 
-    final res =
-        await http.post(apiUrl, headers: getHeader(authToken), body: body);
+    final res = await sendRequest(body);
 
-    final resBody = json.decode(res.body);
-
-    if (resBody['Result']) {
+    if (res['Result']) {
       return;
     } else {
-      throw CustomException(getErrMsg(resBody));
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future copyMoveFiles({
+    @required bool copy,
+    @required String fromType,
+    @required String toType,
+    @required String fromPath,
+    @required String toPath,
+    @required List<Map<String, dynamic>> files,
+  }) async {
+    final parameters = json.encode({
+      "FromType": fromType,
+      "ToType": toType,
+      "FromPath": fromPath,
+      "ToPath": toPath,
+      "Files": files
+    });
+
+    final body = new ApiBody(
+      module: "Files",
+      method: copy ? "Copy" : "Move",
+      parameters: parameters,
+    );
+
+    final res = await sendRequest(body);
+
+    if (res['Result']) {
+      return;
+    } else {
+      throw CustomException(getErrMsg(res));
     }
   }
 }

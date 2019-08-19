@@ -76,4 +76,21 @@ mixin _$FilesState on _FilesState, Store {
       _$isFilesLoadingAtom.reportChanged();
     }, _$isFilesLoadingAtom, name: '${_$isFilesLoadingAtom.name}_set');
   }
+
+  final _$isMoveModeEnabledAtom = Atom(name: '_FilesState.isMoveModeEnabled');
+
+  @override
+  bool get isMoveModeEnabled {
+    _$isMoveModeEnabledAtom.context.enforceReadPolicy(_$isMoveModeEnabledAtom);
+    _$isMoveModeEnabledAtom.reportObserved();
+    return super.isMoveModeEnabled;
+  }
+
+  @override
+  set isMoveModeEnabled(bool value) {
+    _$isMoveModeEnabledAtom.context.conditionallyRunInAction(() {
+      super.isMoveModeEnabled = value;
+      _$isMoveModeEnabledAtom.reportChanged();
+    }, _$isMoveModeEnabledAtom, name: '${_$isMoveModeEnabledAtom.name}_set');
+  }
 }

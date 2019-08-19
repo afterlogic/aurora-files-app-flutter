@@ -25,7 +25,10 @@ class FileWidget extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
       ),
       builder: (_) => FileOptionsBottomSheet(
-          file: file, filesState: Provider.of<FilesState>(context)),
+        file: file,
+        filesState: Provider.of<FilesState>(context),
+        scaffoldState: Scaffold.of(context),
+      ),
     );
 
     if (result is String) {

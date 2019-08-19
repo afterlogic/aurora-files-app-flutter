@@ -1,7 +1,20 @@
+import 'dart:convert';
+
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/models/api_body.dart';
+import 'package:aurorafiles/store/app_state.dart';
+import 'package:http/http.dart' as http;
 
 Map<String, String> getHeader(String authToken) {
   return {'Authorization': 'Bearer $authToken'};
+}
+
+Future sendRequest(ApiBody body) async {
+  final store = SingletonStore.instance;
+  final rawResponse = await http.post(store.apiUrl,
+      headers: getHeader(store.authToken), body: body.toMap());
+
+  return json.decode(rawResponse.body);
 }
 
 String getErrMsg(dynamic err) {

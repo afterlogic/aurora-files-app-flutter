@@ -1,5 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
+import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/files_type.dart';
 import 'package:aurorafiles/screens/files/repository/files_api.dart';
 import 'package:aurorafiles/screens/files/repository/files_local_storage.dart';
@@ -31,6 +32,32 @@ abstract class _FilesState with Store {
   @observable
   bool isFilesLoading = false;
 
+  @observable
+  bool isMoveModeEnabled = false;
+
+  List<File> filesToMoveCopy = [];
+
+  void enableMoveMode([List<File> filesToBufferForMoving]) {
+    isMoveModeEnabled = true;
+    filesToMoveCopy = [];
+
+    if (filesToBufferForMoving is List<File>) {
+      filesToMoveCopy = filesToBufferForMoving;
+    } else if (selectedFilesIds.length > 0) {
+      currentFiles.forEach((file) {
+        if (selectedFilesIds.contains(file.id)) filesToMoveCopy.add(file);
+      });
+    } else
+      throw Exception("No files to buffer for moving/copying");
+
+    selectedFilesIds = new Set();
+  }
+
+  void disableMoveMode() {
+    isMoveModeEnabled = false;
+    filesToMoveCopy = new List();
+  }
+
   void onSelectFile(String id) {
     // reassigning to update the observable
     final selectedIds = selectedFilesIds;
@@ -53,7 +80,6 @@ abstract class _FilesState with Store {
       currentFiles =
           await _filesApi.getFiles(currentFilesType, currentPath, "");
     } catch (err) {
-      print("VO: : ${err}");
       onError(err.toString());
     } finally {
       isFilesLoading = false;
@@ -81,25 +107,71 @@ abstract class _FilesState with Store {
     }
   }
 
-  void onDeleteFiles({Function onSuccess, Function(String) onError}) async {
-    final List<Map<String, dynamic>> filesToDelete = [];
+  // supports both extracting files from selected ids and passing file(s) directly
+  void onDeleteFiles({
+    List<File> filesToDelete,
+    @required Function onSuccess,
+    @required Function(String) onError,
+  }) async {
+    final List<Map<String, dynamic>> mappedFilesToDelete = [];
 
-    // find selected files by their id
-    currentFiles.forEach((file) {
-      if (selectedFilesIds.contains(file.id)) {
-        final fileToDelete = FileToDelete(
-            path: file.path, name: file.name, isFolder: file.isFolder);
-        filesToDelete.add(fileToDelete.toMap());
-      }
-    });
+    if (filesToDelete is List) {
+      filesToDelete.forEach((file) {
+        mappedFilesToDelete.add(FileToDelete(
+                path: file.path, name: file.name, isFolder: file.isFolder)
+            .toMap());
+      });
+    } else {
+      // find selected files by their id
+      currentFiles.forEach((file) {
+        if (selectedFilesIds.contains(file.id)) {
+          mappedFilesToDelete.add(FileToDelete(
+                  path: file.path, name: file.name, isFolder: file.isFolder)
+              .toMap());
+        }
+      });
+    }
 
     try {
       isFilesLoading = true;
-      await _filesApi.delete(currentFilesType, currentPath, filesToDelete);
+      await _filesApi.delete(
+          currentFilesType, currentPath, mappedFilesToDelete);
       onSuccess();
     } catch (err) {
       onError(err.toString());
       isFilesLoading = false;
+    }
+  }
+
+  // supports both extracting files from selected ids and passing file(s) directly
+  Future onCopyMoveFiles({
+    @required bool copy,
+    @required Function onSuccess,
+    @required Function(String) onError,
+  }) async {
+    final List<Map<String, dynamic>> mappedFiles = [];
+
+    filesToMoveCopy.forEach((file) {
+      mappedFiles.add(FileToMove(
+              type: file.type,
+              path: file.path,
+              name: file.name,
+              isFolder: file.isFolder)
+          .toMap());
+    });
+
+    try {
+      await _filesApi.copyMoveFiles(
+        copy: copy,
+        files: mappedFiles,
+        fromType: filesToMoveCopy[0].type,
+        toType: currentFilesType,
+        fromPath: filesToMoveCopy[0].path,
+        toPath: currentPath,
+      );
+      onSuccess();
+    } catch (err) {
+      onError(err.toString());
     }
   }
 

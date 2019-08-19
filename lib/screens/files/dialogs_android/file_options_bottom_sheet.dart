@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/move_options_bottom_sheet.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
+
+import 'delete_confirmation_dialog.dart';
 
 class FileOptionsBottomSheet extends StatefulWidget {
   final File file;
@@ -28,6 +32,11 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
     _hasPublicLink = widget.file.published;
   }
 
+  void _showErrSnack(BuildContext context, String err) {
+    widget.filesState.scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(err), backgroundColor: Theme.of(context).errorColor));
+  }
+
   void _getLink() {
     widget.filesState.onGetPublicLink(
       name: widget.file.name,
@@ -41,6 +50,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = false;
+        _showErrSnack(context, err);
       }),
     );
   }
@@ -55,6 +65,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = true;
+        _showErrSnack(context, err);
       }),
     );
   }
@@ -113,7 +124,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
               Divider(height: 0),
               ListTile(
                 leading: Icon(Icons.exit_to_app),
-                title: Text("Move"),
+                title: Text("Copy/Move"),
                 onTap: () {
                   Navigator.pop(context);
                   widget.filesState.enableMoveMode([widget.file]);
@@ -128,6 +139,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                 title: Text("Share"),
                 onTap: () => {},
               ),
+              if (!Platform.isIOS)
+                ListTile(
+                  leading: Icon(Icons.file_download),
+                  title: Text("Download"),
+                  onTap: () {},
+                ),
               ListTile(
                 leading: Icon(Icons.edit),
                 title: Text("Rename"),
@@ -144,6 +161,26 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                   if (result is String) {
                     widget.filesState
                         .onGetFiles(path: widget.filesState.currentPath);
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete_outline),
+                title: Text("Delete"),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final bool shouldDelete = await showDialog(
+                      context: context,
+                      builder: (_) => DeleteConfirmationDialog(itemsNumber: 1));
+                  if (shouldDelete != null && shouldDelete) {
+                    widget.filesState.onDeleteFiles(
+                      filesToDelete: [widget.file],
+                      onSuccess: () {
+                        widget.filesState
+                            .onGetFiles(path: widget.filesState.currentPath);
+                      },
+                      onError: (String err) => _showErrSnack(context, err),
+                    );
                   }
                 },
               ),

@@ -6,17 +6,26 @@ class MoveOptionsBottomSheet extends StatelessWidget {
 
   const MoveOptionsBottomSheet({Key key, this.filesState}) : super(key: key);
 
+  void _showErrSnack(BuildContext context, String err) {
+    filesState.scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(err), backgroundColor: Theme.of(context).errorColor));
+  }
+
   void _moveFiles(BuildContext context, bool copy) {
     filesState.isFilesLoading = FilesLoadingType.filesVisible;
     filesState.onCopyMoveFiles(
         copy: copy,
         onSuccess: () async {
-          await filesState.onGetFiles(path: filesState.currentPath);
+          await filesState.onGetFiles(
+            path: filesState.currentPath,
+            onError: (String err) => _showErrSnack(context, err),
+          );
           filesState.disableMoveMode();
           Navigator.pop(context);
         },
         onError: (err) {
           filesState.isFilesLoading = FilesLoadingType.none;
+          _showErrSnack(context, err);
         });
   }
 

@@ -27,7 +27,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   Future<void> _initFiles() async {
-    _filesState.isFilesLoading = FilesLoadingType.filesHidden;
+    _filesState.filesLoading = FilesLoadingType.filesHidden;
     await _filesState.onGetStorages(
       onError: (String err) => _showErrSnack(context, err),
     );
@@ -57,7 +57,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (shouldDelete != null && shouldDelete) {
       _filesState.onDeleteFiles(
         onSuccess: () {
-          _filesState.selectedFilesIds = new Set();
+          _filesState.quitSelectMode();
           _getFiles(context);
         },
         onError: (String err) => _showErrSnack(context, err),
@@ -76,7 +76,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   Widget _buildFiles(BuildContext context) {
-    if (_filesState.isFilesLoading == FilesLoadingType.filesHidden) {
+    if (_filesState.filesLoading == FilesLoadingType.filesHidden) {
       return ListView.builder(
         itemBuilder: (_, index) => SkeletonLoader(),
         itemCount: 6,
@@ -130,24 +130,28 @@ class _FilesAndroidState extends State<FilesAndroid>
                           _getFiles(context, FilesLoadingType.none),
                       child: Column(
                         children: <Widget>[
-                          Container(
-                            width: double.infinity,
-                            color: Theme.of(context).highlightColor,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(_filesState.currentPath == ""
-                                  ? "/"
-                                  : _filesState.currentPath),
-                            ),
-                          ),
+                          // LOADER
                           AnimatedOpacity(
                             duration: Duration(milliseconds: 150),
-                            opacity: _filesState.isFilesLoading ==
+                            opacity: _filesState.filesLoading ==
                                     FilesLoadingType.filesVisible
                                 ? 1.0
                                 : 0.0,
                             child: LinearProgressIndicator(),
                           ),
+                          // PATH INDICATOR
+                          if (_filesState.mode != Modes.search)
+                            Container(
+                              width: double.infinity,
+                              color: Theme.of(context).highlightColor,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10.0, top: 3.0, bottom: 9.0),
+                                child: Text(_filesState.currentPath == ""
+                                    ? "/"
+                                    : _filesState.currentPath),
+                              ),
+                            ),
                           if (_filesState.currentPath != "")
                             Opacity(
                               opacity: _filesState.selectedFilesIds.length > 0
@@ -170,7 +174,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                         ],
                       ),
                     )),
-            floatingActionButton: _filesState.isMoveModeEnabled
+            floatingActionButton: _filesState.mode == Modes.move
                 ? null
                 : FloatingActionButton(
                     child: Icon(Icons.create_new_folder),

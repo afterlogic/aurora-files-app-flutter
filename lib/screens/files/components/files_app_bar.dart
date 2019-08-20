@@ -21,14 +21,17 @@ class _FilesAppBarState extends State<FilesAppBar>
     with TickerProviderStateMixin {
   FilesState _filesState;
   AnimationController _appBarIconAnimCtrl;
+  Modes currentMode;
+  AppBar _currentAppBar;
+  final _searchInputCtrl = TextEditingController();
 
   @override
   void initState() {
+    super.initState();
     _appBarIconAnimCtrl = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
     );
-    super.initState();
   }
 
   @override
@@ -44,105 +47,133 @@ class _FilesAppBarState extends State<FilesAppBar>
     );
   }
 
-  Widget _getTitle(BuildContext context) {
-    final bool isSelectMode = _filesState.selectedFilesIds.length > 0;
-    if (_filesState.isMoveModeEnabled) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text("Move files/folders"),
-          SizedBox(height: 2),
-          Text(
-            _filesState.selectedStorage.displayName,
-            style: TextStyle(fontSize: 10.0),
-          )
-        ],
-      );
-    } else if (isSelectMode) {
-      return Text("Selected: ${_filesState.selectedFilesIds.length}");
-    } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text("Files"),
-          SizedBox(height: 2),
-          Text(
-            _filesState.selectedStorage.displayName,
-            style: TextStyle(fontSize: 10.0),
-          )
-        ],
-      );
-    }
-  }
-
-  List<IconButton> _getAppbarActions(BuildContext context) {
-    if (_filesState.isMoveModeEnabled) {
-      return [
-        IconButton(
-          icon: Icon(Icons.create_new_folder),
-          tooltip: "Add folder",
-          onPressed: () => showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => AddFolderDialogAndroid(
-              filesState: _filesState,
-            ),
+  AppBar _getAppBar(BuildContext context) {
+    switch (_filesState.mode) {
+      case Modes.none:
+        return AppBar(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("${_filesState.selectedStorage.displayName} Files"),
+              if (_filesState.currentPath.length > 0) SizedBox(height: 2),
+              if (_filesState.currentPath.length > 0)
+                Text(
+                  _filesState.currentPath == "" ? "/" : _filesState.currentPath,
+                  style: TextStyle(fontSize: 10.0),
+                )
+            ],
           ),
-        ),
-      ];
-    } else if (_filesState.selectedFilesIds.length > 0) {
-      return [
-        IconButton(
-          icon: Icon(Icons.exit_to_app),
-          tooltip: "Move/Copy files",
-          onPressed: () {
-            _showPersistentBottomSheet(context);
-            _filesState.enableMoveMode();
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.delete_outline),
-          tooltip: "Delete files",
-          onPressed: () => widget.onDeleteFiles(context),
-        ),
-      ];
-    } else {
-      return [
-        IconButton(
-          icon: Icon(Icons.search),
-          tooltip: "Search",
-          onPressed: () {},
-        ),
-      ];
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search),
+              tooltip: "Search",
+              onPressed: () => _filesState.enableSearchMode(),
+            ),
+          ],
+        );
+      case Modes.select:
+        return AppBar(
+          title: Text("Selected: ${_filesState.selectedFilesIds.length}"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              tooltip: "Move/Copy files",
+              onPressed: () {
+                _showPersistentBottomSheet(context);
+                _filesState.enableMoveMode();
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.delete_outline),
+              tooltip: "Delete files",
+              onPressed: () => widget.onDeleteFiles(context),
+            ),
+          ],
+        );
+      case Modes.move:
+        return AppBar(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Move files/folders"),
+              SizedBox(height: 2),
+              Text(
+                _filesState.selectedStorage.displayName,
+                style: TextStyle(fontSize: 10.0),
+              )
+            ],
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.create_new_folder),
+              tooltip: "Add folder",
+              onPressed: () => showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => AddFolderDialogAndroid(
+                  filesState: _filesState,
+                ),
+              ),
+            ),
+          ],
+        );
+      case Modes.search:
+        return AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.black45,
+            onPressed: () {
+              _searchInputCtrl.text = "";
+              _filesState.disableSearchMode();
+              _filesState.onGetFiles(
+                path: _filesState.currentPath,
+                showLoading: FilesLoadingType.filesHidden,
+              );
+            },
+          ),
+          title: TextField(
+            controller: _searchInputCtrl,
+            autofocus: true,
+            decoration: InputDecoration.collapsed(
+              hintText: "Search",
+              hintStyle: TextStyle(
+                fontSize: Theme.of(context).textTheme.title.fontSize,
+                fontWeight: Theme.of(context).textTheme.title.fontWeight,
+              ),
+            ),
+            style: Theme.of(context).textTheme.title,
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search),
+              color: Colors.black45,
+              onPressed: () => _filesState.onGetFiles(
+                path: _filesState.currentPath,
+                searchPattern: _searchInputCtrl.text,
+              ),
+            )
+          ],
+          backgroundColor: Colors.white,
+        );
+      default:
+        return AppBar();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     _filesState = Provider.of<FilesState>(context);
+    _currentAppBar = _getAppBar(context);
 
     return Observer(
       builder: (_) {
-        final bool isSelectMode = _filesState.selectedFilesIds.length > 0;
-        if (isSelectMode)
-          _appBarIconAnimCtrl.forward();
-        else
-          _appBarIconAnimCtrl.reverse();
+        _currentAppBar = _getAppBar(context);
 
-        return AppBar(
-          leading: IconButton(
-            icon: AnimatedIcon(
-              icon: AnimatedIcons.menu_close,
-              progress: _appBarIconAnimCtrl,
-            ),
-            onPressed: isSelectMode
-                ? () => _filesState.selectedFilesIds = new Set()
-                : () => Scaffold.of(context).openDrawer(),
-          ),
-          title: _getTitle(context),
-          actions: _getAppbarActions(context),
+        return AnimatedSwitcher(
+          duration: Duration(milliseconds: 300),
+          child: _currentAppBar,
         );
       },
     );

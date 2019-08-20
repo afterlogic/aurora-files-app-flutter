@@ -14,7 +14,7 @@ Route onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => AuthAndroid());
 
     case FilesRoute.name:
-      return MaterialPageRoute(builder: (context) => FilesAndroid());
+      return FadeRoute(page: FilesAndroid());
 
     case FileViewerRoute.name:
       final FileViewerScreenArguments args = settings.arguments;

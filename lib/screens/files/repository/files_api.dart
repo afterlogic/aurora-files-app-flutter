@@ -34,8 +34,8 @@ class FilesApi {
 
     if (res['Result'] is List) {
       final List<Storage> storages = [];
-      res['Result'].forEach((rawStorage) =>
-          storages.add(Storage.fromMap(rawStorage)));
+      res['Result']
+          .forEach((rawStorage) => storages.add(Storage.fromMap(rawStorage)));
       return storages;
     } else {
       throw CustomException(getErrMsg(res));
@@ -43,8 +43,12 @@ class FilesApi {
   }
 
   Future<List<File>> getFiles(String type, String path, String pattern) async {
-    final parameters =
-        json.encode({"Type": type, "Path": path, "Pattern": pattern});
+    final parameters = json.encode({
+      "Type": type,
+      "Path": path,
+      "Pattern": pattern,
+      "PathRequired": false,
+    });
 
     final body = new ApiBody(
         module: "Files", method: "GetFiles", parameters: parameters);

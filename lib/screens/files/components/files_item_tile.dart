@@ -11,14 +11,18 @@ class SelectableFilesItemTile extends StatelessWidget {
   final Function onTap;
 
   const SelectableFilesItemTile(
-      {Key key, @required this.child, this.isSelected = false, this.file, this.onTap})
+      {Key key,
+      @required this.child,
+      this.isSelected = false,
+      this.file,
+      this.onTap})
       : super(key: key);
 
   Function _getOnTapCb(FilesState filesState) {
-    if (filesState.isMoveModeEnabled && file != null && !file.isFolder) {
+    if (filesState.mode == Modes.move && file != null && !file.isFolder) {
       return null;
     } else if (filesState.selectedFilesIds.length > 0) {
-      return () => filesState.onSelectFile(file.id);
+      return () => filesState.selectFile(file.id);
     } else {
       return () => onTap();
     }
@@ -55,9 +59,11 @@ class SelectableFilesItemTile extends StatelessWidget {
 
     return InkWell(
       onTap: _getOnTapCb(filesState),
-      onLongPress: filesState.isMoveModeEnabled || file == null || filesState.selectedFilesIds.length > 0
+      onLongPress: filesState.mode == Modes.move ||
+              file == null ||
+              filesState.selectedFilesIds.length > 0
           ? null
-          : () => filesState.onSelectFile(file.id),
+          : () => filesState.selectFile(file.id),
       child: Stack(
         children: <Widget>[
           Column(

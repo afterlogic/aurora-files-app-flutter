@@ -19,6 +19,13 @@ enum FilesLoadingType {
   filesHidden,
 }
 
+enum Modes {
+  none,
+  select,
+  move,
+  search,
+}
+
 abstract class _FilesState with Store {
   final _filesApi = FilesApi();
   final _filesLocal = FilesLocalStorage();
@@ -42,15 +49,14 @@ abstract class _FilesState with Store {
   String currentPath = "";
 
   @observable
-  FilesLoadingType isFilesLoading = FilesLoadingType.none;
+  FilesLoadingType filesLoading = FilesLoadingType.none;
 
   @observable
-  bool isMoveModeEnabled = false;
+  Modes mode = Modes.none;
 
   List<File> filesToMoveCopy = [];
 
   void enableMoveMode([List<File> filesToBufferForMoving]) {
-    isMoveModeEnabled = true;
     filesToMoveCopy = [];
 
     if (filesToBufferForMoving is List<File>) {
@@ -62,15 +68,24 @@ abstract class _FilesState with Store {
     } else
       throw Exception("No files to buffer for moving/copying");
 
-    selectedFilesIds = new Set();
+    quitSelectMode();
+    mode = Modes.move;
   }
 
   void disableMoveMode() {
-    isMoveModeEnabled = false;
     filesToMoveCopy = new List();
+    mode = Modes.none;
   }
 
-  void onSelectFile(String id) {
+  void enableSearchMode() {
+    mode = Modes.search;
+  }
+
+  void disableSearchMode() {
+    mode = Modes.none;
+  }
+
+  void selectFile(String id) {
     // reassigning to update the observable
     final selectedIds = selectedFilesIds;
     if (selectedFilesIds.contains(id)) {
@@ -79,6 +94,13 @@ abstract class _FilesState with Store {
       selectedIds.add(id);
     }
     selectedFilesIds = selectedIds;
+    if (selectedFilesIds.length <= 0) mode = Modes.none;
+    else if (mode != Modes.select) mode = Modes.select;
+  }
+
+  void quitSelectMode() {
+    selectedFilesIds = new Set();
+    mode = Modes.none;
   }
 
   Future<void> onGetStorages({Function(String) onError}) async {
@@ -95,17 +117,18 @@ abstract class _FilesState with Store {
   Future<void> onGetFiles({
     @required String path,
     FilesLoadingType showLoading = FilesLoadingType.filesVisible,
+    String searchPattern = "",
     Function(String) onError,
   }) async {
     currentPath = path;
     try {
-      isFilesLoading = showLoading;
-      currentFiles =
-          await _filesApi.getFiles(selectedStorage.type, currentPath, "");
+      filesLoading = showLoading;
+      currentFiles = await _filesApi.getFiles(
+          selectedStorage.type, currentPath, searchPattern);
     } catch (err) {
       onError(err.toString());
     } finally {
-      isFilesLoading = FilesLoadingType.none;
+      filesLoading = FilesLoadingType.none;
     }
   }
 
@@ -156,13 +179,13 @@ abstract class _FilesState with Store {
     }
 
     try {
-      isFilesLoading = FilesLoadingType.filesVisible;
+      filesLoading = FilesLoadingType.filesVisible;
       await _filesApi.delete(
           selectedStorage.type, currentPath, mappedFilesToDelete);
       onSuccess();
     } catch (err) {
       onError(err.toString());
-      isFilesLoading = FilesLoadingType.none;
+      filesLoading = FilesLoadingType.none;
     }
   }
 

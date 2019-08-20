@@ -128,7 +128,7 @@ class FileWidget extends StatelessWidget {
               )
             ],
           ),
-          trailing: filesState.isMoveModeEnabled ? null : IconButton(
+          trailing: filesState.mode == Modes.move ? null : IconButton(
             padding: EdgeInsets.only(left: 30.0),
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,

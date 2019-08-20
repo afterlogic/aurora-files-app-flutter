@@ -60,37 +60,37 @@ mixin _$FilesState on _FilesState, Store {
     }, _$currentPathAtom, name: '${_$currentPathAtom.name}_set');
   }
 
-  final _$isFilesLoadingAtom = Atom(name: '_FilesState.isFilesLoading');
+  final _$filesLoadingAtom = Atom(name: '_FilesState.filesLoading');
 
   @override
-  FilesLoadingType get isFilesLoading {
-    _$isFilesLoadingAtom.context.enforceReadPolicy(_$isFilesLoadingAtom);
-    _$isFilesLoadingAtom.reportObserved();
-    return super.isFilesLoading;
+  FilesLoadingType get filesLoading {
+    _$filesLoadingAtom.context.enforceReadPolicy(_$filesLoadingAtom);
+    _$filesLoadingAtom.reportObserved();
+    return super.filesLoading;
   }
 
   @override
-  set isFilesLoading(FilesLoadingType value) {
-    _$isFilesLoadingAtom.context.conditionallyRunInAction(() {
-      super.isFilesLoading = value;
-      _$isFilesLoadingAtom.reportChanged();
-    }, _$isFilesLoadingAtom, name: '${_$isFilesLoadingAtom.name}_set');
+  set filesLoading(FilesLoadingType value) {
+    _$filesLoadingAtom.context.conditionallyRunInAction(() {
+      super.filesLoading = value;
+      _$filesLoadingAtom.reportChanged();
+    }, _$filesLoadingAtom, name: '${_$filesLoadingAtom.name}_set');
   }
 
-  final _$isMoveModeEnabledAtom = Atom(name: '_FilesState.isMoveModeEnabled');
+  final _$modeAtom = Atom(name: '_FilesState.mode');
 
   @override
-  bool get isMoveModeEnabled {
-    _$isMoveModeEnabledAtom.context.enforceReadPolicy(_$isMoveModeEnabledAtom);
-    _$isMoveModeEnabledAtom.reportObserved();
-    return super.isMoveModeEnabled;
+  Modes get mode {
+    _$modeAtom.context.enforceReadPolicy(_$modeAtom);
+    _$modeAtom.reportObserved();
+    return super.mode;
   }
 
   @override
-  set isMoveModeEnabled(bool value) {
-    _$isMoveModeEnabledAtom.context.conditionallyRunInAction(() {
-      super.isMoveModeEnabled = value;
-      _$isMoveModeEnabledAtom.reportChanged();
-    }, _$isMoveModeEnabledAtom, name: '${_$isMoveModeEnabledAtom.name}_set');
+  set mode(Modes value) {
+    _$modeAtom.context.conditionallyRunInAction(() {
+      super.mode = value;
+      _$modeAtom.reportChanged();
+    }, _$modeAtom, name: '${_$modeAtom.name}_set');
   }
 }

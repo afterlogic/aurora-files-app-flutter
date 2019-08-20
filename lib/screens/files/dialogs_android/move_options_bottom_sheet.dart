@@ -12,7 +12,7 @@ class MoveOptionsBottomSheet extends StatelessWidget {
   }
 
   void _moveFiles(BuildContext context, bool copy) {
-    filesState.isFilesLoading = FilesLoadingType.filesVisible;
+    filesState.filesLoading = FilesLoadingType.filesVisible;
     filesState.onCopyMoveFiles(
         copy: copy,
         onSuccess: () async {
@@ -24,7 +24,7 @@ class MoveOptionsBottomSheet extends StatelessWidget {
           Navigator.pop(context);
         },
         onError: (err) {
-          filesState.isFilesLoading = FilesLoadingType.none;
+          filesState.filesLoading = FilesLoadingType.none;
           _showErrSnack(context, err);
         });
   }

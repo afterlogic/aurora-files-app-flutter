@@ -1,6 +1,7 @@
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/screens/auth/auth_route.dart';
 import 'package:aurorafiles/screens/auth/state/auth_state.dart';
+import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class MainDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final authState = AuthState();
     final _filesState = Provider.of<FilesState>(context);
+    final _filesPageState = Provider.of<FilesPageState>(context);
 
     return Drawer(
       child: SafeArea(
@@ -75,11 +77,15 @@ class MainDrawer extends StatelessWidget {
                           ? Theme.of(context).selectedRowColor
                           : null,
                       child: ListTile(
-                        selected: _filesState.selectedStorage.type == storage.type,
+                        selected:
+                            _filesState.selectedStorage.type == storage.type,
                         title: Text(storage.displayName),
                         onTap: () {
                           _filesState.selectedStorage = storage;
-                          _filesState.onGetFiles(path: "");
+                          _filesPageState.onGetFiles(
+                            path: "",
+                            storage: storage,
+                          );
                           Navigator.pop(context);
                         },
                       ),

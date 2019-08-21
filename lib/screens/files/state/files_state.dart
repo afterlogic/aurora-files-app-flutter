@@ -1,5 +1,4 @@
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/screens/files/repository/files_api.dart';
@@ -13,29 +12,13 @@ part 'files_state.g.dart';
 
 class FilesState = _FilesState with _$FilesState;
 
-enum FilesLoadingType {
-  none,
-  filesVisible,
-  filesHidden,
-}
-
-enum Modes {
-  none,
-  select,
-  move,
-  search,
-}
-
+// Global files state
 abstract class _FilesState with Store {
   final _filesApi = FilesApi();
   final _filesLocal = FilesLocalStorage();
 
-  final refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
-  final scaffoldKey = new GlobalKey<ScaffoldState>();
-
   final filesTileLeadingSize = 48.0;
 
-  List<File> currentFiles = [];
   List<Storage> currentStorages = [];
 
   @observable
@@ -43,64 +26,28 @@ abstract class _FilesState with Store {
       new Storage(type: "", displayName: "", isExternal: false);
 
   @observable
-  Set<String> selectedFilesIds = new Set();
-
-  @observable
-  String currentPath = "";
-
-  @observable
-  FilesLoadingType filesLoading = FilesLoadingType.none;
-
-  @observable
-  Modes mode = Modes.none;
+  bool isMoveModeEnabled = false;
 
   List<File> filesToMoveCopy = [];
 
-  void enableMoveMode([List<File> filesToBufferForMoving]) {
-    filesToMoveCopy = [];
-
-    if (filesToBufferForMoving is List<File>) {
-      filesToMoveCopy = filesToBufferForMoving;
-    } else if (selectedFilesIds.length > 0) {
+  void enableMoveMode({
+    List<File> filesToMove,
+    Set<String> selectedFileIds,
+    List<File> currentFiles,
+  }) {
+    if (filesToMove != null) filesToMoveCopy = filesToMove;
+    else {
+      filesToMoveCopy = [];
       currentFiles.forEach((file) {
-        if (selectedFilesIds.contains(file.id)) filesToMoveCopy.add(file);
+        if (selectedFileIds.contains(file.id)) filesToMoveCopy.add(file);
       });
-    } else
-      throw Exception("No files to buffer for moving/copying");
-
-    quitSelectMode();
-    mode = Modes.move;
+      isMoveModeEnabled = true;
+    }
   }
 
   void disableMoveMode() {
     filesToMoveCopy = new List();
-    mode = Modes.none;
-  }
-
-  void enableSearchMode() {
-    mode = Modes.search;
-  }
-
-  void disableSearchMode() {
-    mode = Modes.none;
-  }
-
-  void selectFile(String id) {
-    // reassigning to update the observable
-    final selectedIds = selectedFilesIds;
-    if (selectedFilesIds.contains(id)) {
-      selectedIds.remove(id);
-    } else {
-      selectedIds.add(id);
-    }
-    selectedFilesIds = selectedIds;
-    if (selectedFilesIds.length <= 0) mode = Modes.none;
-    else if (mode != Modes.select) mode = Modes.select;
-  }
-
-  void quitSelectMode() {
-    selectedFilesIds = new Set();
-    mode = Modes.none;
+    isMoveModeEnabled = false;
   }
 
   Future<void> onGetStorages({Function(String) onError}) async {
@@ -114,84 +61,17 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future<void> onGetFiles({
-    @required String path,
-    FilesLoadingType showLoading = FilesLoadingType.filesVisible,
-    String searchPattern = "",
-    Function(String) onError,
-  }) async {
-    currentPath = path;
-    try {
-      filesLoading = showLoading;
-      currentFiles = await _filesApi.getFiles(
-          selectedStorage.type, currentPath, searchPattern);
-    } catch (err) {
-      onError(err.toString());
-    } finally {
-      filesLoading = FilesLoadingType.none;
-    }
-  }
-
-  void onLevelUp(Function getNewFiles) {
-    final List<String> pathArray = currentPath.split("/");
-    pathArray.removeLast();
-    currentPath = pathArray.join("/");
-    getNewFiles();
-  }
-
-  void onCreateNewFolder({
-    @required String folderName,
-    Function(String) onSuccess,
-    Function(String) onError,
-  }) async {
-    try {
-      final String newFolderNameFromServer = await _filesApi.createFolder(
-          selectedStorage.type, currentPath, folderName);
-      onSuccess(newFolderNameFromServer);
-    } catch (err) {
-      onError(err.toString());
-    }
-  }
-
-  // supports both extracting files from selected ids and passing file(s) directly
-  void onDeleteFiles({
-    List<File> filesToDelete,
-    @required Function onSuccess,
-    @required Function(String) onError,
-  }) async {
-    final List<Map<String, dynamic>> mappedFilesToDelete = [];
-
-    if (filesToDelete is List) {
-      filesToDelete.forEach((file) {
-        mappedFilesToDelete.add(FileToDelete(
-                path: file.path, name: file.name, isFolder: file.isFolder)
-            .toMap());
-      });
-    } else {
-      // find selected files by their id
-      currentFiles.forEach((file) {
-        if (selectedFilesIds.contains(file.id)) {
-          mappedFilesToDelete.add(FileToDelete(
-                  path: file.path, name: file.name, isFolder: file.isFolder)
-              .toMap());
-        }
-      });
-    }
-
-    try {
-      filesLoading = FilesLoadingType.filesVisible;
-      await _filesApi.delete(
-          selectedStorage.type, currentPath, mappedFilesToDelete);
-      onSuccess();
-    } catch (err) {
-      onError(err.toString());
-      filesLoading = FilesLoadingType.none;
-    }
-  }
+//  void onLevelUp(Function getNewFiles) {
+//    final List<String> pathArray = currentPath.split("/");
+//    pathArray.removeLast();
+//    currentPath = pathArray.join("/");
+//    getNewFiles();
+//  }
 
   // supports both extracting files from selected ids and passing file(s) directly
   Future onCopyMoveFiles({
     @required bool copy,
+    @required String toPath,
     @required Function onSuccess,
     @required Function(String) onError,
   }) async {
@@ -213,7 +93,7 @@ abstract class _FilesState with Store {
         fromType: filesToMoveCopy[0].type,
         toType: selectedStorage.type,
         fromPath: filesToMoveCopy[0].path,
-        toPath: currentPath,
+        toPath: toPath,
       );
       onSuccess();
     } catch (err) {
@@ -225,12 +105,13 @@ abstract class _FilesState with Store {
     @required String name,
     @required int size,
     @required bool isFolder,
+    @required String path,
     @required Function onSuccess,
     @required Function(String) onError,
   }) async {
     try {
       final String link = await _filesApi.createPublicLink(
-          selectedStorage.type, currentPath, name, size, isFolder);
+          selectedStorage.type, path, name, size, isFolder);
       Clipboard.setData(ClipboardData(text: link));
       onSuccess();
     } catch (err) {
@@ -240,11 +121,12 @@ abstract class _FilesState with Store {
 
   Future onDeletePublicLink({
     @required String name,
+    @required String path,
     @required Function onSuccess,
     @required Function(String) onError,
   }) async {
     try {
-      await _filesApi.deletePublicLink(selectedStorage.type, currentPath, name);
+      await _filesApi.deletePublicLink(selectedStorage.type, path, name);
       onSuccess();
     } catch (err) {
       onError(err.toString());

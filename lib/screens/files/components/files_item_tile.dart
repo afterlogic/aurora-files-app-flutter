@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,11 +19,11 @@ class SelectableFilesItemTile extends StatelessWidget {
       this.onTap})
       : super(key: key);
 
-  Function _getOnTapCb(FilesState filesState) {
-    if (filesState.mode == Modes.move && file != null && !file.isFolder) {
+  Function _getOnTapCb(FilesState filesState, FilesPageState filesPageState) {
+    if (filesState.isMoveModeEnabled && file != null && !file.isFolder) {
       return null;
-    } else if (filesState.selectedFilesIds.length > 0) {
-      return () => filesState.selectFile(file.id);
+    } else if (filesPageState.selectedFilesIds.length > 0) {
+      return () => filesPageState.selectFile(file.id);
     } else {
       return () => onTap();
     }
@@ -56,14 +57,15 @@ class SelectableFilesItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filesState = Provider.of<FilesState>(context);
+    final filesPageState = Provider.of<FilesPageState>(context);
 
     return InkWell(
-      onTap: _getOnTapCb(filesState),
-      onLongPress: filesState.mode == Modes.move ||
+      onTap: _getOnTapCb(filesState, filesPageState),
+      onLongPress: filesState.isMoveModeEnabled ||
               file == null ||
-              filesState.selectedFilesIds.length > 0
+          filesPageState.selectedFilesIds.length > 0
           ? null
-          : () => filesState.selectFile(file.id),
+          : () => filesPageState.selectFile(file.id),
       child: Stack(
         children: <Widget>[
           Column(

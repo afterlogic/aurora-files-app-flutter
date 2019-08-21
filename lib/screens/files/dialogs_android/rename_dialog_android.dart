@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,12 @@ import 'package:flutter/material.dart';
 class RenameDialog extends StatefulWidget {
   final File file;
   final FilesState filesState;
+  final FilesPageState filesPageState;
 
   const RenameDialog({
     Key key,
     @required this.file,
+    @required this.filesPageState,
     @required this.filesState,
   }) : super(key: key);
 
@@ -76,7 +79,7 @@ class _RenameDialogState extends State<RenameDialog> {
                     ValidationTypes.uniqueName,
                     ValidationTypes.fileName,
                   ],
-                  widget.filesState.currentFiles,
+                  widget.filesPageState.currentFiles,
                   fileExtension,
                 ),
               ),
@@ -102,7 +105,9 @@ class _RenameDialogState extends State<RenameDialog> {
                         setState(() => isRenaming = false);
                       },
                       onSuccess: (String newNameFromServer) {
-                        widget.filesState.onGetFiles(path: widget.file.path);
+                        widget.filesPageState.onGetFiles(
+                            path: widget.file.path,
+                            storage: widget.filesState.selectedStorage);
                         Navigator.pop(context, newNameFromServer);
                       },
                     );

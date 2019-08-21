@@ -29,4 +29,3 @@ class AppMaterialTheme {
     textTheme: ButtonTextTheme.primary,
   );
 }
-

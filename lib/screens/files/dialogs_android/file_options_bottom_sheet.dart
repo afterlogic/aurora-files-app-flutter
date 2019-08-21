@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/screens/files/dialogs_android/move_options_bottom_sheet.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
+import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
 
@@ -11,11 +11,13 @@ import 'delete_confirmation_dialog.dart';
 class FileOptionsBottomSheet extends StatefulWidget {
   final File file;
   final FilesState filesState;
+  final FilesPageState filesPageState;
 
   const FileOptionsBottomSheet({
     Key key,
     @required this.file,
     @required this.filesState,
+    @required this.filesPageState,
   }) : super(key: key);
 
   @override
@@ -33,17 +35,20 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
   }
 
   void _showErrSnack(BuildContext context, String err) {
-    widget.filesState.scaffoldKey.currentState.showSnackBar(SnackBar(
+    widget.filesPageState.scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(err), backgroundColor: Theme.of(context).errorColor));
   }
 
   void _getLink() {
     widget.filesState.onGetPublicLink(
+      path: widget.filesPageState.pagePath,
       name: widget.file.name,
       size: widget.file.size,
       isFolder: widget.file.isFolder,
       onSuccess: () async {
-        widget.filesState.onGetFiles(path: widget.filesState.currentPath);
+        widget.filesPageState.onGetFiles(
+            path: widget.filesPageState.pagePath,
+            storage: widget.filesState.selectedStorage);
         setState(() => _isGettingPublicLink = false);
         Navigator.pop(context, "Link coppied to clipboard");
       },
@@ -57,9 +62,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
 
   void _deleteLink() {
     widget.filesState.onDeletePublicLink(
+      path: widget.filesPageState.pagePath,
       name: widget.file.name,
       onSuccess: () async {
-        widget.filesState.onGetFiles(path: widget.filesState.currentPath);
+        widget.filesPageState.onGetFiles(
+            path: widget.filesPageState.pagePath,
+            storage: widget.filesState.selectedStorage);
         setState(() => _isGettingPublicLink = false);
       },
       onError: (String err) => setState(() {
@@ -127,11 +135,11 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                 title: Text("Copy/Move"),
                 onTap: () {
                   Navigator.pop(context);
-                  widget.filesState.enableMoveMode([widget.file]);
-                  widget.filesState.scaffoldKey.currentState.showBottomSheet(
-                    (_) =>
-                        MoveOptionsBottomSheet(filesState: widget.filesState),
-                  );
+                  widget.filesState.enableMoveMode(filesToMove: [widget.file]);
+//                  _scaffoldKey.currentState.showBottomSheet(
+//                    (_) =>
+//                        MoveOptionsBottomSheet(filesState: widget.filesState),
+//                  );
                 },
               ),
               if (!widget.file.isFolder)
@@ -157,11 +165,13 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                     builder: (_) => RenameDialog(
                       file: widget.file,
                       filesState: widget.filesState,
+                      filesPageState: widget.filesPageState,
                     ),
                   );
                   if (result is String) {
-                    widget.filesState
-                        .onGetFiles(path: widget.filesState.currentPath);
+                    widget.filesPageState.onGetFiles(
+                        path: widget.filesPageState.pagePath,
+                        storage: widget.filesState.selectedStorage);
                   }
                 },
               ),
@@ -174,11 +184,14 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
                       context: context,
                       builder: (_) => DeleteConfirmationDialog(itemsNumber: 1));
                   if (shouldDelete != null && shouldDelete) {
-                    widget.filesState.onDeleteFiles(
+                    widget.filesPageState.onDeleteFiles(
+                      storage: widget.filesState.selectedStorage,
                       filesToDelete: [widget.file],
                       onSuccess: () {
-                        widget.filesState
-                            .onGetFiles(path: widget.filesState.currentPath);
+                        widget.filesPageState.onGetFiles(
+                          path: widget.filesPageState.pagePath,
+                          storage: widget.filesState.selectedStorage,
+                        );
                       },
                       onError: (String err) => _showErrSnack(context, err),
                     );

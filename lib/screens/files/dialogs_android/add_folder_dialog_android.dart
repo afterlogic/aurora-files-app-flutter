@@ -1,13 +1,16 @@
+import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
 
 class AddFolderDialogAndroid extends StatefulWidget {
   final FilesState filesState;
+  final FilesPageState filesPageState;
 
   const AddFolderDialogAndroid({
     Key key,
     @required this.filesState,
+    @required this.filesPageState,
   }) : super(key: key);
 
   @override
@@ -61,7 +64,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                         ValidationTypes.fileName,
                         ValidationTypes.uniqueName,
                       ],
-                      widget.filesState.currentFiles,
+                      widget.filesPageState.currentFiles,
                     ),
                   ),
                 ],
@@ -80,15 +83,18 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                     if (!_addFolderFormKey.currentState.validate()) return;
                     errMsg = "";
                     setState(() => isAdding = true);
-                    widget.filesState.onCreateNewFolder(
+                    widget.filesPageState.onCreateNewFolder(
+                      storage: widget.filesState.selectedStorage,
                       folderName: _folderNameCtrl.text,
                       onError: (String err) {
                         errMsg = err;
                         setState(() => isAdding = false);
                       },
                       onSuccess: (String newNameFromServer) {
-                        widget.filesState
-                            .onGetFiles(path: widget.filesState.currentPath);
+                        widget.filesPageState.onGetFiles(
+                          path: widget.filesPageState.pagePath,
+                          storage: widget.filesState.selectedStorage,
+                        );
                         Navigator.pop(context, newNameFromServer);
                       },
                     );

@@ -1,5 +1,7 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/file_options_bottom_sheet.dart';
+import 'package:aurorafiles/screens/files/files_route.dart';
+import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -33,14 +35,23 @@ class FolderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filesState = Provider.of<FilesState>(context);
+    final filesPageState = Provider.of<FilesPageState>(context);
     final margin = 5.0;
 
     return Observer(
       builder: (_) => SelectableFilesItemTile(
         file: folder,
-        isSelected: filesState.selectedFilesIds.contains(folder.id),
-        onTap: () => filesState.onGetFiles(
-            path: folder.fullPath, showLoading: FilesLoadingType.filesHidden),
+        isSelected: filesPageState.selectedFilesIds.contains(folder.id),
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            FilesRoute.name,
+            arguments: FilesScreenArguments(
+              filesState: filesState,
+              path: folder.fullPath,
+            ),
+          );
+        },
         child: ListTile(
           leading: Icon(
             Icons.folder,
@@ -51,7 +62,8 @@ class FolderWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(folder.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-              if (folder.published || folder.localId != null) SizedBox(height: 7.0),
+              if (folder.published || folder.localId != null)
+                SizedBox(height: 7.0),
               Row(children: <Widget>[
                 if (folder.published)
                   Icon(
@@ -72,7 +84,7 @@ class FolderWidget extends StatelessWidget {
               ]),
             ],
           ),
-          trailing: filesState.mode == Modes.move
+          trailing: filesState.isMoveModeEnabled
               ? null
               : IconButton(
                   padding: EdgeInsets.only(left: 30.0),

@@ -1,5 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
+import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:filesize/filesize.dart';
@@ -11,14 +12,14 @@ import 'components/info_list_tile.dart';
 
 class FileViewerAndroid extends StatefulWidget {
   final File file;
-
-  // this is to update files on the files screen after file renaming
   final FilesState filesState;
+  final FilesPageState filesPageState;
 
   FileViewerAndroid({
     Key key,
     @required this.file,
     @required this.filesState,
+    @required this.filesPageState,
   }) : super(key: key);
 
   @override
@@ -58,7 +59,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      builder: (_) => widget.filesState,
+      builder: (_) => widget.filesPageState,
       dispose: (_, val) => val.dispose(),
       child: Scaffold(
         key: _scaffoldKey,
@@ -98,10 +99,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   builder: (_) => RenameDialog(
                     file: widget.file,
                     filesState: widget.filesState,
+                    filesPageState: widget.filesPageState,
                   ),
                 );
                 if (result is String) {
-                  widget.filesState.currentFiles.forEach((updatedFile) {
+                  widget.filesPageState.currentFiles.forEach((updatedFile) {
                     if (updatedFile.id == result) {
                       setState(() => file = updatedFile);
                     }

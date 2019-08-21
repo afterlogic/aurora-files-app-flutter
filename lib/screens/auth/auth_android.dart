@@ -1,5 +1,6 @@
 import 'package:aurorafiles/screens/auth/state/auth_state.dart';
 import 'package:aurorafiles/screens/files/files_route.dart';
+import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/my_button.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,9 @@ class _AuthAndroidState extends State<AuthAndroid> {
                           isFormValid:
                               AuthAndroid._authFormKey.currentState.validate(),
                           onSuccess: () => Navigator.pushReplacementNamed(
-                              context, FilesRoute.name),
+                              context, FilesRoute.name,
+                              arguments: FilesScreenArguments(
+                                  path: "", filesState: FilesState())),
                           onError: (errText) =>
                               _showErrSnackBar(context, errText),
                         ),

@@ -1,6 +1,7 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/file_options_bottom_sheet.dart';
+import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
@@ -74,6 +75,7 @@ class FileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filesState = Provider.of<FilesState>(context);
+    final filesPageState = Provider.of<FilesPageState>(context);
     final margin = 5.0;
 
     return Observer(
@@ -85,9 +87,10 @@ class FileWidget extends StatelessWidget {
           arguments: FileViewerScreenArguments(
             file: file,
             filesState: filesState,
+            filesPageState: filesPageState,
           ),
         ),
-        isSelected: filesState.selectedFilesIds.contains(file.id),
+        isSelected: filesPageState.selectedFilesIds.contains(file.id),
         child: ListTile(
           leading: _getThumbnail(context),
           title: Column(
@@ -128,7 +131,7 @@ class FileWidget extends StatelessWidget {
               )
             ],
           ),
-          trailing: filesState.mode == Modes.move ? null : IconButton(
+          trailing: filesState.isMoveModeEnabled ? null : IconButton(
             padding: EdgeInsets.only(left: 30.0),
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,

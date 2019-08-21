@@ -10,15 +10,26 @@ import 'package:provider/provider.dart';
 
 import 'components/folder.dart';
 import 'components/skeleton_loader.dart';
+import 'state/files_page_state.dart';
 
 class FilesAndroid extends StatefulWidget {
+  final FilesState filesState;
+  final String path;
+
+  FilesAndroid({
+    Key key,
+    this.filesState,
+    this.path = "",
+  }) : super(key: key);
+
   @override
   _FilesAndroidState createState() => _FilesAndroidState();
 }
 
 class _FilesAndroidState extends State<FilesAndroid>
     with TickerProviderStateMixin {
-  final _filesState = FilesState();
+  FilesState _filesState;
+  FilesPageState _filesPageState;
 
   @override
   void initState() {
@@ -27,11 +38,19 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   Future<void> _initFiles() async {
-    _filesState.filesLoading = FilesLoadingType.filesHidden;
-    await _filesState.onGetStorages(
-      onError: (String err) => _showErrSnack(context, err),
-    );
-    _getFiles(context, FilesLoadingType.filesHidden);
+    _filesState = widget.filesState ?? FilesState();
+    _filesPageState = FilesPageState();
+    _filesPageState.pagePath = widget.path;
+
+    if (widget.filesState == null) {
+      _filesPageState.filesLoading = FilesLoadingType.filesHidden;
+      await _filesState.onGetStorages(
+        onError: (String err) => _showErrSnack(context, err),
+      );
+    }
+    if (_filesState.selectedStorage != null) {
+      _getFiles(context, FilesLoadingType.filesHidden);
+    }
   }
 
   @override
@@ -42,8 +61,9 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   Future<void> _getFiles(BuildContext context,
       [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) {
-    return _filesState.onGetFiles(
-      path: _filesState.currentPath,
+    return _filesPageState.onGetFiles(
+      path: _filesPageState.pagePath,
+      storage: _filesState.selectedStorage,
       showLoading: showLoading,
       onError: (String err) => _showErrSnack(context, err),
     );
@@ -53,11 +73,12 @@ class _FilesAndroidState extends State<FilesAndroid>
     final bool shouldDelete = await showDialog(
         context: context,
         builder: (_) => DeleteConfirmationDialog(
-            itemsNumber: _filesState.selectedFilesIds.length));
+            itemsNumber: _filesPageState.selectedFilesIds.length));
     if (shouldDelete != null && shouldDelete) {
-      _filesState.onDeleteFiles(
+      _filesPageState.onDeleteFiles(
+        storage: _filesState.selectedStorage,
         onSuccess: () {
-          _filesState.quitSelectMode();
+          _filesPageState.quitSelectMode();
           _getFiles(context);
         },
         onError: (String err) => _showErrSnack(context, err),
@@ -71,18 +92,18 @@ class _FilesAndroidState extends State<FilesAndroid>
       backgroundColor: Theme.of(context).errorColor,
     );
 
-    _filesState.scaffoldKey.currentState.removeCurrentSnackBar();
-    _filesState.scaffoldKey.currentState.showSnackBar(snack);
+    _filesPageState.scaffoldKey.currentState.removeCurrentSnackBar();
+    _filesPageState.scaffoldKey.currentState.showSnackBar(snack);
   }
 
   Widget _buildFiles(BuildContext context) {
-    if (_filesState.filesLoading == FilesLoadingType.filesHidden) {
+    if (_filesPageState.filesLoading == FilesLoadingType.filesHidden) {
       return ListView.builder(
         itemBuilder: (_, index) => SkeletonLoader(),
         itemCount: 6,
       );
-    } else if (_filesState.currentFiles == null ||
-        _filesState.currentFiles.length <= 0) {
+    } else if (_filesPageState.currentFiles == null ||
+        _filesPageState.currentFiles.length <= 0) {
       return ListView(
         physics: AlwaysScrollableScrollPhysics(),
         children: [
@@ -97,9 +118,9 @@ class _FilesAndroidState extends State<FilesAndroid>
       );
     } else {
       return ListView.builder(
-        itemCount: _filesState.currentFiles.length,
+        itemCount: _filesPageState.currentFiles.length,
         itemBuilder: (BuildContext context, int index) {
-          final item = _filesState.currentFiles[index];
+          final item = _filesPageState.currentFiles[index];
           if (item.isFolder) {
             return FolderWidget(key: Key(item.id), folder: item);
           } else {
@@ -112,19 +133,29 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   @override
   Widget build(BuildContext context) {
-    return Provider<FilesState>(
-      builder: (_) => _filesState,
-      dispose: (_, value) => value.dispose(),
+    return MultiProvider(
+      providers: [
+        Provider<FilesState>(
+          builder: (_) => _filesState,
+          dispose: (_, value) => value.dispose(),
+        ),
+        Provider<FilesPageState>(
+          builder: (_) => _filesPageState,
+          dispose: (_, value) => value.dispose(),
+        ),
+        Provider<GlobalKey<ScaffoldState>>(
+          builder: (_) => _filesPageState.scaffoldKey,
+        )
+      ],
       child: SafeArea(
         top: false,
         child: Observer(
           builder: (_) => Scaffold(
-            key: _filesState.scaffoldKey,
+            key: _filesPageState.scaffoldKey,
             drawer: MainDrawer(),
             appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
             body: Observer(
                 builder: (_) => RefreshIndicator(
-                      key: _filesState.refreshIndicatorKey,
                       color: Theme.of(context).primaryColor,
                       onRefresh: () =>
                           _getFiles(context, FilesLoadingType.none),
@@ -133,48 +164,48 @@ class _FilesAndroidState extends State<FilesAndroid>
                           // LOADER
                           AnimatedOpacity(
                             duration: Duration(milliseconds: 150),
-                            opacity: _filesState.filesLoading ==
+                            opacity: _filesPageState.filesLoading ==
                                     FilesLoadingType.filesVisible
                                 ? 1.0
                                 : 0.0,
                             child: LinearProgressIndicator(),
                           ),
                           // PATH INDICATOR
-                          if (_filesState.mode != Modes.search)
-                            Container(
-                              width: double.infinity,
-                              color: Theme.of(context).highlightColor,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, top: 3.0, bottom: 9.0),
-                                child: Text(_filesState.currentPath == ""
-                                    ? "/"
-                                    : _filesState.currentPath),
-                              ),
-                            ),
-                          if (_filesState.currentPath != "")
-                            Opacity(
-                              opacity: _filesState.selectedFilesIds.length > 0
-                                  ? 0.3
-                                  : 1,
-                              child: ListTile(
-                                leading: Icon(Icons.arrow_upward),
-                                title: Text("Level Up"),
-                                onTap: _filesState.selectedFilesIds.length > 0
-                                    ? null
-                                    : () => _filesState.onLevelUp(
-                                          () => _getFiles(context,
-                                              FilesLoadingType.filesHidden),
-                                        ),
-                              ),
-                            ),
+//                          if (_filesState.mode != Modes.search)
+//                            Container(
+//                              width: double.infinity,
+//                              color: Theme.of(context).highlightColor,
+//                              child: Padding(
+//                                padding: const EdgeInsets.only(
+//                                    left: 10.0, top: 3.0, bottom: 9.0),
+//                                child: Text(_filesState.currentPath == ""
+//                                    ? "/"
+//                                    : _filesState.currentPath),
+//                              ),
+//                            ),
+//                          if (_filesState.currentPath != "")
+//                            Opacity(
+//                              opacity: _filesState.selectedFilesIds.length > 0
+//                                  ? 0.3
+//                                  : 1,
+//                              child: ListTile(
+//                                leading: Icon(Icons.arrow_upward),
+//                                title: Text("Level Up"),
+//                                onTap: _filesState.selectedFilesIds.length > 0
+//                                    ? null
+//                                    : () => _filesState.onLevelUp(
+//                                          () => _getFiles(context,
+//                                              FilesLoadingType.filesHidden),
+//                                        ),
+//                              ),
+//                            ),
                           Expanded(
                             child: _buildFiles(context),
                           ),
                         ],
                       ),
                     )),
-            floatingActionButton: _filesState.mode == Modes.move
+            floatingActionButton: _filesState.isMoveModeEnabled
                 ? null
                 : FloatingActionButton(
                     child: Icon(Icons.create_new_folder),
@@ -185,6 +216,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                       barrierDismissible: false,
                       builder: (_) => AddFolderDialogAndroid(
                         filesState: _filesState,
+                        filesPageState: _filesPageState,
                       ),
                     ),
                   ),

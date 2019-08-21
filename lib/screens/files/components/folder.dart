@@ -3,6 +3,7 @@ import 'package:aurorafiles/screens/files/dialogs_android/file_options_bottom_sh
 import 'package:aurorafiles/screens/files/files_route.dart';
 import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
+import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -15,21 +16,13 @@ class FolderWidget extends StatelessWidget {
   const FolderWidget({Key key, @required this.folder}) : super(key: key);
 
   Future _showModalBottomSheet(context) async {
-    final String result = await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-      ),
-      builder: (_) => FileOptionsBottomSheet(
+    Navigator.of(context).push(CustomBottomSheet(
+      child: FileOptionsBottomSheet(
         file: folder,
         filesState: Provider.of<FilesState>(context),
+        filesPageState: Provider.of<FilesPageState>(context),
       ),
-    );
-
-    if (result is String) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text(result)));
-    }
+    ));
   }
 
   @override

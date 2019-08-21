@@ -108,6 +108,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                 onPressed: Navigator.of(context).pop,
               )
             : null,
+        automaticallyImplyLeading: _filesPageState.pagePath.length > 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -126,6 +127,11 @@ class _FilesAppBarState extends State<FilesAppBar>
             icon: Icon(Icons.search),
             tooltip: "Search",
             onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.menu),
+            tooltip: "Menu",
+            onPressed: _filesPageState.scaffoldKey.currentState.openDrawer,
           ),
         ],
       );

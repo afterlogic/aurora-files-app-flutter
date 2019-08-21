@@ -3,6 +3,7 @@ import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
+import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,21 +20,13 @@ class FileWidget extends StatelessWidget {
   const FileWidget({Key key, @required this.file}) : super(key: key);
 
   Future _showModalBottomSheet(context) async {
-    final String result = await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-      ),
-      builder: (_) => FileOptionsBottomSheet(
+    Navigator.of(context).push(CustomBottomSheet(
+      child: FileOptionsBottomSheet(
         file: file,
         filesState: Provider.of<FilesState>(context),
+        filesPageState: Provider.of<FilesPageState>(context),
       ),
-    );
-
-    if (result is String) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text(result)));
-    }
+    ));
   }
 
   Widget _getThumbnail(BuildContext context) {
@@ -131,13 +124,15 @@ class FileWidget extends StatelessWidget {
               )
             ],
           ),
-          trailing: filesState.isMoveModeEnabled ? null : IconButton(
-            padding: EdgeInsets.only(left: 30.0),
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            icon: Icon(Icons.more_vert),
-            onPressed: () => _showModalBottomSheet(context),
-          ),
+          trailing: filesState.isMoveModeEnabled
+              ? null
+              : IconButton(
+                  padding: EdgeInsets.only(left: 30.0),
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  icon: Icon(Icons.more_vert),
+                  onPressed: () => _showModalBottomSheet(context),
+                ),
         ),
       ),
     );

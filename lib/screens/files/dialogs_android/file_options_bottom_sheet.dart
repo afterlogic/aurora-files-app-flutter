@@ -24,7 +24,8 @@ class FileOptionsBottomSheet extends StatefulWidget {
   _FileOptionsBottomSheetState createState() => _FileOptionsBottomSheetState();
 }
 
-class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
+class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
+    with TickerProviderStateMixin {
   bool _isGettingPublicLink = false;
   bool _hasPublicLink = false;
 
@@ -50,7 +51,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet> {
             path: widget.filesPageState.pagePath,
             storage: widget.filesState.selectedStorage);
         setState(() => _isGettingPublicLink = false);
-        Navigator.pop(context, "Link coppied to clipboard");
+        widget.filesPageState.scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content: Text("Link coppied to clipboard"),
+          ),
+        );
+        Navigator.pop(context);
       },
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;

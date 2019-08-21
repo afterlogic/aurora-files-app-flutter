@@ -30,15 +30,15 @@ class MainDrawer extends StatelessWidget {
                     ),
                     child: Stack(
                       children: [
-                        Positioned(
-                          right: -10,
-                          bottom: -5,
-                          child: IconButton(
-                            icon: Icon(Icons.settings),
-                            color: Colors.white,
-                            onPressed: () {},
-                          ),
-                        ),
+//                        Positioned(
+//                          right: -10,
+//                          bottom: -5,
+//                          child: IconButton(
+//                            icon: Icon(Icons.settings),
+//                            color: Colors.white,
+//                            onPressed: () {},
+//                          ),
+//                        ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +56,8 @@ class MainDrawer extends StatelessWidget {
                             ),
                             SizedBox(height: 20),
                             Padding(
-                              padding: const EdgeInsets.only(right: 45.0),
+//                              padding: const EdgeInsets.only(right: 45.0),
+                              padding: const EdgeInsets.all(0.0),
                               child: Text(
                                 "v.osovskii@afterlogic.com",
                                 overflow: TextOverflow.ellipsis,
@@ -79,6 +80,7 @@ class MainDrawer extends StatelessWidget {
                       child: ListTile(
                         selected:
                             _filesState.selectedStorage.type == storage.type,
+                        leading: Icon(Icons.storage),
                         title: Text(storage.displayName),
                         onTap: () {
                           _filesState.selectedStorage = storage;
@@ -90,7 +92,20 @@ class MainDrawer extends StatelessWidget {
                         },
                       ),
                     );
-                  })
+                  }),
+                  Divider(),
+                  ListTile(
+                    leading: Icon(Icons.airplanemode_active),
+                    title: Text("Offline mode"),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.link),
+                    title: Text("Public links"),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text("Settings"),
+                  )
                 ],
               ),
             ),

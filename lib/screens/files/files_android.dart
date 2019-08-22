@@ -149,6 +149,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       ],
       child: SafeArea(
         top: false,
+        bottom: false,
         child: Observer(
           builder: (_) => Scaffold(
             key: _filesPageState.scaffoldKey,
@@ -157,8 +158,12 @@ class _FilesAndroidState extends State<FilesAndroid>
             body: Observer(
                 builder: (_) => RefreshIndicator(
                       color: Theme.of(context).primaryColor,
-                      onRefresh: () =>
-                          _getFiles(context, FilesLoadingType.none),
+                      onRefresh: () async {
+                        if (_filesState.currentStorages.length <= 0) {
+                          await _filesState.onGetStorages();
+                        }
+                        return _getFiles(context, FilesLoadingType.none);
+                      },
                       child: Column(
                         children: <Widget>[
                           // LOADER

@@ -6,7 +6,7 @@ class CustomBottomSheet extends ModalRoute<void> {
   CustomBottomSheet({@required this.child});
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 250);
+  Duration get transitionDuration => Duration(milliseconds: 200);
 
   @override
   bool get opaque => false;

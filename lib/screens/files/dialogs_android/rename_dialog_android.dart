@@ -60,7 +60,7 @@ class _RenameDialogState extends State<RenameDialog> {
               children: <Widget>[
                 CircularProgressIndicator(),
                 SizedBox(width: 20.0),
-                Text("Renaming to ${_fileNameCtrl.text}.$fileExtension")
+                Text("Renaming to ${_fileNameCtrl.text + fileExtension}")
               ],
             )
           : Form(

@@ -50,6 +50,10 @@ class _FilesAppBarState extends State<FilesAppBar>
   AppBar _getAppBar(BuildContext context) {
     if (_filesPageState.selectedFilesIds.length > 0) {
       return AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () => _filesPageState.quitSelectMode(),
+        ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
         actions: <Widget>[
           IconButton(
@@ -107,17 +111,18 @@ class _FilesAppBarState extends State<FilesAppBar>
                 icon: Icon(Icons.arrow_back),
                 onPressed: Navigator.of(context).pop,
               )
-            : null,
-        automaticallyImplyLeading: _filesPageState.pagePath.length > 0,
+            : Icon(Icons.folder),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(_filesState.selectedStorage.displayName),
-            if (_filesPageState.pagePath.length > 0) SizedBox(height: 2),
-            if (_filesPageState.pagePath.length > 0)
+            Text("Aurora.Files"),
+            if (_filesState.selectedStorage.displayName.length > 0)
+              SizedBox(height: 2),
+            if (_filesState.selectedStorage.displayName.length > 0)
               Text(
-                _filesPageState.pagePath,
+                _filesState.selectedStorage.displayName +
+                    _filesPageState.pagePath,
                 style: TextStyle(fontSize: 10.0),
               )
           ],

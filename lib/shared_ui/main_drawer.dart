@@ -88,7 +88,7 @@ class MainDrawer extends StatelessWidget {
                             path: "",
                             storage: storage,
                           );
-                          Navigator.pop(context);
+                          Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
                         },
                       ),
                     );

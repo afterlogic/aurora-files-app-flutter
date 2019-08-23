@@ -1,16 +1,16 @@
 import 'package:aurorafiles/screens/files/components/file.dart';
 import 'package:aurorafiles/screens/files/components/files_app_bar.dart';
-import 'package:aurorafiles/screens/files/dialogs_android/add_folder_dialog_android.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
+import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:unicorndial/unicorndial.dart';
 
 import 'components/folder.dart';
 import 'components/skeleton_loader.dart';
+import 'dialogs_android/add_folder_dialog_android.dart';
 import 'state/files_page_state.dart';
 
 class FilesAndroid extends StatefulWidget {
@@ -213,66 +213,49 @@ class _FilesAndroidState extends State<FilesAndroid>
                         ],
                       ),
                     )),
-            floatingActionButton: _filesState.isMoveModeEnabled
-                ? null
-                : UnicornDialer(
-                    parentHeroTag:
-                        _filesState.selectedStorage.type + widget.path,
-                    parentButton: Icon(Icons.add),
-                    finalButtonIcon: Icon(Icons.close),
-                    parentButtonBackground: Theme.of(context).primaryColor,
-                    backgroundColor: Colors.transparent,
-                    childButtons: [
-                        UnicornButton(
-                          currentButton: FloatingActionButton(
-                            heroTag: _filesState.selectedStorage.type +
-                                widget.path +
-                                "1",
-                            child: Icon(Icons.create_new_folder),
-                            backgroundColor: Theme.of(context).cardColor,
-                            foregroundColor: Theme.of(context).iconTheme.color,
-                            mini: true,
-                            onPressed: () => showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (_) => AddFolderDialogAndroid(
-                                filesState: _filesState,
-                                filesPageState: _filesPageState,
-                              ),
-                            ),
+            floatingActionButton: FloatingActionButton(
+              heroTag: widget.path,
+              child: Icon(Icons.add),
+              backgroundColor: Theme.of(context).primaryColor,
+              onPressed: () => Navigator.push(
+                  context,
+                  CustomSpeedDial(tag: widget.path, children: [
+                    MiniFab(
+                      icon: Icon(Icons.create_new_folder),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => AddFolderDialogAndroid(
+                            filesState: _filesState,
+                            filesPageState: _filesPageState,
                           ),
-                        ),
-                        UnicornButton(
-                          currentButton: FloatingActionButton(
-                            heroTag: _filesState.selectedStorage.type +
-                                widget.path +
-                                "2",
-                            child: Icon(Icons.cloud_upload),
-                            mini: true,
-                            backgroundColor: Theme.of(context).cardColor,
-                            foregroundColor: Theme.of(context).iconTheme.color,
-                            onPressed: () {
-                              _filesState.onUploadFile(
-                                onUploadStart: () => _showSnack(
-                                  context,
-                                  "Uploading file...",
-                                  false,
-                                ),
-                                onSuccess: () {
-                                  _showSnack(
-                                    context,
-                                    "File successfully uploaded",
-                                    false,
-                                  );
-                                  _getFiles(context);
-                                },
-                                onError: (String err) =>
-                                    _showSnack(context, err),
-                              );
-                            },
+                        );
+                      },
+                    ),
+                    MiniFab(
+                      icon: Icon(Icons.cloud_upload),
+                      onPressed: () {
+                        _filesState.onUploadFile(
+                          onUploadStart: () => _showSnack(
+                            context,
+                            "Uploading file...",
+                            false,
                           ),
-                        ),
-                      ]),
+                          onSuccess: () {
+                            _showSnack(
+                              context,
+                              "File successfully uploaded",
+                              false,
+                            );
+                            _getFiles(context);
+                          },
+                          onError: (String err) => _showSnack(context, err),
+                        );
+                      },
+                    ),
+                  ])),
+            ),
           ),
         ),
       ),

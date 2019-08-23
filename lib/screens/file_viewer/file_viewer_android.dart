@@ -108,8 +108,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                       setState(() => file = updatedFile);
                     }
                   });
-                } else {
-                  Navigator.pop(context);
                 }
               },
             ),

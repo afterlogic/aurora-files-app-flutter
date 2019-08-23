@@ -190,7 +190,7 @@ abstract class _FilesState with Store {
       else
         onSuccess();
     }, onError: (ex, stacktrace) {
-      throw onError(ex.toString());
+      onError(ex.message);
     });
   }
 

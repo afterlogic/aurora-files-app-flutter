@@ -43,8 +43,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     _filesPageState = FilesPageState();
     _filesPageState.pagePath = widget.path;
 
-    if (widget.filesState == null ||
-        widget.filesState.currentStorages.length <= 0) {
+    if (_filesState.currentStorages.length <= 0) {
       _filesPageState.filesLoading = FilesLoadingType.filesHidden;
       await _filesState.onGetStorages(
         onError: (String err) => _showSnack(context, err),

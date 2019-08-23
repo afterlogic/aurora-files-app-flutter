@@ -71,21 +71,29 @@ class _AuthAndroidState extends State<AuthAndroid> {
                   Text("Login", style: Theme.of(context).textTheme.display1),
                   SizedBox(height: 23.0),
                   TextFormField(
+                    cursorColor: Theme.of(context).primaryColor,
                     controller: authState.emailCtrl,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) => validateInput(
                         value, [ValidationTypes.empty, ValidationTypes.email]),
-                    decoration: InputDecoration(labelText: "Email"),
+                    decoration: InputDecoration(
+                      hintText: "Email",
+                      icon: Icon(Icons.email),
+                    ),
                   ),
                   SizedBox(height: 20),
                   TextFormField(
+                    cursorColor: Theme.of(context).primaryColor,
                     controller: authState.passwordCtrl,
                     validator: (value) =>
                         validateInput(value, [ValidationTypes.empty]),
                     obscureText: true,
-                    decoration: InputDecoration(labelText: "Password"),
+                    decoration: InputDecoration(
+                      hintText: "Password",
+                      icon: Icon(Icons.lock),
+                    ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,
                     child: Observer(

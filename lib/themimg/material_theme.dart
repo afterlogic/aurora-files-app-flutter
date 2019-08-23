@@ -21,7 +21,7 @@ class AppMaterialTheme {
   );
 
   static final _inputTheme = InputDecorationTheme(
-    border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+//    border: OutlineInputBorder(borderRadius: BorderRadius.zero),
   );
 
   static final _buttonTheme = ButtonThemeData(

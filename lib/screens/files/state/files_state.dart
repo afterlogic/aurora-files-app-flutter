@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/screens/files/repository/files_api.dart';
 import 'package:aurorafiles/screens/files/repository/files_local_storage.dart';
+import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_uploader/flutter_uploader.dart';
 import 'package:mobx/mobx.dart';
 
 part 'files_state.g.dart';
@@ -35,7 +39,8 @@ abstract class _FilesState with Store {
     Set<String> selectedFileIds,
     List<File> currentFiles,
   }) {
-    if (filesToMove != null) filesToMoveCopy = filesToMove;
+    if (filesToMove != null)
+      filesToMoveCopy = filesToMove;
     else {
       filesToMoveCopy = [];
       currentFiles.forEach((file) {
@@ -155,6 +160,40 @@ abstract class _FilesState with Store {
     }
   }
 
+  Future onUploadFile({
+    @required Function onUploadStart,
+    @required Function onSuccess,
+    @required Function(String) onError,
+  }) async {
+    // Pick 1 file since our back supports adding only 1 file at a time
+    final filePath = await _filesLocal.pickFiles();
+    if (filePath == null) return;
+
+    // Get name and path
+    final List<String> pathList = filePath.split("/");
+    final name = pathList.last;
+    pathList.removeLast();
+
+    FileItem fileItem =
+        new FileItem(filename: name, savedDir: pathList.join("/"));
+
+    // Start uploading
+    onUploadStart();
+    final sub = _filesLocal.uploadFile(
+        fileItems: [fileItem], storageType: selectedStorage.type, path: "");
+
+    // Subscribe to result
+    sub.listen((result) {
+      Map<String, dynamic> res = json.decode(result.response);
+      if (res["Result"] == null || res["Result"] == false)
+        onError(getErrMsg(res));
+      else
+        onSuccess();
+    }, onError: (ex, stacktrace) {
+      throw onError(ex.toString());
+    });
+  }
+
   void onDownloadFile({
     String url,
     String fileName,
@@ -167,7 +206,7 @@ abstract class _FilesState with Store {
       await _filesLocal.downloadFile(url, fileName);
       _filesLocal.getDownloadStatus(onSuccess);
     } catch (err) {
-      onError(err);
+      onError(err.toString());
     }
   }
 }

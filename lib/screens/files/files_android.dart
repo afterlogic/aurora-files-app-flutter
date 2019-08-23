@@ -7,6 +7,7 @@ import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:unicorndial/unicorndial.dart';
 
 import 'components/folder.dart';
 import 'components/skeleton_loader.dart';
@@ -45,7 +46,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (widget.filesState == null) {
       _filesPageState.filesLoading = FilesLoadingType.filesHidden;
       await _filesState.onGetStorages(
-        onError: (String err) => _showErrSnack(context, err),
+        onError: (String err) => _showSnack(context, err),
       );
     }
     if (_filesState.selectedStorage != null) {
@@ -65,7 +66,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       path: _filesPageState.pagePath,
       storage: _filesState.selectedStorage,
       showLoading: showLoading,
-      onError: (String err) => _showErrSnack(context, err),
+      onError: (String err) => _showSnack(context, err),
     );
   }
 
@@ -81,18 +82,20 @@ class _FilesAndroidState extends State<FilesAndroid>
           _filesPageState.quitSelectMode();
           _getFiles(context);
         },
-        onError: (String err) => _showErrSnack(context, err),
+        onError: (String err) => _showSnack(context, err),
       );
     }
   }
 
-  void _showErrSnack(BuildContext context, String msg) {
+  void _showSnack(BuildContext context, String msg, [isError = true]) {
     final snack = SnackBar(
       content: Text(msg),
-      backgroundColor: Theme.of(context).errorColor,
+      backgroundColor: isError ? Theme.of(context).errorColor : null,
     );
 
-    _filesPageState.scaffoldKey.currentState.removeCurrentSnackBar();
+    if (_filesPageState.scaffoldKey != null) {
+      _filesPageState.scaffoldKey.currentState.removeCurrentSnackBar();
+    }
     _filesPageState.scaffoldKey.currentState.showSnackBar(snack);
   }
 
@@ -212,19 +215,64 @@ class _FilesAndroidState extends State<FilesAndroid>
                     )),
             floatingActionButton: _filesState.isMoveModeEnabled
                 ? null
-                : FloatingActionButton(
-                    child: Icon(Icons.create_new_folder),
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Colors.white,
-                    onPressed: () => showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (_) => AddFolderDialogAndroid(
-                        filesState: _filesState,
-                        filesPageState: _filesPageState,
-                      ),
-                    ),
-                  ),
+                : UnicornDialer(
+                    parentHeroTag:
+                        _filesState.selectedStorage.type + widget.path,
+                    parentButton: Icon(Icons.add),
+                    finalButtonIcon: Icon(Icons.close),
+                    parentButtonBackground: Theme.of(context).primaryColor,
+                    backgroundColor: Colors.transparent,
+                    childButtons: [
+                        UnicornButton(
+                          currentButton: FloatingActionButton(
+                            heroTag: _filesState.selectedStorage.type +
+                                widget.path +
+                                "1",
+                            child: Icon(Icons.create_new_folder),
+                            backgroundColor: Theme.of(context).cardColor,
+                            foregroundColor: Theme.of(context).iconTheme.color,
+                            mini: true,
+                            onPressed: () => showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (_) => AddFolderDialogAndroid(
+                                filesState: _filesState,
+                                filesPageState: _filesPageState,
+                              ),
+                            ),
+                          ),
+                        ),
+                        UnicornButton(
+                          currentButton: FloatingActionButton(
+                            heroTag: _filesState.selectedStorage.type +
+                                widget.path +
+                                "2",
+                            child: Icon(Icons.cloud_upload),
+                            mini: true,
+                            backgroundColor: Theme.of(context).cardColor,
+                            foregroundColor: Theme.of(context).iconTheme.color,
+                            onPressed: () {
+                              _filesState.onUploadFile(
+                                onUploadStart: () => _showSnack(
+                                  context,
+                                  "Uploading file...",
+                                  false,
+                                ),
+                                onSuccess: () {
+                                  _showSnack(
+                                    context,
+                                    "File successfully uploaded",
+                                    false,
+                                  );
+                                  _getFiles(context);
+                                },
+                                onError: (String err) =>
+                                    _showSnack(context, err),
+                              );
+                            },
+                          ),
+                        ),
+                      ]),
           ),
         ),
       ),

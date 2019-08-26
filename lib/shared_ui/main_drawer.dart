@@ -1,6 +1,7 @@
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/screens/auth/auth_route.dart';
 import 'package:aurorafiles/screens/auth/state/auth_state.dart';
+import 'package:aurorafiles/screens/files/files_route.dart';
 import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -82,13 +83,23 @@ class MainDrawer extends StatelessWidget {
                             _filesState.selectedStorage.type == storage.type,
                         leading: Icon(Icons.storage),
                         title: Text(storage.displayName),
-                        onTap: () {
+                        onTap: () async {
+                          // close drawer
+                          Navigator.of(context).pop();
+                          // clear nav stack
+                          Navigator.of(context)
+                              .popUntil((Route<dynamic> route) {
+                            return route.isFirst;
+                          });
+                          // set new storage and reload files
                           _filesState.selectedStorage = storage;
-                          _filesPageState.onGetFiles(
-                            path: "",
-                            storage: storage,
+                          Navigator.of(context).pushReplacementNamed(
+                            FilesRoute.name,
+                            arguments: FilesScreenArguments(
+                              filesState: _filesState,
+                              path: "",
+                            ),
                           );
-                          Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
                         },
                       ),
                     );

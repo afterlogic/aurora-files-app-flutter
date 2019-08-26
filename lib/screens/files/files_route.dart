@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 class FilesRoute {
   static const name = "files";
+  static const subName = "files/subfolder";
 }
 
 class FilesScreenArguments {

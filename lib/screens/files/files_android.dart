@@ -155,86 +155,87 @@ class _FilesAndroidState extends State<FilesAndroid>
       child: SafeArea(
         top: false,
         bottom: false,
-        child: Observer(
-          builder: (_) => Scaffold(
-            key: _filesPageState.scaffoldKey,
-            drawer: MainDrawer(),
-            appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
-            body: Observer(
-                builder: (_) => RefreshIndicator(
-                      color: Theme.of(context).primaryColor,
-                      onRefresh: () async {
-                        if (_filesState.currentStorages.length <= 0) {
-                          await _filesState.onGetStorages();
-                        }
-                        return _getFiles(context, FilesLoadingType.none);
-                      },
-                      child: Column(
-                        children: <Widget>[
-                          // LOADER
-                          AnimatedOpacity(
-                            duration: Duration(milliseconds: 150),
-                            opacity: _filesPageState.filesLoading ==
-                                    FilesLoadingType.filesVisible
-                                ? 1.0
-                                : 0.0,
-                            child: LinearProgressIndicator(),
-                          ),
-                          Expanded(
-                            child: _buildFiles(context),
-                          ),
-                        ],
-                      ),
-                    )),
-            floatingActionButton: FloatingActionButton(
-              heroTag: widget.path,
-              child: Icon(Icons.add),
-              backgroundColor: Theme.of(context).primaryColor,
-              onPressed: () => Navigator.push(
-                  context,
-                  CustomSpeedDial(tag: widget.path, children: [
-                    MiniFab(
-                      icon: Icon(Icons.create_new_folder),
-                      onPressed: () {
-                        showDialog(
+        child: Scaffold(
+          key: _filesPageState.scaffoldKey,
+          drawer: MainDrawer(),
+          appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
+          body: Observer(
+              builder: (_) => RefreshIndicator(
+                    color: Theme.of(context).primaryColor,
+                    onRefresh: () async {
+                      if (_filesState.currentStorages.length <= 0) {
+                        await _filesState.onGetStorages();
+                      }
+                      return _getFiles(context, FilesLoadingType.none);
+                    },
+                    child: Column(
+                      children: <Widget>[
+                        // LOADER
+                        AnimatedOpacity(
+                          duration: Duration(milliseconds: 150),
+                          opacity: _filesPageState.filesLoading ==
+                                  FilesLoadingType.filesVisible
+                              ? 1.0
+                              : 0.0,
+                          child: LinearProgressIndicator(),
+                        ),
+                        Expanded(
+                          child: _buildFiles(context),
+                        ),
+                      ],
+                    ),
+                  )),
+          floatingActionButton: FloatingActionButton(
+            heroTag: widget.path,
+            child: Icon(Icons.add),
+            backgroundColor: Theme.of(context).primaryColor,
+            onPressed: () => Navigator.push(
+                context,
+                CustomSpeedDial(tag: widget.path, children: [
+                  MiniFab(
+                    icon: Icon(Icons.create_new_folder),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) => AddFolderDialogAndroid(
+                          filesState: _filesState,
+                          filesPageState: _filesPageState,
+                        ),
+                      );
+                    },
+                  ),
+                  MiniFab(
+                    icon: Icon(Icons.cloud_upload),
+                    onPressed: () {
+                      _filesState.onUploadFile(
+                        onUploadStart: () => showSnack(
                           context: context,
-                          barrierDismissible: false,
-                          builder: (_) => AddFolderDialogAndroid(
-                            filesState: _filesState,
-                            filesPageState: _filesPageState,
-                          ),
-                        );
-                      },
-                    ),
-                    MiniFab(
-                      icon: Icon(Icons.cloud_upload),
-                      onPressed: () {
-                        _filesState.onUploadFile(
-                          onUploadStart: () => showSnack(
+                          scaffoldState:
+                              _filesPageState.scaffoldKey.currentState,
+                          msg: "Uploading file...",
+                          isError: false,
+                        ),
+                        onSuccess: () {
+                          showSnack(
                             context: context,
-                            scaffoldState: _filesPageState.scaffoldKey.currentState,
-                            msg: "Uploading file...",
+                            scaffoldState:
+                                _filesPageState.scaffoldKey.currentState,
+                            msg: "File successfully uploaded",
                             isError: false,
-                          ),
-                          onSuccess: () {
-                            showSnack(
-                              context: context,
-                              scaffoldState: _filesPageState.scaffoldKey.currentState,
-                              msg: "File successfully uploaded",
-                              isError: false,
-                            );
-                            _getFiles(context);
-                          },
-                          onError: (String err) => showSnack(
-                            context: context,
-                            scaffoldState: _filesPageState.scaffoldKey.currentState,
-                            msg: err,
-                          ),
-                        );
-                      },
-                    ),
-                  ])),
-            ),
+                          );
+                          _getFiles(context);
+                        },
+                        onError: (String err) => showSnack(
+                          context: context,
+                          scaffoldState:
+                              _filesPageState.scaffoldKey.currentState,
+                          msg: err,
+                        ),
+                      );
+                    },
+                  ),
+                ])),
           ),
         ),
       ),

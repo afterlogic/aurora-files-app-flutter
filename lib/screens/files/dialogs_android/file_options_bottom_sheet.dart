@@ -4,6 +4,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 
 import 'delete_confirmation_dialog.dart';
@@ -35,11 +36,6 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     _hasPublicLink = widget.file.published;
   }
 
-  void _showErrSnack(BuildContext context, String err) {
-    widget.filesPageState.scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text(err), backgroundColor: Theme.of(context).errorColor));
-  }
-
   void _getLink() {
     widget.filesState.onGetPublicLink(
       path: widget.filesPageState.pagePath,
@@ -51,17 +47,22 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             path: widget.filesPageState.pagePath,
             storage: widget.filesState.selectedStorage);
         setState(() => _isGettingPublicLink = false);
-        widget.filesPageState.scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            content: Text("Link coppied to clipboard"),
-          ),
+        showSnack(
+          context: context,
+          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
+          msg: "Link coppied to clipboard",
+          isError: false
         );
         Navigator.pop(context);
       },
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = false;
-        _showErrSnack(context, err);
+        showSnack(
+          context: context,
+          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
+          msg: err,
+        );
       }),
     );
   }
@@ -79,7 +80,11 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = true;
-        _showErrSnack(context, err);
+        showSnack(
+          context: context,
+          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
+          msg: err,
+        );
       }),
     );
   }
@@ -199,7 +204,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                           storage: widget.filesState.selectedStorage,
                         );
                       },
-                      onError: (String err) => _showErrSnack(context, err),
+                      onError: (String err) => showSnack(
+                        context: context,
+                        scaffoldState:
+                            widget.filesPageState.scaffoldKey.currentState,
+                        msg: err,
+                      ),
                     );
                   }
                 },

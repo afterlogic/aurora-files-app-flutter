@@ -3,6 +3,7 @@ import 'package:aurorafiles/screens/files/files_route.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/my_button.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -28,18 +29,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
   void dispose() {
     super.dispose();
     authState.dispose();
-  }
-
-  void _showErrSnackBar(BuildContext context, String text) {
-    final snackbar = SnackBar(
-      content: Text(
-        text,
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Theme.of(context).errorColor,
-    );
-
-    Scaffold.of(context).showSnackBar(snackbar);
   }
 
   @override
@@ -106,8 +95,11 @@ class _AuthAndroidState extends State<AuthAndroid> {
                               context, FilesRoute.name,
                               arguments: FilesScreenArguments(
                                   path: "", filesState: FilesState())),
-                          onError: (errText) =>
-                              _showErrSnackBar(context, errText),
+                          onError: (String err) => showSnack(
+                                context: context,
+                                scaffoldState: Scaffold.of(context),
+                                msg: err,
+                              ),
                         ),
                       ),
                     ),

@@ -3,6 +3,7 @@ import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.
 import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,25 +38,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     file = widget.file;
   }
 
-  void _showErrSnack(BuildContext context, String msg) {
-    final snack = SnackBar(
-      content: Text(msg),
-      backgroundColor: Theme.of(context).errorColor,
-    );
-
-    _scaffoldKey.currentState.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(snack);
-  }
-
-  void _showInfoSnack(BuildContext context, String msg) {
-    final snack = SnackBar(
-      content: Text(msg),
-    );
-
-    _scaffoldKey.currentState.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(snack);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Provider(
@@ -77,11 +59,26 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 onPressed: () => widget.filesState.onDownloadFile(
                   url: widget.file.downloadUrl,
                   fileName: widget.file.name,
-                  onStart: () => _showInfoSnack(
-                      context, "Downloading ${widget.file.name}"),
-                  onSuccess: () => _showInfoSnack(
-                      context, "${widget.file.name} downloaded successfully"),
-                  onError: (err) => _showErrSnack(context, err.toString()),
+                  onStart: () => showSnack(
+                    context: context,
+                    scaffoldState:
+                        widget.filesPageState.scaffoldKey.currentState,
+                    msg: "Downloading ${widget.file.name}",
+                    isError: false,
+                  ),
+                  onSuccess: () => showSnack(
+                    context: context,
+                    scaffoldState:
+                        widget.filesPageState.scaffoldKey.currentState,
+                    msg: "${widget.file.name} downloaded successfully",
+                    isError: false,
+                  ),
+                  onError: (String err) => showSnack(
+                    context: context,
+                    scaffoldState:
+                        widget.filesPageState.scaffoldKey.currentState,
+                    msg: err,
+                  ),
                 ),
               ),
             IconButton(

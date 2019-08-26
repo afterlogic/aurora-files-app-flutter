@@ -4,6 +4,7 @@ import 'package:aurorafiles/screens/files/dialogs_android/delete_confirmation_di
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +47,11 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (_filesState.currentStorages.length <= 0) {
       _filesPageState.filesLoading = FilesLoadingType.filesHidden;
       await _filesState.onGetStorages(
-        onError: (String err) => _showSnack(context, err),
+        onError: (String err) => showSnack(
+          context: context,
+          scaffoldState: _filesPageState.scaffoldKey.currentState,
+          msg: err,
+        ),
       );
     }
     if (_filesState.selectedStorage != null) {
@@ -66,7 +71,11 @@ class _FilesAndroidState extends State<FilesAndroid>
       path: _filesPageState.pagePath,
       storage: _filesState.selectedStorage,
       showLoading: showLoading,
-      onError: (String err) => _showSnack(context, err),
+      onError: (String err) => showSnack(
+        context: context,
+        scaffoldState: _filesPageState.scaffoldKey.currentState,
+        msg: err,
+      ),
     );
   }
 
@@ -82,21 +91,13 @@ class _FilesAndroidState extends State<FilesAndroid>
           _filesPageState.quitSelectMode();
           _getFiles(context);
         },
-        onError: (String err) => _showSnack(context, err),
+        onError: (String err) => showSnack(
+          context: context,
+          scaffoldState: _filesPageState.scaffoldKey.currentState,
+          msg: err,
+        ),
       );
     }
-  }
-
-  void _showSnack(BuildContext context, String msg, [isError = true]) {
-    final snack = SnackBar(
-      content: Text(msg),
-      backgroundColor: isError ? Theme.of(context).errorColor : null,
-    );
-
-    if (_filesPageState.scaffoldKey != null) {
-      _filesPageState.scaffoldKey.currentState.removeCurrentSnackBar();
-    }
-    _filesPageState.scaffoldKey.currentState.showSnackBar(snack);
   }
 
   Widget _buildFiles(BuildContext context) {
@@ -237,20 +238,26 @@ class _FilesAndroidState extends State<FilesAndroid>
                       icon: Icon(Icons.cloud_upload),
                       onPressed: () {
                         _filesState.onUploadFile(
-                          onUploadStart: () => _showSnack(
-                            context,
-                            "Uploading file...",
-                            false,
+                          onUploadStart: () => showSnack(
+                            context: context,
+                            scaffoldState: _filesPageState.scaffoldKey.currentState,
+                            msg: "Uploading file...",
+                            isError: false,
                           ),
                           onSuccess: () {
-                            _showSnack(
-                              context,
-                              "File successfully uploaded",
-                              false,
+                            showSnack(
+                              context: context,
+                              scaffoldState: _filesPageState.scaffoldKey.currentState,
+                              msg: "File successfully uploaded",
+                              isError: false,
                             );
                             _getFiles(context);
                           },
-                          onError: (String err) => _showSnack(context, err),
+                          onError: (String err) => showSnack(
+                            context: context,
+                            scaffoldState: _filesPageState.scaffoldKey.currentState,
+                            msg: err,
+                          ),
                         );
                       },
                     ),

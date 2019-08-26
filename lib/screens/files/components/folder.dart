@@ -77,7 +77,8 @@ class FolderWidget extends StatelessWidget {
               ]),
             ],
           ),
-          trailing: filesState.isMoveModeEnabled
+          trailing: filesState.isMoveModeEnabled ||
+                  filesPageState.selectedFilesIds.length > 0
               ? null
               : IconButton(
                   padding: EdgeInsets.only(left: 30.0),

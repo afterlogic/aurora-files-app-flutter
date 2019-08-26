@@ -86,7 +86,7 @@ class MainDrawer extends StatelessWidget {
                         onTap: () async {
                           // close drawer
                           Navigator.of(context).pop();
-                          // clear nav stack
+                          // clear nav stack TODO: make more flexible
                           Navigator.of(context)
                               .popUntil((Route<dynamic> route) {
                             return route.isFirst;

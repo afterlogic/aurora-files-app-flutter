@@ -180,35 +180,6 @@ class _FilesAndroidState extends State<FilesAndroid>
                                 : 0.0,
                             child: LinearProgressIndicator(),
                           ),
-                          // PATH INDICATOR
-//                          if (_filesState.mode != Modes.search)
-//                            Container(
-//                              width: double.infinity,
-//                              color: Theme.of(context).highlightColor,
-//                              child: Padding(
-//                                padding: const EdgeInsets.only(
-//                                    left: 10.0, top: 3.0, bottom: 9.0),
-//                                child: Text(_filesState.currentPath == ""
-//                                    ? "/"
-//                                    : _filesState.currentPath),
-//                              ),
-//                            ),
-//                          if (_filesState.currentPath != "")
-//                            Opacity(
-//                              opacity: _filesState.selectedFilesIds.length > 0
-//                                  ? 0.3
-//                                  : 1,
-//                              child: ListTile(
-//                                leading: Icon(Icons.arrow_upward),
-//                                title: Text("Level Up"),
-//                                onTap: _filesState.selectedFilesIds.length > 0
-//                                    ? null
-//                                    : () => _filesState.onLevelUp(
-//                                          () => _getFiles(context,
-//                                              FilesLoadingType.filesHidden),
-//                                        ),
-//                              ),
-//                            ),
                           Expanded(
                             child: _buildFiles(context),
                           ),

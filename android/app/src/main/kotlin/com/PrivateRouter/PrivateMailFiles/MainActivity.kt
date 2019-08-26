@@ -1,4 +1,4 @@
-package com.afterlogic.aurorafiles
+package com.PrivateRouter.PrivateMailFiles
 
 import android.os.Bundle
 

@@ -96,7 +96,6 @@ class CustomSpeedDial extends ModalRoute<void> {
               FloatingActionButton(
                 heroTag: tag,
                 elevation: 0.0,
-                backgroundColor: Theme.of(context).primaryColor,
                 child: RotationTransition(
                   turns: fabAnimation,
                   child: Icon(Icons.add),

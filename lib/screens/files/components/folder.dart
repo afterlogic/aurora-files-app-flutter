@@ -49,7 +49,7 @@ class FolderWidget extends StatelessWidget {
           leading: Icon(
             Icons.folder,
             size: filesState.filesTileLeadingSize,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).disabledColor,
           ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,24 +57,27 @@ class FolderWidget extends StatelessWidget {
               Text(folder.name, maxLines: 1, overflow: TextOverflow.ellipsis),
               if (folder.published || folder.localId != null)
                 SizedBox(height: 7.0),
-              Row(children: <Widget>[
-                if (folder.published)
-                  Icon(
-                    Icons.link,
-                    size: 14,
-                    semanticLabel: "Has public link",
-                    color: Colors.black45,
+              Theme(
+                data: Theme.of(context).copyWith(
+                  iconTheme: IconThemeData(
+                    color: Theme.of(context).disabledColor,
+                    size: 14.0,
                   ),
-                if (folder.published) SizedBox(width: margin),
-                if (folder.localId != null)
-                  Icon(
-                    Icons.airplanemode_active,
-                    size: 14,
-                    semanticLabel: "Available offline",
-                    color: Colors.black45,
-                  ),
-                if (folder.localId != null) SizedBox(width: margin),
-              ]),
+                ),
+                child: Row(children: <Widget>[
+                  if (folder.published)
+                    Icon(
+                      Icons.link,
+                      semanticLabel: "Has public link",
+                    ),
+                  if (folder.published) SizedBox(width: margin),
+                  if (folder.localId != null)
+                    Icon(
+                      Icons.airplanemode_active,
+                      semanticLabel: "Available offline",
+                    ),
+                ]),
+              ),
             ],
           ),
           trailing: filesState.isMoveModeEnabled ||

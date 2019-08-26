@@ -6,6 +6,7 @@ import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -113,6 +114,15 @@ class MainDrawer extends StatelessWidget {
                     leading: Icon(Icons.link),
                     title: Text("Public links"),
                   ),
+//                  SwitchListTile.adaptive(
+//                    value: Theme.of(context).brightness == Brightness.dark,
+//                    onChanged: (bool val) {},
+//                    title: ListTile(
+//                      contentPadding: EdgeInsets.zero,
+//                      leading: Icon(MdiIcons.themeLightDark),
+//                      title: Text("Dark theme"),
+//                    ),
+//                  ),
                   ListTile(
                     leading: Icon(Icons.settings),
                     title: Text("Settings"),

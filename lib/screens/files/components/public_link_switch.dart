@@ -130,7 +130,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
             title: Text("Public link access"),
             trailing: Switch.adaptive(
               value: _hasPublicLink,
-              activeColor: Theme.of(context).primaryColor,
+              activeColor: Theme.of(context).accentColor,
               onChanged: _isGettingPublicLink
                   ? null
                   : (bool val) {

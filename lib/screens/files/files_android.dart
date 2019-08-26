@@ -161,7 +161,6 @@ class _FilesAndroidState extends State<FilesAndroid>
           appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
           body: Observer(
               builder: (_) => RefreshIndicator(
-                    color: Theme.of(context).primaryColor,
                     onRefresh: () async {
                       if (_filesState.currentStorages.length <= 0) {
                         await _filesState.onGetStorages();
@@ -188,7 +187,6 @@ class _FilesAndroidState extends State<FilesAndroid>
           floatingActionButton: FloatingActionButton(
             heroTag: widget.path,
             child: Icon(Icons.add),
-            backgroundColor: Theme.of(context).primaryColor,
             onPressed: () => Navigator.push(
                 context,
                 CustomSpeedDial(tag: widget.path, children: [

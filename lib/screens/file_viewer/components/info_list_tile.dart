@@ -37,11 +37,23 @@ class InfoListTile extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   if (isPublic) SizedBox(width: 10),
-                  if (isPublic) Icon(Icons.link),
+                  if (isPublic)
+                    Icon(
+                      Icons.link,
+                      semanticLabel: "Has public link",
+                    ),
                   if (isOffline) SizedBox(width: 10),
-                  if (isOffline) Icon(Icons.airplanemode_active),
+                  if (isOffline)
+                    Icon(
+                      Icons.airplanemode_active,
+                      semanticLabel: "Available offline",
+                    ),
                   if (isEncrypted) SizedBox(width: 10),
-                  if (isEncrypted) Icon(MdiIcons.alien),
+                  if (isEncrypted)
+                    Icon(
+                      MdiIcons.alien,
+                      semanticLabel: "Encrypted",
+                    ),
                 ],
               ),
             )

@@ -17,8 +17,8 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
             return MaterialApp(
-              title: 'Aurora.Files',
-              theme: AppMaterialTheme.theme,
+              title: 'PrivateMail Files',
+              theme: AppMaterialTheme.darkTheme,
               darkTheme: AppMaterialTheme.darkTheme,
               onGenerateRoute: onGenerateRoute,
               initialRoute: snapshot.data ? FilesRoute.name : AuthRoute.name,

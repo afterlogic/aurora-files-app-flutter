@@ -13,8 +13,8 @@ class SkeletonLoader extends StatelessWidget {
     return SelectableFilesItemTile(
       child: ListTile(
         leading: Shimmer.fromColors(
-          baseColor: Colors.grey[300],
-          highlightColor: Colors.grey[200],
+          baseColor: Theme.of(context).iconTheme.color.withOpacity(0.15),
+          highlightColor: Theme.of(context).iconTheme.color.withOpacity(0.1),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(5.0),
             child: Container(
@@ -25,8 +25,8 @@ class SkeletonLoader extends StatelessWidget {
           ),
         ),
         title: Shimmer.fromColors(
-          baseColor: Colors.grey[300],
-          highlightColor: Colors.grey[200],
+          baseColor: Theme.of(context).iconTheme.color.withOpacity(0.15),
+          highlightColor: Theme.of(context).iconTheme.color.withOpacity(0.1),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(50.0),
             child: Container(

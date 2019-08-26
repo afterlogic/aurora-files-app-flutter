@@ -91,36 +91,40 @@ class FileWidget extends StatelessWidget {
             children: <Widget>[
               Text(file.name, maxLines: 1, overflow: TextOverflow.ellipsis),
               SizedBox(height: 7.0),
-              Row(
-                children: <Widget>[
-                  if (file.published)
-                    Icon(
-                      Icons.link,
-                      size: 14,
-                      semanticLabel: "Has public link",
-                      color: Colors.black45,
-                    ),
-                  if (file.published) SizedBox(width: margin),
-                  if (file.localId != null)
-                    Icon(
-                      Icons.airplanemode_active,
-                      size: 14,
-                      semanticLabel: "Available offline",
-                      color: Colors.black45,
-                    ),
-                  if (file.localId != null) SizedBox(width: margin),
-                  Text(filesize(file.size),
-                      style: Theme.of(context).textTheme.caption),
-                  SizedBox(width: margin),
-                  Text("|", style: Theme.of(context).textTheme.caption),
-                  SizedBox(width: margin),
-                  Text(
-                      DateFormatting.formatDateFromSeconds(
-                        timestamp: file.lastModified,
+              Theme(
+                data: Theme.of(context).copyWith(
+                  iconTheme: IconThemeData(
+                    color: Theme.of(context).disabledColor,
+                    size: 14.0,
+                  ),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    if (file.published)
+                      Icon(
+                        Icons.link,
+                        semanticLabel: "Has public link",
                       ),
-                      style: Theme.of(context).textTheme.caption),
-                  SizedBox(width: margin),
-                ],
+                    if (file.published) SizedBox(width: margin),
+                    if (file.localId != null)
+                      Icon(
+                        Icons.airplanemode_active,
+                        semanticLabel: "Available offline",
+                      ),
+                    if (file.localId != null) SizedBox(width: margin),
+                    Text(filesize(file.size),
+                        style: Theme.of(context).textTheme.caption),
+                    SizedBox(width: margin),
+                    Text("|", style: Theme.of(context).textTheme.caption),
+                    SizedBox(width: margin),
+                    Text(
+                        DateFormatting.formatDateFromSeconds(
+                          timestamp: file.lastModified,
+                        ),
+                        style: Theme.of(context).textTheme.caption),
+                    SizedBox(width: margin),
+                  ],
+                ),
               )
             ],
           ),

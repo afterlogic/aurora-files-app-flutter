@@ -3,19 +3,22 @@ import 'package:flutter/material.dart';
 class AppMaterialTheme {
   static final theme = ThemeData(
     brightness: Brightness.light,
-    primaryColor: Color(0xFF004166),
-    primaryColorLight: Color(0xFF72bbe4),
-    errorColor: Colors.red[900],
-    selectedRowColor: Color(0x11004166),
+    primaryColor: Color(0xFF6b0b3f),
+    primaryColorDark: Color(0xFF3d0826),
+    accentColor: Color(0xFFbc4799),
+    primaryColorLight: Colors.purple[200],
+    selectedRowColor: Color(0x11660041),
     inputDecorationTheme: _inputTheme,
     buttonTheme: _buttonTheme,
   );
 
   static final darkTheme = ThemeData(
     brightness: Brightness.dark,
-    primaryColor: Colors.pink,
-    accentColor: Colors.blue,
-    errorColor: Colors.red[900],
+    primaryColor: Color(0xFF6b0b3f),
+    primaryColorDark: Color(0xFF3d0826),
+    accentColor: Color(0xFFbc4799),
+    primaryColorLight: Colors.purple[200],
+    selectedRowColor: Color(0x11004166),
     inputDecorationTheme: _inputTheme,
     buttonTheme: _buttonTheme,
   );

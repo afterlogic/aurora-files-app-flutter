@@ -3,6 +3,7 @@ import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 class FilesAppBar extends StatefulWidget with PreferredSizeWidget {
@@ -57,7 +58,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(MdiIcons.fileMove),
             tooltip: "Move/Copy files",
             onPressed: () {
               _showPersistentBottomSheet(context);

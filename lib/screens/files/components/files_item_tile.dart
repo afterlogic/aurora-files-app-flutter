@@ -20,7 +20,8 @@ class SelectableFilesItemTile extends StatelessWidget {
       : super(key: key);
 
   Function _getOnTapCb(FilesState filesState, FilesPageState filesPageState) {
-    if (filesState.isMoveModeEnabled && file != null && !file.isFolder) {
+    if (filesPageState.filesLoading == FilesLoadingType.filesHidden ||
+        filesState.isMoveModeEnabled && file != null && !file.isFolder) {
       return null;
     } else if (filesPageState.selectedFilesIds.length > 0) {
       return () => filesPageState.selectFile(file.id);
@@ -63,7 +64,7 @@ class SelectableFilesItemTile extends StatelessWidget {
       onTap: _getOnTapCb(filesState, filesPageState),
       onLongPress: filesState.isMoveModeEnabled ||
               file == null ||
-          filesPageState.selectedFilesIds.length > 0
+              filesPageState.selectedFilesIds.length > 0
           ? null
           : () => filesPageState.selectFile(file.id),
       child: Stack(

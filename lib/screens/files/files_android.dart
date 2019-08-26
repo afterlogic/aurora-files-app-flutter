@@ -122,6 +122,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       );
     } else {
       return ListView.builder(
+        padding: EdgeInsets.only(bottom: 70.0),
         itemCount: _filesPageState.currentFiles.length,
         itemBuilder: (BuildContext context, int index) {
           final item = _filesPageState.currentFiles[index];

@@ -1,13 +1,16 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/screens/files/components/public_link_switch.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'delete_confirmation_dialog.dart';
+import 'move_options_bottom_sheet.dart';
 
 class FileOptionsBottomSheet extends StatefulWidget {
   final File file;
@@ -27,68 +30,6 @@ class FileOptionsBottomSheet extends StatefulWidget {
 
 class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
-  bool _isGettingPublicLink = false;
-  bool _hasPublicLink = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _hasPublicLink = widget.file.published;
-  }
-
-  void _getLink() {
-    widget.filesState.onGetPublicLink(
-      path: widget.filesPageState.pagePath,
-      name: widget.file.name,
-      size: widget.file.size,
-      isFolder: widget.file.isFolder,
-      onSuccess: () async {
-        widget.filesPageState.onGetFiles(
-            path: widget.filesPageState.pagePath,
-            storage: widget.filesState.selectedStorage);
-        setState(() => _isGettingPublicLink = false);
-        showSnack(
-          context: context,
-          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-          msg: "Link coppied to clipboard",
-          isError: false
-        );
-        Navigator.pop(context);
-      },
-      onError: (String err) => setState(() {
-        _isGettingPublicLink = false;
-        _hasPublicLink = false;
-        showSnack(
-          context: context,
-          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-          msg: err,
-        );
-      }),
-    );
-  }
-
-  void _deleteLink() {
-    widget.filesState.onDeletePublicLink(
-      path: widget.filesPageState.pagePath,
-      name: widget.file.name,
-      onSuccess: () async {
-        widget.filesPageState.onGetFiles(
-            path: widget.filesPageState.pagePath,
-            storage: widget.filesState.selectedStorage);
-        setState(() => _isGettingPublicLink = false);
-      },
-      onError: (String err) => setState(() {
-        _isGettingPublicLink = false;
-        _hasPublicLink = true;
-        showSnack(
-          context: context,
-          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-          msg: err,
-        );
-      }),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -107,50 +48,27 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
           maxHeight: 260.0,
           child: ListView(
             children: <Widget>[
-              SwitchListTile.adaptive(
-                title: ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: Icon(Icons.link),
-                  title: Text("Public link access"),
-                ),
-                activeColor: Theme.of(context).primaryColor,
-                value: _hasPublicLink,
-                onChanged: _isGettingPublicLink
-                    ? null
-                    : (bool val) {
-                        setState(() {
-                          _isGettingPublicLink = true;
-                          _hasPublicLink = val;
-                        });
-                        if (val) {
-                          _getLink();
-                        } else {
-                          _deleteLink();
-                        }
-                      },
+              PublicLinkSwitch(
+                file: widget.file,
+                filesState: widget.filesState,
+                filesPageState: widget.filesPageState,
               ),
-              if (_hasPublicLink)
-                ListTile(
-                  leading: Icon(Icons.content_copy),
-                  title: Text("Copy public link"),
-                  onTap: _isGettingPublicLink
-                      ? null
-                      : () {
-                          setState(() => _isGettingPublicLink = true);
-                          _getLink();
-                        },
-                ),
               Divider(height: 0),
               ListTile(
-                leading: Icon(Icons.exit_to_app),
+                leading: Icon(widget.file.isFolder
+                    ? MdiIcons.folderMove
+                    : MdiIcons.fileMove),
                 title: Text("Copy/Move"),
                 onTap: () {
                   Navigator.pop(context);
                   widget.filesState.enableMoveMode(filesToMove: [widget.file]);
-//                  _scaffoldKey.currentState.showBottomSheet(
-//                    (_) =>
-//                        MoveOptionsBottomSheet(filesState: widget.filesState),
-//                  );
+                  widget.filesPageState.scaffoldKey.currentState
+                      .showBottomSheet(
+                    (_) => MoveOptionsBottomSheet(
+                      filesState: widget.filesState,
+                      filesPageState: widget.filesPageState,
+                    ),
+                  );
                 },
               ),
               if (!widget.file.isFolder)

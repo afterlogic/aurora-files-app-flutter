@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/screens/files/components/public_link_switch.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
@@ -6,6 +7,7 @@ import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'components/image_viewer.dart';
@@ -28,7 +30,8 @@ class FileViewerAndroid extends StatefulWidget {
 }
 
 class _FileViewerAndroidState extends State<FileViewerAndroid> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _fileViewerScaffoldKey =
+      GlobalKey<ScaffoldState>();
 
   File file;
 
@@ -38,17 +41,33 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     file = widget.file;
   }
 
+  void _updateFile(String fileId) {
+    widget.filesPageState.currentFiles.forEach((updatedFile) {
+      if (updatedFile.id == fileId) {
+        setState(() => file = updatedFile);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      builder: (_) => widget.filesPageState,
-      dispose: (_, val) => val.dispose(),
+    return MultiProvider(
+      providers: [
+        Provider<FilesState>(
+          builder: (_) => widget.filesState,
+          dispose: (_, value) => value.dispose(),
+        ),
+        Provider<FilesPageState>(
+          builder: (_) => widget.filesPageState,
+          dispose: (_, value) => value.dispose(),
+        ),
+      ],
       child: Scaffold(
-        key: _scaffoldKey,
+        key: _fileViewerScaffoldKey,
         appBar: AppBar(
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.exit_to_app),
+              icon: Icon(MdiIcons.fileMove),
               tooltip: "Move/Copy",
               onPressed: () {},
             ),
@@ -61,31 +80,23 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   fileName: widget.file.name,
                   onStart: () => showSnack(
                     context: context,
-                    scaffoldState:
-                        widget.filesPageState.scaffoldKey.currentState,
+                    scaffoldState: _fileViewerScaffoldKey.currentState,
                     msg: "Downloading ${widget.file.name}",
                     isError: false,
                   ),
                   onSuccess: () => showSnack(
                     context: context,
-                    scaffoldState:
-                        widget.filesPageState.scaffoldKey.currentState,
+                    scaffoldState: _fileViewerScaffoldKey.currentState,
                     msg: "${widget.file.name} downloaded successfully",
                     isError: false,
                   ),
                   onError: (String err) => showSnack(
                     context: context,
-                    scaffoldState:
-                        widget.filesPageState.scaffoldKey.currentState,
+                    scaffoldState: _fileViewerScaffoldKey.currentState,
                     msg: err,
                   ),
                 ),
               ),
-            IconButton(
-              icon: Icon(Icons.link),
-              tooltip: "Get public link",
-              onPressed: () {},
-            ),
             IconButton(
               icon: Icon(Icons.edit),
               tooltip: "Rename",
@@ -99,13 +110,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     filesPageState: widget.filesPageState,
                   ),
                 );
-                if (result is String) {
-                  widget.filesPageState.currentFiles.forEach((updatedFile) {
-                    if (updatedFile.id == result) {
-                      setState(() => file = updatedFile);
-                    }
-                  });
-                }
+                if (result is String) _updateFile(result);
               },
             ),
             IconButton(
@@ -121,16 +126,37 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             if (widget.file.contentType.startsWith("image"))
               ImageViewer(file: widget.file),
             SizedBox(height: 30.0),
-            InfoListTile(label: "Filename", content: file.name),
-            InfoListTile(label: "Size", content: filesize(widget.file.size)),
             InfoListTile(
-              label: "Created",
-              content: DateFormatting.formatDateFromSeconds(
-                timestamp: widget.file.lastModified,
-              ),
+              label: "Filename",
+              content: file.name,
+              isPublic: file.published,
+              isOffline: file.localId != null,
+              isEncrypted: false, // TODO
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: InfoListTile(
+                      label: "Size", content: filesize(widget.file.size)),
+                ),
+                SizedBox(width: 30),
+                Expanded(
+                  child: InfoListTile(
+                    label: "Created",
+                    content: DateFormatting.formatDateFromSeconds(
+                      timestamp: widget.file.lastModified,
+                    ),
+                  ),
+                ),
+              ],
             ),
             InfoListTile(label: "Owner", content: widget.file.owner),
-            InfoListTile(label: "Public link", content: "WIP"),
+            PublicLinkSwitch(
+              file: widget.file,
+              isFileViewer: true,
+              updateFile: _updateFile,
+              scaffoldKey: _fileViewerScaffoldKey,
+            ),
           ],
         ),
       ),

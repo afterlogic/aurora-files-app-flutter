@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'delete_confirmation_dialog.dart';
-import 'move_options_bottom_sheet.dart';
 
 class FileOptionsBottomSheet extends StatefulWidget {
   final File file;
@@ -60,15 +59,10 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     : MdiIcons.fileMove),
                 title: Text("Copy/Move"),
                 onTap: () {
-                  Navigator.pop(context);
+                  widget.filesState.updateFilesCb =
+                      widget.filesPageState.onGetFiles;
                   widget.filesState.enableMoveMode(filesToMove: [widget.file]);
-                  widget.filesPageState.scaffoldKey.currentState
-                      .showBottomSheet(
-                    (_) => MoveOptionsBottomSheet(
-                      filesState: widget.filesState,
-                      filesPageState: widget.filesPageState,
-                    ),
-                  );
+                  Navigator.pop(context);
                 },
               ),
               if (!widget.file.isFolder)

@@ -34,6 +34,14 @@ abstract class _FilesState with Store {
 
   List<File> filesToMoveCopy = [];
 
+  // after moving files, both current page and the page files were moved from have to be updated
+  // this cb updates the page the files were moved from
+  Function({
+    @required String path,
+    @required Storage storage,
+    Function(String) onError,
+  }) updateFilesCb;
+
   void enableMoveMode({
     List<File> filesToMove,
     Set<String> selectedFileIds,
@@ -46,8 +54,8 @@ abstract class _FilesState with Store {
       currentFiles.forEach((file) {
         if (selectedFileIds.contains(file.id)) filesToMoveCopy.add(file);
       });
-      isMoveModeEnabled = true;
     }
+    isMoveModeEnabled = true;
   }
 
   void disableMoveMode() {
@@ -101,6 +109,11 @@ abstract class _FilesState with Store {
         toPath: toPath,
       );
       onSuccess();
+      if (updateFilesCb != null &&
+          !copy &&
+          selectedStorage.type == filesToMoveCopy[0].type) {
+        updateFilesCb(path: filesToMoveCopy[0].path, storage: selectedStorage);
+      }
     } catch (err) {
       onError(err.toString());
     }

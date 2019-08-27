@@ -3,11 +3,11 @@ import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 
-class MoveOptionsBottomSheet extends StatelessWidget {
+class MoveOptions extends StatelessWidget {
   final FilesState filesState;
   final FilesPageState filesPageState;
 
-  const MoveOptionsBottomSheet({
+  const MoveOptions({
     Key key,
     @required this.filesState,
     @required this.filesPageState,
@@ -29,7 +29,6 @@ class MoveOptionsBottomSheet extends StatelessWidget {
             ),
           );
           filesState.disableMoveMode();
-          Navigator.pop(context);
         },
         onError: (err) {
           filesPageState.filesLoading = FilesLoadingType.none;
@@ -43,39 +42,35 @@ class MoveOptionsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomSheet(
-      builder: (_) => Container(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: Colors.black12)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 3.0),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey)),
+        color: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 3.0, bottom: 6.0),
+        child: SafeArea(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               FlatButton(
-                child: Text("Cancel", style: TextStyle(color: Colors.black)),
+                child: Text("Cancel"),
                 onPressed: () {
                   filesState.disableMoveMode();
-                  Navigator.pop(context);
                 },
               ),
               FlatButton(
-                child: Text("Copy", style: TextStyle(color: Colors.black)),
+                child: Text("Copy"),
                 onPressed: () => _moveFiles(context, true),
               ),
               FlatButton(
-                child: Text("Move", style: TextStyle(color: Colors.black)),
+                child: Text("Move"),
                 onPressed: () => _moveFiles(context, false),
               ),
             ],
           ),
         ),
       ),
-      onClosing: () {
-        filesState.disableMoveMode();
-        Navigator.pop(context);
-      },
     );
   }
 }

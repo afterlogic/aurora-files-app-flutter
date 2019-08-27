@@ -1,6 +1,7 @@
 import 'package:aurorafiles/navigation/routes.dart';
 import 'package:aurorafiles/screens/auth/auth_route.dart';
 import 'package:aurorafiles/screens/files/files_route.dart';
+import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/themimg/material_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
             return MaterialApp(
-              title: 'PrivateMail Files',
+              title: SingletonStore.instance.appName,
               theme: AppMaterialTheme.darkTheme,
               darkTheme: AppMaterialTheme.darkTheme,
               onGenerateRoute: onGenerateRoute,

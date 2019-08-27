@@ -20,6 +20,11 @@ class SelectableFilesItemTile extends StatelessWidget {
       : super(key: key);
 
   Function _getOnTapCb(FilesState filesState, FilesPageState filesPageState) {
+    if (file != null &&
+        file.isFolder &&
+        filesState.filesToMoveCopy.contains(file)) {
+      return null;
+    }
     if (filesPageState.filesLoading == FilesLoadingType.filesHidden ||
         filesState.isMoveModeEnabled && file != null && !file.isFolder) {
       return null;

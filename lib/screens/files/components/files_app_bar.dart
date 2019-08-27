@@ -1,10 +1,14 @@
+import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/add_folder_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
+import 'package:aurorafiles/store/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../files_route.dart';
 
 class FilesAppBar extends StatefulWidget with PreferredSizeWidget {
   final Function(BuildContext) onDeleteFiles;
@@ -41,13 +45,6 @@ class _FilesAppBarState extends State<FilesAppBar>
     _appBarIconAnimCtrl.dispose();
   }
 
-  void _showPersistentBottomSheet(context) {
-//    showBottomSheet(
-//      context: context,
-//      builder: (_) => MoveOptionsBottomSheet(filesState: _filesState),
-//    );
-  }
-
   AppBar _getAppBar(BuildContext context) {
     if (_filesPageState.selectedFilesIds.length > 0) {
       return AppBar(
@@ -61,12 +58,12 @@ class _FilesAppBarState extends State<FilesAppBar>
             icon: Icon(MdiIcons.fileMove),
             tooltip: "Move/Copy files",
             onPressed: () {
-              _showPersistentBottomSheet(context);
-              _filesPageState.quitSelectMode();
+              _filesState.updateFilesCb = _filesPageState.onGetFiles;
               _filesState.enableMoveMode(
                 selectedFileIds: _filesPageState.selectedFilesIds,
                 currentFiles: _filesPageState.currentFiles,
               );
+              _filesPageState.quitSelectMode();
             },
           ),
           IconButton(
@@ -78,6 +75,15 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else if (_filesState.isMoveModeEnabled) {
       return AppBar(
+        leading: _filesPageState.pagePath.length > 0
+            ? IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: Navigator.of(context).pop,
+              )
+            : IconButton(
+                icon: Icon(Icons.close),
+                onPressed: _filesState.disableMoveMode,
+              ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -85,7 +91,8 @@ class _FilesAppBarState extends State<FilesAppBar>
             Text("Move files/folders"),
             SizedBox(height: 2),
             Text(
-              _filesState.selectedStorage.displayName,
+              _filesState.selectedStorage.displayName +
+                  _filesPageState.pagePath,
               style: TextStyle(fontSize: 10.0),
             )
           ],
@@ -103,6 +110,35 @@ class _FilesAppBarState extends State<FilesAppBar>
               ),
             ),
           ),
+          PopupMenuButton<Storage>(
+            icon: Icon(Icons.storage),
+            onSelected: (Storage storage) async {
+              Navigator.of(context)
+                  .popUntil((Route<dynamic> route) {
+                return route.isFirst;
+              });
+              // set new storage and reload files
+              _filesState.selectedStorage = storage;
+              Navigator.of(context).pushReplacementNamed(
+                FilesRoute.name,
+                arguments: FilesScreenArguments(
+                  filesState: _filesState,
+                  path: "",
+                ),
+              );
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<Storage>>[
+              ..._filesState.currentStorages.map((Storage storage) {
+                return PopupMenuItem<Storage>(
+                  value: storage,
+                  child: ListTile(
+                    leading: Icon(Icons.storage),
+                    title: Text(storage.displayName),
+                  ),
+                );
+              }),
+            ],
+          )
         ],
       );
     } else {
@@ -117,7 +153,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Aurora.Files"),
+            Text(SingletonStore.instance.appName),
             if (_filesState.selectedStorage.displayName.length > 0)
               SizedBox(height: 2),
             if (_filesState.selectedStorage.displayName.length > 0)

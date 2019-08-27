@@ -167,18 +167,23 @@ class _FilesAndroidState extends State<FilesAndroid>
                       }
                       return _getFiles(context, FilesLoadingType.none);
                     },
-                    child: Column(
+                    child: Stack(
+                      fit: StackFit.expand,
                       children: <Widget>[
                         // LOADER
-                        AnimatedOpacity(
-                          duration: Duration(milliseconds: 150),
-                          opacity: _filesPageState.filesLoading ==
-                                  FilesLoadingType.filesVisible
-                              ? 1.0
-                              : 0.0,
-                          child: LinearProgressIndicator(),
+                        Positioned(
+                          height: 6.0,
+                          width: MediaQuery.of(context).size.width,
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 150),
+                            opacity: _filesPageState.filesLoading ==
+                                    FilesLoadingType.filesVisible
+                                ? 1.0
+                                : 0.0,
+                            child: LinearProgressIndicator(),
+                          ),
                         ),
-                        Expanded(
+                        Positioned.fill(
                           child: _buildFiles(context),
                         ),
                       ],

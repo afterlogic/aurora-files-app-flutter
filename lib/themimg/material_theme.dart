@@ -18,7 +18,7 @@ class AppMaterialTheme {
     primaryColorDark: Color(0xFF3d0826),
     accentColor: Color(0xFFbc4799),
     primaryColorLight: Colors.purple[200],
-    selectedRowColor: Color(0x11004166),
+    selectedRowColor: Color(0x11660041),
     inputDecorationTheme: _inputTheme,
     buttonTheme: _buttonTheme,
   );

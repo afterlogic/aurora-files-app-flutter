@@ -18,13 +18,17 @@ class ImageViewer extends StatelessWidget {
     final img = CachedNetworkImage(
       imageUrl: '${SingletonStore.instance.hostName}/${file.viewUrl}',
       fit: BoxFit.cover,
-      fadeInDuration: Duration(milliseconds: 100),
-      httpHeaders: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
+      fadeInDuration: Duration(milliseconds: 150),
+      httpHeaders: {
+        'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
+      },
     );
     final placeholder = CachedNetworkImage(
       imageUrl: '${SingletonStore.instance.hostName}/${file.thumbnailUrl}',
       fit: BoxFit.cover,
-      httpHeaders: {'Authorization': 'Bearer ${SingletonStore.instance.authToken}'},
+      httpHeaders: {
+        'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
+      },
     );
 
     if (file.viewUrl != null) {
@@ -47,6 +51,11 @@ class ImageViewer extends StatelessWidget {
                         color: Colors.transparent,
                       ),
                     ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: Center(
+                    child: CircularProgressIndicator(),
                   ),
                 ),
                 img,

@@ -3,7 +3,7 @@ import 'package:aurorafiles/screens/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 
-class MoveOptions extends StatelessWidget {
+class MoveOptions extends StatefulWidget {
   final FilesState filesState;
   final FilesPageState filesPageState;
 
@@ -13,28 +13,38 @@ class MoveOptions extends StatelessWidget {
     @required this.filesPageState,
   }) : super(key: key);
 
+  @override
+  _MoveOptionsState createState() => _MoveOptionsState();
+}
+
+class _MoveOptionsState extends State<MoveOptions> {
+  bool _buttonsDisabled = false;
+
   void _moveFiles(BuildContext context, bool copy) {
-    filesPageState.filesLoading = FilesLoadingType.filesVisible;
-    filesState.onCopyMoveFiles(
-        toPath: filesPageState.pagePath,
+    widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;
+    setState(() => _buttonsDisabled = true);
+    widget.filesState.onCopyMoveFiles(
+        toPath: widget.filesPageState.pagePath,
         copy: copy,
         onSuccess: () async {
-          await filesPageState.onGetFiles(
-            path: filesPageState.pagePath,
-            storage: filesState.selectedStorage,
+          await widget.filesPageState.onGetFiles(
+            path: widget.filesPageState.pagePath,
+            storage: widget.filesState.selectedStorage,
             onError: (String err) => showSnack(
               context: context,
-              scaffoldState: filesPageState.scaffoldKey.currentState,
+              scaffoldState: widget.filesPageState.scaffoldKey.currentState,
               msg: err,
             ),
           );
-          filesState.disableMoveMode();
+          setState(() => _buttonsDisabled = false);
+          widget.filesState.disableMoveMode();
         },
         onError: (err) {
-          filesPageState.filesLoading = FilesLoadingType.none;
+          setState(() => _buttonsDisabled = false);
+          widget.filesPageState.filesLoading = FilesLoadingType.none;
           showSnack(
             context: context,
-            scaffoldState: filesPageState.scaffoldKey.currentState,
+            scaffoldState: widget.filesPageState.scaffoldKey.currentState,
             msg: err,
           );
         });
@@ -56,16 +66,18 @@ class MoveOptions extends StatelessWidget {
               FlatButton(
                 child: Text("Cancel"),
                 onPressed: () {
-                  filesState.disableMoveMode();
+                  widget.filesState.disableMoveMode();
                 },
               ),
               FlatButton(
                 child: Text("Copy"),
-                onPressed: () => _moveFiles(context, true),
+                onPressed:
+                    _buttonsDisabled ? null : () => _moveFiles(context, true),
               ),
               FlatButton(
                 child: Text("Move"),
-                onPressed: () => _moveFiles(context, false),
+                onPressed:
+                    _buttonsDisabled ? null : () => _moveFiles(context, false),
               ),
             ],
           ),

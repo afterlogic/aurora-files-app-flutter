@@ -58,7 +58,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                     key: AuthAndroid._authFormKey,
                     child: ListView(
                       padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 3.2,
+                        top: MediaQuery.of(context).size.height / 3,
                         left: 16.0,
                         right: 16.0,
                         bottom: 16.0,

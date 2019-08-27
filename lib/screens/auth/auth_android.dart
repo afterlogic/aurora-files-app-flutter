@@ -49,76 +49,71 @@ class _AuthAndroidState extends State<AuthAndroid> {
               ],
             ),
           ),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Padding(
-                  padding: EdgeInsets.only(),
-                  child: Form(
-                    key: AuthAndroid._authFormKey,
-                    child: ListView(
-                      padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 3,
-                        left: 16.0,
-                        right: 16.0,
-                        bottom: 16.0,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(16.0),
+            child: SizedBox(
+              // height - padding
+              height: MediaQuery.of(context).size.height - 32.0,
+              width: MediaQuery.of(context).size.width,
+              child: Form(
+                key: AuthAndroid._authFormKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Login",
+                        style: Theme.of(context).textTheme.display1),
+                    SizedBox(height: 23.0),
+                    TextFormField(
+                      cursorColor: Theme.of(context).primaryColor,
+                      controller: authState.emailCtrl,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) => validateInput(value,
+                          [ValidationTypes.empty, ValidationTypes.email]),
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        icon: Icon(Icons.email),
                       ),
-                      children: <Widget>[
-                        Text("Login",
-                            style: Theme.of(context).textTheme.display1),
-                        SizedBox(height: 23.0),
-                        TextFormField(
-                          cursorColor: Theme.of(context).primaryColor,
-                          controller: authState.emailCtrl,
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) => validateInput(value,
-                              [ValidationTypes.empty, ValidationTypes.email]),
-                          decoration: InputDecoration(
-                            hintText: "Email",
-                            icon: Icon(Icons.email),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        TextFormField(
-                          cursorColor: Theme.of(context).primaryColor,
-                          controller: authState.passwordCtrl,
-                          validator: (value) =>
-                              validateInput(value, [ValidationTypes.empty]),
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            hintText: "Password",
-                            icon: Icon(Icons.lock),
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Observer(
-                            builder: (BuildContext context) => MyButton(
-                              isLoading: authState.isLoggingIn,
-                              onPressed: () => authState.onLogin(
-                                isFormValid: AuthAndroid
-                                    ._authFormKey.currentState
-                                    .validate(),
-                                onSuccess: () => Navigator.pushReplacementNamed(
-                                    context, FilesRoute.name,
-                                    arguments: FilesScreenArguments(
-                                        path: "", filesState: FilesState())),
-                                onError: (String err) => showSnack(
-                                  context: context,
-                                  scaffoldState: Scaffold.of(context),
-                                  msg: err,
-                                ),
-                              ),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      cursorColor: Theme.of(context).primaryColor,
+                      controller: authState.passwordCtrl,
+                      validator: (value) =>
+                          validateInput(value, [ValidationTypes.empty]),
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hintText: "Password",
+                        icon: Icon(Icons.lock),
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Observer(
+                        builder: (BuildContext context) => MyButton(
+                          isLoading: authState.isLoggingIn,
+                          onPressed: () => authState.onLogin(
+                            isFormValid: AuthAndroid
+                                ._authFormKey.currentState
+                                .validate(),
+                            onSuccess: () => Navigator.pushReplacementNamed(
+                                context, FilesRoute.name,
+                                arguments: FilesScreenArguments(
+                                    path: "", filesState: FilesState())),
+                            onError: (String err) => showSnack(
+                              context: context,
+                              scaffoldState: Scaffold.of(context),
+                              msg: err,
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),

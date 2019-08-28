@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'files_item_tile.dart';
 
 class FolderWidget extends StatelessWidget {
-  final File folder;
+  final LocalFile folder;
 
   const FolderWidget({Key key, @required this.folder}) : super(key: key);
 

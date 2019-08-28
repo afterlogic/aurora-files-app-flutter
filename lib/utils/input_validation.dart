@@ -10,7 +10,7 @@ enum ValidationTypes {
 String validateInput(
   String value,
   List<ValidationTypes> types, [
-  List<File> files,
+  List<LocalFile> files,
   String fileExtension,
 ]) {
   if (types.contains(ValidationTypes.uniqueName) && files is! List) {
@@ -26,7 +26,7 @@ String validateInput(
   if (types.contains(ValidationTypes.fileName) && !_isFileNameValid(value)) {
     return 'Name cannot contain "/\\*?<>|:';
   }
-  if (files is List<File> && types.contains(ValidationTypes.uniqueName)) {
+  if (files is List<LocalFile> && types.contains(ValidationTypes.uniqueName)) {
     bool exists = false;
     final valueToCheck =
         fileExtension != null ? "$value.$fileExtension" : value;

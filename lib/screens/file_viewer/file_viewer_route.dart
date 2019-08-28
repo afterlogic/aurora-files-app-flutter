@@ -8,7 +8,7 @@ class FileViewerRoute {
 }
 
 class FileViewerScreenArguments {
-  final File file;
+  final LocalFile file;
   final FilesState filesState;
   final FilesPageState filesPageState;
 

@@ -12,7 +12,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'delete_confirmation_dialog.dart';
 
 class FileOptionsBottomSheet extends StatefulWidget {
-  final File file;
+  final LocalFile file;
   final FilesState filesState;
   final FilesPageState filesPageState;
 

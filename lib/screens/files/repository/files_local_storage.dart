@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' as prefixDart;
 import 'dart:io';
 import 'dart:math';
 
@@ -25,7 +24,9 @@ class FilesLocalStorage {
   final uploader = FlutterUploader();
 
   // returns paths
-  Future<File> pickFiles() => FilePicker.getFile();
+  Future<File> pickFiles({FileType type, String extension}) {
+    return FilePicker.getFile(type: type, fileExtension: extension);
+  }
 
   Stream<UploadTaskResponse> uploadFile({
     @required List<FileItem> fileItems,
@@ -89,10 +90,10 @@ class FilesLocalStorage {
     });
   }
 
-  Future<List> encryptFile(prefixDart.File file) async {
+  Future<List> encryptFile(File file) async {
     final fileBytes = await file.readAsBytes();
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    final encryptedFile = new prefixDart.File(
+    final encryptedFile = new File(
       '${appDocDir.path}/${file.path.split("/").last}',
     );
     final createdFile = await encryptedFile.create();
@@ -111,7 +112,7 @@ class FilesLocalStorage {
     return [createdFile, iv.base16];
   }
 
-  decryptFile(File file) {
+  decryptFile(LocalFile file) {
     final key = prefixEncrypt.Key.fromBase16(
         "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
     final iv = IV.fromBase16(file.initVector);

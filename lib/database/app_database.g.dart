@@ -7,7 +7,7 @@ part of 'app_database.dart';
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps
-class File extends DataClass implements Insertable<File> {
+class LocalFile extends DataClass implements Insertable<LocalFile> {
   final int localId;
   final String id;
   final String type;
@@ -32,7 +32,7 @@ class File extends DataClass implements Insertable<File> {
   final String extendedProps;
   final bool isExternal;
   final String initVector;
-  File(
+  LocalFile(
       {@required this.localId,
       @required this.id,
       @required this.type,
@@ -57,13 +57,13 @@ class File extends DataClass implements Insertable<File> {
       @required this.extendedProps,
       @required this.isExternal,
       @required this.initVector});
-  factory File.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  factory LocalFile.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
     final boolType = db.typeSystem.forDartType<bool>();
-    return File(
+    return LocalFile(
       localId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
@@ -108,9 +108,9 @@ class File extends DataClass implements Insertable<File> {
           .mapFromDatabaseResponse(data['${effectivePrefix}init_vector']),
     );
   }
-  factory File.fromJson(Map<String, dynamic> json,
+  factory LocalFile.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return File(
+    return LocalFile(
       localId: serializer.fromJson<int>(json['localId']),
       id: serializer.fromJson<String>(json['id']),
       type: serializer.fromJson<String>(json['type']),
@@ -169,7 +169,7 @@ class File extends DataClass implements Insertable<File> {
   }
 
   @override
-  T createCompanion<T extends UpdateCompanion<File>>(bool nullToAbsent) {
+  T createCompanion<T extends UpdateCompanion<LocalFile>>(bool nullToAbsent) {
     return FilesCompanion(
       localId: localId == null && nullToAbsent
           ? const Value.absent()
@@ -232,7 +232,7 @@ class File extends DataClass implements Insertable<File> {
     ) as T;
   }
 
-  File copyWith(
+  LocalFile copyWith(
           {int localId,
           String id,
           String type,
@@ -257,7 +257,7 @@ class File extends DataClass implements Insertable<File> {
           String extendedProps,
           bool isExternal,
           String initVector}) =>
-      File(
+      LocalFile(
         localId: localId ?? this.localId,
         id: id ?? this.id,
         type: type ?? this.type,
@@ -285,7 +285,7 @@ class File extends DataClass implements Insertable<File> {
       );
   @override
   String toString() {
-    return (StringBuffer('File(')
+    return (StringBuffer('LocalFile(')
           ..write('localId: $localId, ')
           ..write('id: $id, ')
           ..write('type: $type, ')
@@ -361,7 +361,7 @@ class File extends DataClass implements Insertable<File> {
   @override
   bool operator ==(other) =>
       identical(this, other) ||
-      (other is File &&
+      (other is LocalFile &&
           other.localId == localId &&
           other.id == id &&
           other.type == type &&
@@ -388,7 +388,7 @@ class File extends DataClass implements Insertable<File> {
           other.initVector == initVector);
 }
 
-class FilesCompanion extends UpdateCompanion<File> {
+class FilesCompanion extends UpdateCompanion<LocalFile> {
   final Value<int> localId;
   final Value<String> id;
   final Value<String> type;
@@ -493,7 +493,7 @@ class FilesCompanion extends UpdateCompanion<File> {
   }
 }
 
-class $FilesTable extends Files with TableInfo<$FilesTable, File> {
+class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   final GeneratedDatabase _db;
   final String _alias;
   $FilesTable(this._db, [this._alias]);
@@ -984,9 +984,9 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
   @override
   Set<GeneratedColumn> get $primaryKey => {localId};
   @override
-  File map(Map<String, dynamic> data, {String tablePrefix}) {
+  LocalFile map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return File.fromData(data, _db, prefix: effectivePrefix);
+    return LocalFile.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override

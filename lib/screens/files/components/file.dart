@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 import 'files_item_tile.dart';
 
 class FileWidget extends StatelessWidget {
-  final File file;
+  final LocalFile file;
 
   const FileWidget({Key key, @required this.file}) : super(key: key);
 
@@ -34,7 +34,7 @@ class FileWidget extends StatelessWidget {
 
     if (file.initVector != null) {
       return Icon(Icons.lock_outline,
-          size: thumbnailSize, color: Colors.grey[700]);
+          size: thumbnailSize, color: Theme.of(context).disabledColor);
     } else if (file.thumbnailUrl != null) {
       return SizedBox(
         width: thumbnailSize,
@@ -64,7 +64,7 @@ class FileWidget extends StatelessWidget {
       );
     } else {
       return Icon(Icons.description,
-          size: thumbnailSize, color: Colors.grey[700]);
+          size: thumbnailSize, color: Theme.of(context).disabledColor);
     }
   }
 

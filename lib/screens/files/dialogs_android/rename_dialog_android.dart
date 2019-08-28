@@ -5,7 +5,7 @@ import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
 
 class RenameDialog extends StatefulWidget {
-  final File file;
+  final LocalFile file;
   final FilesState filesState;
   final FilesPageState filesPageState;
 

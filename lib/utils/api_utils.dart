@@ -138,8 +138,8 @@ String _getErrMsgFromCode(int code) {
   }
 }
 
-File getFileObjFromResponse(Map<String, dynamic> rawFile) {
-  return File(
+LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
+  return LocalFile(
     localId: null,
     id: rawFile["Id"],
     type: rawFile["Type"],

@@ -23,7 +23,7 @@ abstract class _FilesPageState with Store {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   String pagePath = "";
-  List<File> currentFiles = [];
+  List<LocalFile> currentFiles = [];
 
   @observable
   Set<String> selectedFilesIds = new Set();
@@ -66,7 +66,7 @@ abstract class _FilesPageState with Store {
 
   // supports both extracting files from selected ids and passing file(s) directly
   void onDeleteFiles({
-    List<File> filesToDelete,
+    List<LocalFile> filesToDelete,
     @required Storage storage,
     @required Function onSuccess,
     @required Function(String) onError,

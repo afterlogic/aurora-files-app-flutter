@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io' as prefixDart;
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
@@ -34,7 +33,7 @@ abstract class _FilesState with Store {
   @observable
   bool isMoveModeEnabled = false;
 
-  List<File> filesToMoveCopy = new List();
+  List<LocalFile> filesToMoveCopy = new List();
 
   // after moving files, both current page and the page files were moved from have to be updated
   // this cb updates the page the files were moved from
@@ -45,9 +44,9 @@ abstract class _FilesState with Store {
   }) updateFilesCb;
 
   void enableMoveMode({
-    List<File> filesToMove,
+    List<LocalFile> filesToMove,
     Set<String> selectedFileIds,
-    List<File> currentFiles,
+    List<LocalFile> currentFiles,
   }) {
     if (filesToMove != null)
       filesToMoveCopy = filesToMove;
@@ -154,7 +153,7 @@ abstract class _FilesState with Store {
   }
 
   Future onRename({
-    @required File file,
+    @required LocalFile file,
     @required String newName,
     @required Function onSuccess,
     @required Function onError,
@@ -181,7 +180,7 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     // Pick 1 file since our back supports adding only 1 file at a time
-    prefixDart.File file = await _filesLocal.pickFiles();
+    File file = await _filesLocal.pickFiles();
     String vector;
 
     if (file == null) return;

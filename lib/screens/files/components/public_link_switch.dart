@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PublicLinkSwitch extends StatefulWidget {
-  final File file;
+  final LocalFile file;
   final FilesState filesState;
   final FilesPageState filesPageState;
   final bool isFileViewer;

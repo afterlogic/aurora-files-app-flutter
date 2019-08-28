@@ -14,7 +14,7 @@ import 'components/image_viewer.dart';
 import 'components/info_list_tile.dart';
 
 class FileViewerAndroid extends StatefulWidget {
-  final File file;
+  final LocalFile file;
   final FilesState filesState;
   final FilesPageState filesPageState;
 
@@ -33,7 +33,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   final GlobalKey<ScaffoldState> _fileViewerScaffoldKey =
       GlobalKey<ScaffoldState>();
 
-  File file;
+  LocalFile file;
 
   @override
   void initState() {

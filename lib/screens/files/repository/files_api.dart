@@ -14,9 +14,9 @@ class FilesApi {
   final String authToken = SingletonStore.instance.authToken;
   final int userId = SingletonStore.instance.userId;
 
-  List<File> _sortFiles(List<File> unsortedFiles) {
-    final List<File> folders = List();
-    final List<File> files = List();
+  List<LocalFile> _sortFiles(List<LocalFile> unsortedFiles) {
+    final List<LocalFile> folders = List();
+    final List<LocalFile> files = List();
 
     unsortedFiles.forEach((item) {
       if (item.isFolder)
@@ -42,7 +42,7 @@ class FilesApi {
     }
   }
 
-  Future<List<File>> getFiles(String type, String path, String pattern) async {
+  Future<List<LocalFile>> getFiles(String type, String path, String pattern) async {
     final parameters = json.encode({
       "Type": type,
       "Path": path,
@@ -56,7 +56,7 @@ class FilesApi {
     final res = await sendRequest(body);
 
     if (res['Result'] != null && res['Result']['Items'] is List) {
-      final List<File> unsortedList = [];
+      final List<LocalFile> unsortedList = [];
       res['Result']['Items']
           .forEach((file) => unsortedList.add(getFileObjFromResponse(file)));
       return _sortFiles(unsortedList);

@@ -11,7 +11,7 @@ class ImageViewer extends StatelessWidget {
     @required this.file,
   }) : super(key: key);
 
-  final File file;
+  final LocalFile file;
 
   @override
   Widget build(BuildContext context) {

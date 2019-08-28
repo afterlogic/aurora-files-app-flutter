@@ -6,6 +6,8 @@ void showSnack({
   @required String msg,
   isError = true,
 }) {
+  if (Theme == null || scaffoldState == null) return;
+
   final theme = Theme.of(context);
   final snack = theme.brightness == Brightness.light
       ? SnackBar(
@@ -21,8 +23,6 @@ void showSnack({
           backgroundColor: isError ? theme.errorColor : theme.iconTheme.color,
         );
 
-  if (scaffoldState != null) {
-    scaffoldState.removeCurrentSnackBar();
-  }
+  scaffoldState.removeCurrentSnackBar();
   scaffoldState.showSnackBar(snack);
 }

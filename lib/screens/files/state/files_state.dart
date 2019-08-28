@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io' as prefixDart;
 import 'dart:io';
-import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
@@ -9,14 +8,11 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/screens/files/repository/files_api.dart';
 import 'package:aurorafiles/screens/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
-import 'package:encrypt/encrypt.dart';
-import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
 import 'package:mobx/mobx.dart';
-import 'package:path_provider/path_provider.dart';
 
 part 'files_state.g.dart';
 
@@ -193,7 +189,7 @@ abstract class _FilesState with Store {
     final shouldEncrypt = selectedStorage.type == "encrypted";
 
     if (shouldEncrypt) {
-      final encryptionData = await _encryptFile(file);
+      final encryptionData = await _filesLocal.encryptFile(file);
       file = encryptionData[0];
       vector = encryptionData[1];
     }
@@ -227,29 +223,6 @@ abstract class _FilesState with Store {
       if (shouldEncrypt) file.delete();
       onError(ex.message);
     });
-  }
-
-  Future<List> _encryptFile(prefixDart.File file) async {
-    final fileBytes = await file.readAsBytes();
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    final encryptedFile = new prefixDart.File(
-      '${appDocDir.path}/${file.path.split("/").last}',
-    );
-    final createdFile = await encryptedFile.create();
-
-    final key = prefixEncrypt.Key.fromBase16(
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
-    // generate vector
-    Random random = Random.secure();
-    var values = List<int>.generate(16, (i) => random.nextInt(256));
-    final iv = IV.fromBase64(base64Encode(values));
-
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-
-    final encrypted = encrypter.encryptBytes(fileBytes, iv: iv);
-//    final decrypted = encrypter.decrypt(encrypted, iv: iv);
-    await createdFile.writeAsBytes(encrypted.bytes);
-    return [createdFile, iv.base16];
   }
 
   void onDownloadFile({

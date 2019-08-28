@@ -31,6 +31,7 @@ class File extends DataClass implements Insertable<File> {
   final String hash;
   final String extendedProps;
   final bool isExternal;
+  final String initVector;
   File(
       {@required this.localId,
       @required this.id,
@@ -54,7 +55,8 @@ class File extends DataClass implements Insertable<File> {
       @required this.thumbnailUrl,
       @required this.hash,
       @required this.extendedProps,
-      @required this.isExternal});
+      @required this.isExternal,
+      @required this.initVector});
   factory File.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -102,6 +104,8 @@ class File extends DataClass implements Insertable<File> {
           .mapFromDatabaseResponse(data['${effectivePrefix}extended_props']),
       isExternal: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_external']),
+      initVector: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}init_vector']),
     );
   }
   factory File.fromJson(Map<String, dynamic> json,
@@ -130,6 +134,7 @@ class File extends DataClass implements Insertable<File> {
       hash: serializer.fromJson<String>(json['hash']),
       extendedProps: serializer.fromJson<String>(json['extendedProps']),
       isExternal: serializer.fromJson<bool>(json['isExternal']),
+      initVector: serializer.fromJson<String>(json['initVector']),
     );
   }
   @override
@@ -159,6 +164,7 @@ class File extends DataClass implements Insertable<File> {
       'hash': serializer.toJson<String>(hash),
       'extendedProps': serializer.toJson<String>(extendedProps),
       'isExternal': serializer.toJson<bool>(isExternal),
+      'initVector': serializer.toJson<String>(initVector),
     };
   }
 
@@ -220,6 +226,9 @@ class File extends DataClass implements Insertable<File> {
       isExternal: isExternal == null && nullToAbsent
           ? const Value.absent()
           : Value(isExternal),
+      initVector: initVector == null && nullToAbsent
+          ? const Value.absent()
+          : Value(initVector),
     ) as T;
   }
 
@@ -246,7 +255,8 @@ class File extends DataClass implements Insertable<File> {
           String thumbnailUrl,
           String hash,
           String extendedProps,
-          bool isExternal}) =>
+          bool isExternal,
+          String initVector}) =>
       File(
         localId: localId ?? this.localId,
         id: id ?? this.id,
@@ -271,6 +281,7 @@ class File extends DataClass implements Insertable<File> {
         hash: hash ?? this.hash,
         extendedProps: extendedProps ?? this.extendedProps,
         isExternal: isExternal ?? this.isExternal,
+        initVector: initVector ?? this.initVector,
       );
   @override
   String toString() {
@@ -297,51 +308,56 @@ class File extends DataClass implements Insertable<File> {
           ..write('thumbnailUrl: $thumbnailUrl, ')
           ..write('hash: $hash, ')
           ..write('extendedProps: $extendedProps, ')
-          ..write('isExternal: $isExternal')
+          ..write('isExternal: $isExternal, ')
+          ..write('initVector: $initVector')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => $mrjf($mrjc(
+      localId.hashCode,
       $mrjc(
+          id.hashCode,
           $mrjc(
+              type.hashCode,
               $mrjc(
+                  path.hashCode,
                   $mrjc(
+                      fullPath.hashCode,
                       $mrjc(
+                          name.hashCode,
                           $mrjc(
+                              size.hashCode,
                               $mrjc(
+                                  isFolder.hashCode,
                                   $mrjc(
+                                      isLink.hashCode,
                                       $mrjc(
+                                          linkType.hashCode,
                                           $mrjc(
+                                              linkUrl.hashCode,
                                               $mrjc(
+                                                  lastModified.hashCode,
                                                   $mrjc(
+                                                      contentType.hashCode,
                                                       $mrjc(
+                                                          oEmbedHtml.hashCode,
                                                           $mrjc(
+                                                              published
+                                                                  .hashCode,
                                                               $mrjc(
+                                                                  owner
+                                                                      .hashCode,
                                                                   $mrjc(
+                                                                      content
+                                                                          .hashCode,
                                                                       $mrjc(
+                                                                          viewUrl
+                                                                              .hashCode,
                                                                           $mrjc(
-                                                                              $mrjc($mrjc($mrjc($mrjc(0, localId.hashCode), id.hashCode), type.hashCode), path.hashCode),
-                                                                              fullPath.hashCode),
-                                                                          name.hashCode),
-                                                                      size.hashCode),
-                                                                  isFolder.hashCode),
-                                                              isLink.hashCode),
-                                                          linkType.hashCode),
-                                                      linkUrl.hashCode),
-                                                  lastModified.hashCode),
-                                              contentType.hashCode),
-                                          oEmbedHtml.hashCode),
-                                      published.hashCode),
-                                  owner.hashCode),
-                              content.hashCode),
-                          viewUrl.hashCode),
-                      downloadUrl.hashCode),
-                  thumbnailUrl.hashCode),
-              hash.hashCode),
-          extendedProps.hashCode),
-      isExternal.hashCode));
+                                                                              downloadUrl.hashCode,
+                                                                              $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, initVector.hashCode))))))))))))))))))))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
@@ -368,7 +384,8 @@ class File extends DataClass implements Insertable<File> {
           other.thumbnailUrl == thumbnailUrl &&
           other.hash == hash &&
           other.extendedProps == extendedProps &&
-          other.isExternal == isExternal);
+          other.isExternal == isExternal &&
+          other.initVector == initVector);
 }
 
 class FilesCompanion extends UpdateCompanion<File> {
@@ -395,6 +412,7 @@ class FilesCompanion extends UpdateCompanion<File> {
   final Value<String> hash;
   final Value<String> extendedProps;
   final Value<bool> isExternal;
+  final Value<String> initVector;
   const FilesCompanion({
     this.localId = const Value.absent(),
     this.id = const Value.absent(),
@@ -419,7 +437,60 @@ class FilesCompanion extends UpdateCompanion<File> {
     this.hash = const Value.absent(),
     this.extendedProps = const Value.absent(),
     this.isExternal = const Value.absent(),
+    this.initVector = const Value.absent(),
   });
+  FilesCompanion copyWith(
+      {Value<int> localId,
+      Value<String> id,
+      Value<String> type,
+      Value<String> path,
+      Value<String> fullPath,
+      Value<String> name,
+      Value<int> size,
+      Value<bool> isFolder,
+      Value<bool> isLink,
+      Value<String> linkType,
+      Value<String> linkUrl,
+      Value<int> lastModified,
+      Value<String> contentType,
+      Value<String> oEmbedHtml,
+      Value<bool> published,
+      Value<String> owner,
+      Value<String> content,
+      Value<String> viewUrl,
+      Value<String> downloadUrl,
+      Value<String> thumbnailUrl,
+      Value<String> hash,
+      Value<String> extendedProps,
+      Value<bool> isExternal,
+      Value<String> initVector}) {
+    return FilesCompanion(
+      localId: localId ?? this.localId,
+      id: id ?? this.id,
+      type: type ?? this.type,
+      path: path ?? this.path,
+      fullPath: fullPath ?? this.fullPath,
+      name: name ?? this.name,
+      size: size ?? this.size,
+      isFolder: isFolder ?? this.isFolder,
+      isLink: isLink ?? this.isLink,
+      linkType: linkType ?? this.linkType,
+      linkUrl: linkUrl ?? this.linkUrl,
+      lastModified: lastModified ?? this.lastModified,
+      contentType: contentType ?? this.contentType,
+      oEmbedHtml: oEmbedHtml ?? this.oEmbedHtml,
+      published: published ?? this.published,
+      owner: owner ?? this.owner,
+      content: content ?? this.content,
+      viewUrl: viewUrl ?? this.viewUrl,
+      downloadUrl: downloadUrl ?? this.downloadUrl,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      hash: hash ?? this.hash,
+      extendedProps: extendedProps ?? this.extendedProps,
+      isExternal: isExternal ?? this.isExternal,
+      initVector: initVector ?? this.initVector,
+    );
+  }
 }
 
 class $FilesTable extends Files with TableInfo<$FilesTable, File> {
@@ -709,6 +780,18 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     );
   }
 
+  final VerificationMeta _initVectorMeta = const VerificationMeta('initVector');
+  GeneratedTextColumn _initVector;
+  @override
+  GeneratedTextColumn get initVector => _initVector ??= _constructInitVector();
+  GeneratedTextColumn _constructInitVector() {
+    return GeneratedTextColumn(
+      'init_vector',
+      $tableName,
+      false,
+    );
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         localId,
@@ -733,7 +816,8 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
         thumbnailUrl,
         hash,
         extendedProps,
-        isExternal
+        isExternal,
+        initVector
       ];
   @override
   $FilesTable get asDslTable => this;
@@ -888,6 +972,12 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     } else if (isExternal.isRequired && isInserting) {
       context.missing(_isExternalMeta);
     }
+    if (d.initVector.present) {
+      context.handle(_initVectorMeta,
+          initVector.isAcceptableValue(d.initVector.value, _initVectorMeta));
+    } else if (initVector.isRequired && isInserting) {
+      context.missing(_initVectorMeta);
+    }
     return context;
   }
 
@@ -971,6 +1061,9 @@ class $FilesTable extends Files with TableInfo<$FilesTable, File> {
     }
     if (d.isExternal.present) {
       map['is_external'] = Variable<bool, BoolType>(d.isExternal.value);
+    }
+    if (d.initVector.present) {
+      map['init_vector'] = Variable<String, StringType>(d.initVector.value);
     }
     return map;
   }

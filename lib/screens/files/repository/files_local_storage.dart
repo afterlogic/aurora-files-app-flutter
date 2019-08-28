@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' as prefixDart;
 import 'dart:io';
+import 'dart:math';
 
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -82,5 +87,35 @@ class FilesLocalStorage {
         FlutterDownloader.registerCallback(null);
       }
     });
+  }
+
+  Future<List> encryptFile(prefixDart.File file) async {
+    final fileBytes = await file.readAsBytes();
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    final encryptedFile = new prefixDart.File(
+      '${appDocDir.path}/${file.path.split("/").last}',
+    );
+    final createdFile = await encryptedFile.create();
+
+    final key = prefixEncrypt.Key.fromBase16(
+        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
+    // generate vector
+    Random random = Random.secure();
+    var values = List<int>.generate(16, (i) => random.nextInt(256));
+    final iv = IV.fromBase64(base64Encode(values));
+
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+
+    final encrypted = encrypter.encryptBytes(fileBytes, iv: iv);
+    await createdFile.writeAsBytes(encrypted.bytes);
+    return [createdFile, iv.base16];
+  }
+
+  decryptFile(File file) {
+    final key = prefixEncrypt.Key.fromBase16(
+        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
+    final iv = IV.fromBase16(file.initVector);
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+//    final decrypted = encrypter.decryptBytes(encrypted, iv: iv);
   }
 }

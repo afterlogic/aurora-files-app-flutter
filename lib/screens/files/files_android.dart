@@ -7,6 +7,7 @@ import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'components/folder.dart';
@@ -227,7 +228,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                               },
                             ),
                             MiniFab(
-                              icon: Icon(Icons.cloud_upload),
+                              icon: Icon(MdiIcons.filePlus),
                               onPressed: () {
                                 _filesState.onUploadFile(
                                   onUploadStart: () => showSnack(

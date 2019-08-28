@@ -32,7 +32,10 @@ class FileWidget extends StatelessWidget {
   Widget _getThumbnail(BuildContext context) {
     final thumbnailSize = Provider.of<FilesState>(context).filesTileLeadingSize;
 
-    if (file.thumbnailUrl != null) {
+    if (file.initVector != null) {
+      return Icon(Icons.lock_outline,
+          size: thumbnailSize, color: Colors.grey[700]);
+    } else if (file.thumbnailUrl != null) {
       return SizedBox(
         width: thumbnailSize,
         height: thumbnailSize,

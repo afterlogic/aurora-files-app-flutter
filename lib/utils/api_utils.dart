@@ -167,5 +167,8 @@ File getFileObjFromResponse(Map<String, dynamic> rawFile) {
         : null,
     hash: rawFile["Hash"],
     extendedProps: rawFile["ExtendedProps"].toString(),
+    initVector: rawFile["ExtendedProps"] is Map
+        ? rawFile["ExtendedProps"]["InitializationVector"]
+        : null,
   );
 }

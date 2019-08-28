@@ -46,4 +46,6 @@ class Files extends Table {
   TextColumn get extendedProps => text()();
 
   BoolColumn get isExternal => boolean()();
+
+  TextColumn get initVector => text()();
 }

@@ -20,22 +20,32 @@ class FilesLocalStorage {
   final uploader = FlutterUploader();
 
   // returns paths
-  Future<String> pickFiles() => FilePicker.getFilePath();
+  Future<File> pickFiles() => FilePicker.getFile();
 
   Stream<UploadTaskResponse> uploadFile({
     @required List<FileItem> fileItems,
     @required String storageType,
     @required String path,
+    String vector,
+    bool firstChunk = true,
   }) {
-    final params = json.encode({
+    final Map<String, dynamic> params = {
       "Type": storageType,
       "Path": path,
       "SubPath": "",
-    });
+    };
 
-    final body =
-        new ApiBody(module: "Files", method: "UploadFile", parameters: params)
-            .toMap();
+    if (vector is String) {
+      params["ExtendedProps"] = {};
+      params["ExtendedProps"]["InitializationVector"] = vector;
+      params["ExtendedProps"]["FirstChunk"] = firstChunk;
+    }
+
+    final body = new ApiBody(
+            module: "Files",
+            method: "UploadFile",
+            parameters: jsonEncode(params))
+        .toMap();
 
     uploader.enqueue(
       url: apiUrl,

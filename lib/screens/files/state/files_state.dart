@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:io' as prefixDart;
+import 'dart:io';
+import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
@@ -6,11 +9,14 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/screens/files/repository/files_api.dart';
 import 'package:aurorafiles/screens/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
 import 'package:mobx/mobx.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'files_state.g.dart';
 
@@ -23,7 +29,7 @@ abstract class _FilesState with Store {
 
   final filesTileLeadingSize = 48.0;
 
-  List<Storage> currentStorages = [];
+  List<Storage> currentStorages = new List();
 
   @observable
   Storage selectedStorage =
@@ -32,7 +38,7 @@ abstract class _FilesState with Store {
   @observable
   bool isMoveModeEnabled = false;
 
-  List<File> filesToMoveCopy = [];
+  List<File> filesToMoveCopy = new List();
 
   // after moving files, both current page and the page files were moved from have to be updated
   // this cb updates the page the files were moved from
@@ -179,11 +185,20 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     // Pick 1 file since our back supports adding only 1 file at a time
-    final filePath = await _filesLocal.pickFiles();
-    if (filePath == null) return;
+    prefixDart.File file = await _filesLocal.pickFiles();
+    String vector;
 
+    if (file == null) return;
+
+    final shouldEncrypt = selectedStorage.type == "encrypted";
+
+    if (shouldEncrypt) {
+      final encryptionData = await _encryptFile(file);
+      file = encryptionData[0];
+      vector = encryptionData[1];
+    }
     // Get name and path
-    final List<String> pathList = filePath.split("/");
+    final List<String> pathList = file.path.split("/");
     final name = pathList.last;
     pathList.removeLast();
 
@@ -193,18 +208,48 @@ abstract class _FilesState with Store {
     // Start uploading
     onUploadStart();
     final sub = _filesLocal.uploadFile(
-        fileItems: [fileItem], storageType: selectedStorage.type, path: "");
+      fileItems: [fileItem],
+      storageType: selectedStorage.type,
+      path: "",
+      vector: shouldEncrypt ? vector : null,
+    );
 
     // Subscribe to result
     sub.listen((result) {
       Map<String, dynamic> res = json.decode(result.response);
-      if (res["Result"] == null || res["Result"] == false)
+      if (res["Result"] == null || res["Result"] == false) {
         onError(getErrMsg(res));
-      else
+      } else {
+        if (shouldEncrypt) file.delete();
         onSuccess();
+      }
     }, onError: (ex, stacktrace) {
+      if (shouldEncrypt) file.delete();
       onError(ex.message);
     });
+  }
+
+  Future<List> _encryptFile(prefixDart.File file) async {
+    final fileBytes = await file.readAsBytes();
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    final encryptedFile = new prefixDart.File(
+      '${appDocDir.path}/${file.path.split("/").last}',
+    );
+    final createdFile = await encryptedFile.create();
+
+    final key = prefixEncrypt.Key.fromBase16(
+        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
+    // generate vector
+    Random random = Random.secure();
+    var values = List<int>.generate(16, (i) => random.nextInt(256));
+    final iv = IV.fromBase64(base64Encode(values));
+
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+
+    final encrypted = encrypter.encryptBytes(fileBytes, iv: iv);
+//    final decrypted = encrypter.decrypt(encrypted, iv: iv);
+    await createdFile.writeAsBytes(encrypted.bytes);
+    return [createdFile, iv.base16];
   }
 
   void onDownloadFile({

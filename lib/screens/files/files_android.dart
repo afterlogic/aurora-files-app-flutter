@@ -156,109 +156,109 @@ class _FilesAndroidState extends State<FilesAndroid>
       child: SafeArea(
         top: false,
         bottom: false,
-        child: Scaffold(
-          key: _filesPageState.scaffoldKey,
-          drawer: Observer(
-              builder: (_) =>
-                  _filesState.isMoveModeEnabled ? null : MainDrawer()),
-          appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
-          body: Observer(
-              builder: (_) => RefreshIndicator(
-                    onRefresh: () async {
-                      if (_filesState.currentStorages.length <= 0) {
-                        await _filesState.onGetStorages();
-                      }
-                      return _getFiles(context, FilesLoadingType.none);
-                    },
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: <Widget>[
-                        Positioned.fill(
-                          child: _buildFiles(context),
-                        ),
-                        // LOADER
-                        Positioned(
-                          top: 0.0,
-                          left: 0.0,
-                          right: 0.0,
-                          height: 6.0,
-                          child: AnimatedOpacity(
-                            duration: Duration(milliseconds: 150),
-                            opacity: _filesPageState.filesLoading ==
-                                    FilesLoadingType.filesVisible
-                                ? 1.0
-                                : 0.0,
-                            child: LinearProgressIndicator(),
+        child: Observer(
+          builder: (_) => Scaffold(
+            key: _filesPageState.scaffoldKey,
+            drawer: _filesState.isMoveModeEnabled ? null : MainDrawer(),
+            appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
+            body: Observer(
+                builder: (_) => RefreshIndicator(
+                      onRefresh: () async {
+                        if (_filesState.currentStorages.length <= 0) {
+                          await _filesState.onGetStorages();
+                        }
+                        return _getFiles(context, FilesLoadingType.none);
+                      },
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          Positioned.fill(
+                            child: _buildFiles(context),
                           ),
-                        ),
-                        if (_filesState.isMoveModeEnabled)
+                          // LOADER
                           Positioned(
-                            bottom: 0.0,
+                            top: 0.0,
                             left: 0.0,
                             right: 0.0,
-                            height: 50.0,
-                            child: MoveOptions(
-                              filesState: _filesState,
-                              filesPageState: _filesPageState,
+                            height: 6.0,
+                            child: AnimatedOpacity(
+                              duration: Duration(milliseconds: 150),
+                              opacity: _filesPageState.filesLoading ==
+                                      FilesLoadingType.filesVisible
+                                  ? 1.0
+                                  : 0.0,
+                              child: LinearProgressIndicator(),
                             ),
-                          )
-                      ],
-                    ),
-                  )),
-          floatingActionButton: Observer(
-            builder: (_) => _filesState.isMoveModeEnabled
-                ? SizedBox()
-                : FloatingActionButton(
-                    heroTag: widget.path,
-                    child: Icon(Icons.add),
-                    onPressed: () => Navigator.push(
-                        context,
-                        CustomSpeedDial(tag: widget.path, children: [
-                          MiniFab(
-                            icon: Icon(Icons.create_new_folder),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (_) => AddFolderDialogAndroid(
-                                  filesState: _filesState,
-                                  filesPageState: _filesPageState,
-                                ),
-                              );
-                            },
                           ),
-                          MiniFab(
-                            icon: Icon(Icons.cloud_upload),
-                            onPressed: () {
-                              _filesState.onUploadFile(
-                                onUploadStart: () => showSnack(
+                          if (_filesState.isMoveModeEnabled)
+                            Positioned(
+                              bottom: 0.0,
+                              left: 0.0,
+                              right: 0.0,
+                              height: 50.0,
+                              child: MoveOptions(
+                                filesState: _filesState,
+                                filesPageState: _filesPageState,
+                              ),
+                            )
+                        ],
+                      ),
+                    )),
+            floatingActionButton: Observer(
+              builder: (_) => _filesState.isMoveModeEnabled
+                  ? SizedBox()
+                  : FloatingActionButton(
+                      heroTag: widget.path,
+                      child: Icon(Icons.add),
+                      onPressed: () => Navigator.push(
+                          context,
+                          CustomSpeedDial(tag: widget.path, children: [
+                            MiniFab(
+                              icon: Icon(Icons.create_new_folder),
+                              onPressed: () {
+                                showDialog(
                                   context: context,
-                                  scaffoldState:
-                                      _filesPageState.scaffoldKey.currentState,
-                                  msg: "Uploading file...",
-                                  isError: false,
-                                ),
-                                onSuccess: () {
-                                  showSnack(
+                                  barrierDismissible: false,
+                                  builder: (_) => AddFolderDialogAndroid(
+                                    filesState: _filesState,
+                                    filesPageState: _filesPageState,
+                                  ),
+                                );
+                              },
+                            ),
+                            MiniFab(
+                              icon: Icon(Icons.cloud_upload),
+                              onPressed: () {
+                                _filesState.onUploadFile(
+                                  onUploadStart: () => showSnack(
                                     context: context,
-                                    scaffoldState: _filesPageState
-                                        .scaffoldKey.currentState,
-                                    msg: "File successfully uploaded",
+                                    scaffoldState:
+                                        _filesPageState.scaffoldKey.currentState,
+                                    msg: "Uploading file...",
                                     isError: false,
-                                  );
-                                  _getFiles(context);
-                                },
-                                onError: (String err) => showSnack(
-                                  context: context,
-                                  scaffoldState:
-                                      _filesPageState.scaffoldKey.currentState,
-                                  msg: err,
-                                ),
-                              );
-                            },
-                          ),
-                        ])),
-                  ),
+                                  ),
+                                  onSuccess: () {
+                                    showSnack(
+                                      context: context,
+                                      scaffoldState: _filesPageState
+                                          .scaffoldKey.currentState,
+                                      msg: "File successfully uploaded",
+                                      isError: false,
+                                    );
+                                    _getFiles(context);
+                                  },
+                                  onError: (String err) => showSnack(
+                                    context: context,
+                                    scaffoldState:
+                                        _filesPageState.scaffoldKey.currentState,
+                                    msg: err,
+                                  ),
+                                );
+                              },
+                            ),
+                          ])),
+                    ),
+            ),
           ),
         ),
       ),

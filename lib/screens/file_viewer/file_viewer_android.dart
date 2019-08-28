@@ -131,7 +131,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               content: file.name,
               isPublic: file.published,
               isOffline: file.localId != null,
-              isEncrypted: false, // TODO
+              isEncrypted: file.initVector != null,
             ),
             Row(
               children: <Widget>[

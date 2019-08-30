@@ -106,13 +106,23 @@ class MainDrawer extends StatelessWidget {
                     );
                   }),
                   Divider(),
-                  ListTile(
-                    leading: Icon(Icons.airplanemode_active),
-                    title: Text("Offline mode"),
+                  SwitchListTile.adaptive(
+                    value: false,
+                    onChanged: (bool val) {},
+                    title: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(Icons.airplanemode_active),
+                      title: Text("Offline mode"),
+                    ),
                   ),
-                  ListTile(
-                    leading: Icon(Icons.link),
-                    title: Text("Public links"),
+                  SwitchListTile.adaptive(
+                    value: false,
+                    onChanged: (bool val) {},
+                    title: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(Icons.link),
+                      title: Text("Public links"),
+                    ),
                   ),
 //                  SwitchListTile.adaptive(
 //                    value: Theme.of(context).brightness == Brightness.dark,
@@ -123,15 +133,15 @@ class MainDrawer extends StatelessWidget {
 //                      title: Text("Dark theme"),
 //                    ),
 //                  ),
-                  ListTile(
-                    leading: Icon(Icons.settings),
-                    title: Text("Settings"),
-                  )
                 ],
               ),
             ),
             Divider(
               height: 0,
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text("Settings"),
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app),

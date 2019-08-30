@@ -231,6 +231,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                               icon: Icon(MdiIcons.filePlus),
                               onPressed: () {
                                 _filesState.onUploadFile(
+                                  path: widget.path,
                                   onUploadStart: () => showSnack(
                                     context: context,
                                     scaffoldState:

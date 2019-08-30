@@ -23,13 +23,12 @@ class FilesLocalStorage {
   final String apiUrl = SingletonStore.instance.apiUrl;
   final uploader = FlutterUploader();
 
-  // returns paths
   Future<File> pickFiles({FileType type, String extension}) {
     return FilePicker.getFile(type: type, fileExtension: extension);
   }
 
   Stream<UploadTaskResponse> uploadFile({
-    @required List<FileItem> fileItems,
+    @required FileItem fileItem,
     @required String storageType,
     @required String path,
     String vector,
@@ -55,11 +54,12 @@ class FilesLocalStorage {
 
     uploader.enqueue(
       url: apiUrl,
-      files: fileItems,
+      files: [fileItem],
       method: UploadMethod.POST,
       headers: getHeader(authToken),
       data: body,
       showNotification: true,
+      tag: fileItem.filename,
     );
 
     return uploader.result;

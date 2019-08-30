@@ -175,6 +175,7 @@ abstract class _FilesState with Store {
   }
 
   Future onUploadFile({
+    @required String path,
     @required Function onUploadStart,
     @required Function onSuccess,
     @required Function(String) onError,
@@ -203,9 +204,9 @@ abstract class _FilesState with Store {
     // Start uploading
     onUploadStart();
     final sub = _filesLocal.uploadFile(
-      fileItems: [fileItem],
+      fileItem: fileItem,
       storageType: selectedStorage.type,
-      path: "",
+      path: path,
       vector: shouldEncrypt ? vector : null,
     );
 

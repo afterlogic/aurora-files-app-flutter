@@ -49,7 +49,9 @@ class FolderWidget extends StatelessWidget {
           leading: Icon(
             Icons.folder,
             size: filesState.filesTileLeadingSize,
-            color: Theme.of(context).disabledColor,
+            color: filesState.filesToMoveCopy.contains(folder)
+                ? Theme.of(context).disabledColor.withOpacity(0.11)
+                : Theme.of(context).disabledColor,
           ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

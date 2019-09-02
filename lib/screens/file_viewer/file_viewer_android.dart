@@ -51,9 +51,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _moveFile() {
-    widget.filesState.updateFilesCb =
-        widget.filesPageState.onGetFiles;
-    widget.filesState.enableMoveMode(filesToMove: [widget.file]);
+    widget.filesState.updateFilesCb = widget.filesPageState.onGetFiles;
+    widget.filesState.enableMoveMode(filesToMove: [file]);
     Navigator.pop(context);
   }
 
@@ -62,7 +61,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       context: context,
       barrierDismissible: false,
       builder: (_) => RenameDialog(
-        file: widget.file,
+        file: file,
         filesState: widget.filesState,
         filesPageState: widget.filesPageState,
       ),
@@ -100,18 +99,18 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   void _downloadFile() {
     widget.filesState.onDownloadFile(
-      url: widget.file.downloadUrl,
-      fileName: widget.file.name,
+      url: file.downloadUrl,
+      fileName: file.name,
       onStart: () => showSnack(
         context: context,
         scaffoldState: _fileViewerScaffoldKey.currentState,
-        msg: "Downloading ${widget.file.name}",
+        msg: "Downloading ${file.name}",
         isError: false,
       ),
       onSuccess: () => showSnack(
         context: context,
         scaffoldState: _fileViewerScaffoldKey.currentState,
-        msg: "${widget.file.name} downloaded successfully",
+        msg: "${file.name} downloaded successfully",
         isError: false,
       ),
       onError: (String err) => showSnack(
@@ -144,7 +143,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               tooltip: "Move/Copy",
               onPressed: _moveFile,
             ),
-            if (widget.file.downloadUrl != null)
+            if (file.downloadUrl != null)
               IconButton(
                 icon: Icon(Icons.file_download),
                 tooltip: "Download",
@@ -165,8 +164,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         body: ListView(
           padding: const EdgeInsets.all(16.0),
           children: <Widget>[
-            if (widget.file.contentType.startsWith("image"))
-              ImageViewer(file: widget.file),
+            if (file.contentType.startsWith("image")) ImageViewer(file: file),
             SizedBox(height: 30.0),
             InfoListTile(
               label: "Filename",
@@ -178,23 +176,25 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: InfoListTile(
-                      label: "Size", content: filesize(widget.file.size)),
+                  child:
+                      InfoListTile(label: "Size", content: filesize(file.size)),
                 ),
                 SizedBox(width: 30),
                 Expanded(
                   child: InfoListTile(
                     label: "Created",
                     content: DateFormatting.formatDateFromSeconds(
-                      timestamp: widget.file.lastModified,
+                      timestamp: file.lastModified,
                     ),
                   ),
                 ),
               ],
             ),
-            InfoListTile(label: "Owner", content: widget.file.owner),
+            InfoListTile(
+                label: "Location", content: file.path == "" ? "/" : file.path),
+            InfoListTile(label: "Owner", content: file.owner),
             PublicLinkSwitch(
-              file: widget.file,
+              file: file,
               isFileViewer: true,
               updateFile: _updateFile,
               scaffoldKey: _fileViewerScaffoldKey,

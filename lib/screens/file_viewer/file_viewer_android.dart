@@ -50,6 +50,13 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     });
   }
 
+  void _moveFile() {
+    widget.filesState.updateFilesCb =
+        widget.filesPageState.onGetFiles;
+    widget.filesState.enableMoveMode(filesToMove: [widget.file]);
+    Navigator.pop(context);
+  }
+
   void _renameFile() async {
     final result = await showDialog(
       context: context,
@@ -135,7 +142,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             IconButton(
               icon: Icon(MdiIcons.fileMove),
               tooltip: "Move/Copy",
-              onPressed: () {},
+              onPressed: _moveFile,
             ),
             if (widget.file.downloadUrl != null)
               IconButton(

@@ -27,28 +27,28 @@ class _RenameDialogState extends State<RenameDialog> {
   bool isRenaming = false;
   String errMsg = "";
 
-  // with .
-  String fileExtension = "";
-
   @override
   void initState() {
     super.initState();
-    _fileNameCtrl.text = widget.file.isFolder
-        ? widget.file.name
-        : _getFileNameWithoutExtension();
+
+    _fileNameCtrl.text = widget.file.name;
+    if (!widget.file.isFolder) _setCursorPositionBeforeExtension();
+  }
+
+  _setCursorPositionBeforeExtension() {
+    final List<String> splitFileName = widget.file.name.split('.');
+    final fileExtension = ".${splitFileName[splitFileName.length - 1]}";
+    _fileNameCtrl.selection = TextSelection.fromPosition(
+      TextPosition(
+        offset: _fileNameCtrl.text.length - fileExtension.length,
+      ),
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
     _fileNameCtrl.dispose();
-  }
-
-  String _getFileNameWithoutExtension() {
-    final List<String> splitFileName = widget.file.name.split('.');
-    fileExtension = ".${splitFileName[splitFileName.length - 1]}";
-
-    return splitFileName.sublist(0, splitFileName.length - 1).join(".");
   }
 
   @override
@@ -60,7 +60,7 @@ class _RenameDialogState extends State<RenameDialog> {
               children: <Widget>[
                 CircularProgressIndicator(),
                 SizedBox(width: 20.0),
-                Text("Renaming to ${_fileNameCtrl.text + fileExtension}")
+                Text("Renaming to ${_fileNameCtrl.text}")
               ],
             )
           : Form(
@@ -80,7 +80,6 @@ class _RenameDialogState extends State<RenameDialog> {
                     ValidationTypes.fileName,
                   ],
                   widget.filesPageState.currentFiles,
-                  fileExtension,
                 ),
               ),
             ),
@@ -99,7 +98,7 @@ class _RenameDialogState extends State<RenameDialog> {
                     setState(() => isRenaming = true);
                     widget.filesState.onRename(
                       file: widget.file,
-                      newName: _fileNameCtrl.text + fileExtension,
+                      newName: _fileNameCtrl.text,
                       onError: (String err) {
                         errMsg = err;
                         setState(() => isRenaming = false);

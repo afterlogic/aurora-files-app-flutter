@@ -148,7 +148,12 @@ class _FilesAppBarState extends State<FilesAppBar>
                 onPressed: Navigator.of(context).pop,
               )
             : Padding(
-          padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.only(
+                  left: 15.0,
+                  top: 6.0,
+                  right: 6.0,
+                  bottom: 6.0,
+                ),
                 child: Image.asset("lib/assets/images/logo_white.png"),
               ),
         title: Column(

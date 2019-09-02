@@ -113,8 +113,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           PopupMenuButton<Storage>(
             icon: Icon(Icons.storage),
             onSelected: (Storage storage) async {
-              Navigator.of(context)
-                  .popUntil((Route<dynamic> route) {
+              Navigator.of(context).popUntil((Route<dynamic> route) {
                 return route.isFirst;
               });
               // set new storage and reload files
@@ -148,7 +147,10 @@ class _FilesAppBarState extends State<FilesAppBar>
                 icon: Icon(Icons.arrow_back),
                 onPressed: Navigator.of(context).pop,
               )
-            : Icon(Icons.folder),
+            : Padding(
+          padding: EdgeInsets.all(10.0),
+                child: Image.asset("lib/assets/images/logo_white.png"),
+              ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,

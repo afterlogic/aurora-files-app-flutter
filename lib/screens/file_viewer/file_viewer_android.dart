@@ -1,5 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/screens/files/components/public_link_switch.dart';
+import 'package:aurorafiles/screens/files/dialogs_android/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/screens/files/dialogs_android/rename_dialog_android.dart';
 import 'package:aurorafiles/screens/files/state/files_page_state.dart';
 import 'package:aurorafiles/screens/files/state/files_state.dart';
@@ -49,6 +50,71 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     });
   }
 
+  void _renameFile() async {
+    final result = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => RenameDialog(
+        file: widget.file,
+        filesState: widget.filesState,
+        filesPageState: widget.filesPageState,
+      ),
+    );
+    if (result is String) _updateFile(result);
+  }
+
+  void _deleteFile() async {
+    final bool shouldDelete = await showDialog(
+        context: context,
+        builder: (_) =>
+            DeleteConfirmationDialog(itemsNumber: 1, isFolder: false));
+    if (shouldDelete != null && shouldDelete) {
+      final storage = widget.filesState.selectedStorage;
+      final path = widget.filesPageState.pagePath;
+      widget.filesPageState.onDeleteFiles(
+        filesToDelete: [file],
+        storage: storage,
+        onSuccess: () {
+          widget.filesPageState.onGetFiles(path: path, storage: storage);
+        },
+        onError: (String err) {
+          widget.filesPageState.filesLoading = FilesLoadingType.none;
+          showSnack(
+            context: context,
+            scaffoldState: _fileViewerScaffoldKey.currentState,
+            msg: err,
+          );
+        },
+      );
+      widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;
+      Navigator.pop(context);
+    }
+  }
+
+  void _downloadFile() {
+    widget.filesState.onDownloadFile(
+      url: widget.file.downloadUrl,
+      fileName: widget.file.name,
+      onStart: () => showSnack(
+        context: context,
+        scaffoldState: _fileViewerScaffoldKey.currentState,
+        msg: "Downloading ${widget.file.name}",
+        isError: false,
+      ),
+      onSuccess: () => showSnack(
+        context: context,
+        scaffoldState: _fileViewerScaffoldKey.currentState,
+        msg: "${widget.file.name} downloaded successfully",
+        isError: false,
+      ),
+      onError: (String err) => showSnack(
+        context: context,
+        scaffoldState: _fileViewerScaffoldKey.currentState,
+        msg: err,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -75,48 +141,17 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               IconButton(
                 icon: Icon(Icons.file_download),
                 tooltip: "Download",
-                onPressed: () => widget.filesState.onDownloadFile(
-                  url: widget.file.downloadUrl,
-                  fileName: widget.file.name,
-                  onStart: () => showSnack(
-                    context: context,
-                    scaffoldState: _fileViewerScaffoldKey.currentState,
-                    msg: "Downloading ${widget.file.name}",
-                    isError: false,
-                  ),
-                  onSuccess: () => showSnack(
-                    context: context,
-                    scaffoldState: _fileViewerScaffoldKey.currentState,
-                    msg: "${widget.file.name} downloaded successfully",
-                    isError: false,
-                  ),
-                  onError: (String err) => showSnack(
-                    context: context,
-                    scaffoldState: _fileViewerScaffoldKey.currentState,
-                    msg: err,
-                  ),
-                ),
+                onPressed: _downloadFile,
               ),
             IconButton(
               icon: Icon(Icons.edit),
               tooltip: "Rename",
-              onPressed: () async {
-                final result = await showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (_) => RenameDialog(
-                    file: widget.file,
-                    filesState: widget.filesState,
-                    filesPageState: widget.filesPageState,
-                  ),
-                );
-                if (result is String) _updateFile(result);
-              },
+              onPressed: _renameFile,
             ),
             IconButton(
               icon: Icon(Icons.delete_outline),
               tooltip: "Delete file",
-              onPressed: () {},
+              onPressed: _deleteFile,
             ),
           ],
         ),

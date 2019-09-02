@@ -1,20 +1,20 @@
 import 'package:aurorafiles/models/storage.dart';
-import 'package:aurorafiles/screens/auth/auth_route.dart';
-import 'package:aurorafiles/screens/auth/state/auth_state.dart';
-import 'package:aurorafiles/screens/files/files_route.dart';
-import 'package:aurorafiles/screens/files/state/files_page_state.dart';
-import 'package:aurorafiles/screens/files/state/files_state.dart';
+import 'package:aurorafiles/modules/auth/auth_route.dart';
+import 'package:aurorafiles/modules/auth/state/auth_state.dart';
+import 'package:aurorafiles/modules/files/files_route.dart';
+import 'package:aurorafiles/modules/files/state/files_page_state.dart';
+import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final authState = AuthState();
-    final _filesState = Provider.of<FilesState>(context);
-    final _filesPageState = Provider.of<FilesPageState>(context);
+    final authState = Provider.of<AuthState>(context);
+    final filesState = Provider.of<FilesState>(context);
+    final filesPageState = Provider.of<FilesPageState>(context);
 
     return Drawer(
       child: SafeArea(
@@ -74,14 +74,14 @@ class MainDrawer extends StatelessWidget {
                       ],
                     ),
                   ),
-                  ..._filesState.currentStorages.map((Storage storage) {
+                  ...filesState.currentStorages.map((Storage storage) {
                     return Container(
-                      color: _filesState.selectedStorage.type == storage.type
+                      color: filesState.selectedStorage.type == storage.type
                           ? Theme.of(context).selectedRowColor
                           : null,
                       child: ListTile(
                         selected:
-                            _filesState.selectedStorage.type == storage.type,
+                            filesState.selectedStorage.type == storage.type,
                         leading: Icon(Icons.storage),
                         title: Text(storage.displayName),
                         onTap: () async {
@@ -93,11 +93,11 @@ class MainDrawer extends StatelessWidget {
                             return route.isFirst;
                           });
                           // set new storage and reload files
-                          _filesState.selectedStorage = storage;
+                          filesState.selectedStorage = storage;
                           Navigator.of(context).pushReplacementNamed(
                             FilesRoute.name,
                             arguments: FilesScreenArguments(
-                              filesState: _filesState,
+                              filesState: filesState,
                               path: "",
                             ),
                           );
@@ -142,6 +142,10 @@ class MainDrawer extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.settings),
               title: Text("Settings"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, SettingsRoute.name);
+              },
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app),

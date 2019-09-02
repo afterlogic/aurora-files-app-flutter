@@ -1,9 +1,11 @@
-import 'package:aurorafiles/screens/auth/auth_android.dart';
-import 'package:aurorafiles/screens/auth/auth_route.dart';
-import 'package:aurorafiles/screens/file_viewer/file_viewer_android.dart';
-import 'package:aurorafiles/screens/file_viewer/file_viewer_route.dart';
-import 'package:aurorafiles/screens/files/files_android.dart';
-import 'package:aurorafiles/screens/files/files_route.dart';
+import 'package:aurorafiles/modules/auth/auth_android.dart';
+import 'package:aurorafiles/modules/auth/auth_route.dart';
+import 'package:aurorafiles/modules/files/files_android.dart';
+import 'package:aurorafiles/modules/files/files_route.dart';
+import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_android.dart';
+import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
+import 'package:aurorafiles/modules/settings/settings_android.dart';
+import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:aurorafiles/shared_ui/fade_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,6 +32,9 @@ Route onGenerateRoute(RouteSettings settings) {
         filesState: args.filesState,
         filesPageState: args.filesPageState,
       ));
+
+    case SettingsRoute.name:
+      return MaterialPageRoute(builder: (context) => SettingsAndroid());
 
     default:
       return MaterialPageRoute(

@@ -1,5 +1,5 @@
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/modules/app_routes.dart';
+import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:aurorafiles/themimg/material_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +33,7 @@ class _AppState extends State<App> {
               title: "PrivateMail Files",
               theme: AppMaterialTheme.darkTheme,
               darkTheme: AppMaterialTheme.darkTheme,
-              onGenerateRoute: onGenerateRoute,
+              onGenerateRoute: AppNavigation.onGenerateRoute,
               initialRoute: snapshot.data ? FilesRoute.name : AuthRoute.name,
             );
           } else {

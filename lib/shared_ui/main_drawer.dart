@@ -1,4 +1,5 @@
 import 'package:aurorafiles/models/storage.dart';
+import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
@@ -72,12 +73,14 @@ class MainDrawer extends StatelessWidget {
                   ),
                   ...filesState.currentStorages.map((Storage storage) {
                     return Container(
-                      color: filesState.selectedStorage.type == storage.type
+                      color: filesState.selectedStorage.type == storage.type &&
+                              AppNavigation.currentRoute == FilesRoute.name
                           ? Theme.of(context).selectedRowColor
                           : null,
                       child: ListTile(
                         selected:
-                            filesState.selectedStorage.type == storage.type,
+                            filesState.selectedStorage.type == storage.type &&
+                                AppNavigation.currentRoute == FilesRoute.name,
                         leading: Icon(Icons.storage),
                         title: Text(storage.displayName),
                         onTap: () async {
@@ -134,12 +137,18 @@ class MainDrawer extends StatelessWidget {
             Divider(
               height: 0,
             ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text("Settings"),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, SettingsRoute.name);
-              },
+            Container(
+              color: AppNavigation.currentRoute == SettingsRoute.name
+                  ? Theme.of(context).selectedRowColor
+                  : null,
+              child: ListTile(
+                selected: AppNavigation.currentRoute == SettingsRoute.name,
+                leading: Icon(Icons.settings),
+                title: Text("Settings"),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, SettingsRoute.name);
+                },
+              ),
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app),

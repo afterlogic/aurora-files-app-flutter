@@ -92,9 +92,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     ),
                   );
                   if (result is String) {
-                    widget.filesPageState.onGetFiles(
-                        path: widget.filesPageState.pagePath,
-                        storage: widget.filesState.selectedStorage);
+                    widget.filesPageState.onGetFiles();
                   }
                 },
               ),
@@ -110,12 +108,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     widget.filesPageState.onDeleteFiles(
                       storage: widget.filesState.selectedStorage,
                       filesToDelete: [widget.file],
-                      onSuccess: () {
-                        widget.filesPageState.onGetFiles(
-                          path: widget.filesPageState.pagePath,
-                          storage: widget.filesState.selectedStorage,
-                        );
-                      },
+                      onSuccess: () => widget.filesPageState.onGetFiles(),
                       onError: (String err) => showSnack(
                         context: context,
                         scaffoldState:

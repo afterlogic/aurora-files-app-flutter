@@ -21,7 +21,7 @@ Route onGenerateRoute(RouteSettings settings) {
       final FilesScreenArguments args = settings.arguments;
       return FadeRoute(
         page: args != null
-            ? FilesAndroid(filesState: args.filesState, path: args.path)
+            ? FilesAndroid(path: args.path)
             : FilesAndroid(),
         duration: 200,
       );

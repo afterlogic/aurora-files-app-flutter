@@ -2,17 +2,18 @@ import 'dart:convert';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
-import 'package:aurorafiles/store/app_state.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:http/http.dart' as http;
 
-Map<String, String> getHeader(String authToken) {
-  return {'Authorization': 'Bearer $authToken'};
+Map<String, String> getHeader() {
+  final token = AppStore.authState.authToken;
+  return {'Authorization': 'Bearer $token'};
 }
 
 Future sendRequest(ApiBody body) async {
-  final store = SingletonStore.instance;
-  final rawResponse = await http.post(store.apiUrl,
-      headers: getHeader(store.authToken), body: body.toMap());
+  final authState = AppStore.authState;
+  final rawResponse = await http.post(authState.apiUrl,
+      headers: getHeader(), body: body.toMap());
 
   return json.decode(rawResponse.body);
 }

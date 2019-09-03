@@ -8,7 +8,6 @@ class FilesRoute {
 
 class FilesScreenArguments {
   final String path;
-  final FilesState filesState;
 
-  FilesScreenArguments({@required this.filesState, @required this.path});
+  FilesScreenArguments({@required this.path});
 }

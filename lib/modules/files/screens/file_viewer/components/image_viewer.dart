@@ -1,9 +1,12 @@
 import 'dart:ui';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/store/app_state.dart';
+import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/auth/state/auth_state.dart';
+import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ImageViewer extends StatelessWidget {
   const ImageViewer({
@@ -15,20 +18,18 @@ class ImageViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hostName = Provider.of<AuthState>(context).hostName;
+
     final img = CachedNetworkImage(
-      imageUrl: '${SingletonStore.instance.hostName}/${file.viewUrl}',
+      imageUrl: '$hostName/${file.viewUrl}',
       fit: BoxFit.cover,
       fadeInDuration: Duration(milliseconds: 150),
-      httpHeaders: {
-        'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
-      },
+      httpHeaders: getHeader(),
     );
     final placeholder = CachedNetworkImage(
-      imageUrl: '${SingletonStore.instance.hostName}/${file.thumbnailUrl}',
+      imageUrl: '$hostName/${file.thumbnailUrl}',
       fit: BoxFit.cover,
-      httpHeaders: {
-        'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
-      },
+      httpHeaders: getHeader(),
     );
 
     if (file.viewUrl != null) {

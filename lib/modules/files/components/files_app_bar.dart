@@ -2,7 +2,7 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/dialogs_android/add_folder_dialog_android.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/store/app_state.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -121,7 +121,6 @@ class _FilesAppBarState extends State<FilesAppBar>
               Navigator.of(context).pushReplacementNamed(
                 FilesRoute.name,
                 arguments: FilesScreenArguments(
-                  filesState: _filesState,
                   path: "",
                 ),
               );
@@ -160,7 +159,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(SingletonStore.instance.appName),
+            Text("PrivateMail Files"),
             if (_filesState.selectedStorage.displayName.length > 0)
               SizedBox(height: 2),
             if (_filesState.selectedStorage.displayName.length > 0)

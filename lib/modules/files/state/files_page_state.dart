@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../app_store.dart';
+
 part 'files_page_state.g.dart';
 
 enum FilesLoadingType {
@@ -48,15 +50,17 @@ abstract class _FilesPageState with Store {
 
   Future<void> onGetFiles({
     String path,
-    Storage storage,
     FilesLoadingType showLoading = FilesLoadingType.filesVisible,
     String searchPattern = "",
     Function(String) onError,
   }) async {
     try {
       filesLoading = showLoading;
-      currentFiles =
-          await _filesApi.getFiles(storage.type, path ?? pagePath, searchPattern);
+      currentFiles = await _filesApi.getFiles(
+        AppStore.filesState.selectedStorage.type,
+        path != null ? path : pagePath,
+        searchPattern,
+      );
     } catch (err) {
       onError(err.toString());
     } finally {

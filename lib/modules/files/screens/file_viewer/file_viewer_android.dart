@@ -1,4 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs_android/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs_android/rename_dialog_android.dart';
@@ -75,12 +77,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         builder: (_) =>
             DeleteConfirmationDialog(itemsNumber: 1, isFolder: false));
     if (shouldDelete != null && shouldDelete) {
-      final storage = widget.filesState.selectedStorage;
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [file],
-        storage: storage,
+        storage: widget.filesState.selectedStorage,
         onSuccess: () {
-          widget.filesPageState.onGetFiles(storage: storage);
+          widget.filesPageState.onGetFiles();
         },
         onError: (String err) {
           widget.filesPageState.filesLoading = FilesLoadingType.none;
@@ -126,11 +127,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       providers: [
         Provider<FilesState>(
           builder: (_) => widget.filesState,
-          dispose: (_, value) => value.dispose(),
         ),
         Provider<FilesPageState>(
           builder: (_) => widget.filesPageState,
-          dispose: (_, value) => value.dispose(),
+        ),
+        Provider<AuthState>(
+          builder: (_) => AppStore.authState,
         ),
       ],
       child: Scaffold(

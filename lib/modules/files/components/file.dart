@@ -1,10 +1,11 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/dialogs_android/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
-import 'package:aurorafiles/store/app_state.dart';
+import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filesize/filesize.dart';
@@ -31,6 +32,7 @@ class FileWidget extends StatelessWidget {
 
   Widget _getThumbnail(BuildContext context) {
     final thumbnailSize = Provider.of<FilesState>(context).filesTileLeadingSize;
+    final hostName = Provider.of<AuthState>(context).hostName;
 
     if (file.initVector != null) {
       return Icon(Icons.lock_outline,
@@ -50,11 +52,8 @@ class FileWidget extends StatelessWidget {
             child: Hero(
               tag: file.thumbnailUrl,
               child: CachedNetworkImage(
-                imageUrl:
-                    '${SingletonStore.instance.hostName}/${file.thumbnailUrl}',
-                httpHeaders: {
-                  'Authorization': 'Bearer ${SingletonStore.instance.authToken}'
-                },
+                imageUrl: '$hostName/${file.thumbnailUrl}',
+                httpHeaders: getHeader(),
                 fit: BoxFit.cover,
                 fadeInDuration: Duration(milliseconds: 200),
               ),

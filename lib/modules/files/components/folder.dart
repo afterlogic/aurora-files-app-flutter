@@ -40,7 +40,6 @@ class FolderWidget extends StatelessWidget {
             context,
             FilesRoute.name,
             arguments: FilesScreenArguments(
-              filesState: filesState,
               path: folder.fullPath,
             ),
           );

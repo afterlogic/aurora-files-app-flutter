@@ -60,7 +60,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
         if (!widget.isFileViewer && Navigator.of(context).canPop()) {
           Navigator.pop(context);
         }
-        await filesPageState.onGetFiles(storage: filesState.selectedStorage);
+        await filesPageState.onGetFiles();
         if (widget.updateFile != null) widget.updateFile(widget.file.id);
       },
       onError: (String err) => setState(() {
@@ -83,7 +83,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       name: widget.file.name,
       onSuccess: () async {
         setState(() => _isGettingPublicLink = false);
-        await filesPageState.onGetFiles(storage: filesState.selectedStorage);
+        await filesPageState.onGetFiles();
         if (widget.updateFile != null) widget.updateFile(widget.file.id);
       },
       onError: (String err) => setState(() {

@@ -1,7 +1,6 @@
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_local_storage.dart';
-import 'package:aurorafiles/store/app_state.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 
@@ -12,7 +11,13 @@ class AuthState = _AuthState with _$AuthState;
 abstract class _AuthState with Store {
   final _authApi = AuthApi();
   final _authLocal = AuthLocalStorage();
-  final _appState = SingletonStore.instance;
+
+  String hostName = 'http://test.afterlogic.com';
+
+  String get apiUrl => '$hostName/?Api/';
+
+  String authToken;
+  int userId;
 
   @observable
   bool isLoggingIn = false;
@@ -25,9 +30,9 @@ abstract class _AuthState with Store {
       _authLocal.getTokenFromStorage(),
       _authLocal.getUserIdFromStorage(),
     ]);
-    _appState.authToken = results[0];
-    _appState.userId = results[1];
-    return _appState.authToken is String && _appState.userId is int;
+    authToken = results[0];
+    userId = results[1];
+    return authToken is String && userId is int;
   }
 
   Future<void> onLogin(
@@ -41,12 +46,12 @@ abstract class _AuthState with Store {
         isLoggingIn = true;
         final Map<String, dynamic> res = await _authApi.login(email, password);
         final String token = res['Result']['AuthToken'];
-        final int userId = res['AuthenticatedUserId'];
+        final int id = res['AuthenticatedUserId'];
 
         await _authLocal.setTokenToStorage(token);
-        await _authLocal.setUserIdToStorage(userId);
-        _appState.authToken = token;
-        _appState.userId = userId;
+        await _authLocal.setUserIdToStorage(id);
+        authToken = token;
+        userId = id;
         onSuccess();
       } catch (err) {
         onError(err.toString());
@@ -59,6 +64,6 @@ abstract class _AuthState with Store {
   void onLogout() {
     _authLocal.deleteTokenFromStorage();
     _authLocal.deleteUserIdFromStorage();
-    _appState.authToken = null;
+    authToken = null;
   }
 }

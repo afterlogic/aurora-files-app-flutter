@@ -1,3 +1,5 @@
+import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
@@ -42,7 +44,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   Future<void> _initFiles() async {
-    _filesState = widget.filesState ?? FilesState();
+    _filesState = AppStore.filesState;
     _filesPageState = FilesPageState();
     _filesPageState.pagePath = widget.path;
 
@@ -70,7 +72,6 @@ class _FilesAndroidState extends State<FilesAndroid>
   Future<void> _getFiles(BuildContext context,
       [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) {
     return _filesPageState.onGetFiles(
-      storage: _filesState.selectedStorage,
       showLoading: showLoading,
       onError: (String err) => showSnack(
         context: context,
@@ -143,14 +144,13 @@ class _FilesAndroidState extends State<FilesAndroid>
       providers: [
         Provider<FilesState>(
           builder: (_) => _filesState,
-          dispose: (_, value) => value.dispose(),
         ),
         Provider<FilesPageState>(
           builder: (_) => _filesPageState,
           dispose: (_, value) => value.dispose(),
         ),
-        Provider<GlobalKey<ScaffoldState>>(
-          builder: (_) => _filesPageState.scaffoldKey,
+        Provider<AuthState>(
+          builder: (_) => AppStore.authState,
         )
       ],
       child: SafeArea(

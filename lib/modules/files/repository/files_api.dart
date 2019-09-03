@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/storage.dart';
-import 'package:aurorafiles/store/app_state.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:flutter/widgets.dart';
 
 class FilesApi {
-  final String hostName = SingletonStore.instance.hostName;
-  final String apiUrl = SingletonStore.instance.apiUrl;
-  final String authToken = SingletonStore.instance.authToken;
-  final int userId = SingletonStore.instance.userId;
+  final String hostName = AppStore.authState.hostName;
+  final String apiUrl = AppStore.authState.apiUrl;
+  final String authToken = AppStore.authState.authToken;
+  final int userId = AppStore.authState.userId;
 
   List<LocalFile> _sortFiles(List<LocalFile> unsortedFiles) {
     final List<LocalFile> folders = List();

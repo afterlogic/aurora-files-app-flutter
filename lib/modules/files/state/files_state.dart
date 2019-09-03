@@ -39,8 +39,7 @@ abstract class _FilesState with Store {
   // after moving files, both current page and the page files were moved from have to be updated
   // this cb updates the page the files were moved from
   Function({
-    @required String path,
-    @required Storage storage,
+    String path,
     Function(String) onError,
   }) updateFilesCb;
 
@@ -114,7 +113,7 @@ abstract class _FilesState with Store {
       if (updateFilesCb != null &&
           !copy &&
           selectedStorage.type == filesToMoveCopy[0].type) {
-        updateFilesCb(path: filesToMoveCopy[0].path, storage: selectedStorage);
+        updateFilesCb(path: filesToMoveCopy[0].path);
       }
     } catch (err) {
       onError(err.toString());

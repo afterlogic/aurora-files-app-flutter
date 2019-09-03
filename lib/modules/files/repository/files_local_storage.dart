@@ -5,7 +5,7 @@ import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
-import 'package:aurorafiles/store/app_state.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
@@ -18,9 +18,9 @@ import 'package:flutter_uploader/flutter_uploader.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FilesLocalStorage {
-  final String authToken = SingletonStore.instance.authToken;
-  final String hostName = SingletonStore.instance.hostName;
-  final String apiUrl = SingletonStore.instance.apiUrl;
+  final String authToken = AppStore.authState.authToken;
+  final String hostName = AppStore.authState.hostName;
+  final String apiUrl = AppStore.authState.apiUrl;
   final uploader = FlutterUploader();
 
   Future<File> pickFiles({FileType type, String extension}) {
@@ -56,7 +56,7 @@ class FilesLocalStorage {
       url: apiUrl,
       files: [fileItem],
       method: UploadMethod.POST,
-      headers: getHeader(authToken),
+      headers: getHeader(),
       data: body,
       showNotification: true,
       tag: fileItem.filename,
@@ -75,7 +75,7 @@ class FilesLocalStorage {
       url: hostName + url,
       savedDir: dir.path,
       fileName: fileName,
-      headers: getHeader(authToken),
+      headers: getHeader(),
       showNotification: true,
       openFileFromNotification: true,
     );

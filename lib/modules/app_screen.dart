@@ -1,12 +1,11 @@
-import 'package:aurorafiles/navigation/routes.dart';
+import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/app_routes.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
-import 'package:aurorafiles/store/app_state.dart';
 import 'package:aurorafiles/themimg/material_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'auth/auth_route.dart';
-import 'auth/state/auth_state.dart';
 import 'files/files_route.dart';
 
 class App extends StatefulWidget {
@@ -20,7 +19,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    _initSharedPrefs = AuthState().initSharedPrefs();
+    _initSharedPrefs = AppStore.authState.initSharedPrefs();
   }
 
   @override
@@ -31,7 +30,7 @@ class _AppState extends State<App> {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
             return MaterialApp(
-              title: SingletonStore.instance.appName,
+              title: "PrivateMail Files",
               theme: AppMaterialTheme.darkTheme,
               darkTheme: AppMaterialTheme.darkTheme,
               onGenerateRoute: onGenerateRoute,

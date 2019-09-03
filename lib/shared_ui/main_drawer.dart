@@ -1,18 +1,16 @@
 import 'package:aurorafiles/models/storage.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
-import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
-import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final authState = AuthState();
-    final filesState = Provider.of<FilesState>(context);
+    final authState = AppStore.authState;
+    final filesState = AppStore.filesState;
 
     return Drawer(
       child: SafeArea(
@@ -95,7 +93,6 @@ class MainDrawer extends StatelessWidget {
                           Navigator.of(context).pushReplacementNamed(
                             FilesRoute.name,
                             arguments: FilesScreenArguments(
-                              filesState: filesState,
                               path: "",
                             ),
                           );

@@ -503,7 +503,7 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   GeneratedIntColumn get localId => _localId ??= _constructLocalId();
   GeneratedIntColumn _constructLocalId() {
     return GeneratedIntColumn('local_id', $tableName, false,
-        hasAutoIncrement: true);
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
   final VerificationMeta _idMeta = const VerificationMeta('id');

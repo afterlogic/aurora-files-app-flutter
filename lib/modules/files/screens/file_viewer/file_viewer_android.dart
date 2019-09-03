@@ -76,12 +76,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             DeleteConfirmationDialog(itemsNumber: 1, isFolder: false));
     if (shouldDelete != null && shouldDelete) {
       final storage = widget.filesState.selectedStorage;
-      final path = widget.filesPageState.pagePath;
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [file],
         storage: storage,
         onSuccess: () {
-          widget.filesPageState.onGetFiles(path: path, storage: storage);
+          widget.filesPageState.onGetFiles(storage: storage);
         },
         onError: (String err) {
           widget.filesPageState.filesLoading = FilesLoadingType.none;

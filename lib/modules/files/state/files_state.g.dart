@@ -9,6 +9,23 @@ part of 'files_state.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FilesState on _FilesState, Store {
+  final _$currentStoragesAtom = Atom(name: '_FilesState.currentStorages');
+
+  @override
+  List<Storage> get currentStorages {
+    _$currentStoragesAtom.context.enforceReadPolicy(_$currentStoragesAtom);
+    _$currentStoragesAtom.reportObserved();
+    return super.currentStorages;
+  }
+
+  @override
+  set currentStorages(List<Storage> value) {
+    _$currentStoragesAtom.context.conditionallyRunInAction(() {
+      super.currentStorages = value;
+      _$currentStoragesAtom.reportChanged();
+    }, _$currentStoragesAtom, name: '${_$currentStoragesAtom.name}_set');
+  }
+
   final _$selectedStorageAtom = Atom(name: '_FilesState.selectedStorage');
 
   @override

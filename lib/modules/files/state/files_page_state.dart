@@ -47,8 +47,8 @@ abstract class _FilesPageState with Store {
   }
 
   Future<void> onGetFiles({
-    @required String path,
-    @required Storage storage,
+    String path,
+    Storage storage,
     FilesLoadingType showLoading = FilesLoadingType.filesVisible,
     String searchPattern = "",
     Function(String) onError,
@@ -56,7 +56,7 @@ abstract class _FilesPageState with Store {
     try {
       filesLoading = showLoading;
       currentFiles =
-          await _filesApi.getFiles(storage.type, path, searchPattern);
+          await _filesApi.getFiles(storage.type, path ?? pagePath, searchPattern);
     } catch (err) {
       onError(err.toString());
     } finally {

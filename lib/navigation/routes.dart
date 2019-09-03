@@ -4,6 +4,8 @@ import 'package:aurorafiles/modules/files/files_android.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_android.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
+import 'package:aurorafiles/modules/settings/screens/encryption/encryption_android.dart';
+import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
 import 'package:aurorafiles/modules/settings/settings_android.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:aurorafiles/shared_ui/fade_route.dart';
@@ -35,6 +37,9 @@ Route onGenerateRoute(RouteSettings settings) {
 
     case SettingsRoute.name:
       return MaterialPageRoute(builder: (context) => SettingsAndroid());
+
+    case EncryptionRoute.name:
+      return MaterialPageRoute(builder: (context) => EncryptionAndroid());
 
     default:
       return MaterialPageRoute(

@@ -192,7 +192,6 @@ class _FilesAppBarState extends State<FilesAppBar>
 //              _searchInputCtrl.text = "";
 //              _filesState.disableSearchMode();
 //              _filesState.onGetFiles(
-//                path: _filesState.currentPath,
 //                showLoading: FilesLoadingType.filesHidden,
 //              );
 //            },
@@ -214,7 +213,6 @@ class _FilesAppBarState extends State<FilesAppBar>
 //              icon: Icon(Icons.search),
 //              color: Colors.black45,
 //              onPressed: () => _filesState.onGetFiles(
-//                path: _filesState.currentPath,
 //                searchPattern: _searchInputCtrl.text,
 //              ),
 //            )

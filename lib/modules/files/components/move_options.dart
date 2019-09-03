@@ -28,7 +28,6 @@ class _MoveOptionsState extends State<MoveOptions> {
         copy: copy,
         onSuccess: () async {
           await widget.filesPageState.onGetFiles(
-            path: widget.filesPageState.pagePath,
             storage: widget.filesState.selectedStorage,
             onError: (String err) => showSnack(
               context: context,

@@ -2,13 +2,12 @@ import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
-import 'package:aurorafiles/shared_ui/my_button.dart';
+import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
 
 class AuthAndroid extends StatefulWidget {
   static final _authFormKey = GlobalKey<FormState>();
@@ -23,6 +22,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
   @override
   void initState() {
     super.initState();
+    authState = AuthState();
   }
 
   @override
@@ -33,7 +33,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    authState = Provider.of<AuthState>(context);
+//    authState = Provider.of<AuthState>(context);
+  
     return Scaffold(
       body: MainGradient(
         child: SingleChildScrollView(
@@ -77,7 +78,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
                   SizedBox(
                     width: double.infinity,
                     child: Observer(
-                      builder: (BuildContext context) => MyButton(
+                      builder: (BuildContext context) => AppButton(
+                        child: Text("LOGIN"),
                         isLoading: authState.isLoggingIn,
                         onPressed: () => authState.onLogin(
                           isFormValid:

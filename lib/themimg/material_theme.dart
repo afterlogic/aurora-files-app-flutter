@@ -30,6 +30,7 @@ class AppMaterialTheme {
   );
 
   static final _buttonTheme = ButtonThemeData(
+    buttonColor: Color(0xFFbc4799),
     shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(50.0)),
     textTheme: ButtonTextTheme.primary,
   );

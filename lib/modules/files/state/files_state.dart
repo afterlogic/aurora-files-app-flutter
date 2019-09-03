@@ -24,6 +24,7 @@ abstract class _FilesState with Store {
 
   final filesTileLeadingSize = 48.0;
 
+  @observable
   List<Storage> currentStorages = new List();
 
   @observable

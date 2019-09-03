@@ -70,7 +70,6 @@ class _FilesAndroidState extends State<FilesAndroid>
   Future<void> _getFiles(BuildContext context,
       [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) {
     return _filesPageState.onGetFiles(
-      path: _filesPageState.pagePath,
       storage: _filesState.selectedStorage,
       showLoading: showLoading,
       onError: (String err) => showSnack(

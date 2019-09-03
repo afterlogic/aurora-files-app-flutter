@@ -2,7 +2,6 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
-import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,9 +11,8 @@ import 'package:provider/provider.dart';
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final authState = Provider.of<AuthState>(context);
+    final authState = AuthState();
     final filesState = Provider.of<FilesState>(context);
-    final filesPageState = Provider.of<FilesPageState>(context);
 
     return Drawer(
       child: SafeArea(
@@ -143,8 +141,7 @@ class MainDrawer extends StatelessWidget {
               leading: Icon(Icons.settings),
               title: Text("Settings"),
               onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, SettingsRoute.name);
+                Navigator.pushReplacementNamed(context, SettingsRoute.name);
               },
             ),
             ListTile(

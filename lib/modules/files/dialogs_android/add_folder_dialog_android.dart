@@ -92,7 +92,6 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                       },
                       onSuccess: (String newNameFromServer) {
                         widget.filesPageState.onGetFiles(
-                          path: widget.filesPageState.pagePath,
                           storage: widget.filesState.selectedStorage,
                         );
                         Navigator.pop(context, newNameFromServer);

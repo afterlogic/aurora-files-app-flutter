@@ -26,14 +26,31 @@ abstract class _AuthState with Store {
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
 
-  Future<bool> initAuthSharedPrefs() async {
+  Future<bool> getAuthSharedPrefs() async {
     final List results = await Future.wait([
-      _authLocal.getTokenFromStorage(),
-      _authLocal.getUserIdFromStorage(),
+      _authLocal.getTokenFromStorage(), // 0 - token
+      _authLocal.getUserEmailFromStorage(), // 1 - email
+      _authLocal.getUserIdFromStorage(), // 2 - id
     ]);
     authToken = results[0];
-    userId = results[1];
-    return authToken is String && userId is int;
+    userEmail = results[1];
+    userId = results[2];
+    return authToken is String && userEmail is String && userId is int;
+  }
+
+  Future<void> _setAuthSharedPrefs({
+    @required String token,
+    @required String email,
+    @required int id,
+  }) async {
+    await Future.wait([
+      _authLocal.setTokenToStorage(token),
+      _authLocal.setUserEmailToStorage(email),
+      _authLocal.setUserIdToStorage(id),
+    ]);
+    authToken = token;
+    userEmail = email;
+    userId = id;
   }
 
   Future<void> onLogin(
@@ -48,11 +65,8 @@ abstract class _AuthState with Store {
         final Map<String, dynamic> res = await _authApi.login(email, password);
         final String token = res['Result']['AuthToken'];
         final int id = res['AuthenticatedUserId'];
+        _setAuthSharedPrefs(token: token, email: email, id: id);
 
-        await _authLocal.setTokenToStorage(token);
-        await _authLocal.setUserIdToStorage(id);
-        authToken = token;
-        userId = id;
         onSuccess();
       } catch (err) {
         onError(err.toString());
@@ -64,7 +78,10 @@ abstract class _AuthState with Store {
 
   void onLogout() {
     _authLocal.deleteTokenFromStorage();
+    _authLocal.deleteUserEmailFromStorage();
     _authLocal.deleteUserIdFromStorage();
     authToken = null;
+    userEmail = null;
+    userId = null;
   }
 }

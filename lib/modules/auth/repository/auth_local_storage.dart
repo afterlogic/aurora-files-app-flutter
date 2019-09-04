@@ -17,7 +17,23 @@ class AuthLocalStorage {
     return prefs.remove("authToken");
   }
 
-  // UserId
+  // User Email
+  Future<String> getUserEmailFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("userEmail");
+  }
+
+  Future<bool> setUserEmailToStorage(String value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString("userEmail", value);
+  }
+
+  Future<bool> deleteUserEmailFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove("userEmail");
+  }
+
+  // User Id
   Future<int> getUserIdFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getInt("userId");

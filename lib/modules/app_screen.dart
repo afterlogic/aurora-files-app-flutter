@@ -19,7 +19,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    _initSharedPrefs = AppStore.authState.initAuthSharedPrefs();
+    _initSharedPrefs = AppStore.authState.getAuthSharedPrefs();
   }
 
   @override

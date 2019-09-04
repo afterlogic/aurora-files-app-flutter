@@ -46,7 +46,7 @@ class MainDrawer extends StatelessWidget {
                               height: 60,
                               width: 60,
                               child: CircleAvatar(
-                                child: Text("VO",
+                                child: Text(authState.userEmail[0].toUpperCase(),
                                     style: TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.w600,
@@ -58,7 +58,7 @@ class MainDrawer extends StatelessWidget {
 //                              padding: const EdgeInsets.only(right: 45.0),
                               padding: const EdgeInsets.all(0.0),
                               child: Text(
-                                "v.osovskii@afterlogic.com",
+                                authState.userEmail,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 style: TextStyle(

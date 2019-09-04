@@ -1,3 +1,5 @@
+import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
 
@@ -8,26 +10,27 @@ class ImportKeyDialog extends StatefulWidget {
 
 class _ImportKeyDialogState extends State<ImportKeyDialog> {
   final _keyCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
+  final _confirmPasswordCtrl = TextEditingController();
   final _importKeyFormKey = GlobalKey<FormState>();
   bool _isImporting = false;
   String errMsg = "";
 
   @override
+  void initState() {
+    super.initState();
+    _nameCtrl.text = AppStore.authState.userEmail;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text("Import key"),
-      content: _isImporting
-          ? Row(
-              children: <Widget>[
-                CircularProgressIndicator(),
-                SizedBox(width: 20.0),
-                Text("Importing the key...")
-              ],
-            )
-          : Form(
+    return Scaffold(
+      appBar: AppBar(title: Text("Import key from text")),
+      body: Form(
               key: _importKeyFormKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: ListView(
+                padding: EdgeInsets.all(16.0),
                 children: <Widget>[
                   if (errMsg is String && errMsg.length > 0)
                     Text(errMsg,
@@ -36,7 +39,8 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
                     controller: _keyCtrl,
                     autofocus: true,
                     decoration: InputDecoration(
-                      hintText: "Enter key",
+                      icon: Icon(Icons.vpn_key),
+                      labelText: "Key",
                       border: UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
@@ -44,23 +48,67 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
                       [ValidationTypes.empty],
                     ),
                   ),
+                  SizedBox(height: 8.0),
+                  TextFormField(
+                    controller: _nameCtrl,
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.title),
+                      labelText: "Name",
+                      border: UnderlineInputBorder(),
+                    ),
+                    validator: (value) => validateInput(
+                      value,
+                      [ValidationTypes.empty],
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  TextFormField(
+                    obscureText: true,
+                    controller: _passwordCtrl,
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      icon: Icon(Icons.lock),
+                      border: UnderlineInputBorder(),
+                    ),
+                    validator: (value) => validateInput(
+                      value,
+                      [ValidationTypes.empty],
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  TextFormField(
+                    obscureText: true,
+                    controller: _confirmPasswordCtrl,
+                    decoration: InputDecoration(
+                      labelText: "Confirm password",
+                      icon: Icon(Icons.lock),
+                      border: UnderlineInputBorder(),
+                    ),
+                    validator: (value) => validateInput(
+                      value,
+                      [ValidationTypes.empty],
+                    ),
+                  ),
+                  SizedBox(height: 24.0),
+                  AppButton(
+                    child: Text("IMPORT"),
+                    isLoading: _isImporting,
+                    onPressed: _isImporting
+                        ? null
+                        : () {
+                            if (!_importKeyFormKey.currentState.validate())
+                              return;
+                            errMsg = "";
+                            setState(() => _isImporting = true);
+//                            Navigator.of(context).pop();
+                          },
+                  ),
+                  FlatButton(
+                      child: Text("CANCEL"),
+                      onPressed: Navigator.of(context).pop),
                 ],
               ),
             ),
-      actions: <Widget>[
-        FlatButton(child: Text("CANCEL"), onPressed: Navigator.of(context).pop),
-        FlatButton(
-          child: Text("IMPORT"),
-          onPressed: _isImporting
-              ? null
-              : () {
-                  if (!_importKeyFormKey.currentState.validate()) return;
-                  errMsg = "";
-                  setState(() => _isImporting = true);
-                  Navigator.of(context).pop();
-                },
-        )
-      ],
     );
   }
 }

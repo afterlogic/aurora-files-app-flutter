@@ -18,7 +18,6 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   final _settingsState = AppStore.settingsState;
 
   List<Widget> _buildAddingKey() {
-    _settingsState.onGenerateEncryptionKey();
     if (_settingsState.isParanoidEncryptionEnabled &&
         _settingsState.encryptionKey == null) {
       return [
@@ -38,10 +37,10 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
             child: Text("IMPORT KEY FROM TEXT"),
-            onPressed: () => showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) => ImportKeyDialog()),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ImportKeyDialog(), fullscreenDialog: true)),
           ),
         ),
         Padding(
@@ -55,10 +54,11 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
             child: Text("GENERATE KEYS"),
-            onPressed: () => showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) => GenerateKeyDialog()),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => GenerateKeyDialog(),
+                    fullscreenDialog: true)),
           ),
         ),
       ];

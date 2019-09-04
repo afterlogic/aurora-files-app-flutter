@@ -1,5 +1,4 @@
 import 'package:aurorafiles/models/storage.dart';
-import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
@@ -12,6 +11,7 @@ class MainDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final authState = AppStore.authState;
     final filesState = AppStore.filesState;
+    final settingsState = AppStore.settingsState;
 
     return Drawer(
       child: SafeArea(
@@ -72,15 +72,17 @@ class MainDrawer extends StatelessWidget {
                     ),
                   ),
                   ...filesState.currentStorages.map((Storage storage) {
+                    if (storage.type == "encrypted" &&
+                        !settingsState.isParanoidEncryptionEnabled) {
+                      return SizedBox();
+                    }
                     return Container(
-                      color: filesState.selectedStorage.type == storage.type &&
-                              AppNavigation.currentRoute == FilesRoute.name
+                      color: filesState.selectedStorage.type == storage.type
                           ? Theme.of(context).selectedRowColor
                           : null,
                       child: ListTile(
                         selected:
-                            filesState.selectedStorage.type == storage.type &&
-                                AppNavigation.currentRoute == FilesRoute.name,
+                            filesState.selectedStorage.type == storage.type,
                         leading: Icon(Icons.storage),
                         title: Text(storage.displayName),
                         onTap: () async {
@@ -137,18 +139,13 @@ class MainDrawer extends StatelessWidget {
             Divider(
               height: 0,
             ),
-            Container(
-              color: AppNavigation.currentRoute == SettingsRoute.name
-                  ? Theme.of(context).selectedRowColor
-                  : null,
-              child: ListTile(
-                selected: AppNavigation.currentRoute == SettingsRoute.name,
-                leading: Icon(Icons.settings),
-                title: Text("Settings"),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, SettingsRoute.name);
-                },
-              ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text("Settings"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, SettingsRoute.name);
+              },
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app),

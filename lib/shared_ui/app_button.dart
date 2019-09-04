@@ -4,15 +4,20 @@ class AppButton extends StatelessWidget {
   final bool isLoading;
   final Function onPressed;
   final Widget child;
+  final Color color;
 
-  const AppButton(
-      {Key key, this.isLoading, @required this.onPressed, @required this.child})
-      : super(key: key);
+  const AppButton({
+    Key key,
+    this.isLoading,
+    @required this.onPressed,
+    @required this.child,
+    this.color,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-//        color: Theme.of(context).primaryColor,
+        color: color,
         child: AnimatedSwitcher(
           duration: Duration(milliseconds: 100),
           child: isLoading != null && isLoading

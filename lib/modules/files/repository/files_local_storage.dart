@@ -98,8 +98,10 @@ class FilesLocalStorage {
     );
     final createdFile = await encryptedFile.create();
 
-    final key = prefixEncrypt.Key.fromBase16(
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
+    // get key object from base16
+    final key =
+        prefixEncrypt.Key.fromBase16(AppStore.settingsState.encryptionKey);
+
     // generate vector
     Random random = Random.secure();
     var values = List<int>.generate(16, (i) => random.nextInt(256));
@@ -113,8 +115,8 @@ class FilesLocalStorage {
   }
 
   decryptFile(LocalFile file) {
-    final key = prefixEncrypt.Key.fromBase16(
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
+    final key =
+        prefixEncrypt.Key.fromBase16(AppStore.settingsState.encryptionKey);
     final iv = IV.fromBase16(file.initVector);
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
 //    final decrypted = encrypter.decryptBytes(encrypted, iv: iv);

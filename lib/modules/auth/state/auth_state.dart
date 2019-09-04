@@ -18,6 +18,7 @@ abstract class _AuthState with Store {
 
   String authToken;
   int userId;
+  String userEmail;
 
   @observable
   bool isLoggingIn = false;
@@ -25,7 +26,7 @@ abstract class _AuthState with Store {
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
 
-  Future<bool> initSharedPrefs() async {
+  Future<bool> initAuthSharedPrefs() async {
     final List results = await Future.wait([
       _authLocal.getTokenFromStorage(),
       _authLocal.getUserIdFromStorage(),

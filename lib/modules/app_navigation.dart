@@ -31,7 +31,6 @@ class AppNavigation {
         );
 
       case FileViewerRoute.name:
-        _currentRoute = FileViewerRoute.name;
         final FileViewerScreenArguments args = settings.arguments;
         return FadeRoute(
             page: FileViewerAndroid(
@@ -41,12 +40,10 @@ class AppNavigation {
         ));
 
       case SettingsRoute.name:
-        _currentRoute = SettingsRoute.name;
-        return MaterialPageRoute(builder: (context) => SettingsAndroid());
+        return FadeRoute(page: SettingsAndroid(), duration: 150);
 
       case EncryptionRoute.name:
-        _currentRoute = EncryptionRoute.name;
-        return MaterialPageRoute(builder: (context) => EncryptionAndroid());
+        return FadeRoute(page: EncryptionAndroid(), duration: 150);
 
       default:
         _currentRoute = "";

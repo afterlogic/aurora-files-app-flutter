@@ -20,7 +20,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
         appBar: AppBar(
           title: Text("Settings"),
         ),
-        drawer: MainDrawer(),
+//        drawer: MainDrawer(),
         body: ListView(
           children: <Widget>[
             ListTile(

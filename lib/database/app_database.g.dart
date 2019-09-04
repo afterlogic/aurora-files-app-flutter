@@ -1074,10 +1074,242 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   }
 }
 
+class EncryptionKey extends DataClass implements Insertable<EncryptionKey> {
+  final int localId;
+  final String name;
+  final String key;
+  final String owner;
+  EncryptionKey(
+      {@required this.localId,
+      @required this.name,
+      @required this.key,
+      @required this.owner});
+  factory EncryptionKey.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return EncryptionKey(
+      localId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      key: stringType.mapFromDatabaseResponse(data['${effectivePrefix}key']),
+      owner:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}owner']),
+    );
+  }
+  factory EncryptionKey.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return EncryptionKey(
+      localId: serializer.fromJson<int>(json['localId']),
+      name: serializer.fromJson<String>(json['name']),
+      key: serializer.fromJson<String>(json['key']),
+      owner: serializer.fromJson<String>(json['owner']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson(
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return {
+      'localId': serializer.toJson<int>(localId),
+      'name': serializer.toJson<String>(name),
+      'key': serializer.toJson<String>(key),
+      'owner': serializer.toJson<String>(owner),
+    };
+  }
+
+  @override
+  T createCompanion<T extends UpdateCompanion<EncryptionKey>>(
+      bool nullToAbsent) {
+    return EncryptionKeysCompanion(
+      localId: localId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localId),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      key: key == null && nullToAbsent ? const Value.absent() : Value(key),
+      owner:
+          owner == null && nullToAbsent ? const Value.absent() : Value(owner),
+    ) as T;
+  }
+
+  EncryptionKey copyWith(
+          {int localId, String name, String key, String owner}) =>
+      EncryptionKey(
+        localId: localId ?? this.localId,
+        name: name ?? this.name,
+        key: key ?? this.key,
+        owner: owner ?? this.owner,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('EncryptionKey(')
+          ..write('localId: $localId, ')
+          ..write('name: $name, ')
+          ..write('key: $key, ')
+          ..write('owner: $owner')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(localId.hashCode,
+      $mrjc(name.hashCode, $mrjc(key.hashCode, owner.hashCode))));
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is EncryptionKey &&
+          other.localId == localId &&
+          other.name == name &&
+          other.key == key &&
+          other.owner == owner);
+}
+
+class EncryptionKeysCompanion extends UpdateCompanion<EncryptionKey> {
+  final Value<int> localId;
+  final Value<String> name;
+  final Value<String> key;
+  final Value<String> owner;
+  const EncryptionKeysCompanion({
+    this.localId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.key = const Value.absent(),
+    this.owner = const Value.absent(),
+  });
+  EncryptionKeysCompanion copyWith(
+      {Value<int> localId,
+      Value<String> name,
+      Value<String> key,
+      Value<String> owner}) {
+    return EncryptionKeysCompanion(
+      localId: localId ?? this.localId,
+      name: name ?? this.name,
+      key: key ?? this.key,
+      owner: owner ?? this.owner,
+    );
+  }
+}
+
+class $EncryptionKeysTable extends EncryptionKeys
+    with TableInfo<$EncryptionKeysTable, EncryptionKey> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $EncryptionKeysTable(this._db, [this._alias]);
+  final VerificationMeta _localIdMeta = const VerificationMeta('localId');
+  GeneratedIntColumn _localId;
+  @override
+  GeneratedIntColumn get localId => _localId ??= _constructLocalId();
+  GeneratedIntColumn _constructLocalId() {
+    return GeneratedIntColumn('local_id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
+  @override
+  GeneratedTextColumn get name => _name ??= _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn('name', $tableName, false, minTextLength: 1);
+  }
+
+  final VerificationMeta _keyMeta = const VerificationMeta('key');
+  GeneratedTextColumn _key;
+  @override
+  GeneratedTextColumn get key => _key ??= _constructKey();
+  GeneratedTextColumn _constructKey() {
+    return GeneratedTextColumn('key', $tableName, false,
+        minTextLength: 64, maxTextLength: 64);
+  }
+
+  final VerificationMeta _ownerMeta = const VerificationMeta('owner');
+  GeneratedTextColumn _owner;
+  @override
+  GeneratedTextColumn get owner => _owner ??= _constructOwner();
+  GeneratedTextColumn _constructOwner() {
+    return GeneratedTextColumn(
+      'owner',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [localId, name, key, owner];
+  @override
+  $EncryptionKeysTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'encryption_keys';
+  @override
+  final String actualTableName = 'encryption_keys';
+  @override
+  VerificationContext validateIntegrity(EncryptionKeysCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.localId.present) {
+      context.handle(_localIdMeta,
+          localId.isAcceptableValue(d.localId.value, _localIdMeta));
+    } else if (localId.isRequired && isInserting) {
+      context.missing(_localIdMeta);
+    }
+    if (d.name.present) {
+      context.handle(
+          _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
+    } else if (name.isRequired && isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (d.key.present) {
+      context.handle(_keyMeta, key.isAcceptableValue(d.key.value, _keyMeta));
+    } else if (key.isRequired && isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (d.owner.present) {
+      context.handle(
+          _ownerMeta, owner.isAcceptableValue(d.owner.value, _ownerMeta));
+    } else if (owner.isRequired && isInserting) {
+      context.missing(_ownerMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {localId};
+  @override
+  EncryptionKey map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return EncryptionKey.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(EncryptionKeysCompanion d) {
+    final map = <String, Variable>{};
+    if (d.localId.present) {
+      map['local_id'] = Variable<int, IntType>(d.localId.value);
+    }
+    if (d.name.present) {
+      map['name'] = Variable<String, StringType>(d.name.value);
+    }
+    if (d.key.present) {
+      map['key'] = Variable<String, StringType>(d.key.value);
+    }
+    if (d.owner.present) {
+      map['owner'] = Variable<String, StringType>(d.owner.value);
+    }
+    return map;
+  }
+
+  @override
+  $EncryptionKeysTable createAlias(String alias) {
+    return $EncryptionKeysTable(_db, alias);
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(const SqlTypeSystem.withDefaults(), e);
   $FilesTable _files;
   $FilesTable get files => _files ??= $FilesTable(this);
+  $EncryptionKeysTable _encryptionKeys;
+  $EncryptionKeysTable get encryptionKeys =>
+      _encryptionKeys ??= $EncryptionKeysTable(this);
   @override
-  List<TableInfo> get allTables => [files];
+  List<TableInfo> get allTables => [files, encryptionKeys];
 }

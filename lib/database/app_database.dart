@@ -1,9 +1,10 @@
+import 'package:aurorafiles/database/encryption_keys/encryption_keys_table.dart';
 import 'package:aurorafiles/database/files/files_table.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 part 'app_database.g.dart';
 
-@UseMoor(tables: [Files])
+@UseMoor(tables: [Files, EncryptionKeys])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(FlutterQueryExecutor.inDatabaseFolder(path: 'app_db.sqlite'));
 

@@ -1,7 +1,5 @@
-import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/database/encryption_keys/encryption_keys_dao.dart';
-import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
+import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:mobx/mobx.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
@@ -11,27 +9,76 @@ class SettingsState = _SettingsState with _$SettingsState;
 
 abstract class _SettingsState with Store {
   final _settingsLocal = SettingsLocalStorage();
-  final _encryptionKeysDao = EncryptionKeysDao(AppStore.appDb);
 
   @observable
   bool isParanoidEncryptionEnabled = false;
 
   @observable
-  String encryptionKeyName;
+  Map<String, String> encryptionKeys = new Map();
 
   @observable
-  String encryptionKey;
+  String selectedKeyName;
 
-  void onGenerateEncryptionKey({
+  String get currentKey => encryptionKeys[selectedKeyName];
+
+  Future<bool> getUserEncryptionKeys() async {
+    encryptionKeys = await _settingsLocal.getAllUserKeys();
+    print("VO: encryptionKeys: ${encryptionKeys}");
+    if (encryptionKeys.length > 0) {
+      final keyNames = encryptionKeys.keys.toList();
+      selectedKeyName = keyNames[0];
+    } else {
+      selectedKeyName = null;
+    }
+    return true;
+  }
+
+  // for both generating and importing from text
+  Future<void> onAddKey({
     @required String name,
-    @required String password,
-  }) {
-    final key = _settingsLocal.generateKey();
-    final newKey = new EncryptionKeysCompanion(
-      name: Value(name),
-      key: Value(key.base16),
-      owner: Value(AppStore.authState.userEmail),
-    );
-    _encryptionKeysDao.addKey(newKey);
+    String encryptionKey,
+    Function(String) onError,
+  }) async {
+    // if encryptionKey is provided - import as text, else generate new key
+    final newKey = encryptionKey == null
+        ? _settingsLocal.generateKey().base16
+        : encryptionKey;
+    try {
+      await _settingsLocal.addKey(name, newKey);
+    } catch (err) {
+      onError(err.toString());
+    }
+  }
+
+  Future<void> onExportEncryptionKey({
+    String name,
+    Function(String) onSuccess,
+    Function(String) onError,
+  }) async {
+    String exportedFileDir;
+    try {
+      final keyName = name == null ? selectedKeyName : name;
+      exportedFileDir =
+          await _settingsLocal.exportKey(keyName, encryptionKeys[keyName]);
+      if (exportedFileDir == null) {
+        throw CustomException("Unresolved directory");
+      } else {
+        onSuccess(exportedFileDir);
+      }
+    } catch (err) {
+      onError(err.toString());
+    }
+  }
+
+  Future<void> onDeleteEncryptionKey({
+    String name,
+    Function(String) onError,
+  }) async {
+    try {
+      final keyName = name == null ? selectedKeyName : name;
+      return await _settingsLocal.deleteKey(keyName);
+    } catch (err) {
+      onError(err.toString());
+    }
   }
 }

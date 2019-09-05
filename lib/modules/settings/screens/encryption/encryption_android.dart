@@ -1,10 +1,10 @@
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/settings/screens/encryption/dialogs_android/add_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs_android/delete_key_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs_android/export_key_dialog.dart';
-import 'package:aurorafiles/modules/settings/screens/encryption/dialogs_android/generate_key_dialog.dart';
-import 'package:aurorafiles/modules/settings/screens/encryption/dialogs_android/import_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -16,10 +16,27 @@ class EncryptionAndroid extends StatefulWidget {
 
 class _EncryptionAndroidState extends State<EncryptionAndroid> {
   final _settingsState = AppStore.settingsState;
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  void _exportKey() async {
+    final exportedDir = await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) =>
+            ExportKeyDialog(settingsState: _settingsState));
+    if (exportedDir is String) {
+      showSnack(
+        context: context,
+        scaffoldState: _scaffoldKey.currentState,
+        msg: "The Key was exported in $exportedDir",
+        isError: false,
+      );
+    }
+  }
 
   List<Widget> _buildAddingKey() {
     if (_settingsState.isParanoidEncryptionEnabled &&
-        _settingsState.encryptionKey == null) {
+        _settingsState.selectedKeyName == null) {
       return [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
@@ -37,10 +54,12 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
             child: Text("IMPORT KEY FROM TEXT"),
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => ImportKeyDialog(), fullscreenDialog: true)),
+            onPressed: () => showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) =>
+                  AddKeyDialog(settingsState: _settingsState, isImport: true),
+            ),
           ),
         ),
         Padding(
@@ -54,11 +73,11 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
             child: Text("GENERATE KEYS"),
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => GenerateKeyDialog(),
-                    fullscreenDialog: true)),
+            onPressed: () => showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => AddKeyDialog(settingsState: _settingsState),
+            ),
           ),
         ),
       ];
@@ -68,11 +87,22 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   }
 
   List<Widget> _buildKeyOptions() {
-    if (_settingsState.encryptionKey != null) {
+    if (_settingsState.selectedKeyName != null) {
       return [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
           child: Text("Encryption key:"),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(
+            _settingsState.selectedKeyName,
+            style: Theme.of(context).textTheme.subhead,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Divider(),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -85,10 +115,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
             child: Text("EXPORT KEY"),
-            onPressed: () => showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) => ExportKeyDialog()),
+            onPressed: _exportKey
           ),
         ),
         Padding(
@@ -96,9 +123,22 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           child: AppButton(
             color: Theme.of(context).errorColor,
             child: Text("DELETE KEY"),
-            onPressed: () => showDialog(
-                context: context,
-                builder: (_) => DeleteKeyConfirmationDialog()),
+            onPressed: () async {
+              final result = await showDialog(
+                  context: context,
+                  builder: (_) => DeleteKeyConfirmationDialog(
+                      settingsState: _settingsState));
+              if (result ==  DeleteKeyConfirmationDialogResult.delete) {
+                showSnack(
+                  context: context,
+                  scaffoldState: _scaffoldKey.currentState,
+                  msg: "The encryption key was successfully deleted",
+                  isError: false,
+                );
+              } else if (result ==  DeleteKeyConfirmationDialogResult.export) {
+                _exportKey();
+              }
+            },
           ),
         ),
       ];
@@ -113,6 +153,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       builder: (_) => _settingsState,
       child: Observer(
         builder: (_) => Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
             title: Text("Encryption"),
           ),
@@ -124,7 +165,10 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
                     _settingsState.isParanoidEncryptionEnabled = v,
                 title: Text("Enable Paranoid Encryption"),
               ),
-              Divider(height: 0),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Divider(height: 0),
+              ),
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(

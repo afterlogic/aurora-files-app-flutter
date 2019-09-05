@@ -29,38 +29,37 @@ mixin _$SettingsState on _SettingsState, Store {
         name: '${_$isParanoidEncryptionEnabledAtom.name}_set');
   }
 
-  final _$encryptionKeyNameAtom =
-      Atom(name: '_SettingsState.encryptionKeyName');
+  final _$encryptionKeysAtom = Atom(name: '_SettingsState.encryptionKeys');
 
   @override
-  String get encryptionKeyName {
-    _$encryptionKeyNameAtom.context.enforceReadPolicy(_$encryptionKeyNameAtom);
-    _$encryptionKeyNameAtom.reportObserved();
-    return super.encryptionKeyName;
+  Map<String, String> get encryptionKeys {
+    _$encryptionKeysAtom.context.enforceReadPolicy(_$encryptionKeysAtom);
+    _$encryptionKeysAtom.reportObserved();
+    return super.encryptionKeys;
   }
 
   @override
-  set encryptionKeyName(String value) {
-    _$encryptionKeyNameAtom.context.conditionallyRunInAction(() {
-      super.encryptionKeyName = value;
-      _$encryptionKeyNameAtom.reportChanged();
-    }, _$encryptionKeyNameAtom, name: '${_$encryptionKeyNameAtom.name}_set');
+  set encryptionKeys(Map<String, String> value) {
+    _$encryptionKeysAtom.context.conditionallyRunInAction(() {
+      super.encryptionKeys = value;
+      _$encryptionKeysAtom.reportChanged();
+    }, _$encryptionKeysAtom, name: '${_$encryptionKeysAtom.name}_set');
   }
 
-  final _$encryptionKeyAtom = Atom(name: '_SettingsState.encryptionKey');
+  final _$selectedKeyNameAtom = Atom(name: '_SettingsState.selectedKeyName');
 
   @override
-  String get encryptionKey {
-    _$encryptionKeyAtom.context.enforceReadPolicy(_$encryptionKeyAtom);
-    _$encryptionKeyAtom.reportObserved();
-    return super.encryptionKey;
+  String get selectedKeyName {
+    _$selectedKeyNameAtom.context.enforceReadPolicy(_$selectedKeyNameAtom);
+    _$selectedKeyNameAtom.reportObserved();
+    return super.selectedKeyName;
   }
 
   @override
-  set encryptionKey(String value) {
-    _$encryptionKeyAtom.context.conditionallyRunInAction(() {
-      super.encryptionKey = value;
-      _$encryptionKeyAtom.reportChanged();
-    }, _$encryptionKeyAtom, name: '${_$encryptionKeyAtom.name}_set');
+  set selectedKeyName(String value) {
+    _$selectedKeyNameAtom.context.conditionallyRunInAction(() {
+      super.selectedKeyName = value;
+      _$selectedKeyNameAtom.reportChanged();
+    }, _$selectedKeyNameAtom, name: '${_$selectedKeyNameAtom.name}_set');
   }
 }

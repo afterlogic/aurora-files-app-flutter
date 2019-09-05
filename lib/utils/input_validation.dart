@@ -10,10 +10,10 @@ enum ValidationTypes {
 String validateInput(
   String value,
   List<ValidationTypes> types, [
-  List<LocalFile> files,
+  List otherItems,
   String fileExtension,
 ]) {
-  if (types.contains(ValidationTypes.uniqueName) && files is! List) {
+  if (types.contains(ValidationTypes.uniqueName) && otherItems is! List) {
     throw Exception(
         "In order to check if a name is unique the list must be provided");
   }
@@ -26,12 +26,12 @@ String validateInput(
   if (types.contains(ValidationTypes.fileName) && !_isFileNameValid(value)) {
     return 'Name cannot contain "/\\*?<>|:';
   }
-  if (files is List<LocalFile> && types.contains(ValidationTypes.uniqueName)) {
+  if (otherItems is List && types.contains(ValidationTypes.uniqueName)) {
     bool exists = false;
     final valueToCheck =
         fileExtension != null ? "$value.$fileExtension" : value;
-    files.forEach((file) {
-      if (file.name == valueToCheck) exists = true;
+    otherItems.forEach((item) {
+      if (item.name == valueToCheck) exists = true;
     });
 
     if (exists) return "This name already exists";

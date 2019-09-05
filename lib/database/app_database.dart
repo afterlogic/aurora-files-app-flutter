@@ -1,12 +1,12 @@
-import 'package:aurorafiles/database/encryption_keys/encryption_keys_table.dart';
 import 'package:aurorafiles/database/files/files_table.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 part 'app_database.g.dart';
 
-@UseMoor(tables: [Files, EncryptionKeys])
+@UseMoor(tables: [Files])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(FlutterQueryExecutor.inDatabaseFolder(path: 'app_db.sqlite'));
+  AppDatabase()
+      : super(FlutterQueryExecutor.inDatabaseFolder(path: 'app_db.sqlite'));
 
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.

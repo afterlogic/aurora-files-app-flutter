@@ -1,11 +1,20 @@
-import 'package:aurorafiles/modules/settings/screens/encryption/dialogs_android/export_key_dialog.dart';
+import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:flutter/material.dart';
 
+enum DeleteKeyConfirmationDialogResult {
+  cancel,
+  export,
+  delete,
+}
+
 class DeleteKeyConfirmationDialog extends StatelessWidget {
+  final SettingsState settingsState;
+
+  const DeleteKeyConfirmationDialog({Key key, @required this.settingsState})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return AlertDialog(
       title: Text("Delete key"),
       content: Text(
@@ -13,16 +22,13 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
       actions: <Widget>[
         FlatButton(
           child: Text("CANCEL"),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () =>
+              Navigator.pop(context, DeleteKeyConfirmationDialogResult.export),
         ),
         FlatButton(
           child: Text("EXPORT"),
           onPressed: () {
-            Navigator.pop(context);
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) => ExportKeyDialog());
+            Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
           },
         ),
         FlatButton(
@@ -30,7 +36,11 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
             "DELETE",
             style: TextStyle(color: Theme.of(context).errorColor),
           ),
-          onPressed: () {},
+          onPressed: () async {
+            await settingsState.onDeleteEncryptionKey();
+            await settingsState.getUserEncryptionKeys();
+            Navigator.pop(context,  DeleteKeyConfirmationDialogResult.delete);
+          },
         ),
       ],
     );

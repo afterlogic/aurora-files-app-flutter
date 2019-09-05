@@ -100,7 +100,7 @@ class FilesLocalStorage {
 
     // get key object from base16
     final key =
-        prefixEncrypt.Key.fromBase16(AppStore.settingsState.encryptionKey);
+        prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
 
     // generate vector
     Random random = Random.secure();
@@ -116,7 +116,7 @@ class FilesLocalStorage {
 
   decryptFile(LocalFile file) {
     final key =
-        prefixEncrypt.Key.fromBase16(AppStore.settingsState.encryptionKey);
+        prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     final iv = IV.fromBase16(file.initVector);
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
 //    final decrypted = encrypter.decryptBytes(encrypted, iv: iv);

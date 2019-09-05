@@ -1,21 +1,24 @@
-import 'package:aurorafiles/utils/input_validation.dart';
+import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:flutter/material.dart';
 
 class ExportKeyDialog extends StatefulWidget {
+  final SettingsState settingsState;
+
+  const ExportKeyDialog({Key key, @required this.settingsState})
+      : super(key: key);
+
   @override
   _ExportKeyDialogState createState() => _ExportKeyDialogState();
 }
 
 class _ExportKeyDialogState extends State<ExportKeyDialog> {
-  final _passwordCtrl = TextEditingController();
-  final _exportKeyFormKey = GlobalKey<FormState>();
   bool _isExporting = false;
   String errMsg = "";
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Export key"),
+      title: Text(widget.settingsState.selectedKeyName),
       content: _isExporting
           ? Row(
               children: <Widget>[
@@ -24,30 +27,7 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
                 Text("Exporting the key...")
               ],
             )
-          : Form(
-              key: _exportKeyFormKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  if (errMsg is String && errMsg.length > 0)
-                    Text(errMsg,
-                        style: TextStyle(color: Theme.of(context).errorColor)),
-                  TextFormField(
-                    controller: _passwordCtrl,
-                    obscureText: true,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      hintText: "Enter password",
-                      border: UnderlineInputBorder(),
-                    ),
-                    validator: (value) => validateInput(
-                      value,
-                      [ValidationTypes.empty],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          : Text("Are you sure you want to export this key?"),
       actions: <Widget>[
         FlatButton(child: Text("CANCEL"), onPressed: Navigator.of(context).pop),
         FlatButton(
@@ -55,10 +35,13 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
           onPressed: _isExporting
               ? null
               : () {
-                  if (!_exportKeyFormKey.currentState.validate()) return;
                   errMsg = "";
                   setState(() => _isExporting = true);
-                  Navigator.of(context).pop();
+                  widget.settingsState.onExportEncryptionKey(
+                    onSuccess: (String exportedDir) =>
+                        Navigator.pop(context, exportedDir),
+                    onError: (String err) => setState(() => errMsg = err),
+                  );
                 },
         )
       ],

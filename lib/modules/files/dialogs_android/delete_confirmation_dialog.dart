@@ -10,9 +10,9 @@ class DeleteConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String itemName;
-    if (isFolder)
+    if (isFolder == true)
       itemName = "folder";
-    else if (!isFolder)
+    else if (isFolder == false)
       itemName = "file";
     else
       itemName = "file/folder";

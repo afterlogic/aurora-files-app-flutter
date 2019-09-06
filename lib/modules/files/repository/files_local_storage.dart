@@ -8,6 +8,7 @@ import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
@@ -94,13 +95,12 @@ class FilesLocalStorage {
     final fileBytes = await file.readAsBytes();
     Directory appDocDir = await getApplicationDocumentsDirectory();
     final encryptedFile = new File(
-      '${appDocDir.path}/${file.path.split("/").last}',
+      '${appDocDir.path}/${FileUtils.getFileNameFromPath(file.path)}',
     );
     final createdFile = await encryptedFile.create();
 
     // get key object from base16
-    final key =
-        prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
 
     // generate vector
     Random random = Random.secure();
@@ -115,8 +115,7 @@ class FilesLocalStorage {
   }
 
   decryptFile(LocalFile file) {
-    final key =
-        prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     final iv = IV.fromBase16(file.initVector);
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
 //    final decrypted = encrypter.decryptBytes(encrypted, iv: iv);

@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -37,6 +39,13 @@ class SettingsLocalStorage {
   Future<void> addKey(String keyName, String key) {
     final nameWithOwner = _getNameWithOwner(keyName);
     return storage.write(key: nameWithOwner, value: key);
+  }
+
+  Future<Map<String, String>> importKeyFromFile() async {
+    final File fileWithKey = await FilePicker.getFile();
+    final String contents = await fileWithKey.readAsString();
+    final fileName = FileUtils.getFileNameFromPath(fileWithKey.path);
+    return {fileName: contents};
   }
 
   Future<String> getKey(String keyName) {

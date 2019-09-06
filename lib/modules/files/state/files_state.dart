@@ -7,6 +7,7 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -193,13 +194,11 @@ abstract class _FilesState with Store {
       file = encryptionData[0];
       vector = encryptionData[1];
     }
-    // Get name and path
-    final List<String> pathList = file.path.split("/");
-    final name = pathList.last;
-    pathList.removeLast();
+    // Get name
+    final name = FileUtils.getFileNameFromPath(file.path);
 
     FileItem fileItem =
-        new FileItem(filename: name, savedDir: pathList.join("/"));
+        new FileItem(filename: name, savedDir: file.parent.path);
 
     // Start uploading
     onUploadStart();

@@ -50,6 +50,25 @@ abstract class _SettingsState with Store {
     }
   }
 
+  Future<void> onImportKeyFromFile({Function(String) onError}) async {
+    try {
+      final Map<String, String> encryptionKeyFromFile =
+          await _settingsLocal.importKeyFromFile();
+      String keyName = encryptionKeyFromFile.keys.toList()[0];
+      String keyValue = encryptionKeyFromFile.values.toList()[0];
+
+      if (keyName.endsWith(".txt")) {
+        keyName = keyName.substring(0, keyName.length - 4);
+      }
+
+      await _settingsLocal.addKey(keyName, keyValue);
+      getUserEncryptionKeys();
+    } catch (err) {
+      print("onImportKeyFromFile error: $err");
+      onError(err.toString());
+    }
+  }
+
   Future<void> onExportEncryptionKey({
     String name,
     Function(String) onSuccess,

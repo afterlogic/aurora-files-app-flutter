@@ -21,9 +21,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   void _exportKey() async {
     final exportedDir = await showDialog(
         context: context,
-        barrierDismissible: false,
-        builder: (_) =>
-            ExportKeyDialog(settingsState: _settingsState));
+        builder: (_) => ExportKeyDialog(settingsState: _settingsState));
     if (exportedDir is String) {
       showSnack(
         context: context,
@@ -66,7 +64,12 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
             child: Text("IMPORT KEY FROM FILE"),
-            onPressed: () {},
+            onPressed: () => _settingsState.onImportKeyFromFile(
+                onError: (err) => showSnack(
+                      context: context,
+                      scaffoldState: _scaffoldKey.currentState,
+                      msg: err,
+                    )),
           ),
         ),
         Padding(
@@ -113,10 +116,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AppButton(
-            child: Text("EXPORT KEY"),
-            onPressed: _exportKey
-          ),
+          child: AppButton(child: Text("EXPORT KEY"), onPressed: _exportKey),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
@@ -128,14 +128,14 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
                   context: context,
                   builder: (_) => DeleteKeyConfirmationDialog(
                       settingsState: _settingsState));
-              if (result ==  DeleteKeyConfirmationDialogResult.delete) {
+              if (result == DeleteKeyConfirmationDialogResult.delete) {
                 showSnack(
                   context: context,
                   scaffoldState: _scaffoldKey.currentState,
                   msg: "The encryption key was successfully deleted",
                   isError: false,
                 );
-              } else if (result ==  DeleteKeyConfirmationDialogResult.export) {
+              } else if (result == DeleteKeyConfirmationDialogResult.export) {
                 _exportKey();
               }
             },

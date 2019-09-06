@@ -11,7 +11,7 @@ abstract class _SettingsState with Store {
   final _settingsLocal = SettingsLocalStorage();
 
   @observable
-  bool isParanoidEncryptionEnabled = false;
+  bool isParanoidEncryptionEnabled = true;
 
   @observable
   Map<String, String> encryptionKeys = new Map();

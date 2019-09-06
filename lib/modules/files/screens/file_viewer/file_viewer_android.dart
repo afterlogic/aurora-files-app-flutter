@@ -165,8 +165,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         body: ListView(
           padding: const EdgeInsets.all(16.0),
           children: <Widget>[
-            if (file.contentType.startsWith("image")) ImageViewer(file: file),
-            SizedBox(height: 30.0),
+            if (file.contentType.startsWith("image"))
+              ImageViewer(
+                file: file,
+                scaffoldState: _fileViewerScaffoldKey.currentState,
+              ),
+            if (file.contentType.startsWith("image")) SizedBox(height: 30.0),
             InfoListTile(
               label: "Filename",
               content: file.name,

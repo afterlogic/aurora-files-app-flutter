@@ -16,6 +16,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
+import 'package:moor_flutter/moor_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FilesLocalStorage {
@@ -66,6 +67,7 @@ class FilesLocalStorage {
     return uploader.result;
   }
 
+  // returns taskId e.g. b95fa992-3113-4ecc-bbec-80117206e3e3
   Future<String> downloadFile(String url, String fileName) async {
     Directory dir = await DownloadsPathProvider.downloadsDirectory;
     if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
@@ -114,10 +116,26 @@ class FilesLocalStorage {
     return [createdFile, iv.base16];
   }
 
-  decryptFile(LocalFile file) {
+  Future<List<int>> decryptFile(LocalFile file) async {
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     final iv = IV.fromBase16(file.initVector);
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-//    final decrypted = encrypter.decryptBytes(encrypted, iv: iv);
+
+    List<int> encryptedFileBytes = new List();
+
+    HttpClient client = new HttpClient();
+    final HttpClientRequest request =
+        await client.getUrl(Uri.parse(hostName + file.downloadUrl));
+
+    request.headers
+        .add("Authorization", "Bearer ${AppStore.authState.authToken}");
+    HttpClientResponse response = await request.close();
+
+    await for (List<int> contents in response) {
+      encryptedFileBytes = new List.from(encryptedFileBytes)..addAll(contents);
+    }
+    final encrypted = Encrypted(Uint8List.fromList(encryptedFileBytes));
+
+    return encrypter.decryptBytes(encrypted, iv: iv);
   }
 }

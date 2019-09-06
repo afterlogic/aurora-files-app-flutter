@@ -24,11 +24,15 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         builder: (_) => ExportKeyDialog(settingsState: _settingsState));
     if (exportedDir is String) {
       showSnack(
-        context: context,
-        scaffoldState: _scaffoldKey.currentState,
-        msg: "The Key was exported in $exportedDir",
-        isError: false,
-      );
+          context: context,
+          scaffoldState: _scaffoldKey.currentState,
+          msg: "The key was exported into: $exportedDir",
+          isError: false,
+          duration: Duration(minutes: 10),
+          action: SnackBarAction(
+            label: "OK",
+            onPressed: _scaffoldKey.currentState.hideCurrentSnackBar,
+          ));
     }
   }
 

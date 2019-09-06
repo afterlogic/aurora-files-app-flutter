@@ -239,4 +239,8 @@ abstract class _FilesState with Store {
       onError(err.toString());
     }
   }
+
+  Future<List<int>> onDecryptFile({@required LocalFile file}) {
+    return _filesLocal.decryptFile(file);
+  }
 }

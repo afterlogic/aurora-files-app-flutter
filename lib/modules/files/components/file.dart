@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/dialogs_android/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
@@ -7,6 +8,7 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,34 @@ class FileWidget extends StatelessWidget {
         filesPageState: Provider.of<FilesPageState>(context),
       ),
     ));
+  }
+
+  void _openEncryptedFile(BuildContext context) {
+    if (AppStore.settingsState.selectedKeyName == null) {
+      showSnack(
+          context: context,
+          scaffoldState:
+              Provider.of<FilesPageState>(context).scaffoldKey.currentState,
+          msg:
+              "You have enabled encryption of uploaded files but haven't set any encryption key.");
+    } else {
+      _openFile(context);
+    }
+  }
+
+  void _openFile(BuildContext context) {
+    final filesState = Provider.of<FilesState>(context);
+    final filesPageState = Provider.of<FilesPageState>(context);
+
+    Navigator.pushNamed(
+      context,
+      FileViewerRoute.name,
+      arguments: FileViewerScreenArguments(
+        file: file,
+        filesState: filesState,
+        filesPageState: filesPageState,
+      ),
+    );
   }
 
   Widget _getThumbnail(BuildContext context) {
@@ -76,15 +106,9 @@ class FileWidget extends StatelessWidget {
     return Observer(
       builder: (_) => SelectableFilesItemTile(
         file: file,
-        onTap: () => Navigator.pushNamed(
-          context,
-          FileViewerRoute.name,
-          arguments: FileViewerScreenArguments(
-            file: file,
-            filesState: filesState,
-            filesPageState: filesPageState,
-          ),
-        ),
+        onTap: () => file.initVector != null
+            ? _openEncryptedFile(context)
+            : _openFile(context),
         isSelected: filesPageState.selectedFilesIds.contains(file.id),
         child: ListTile(
           leading: _getThumbnail(context),

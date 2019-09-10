@@ -6,8 +6,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:http/http.dart' as http;
 
 Map<String, String> getHeader() {
-  final token = AppStore.authState.authToken;
-  return {'Authorization': 'Bearer $token'};
+  return {'Authorization': 'Bearer ${AppStore.authState.authToken}'};
 }
 
 Future sendRequest(ApiBody body) async {

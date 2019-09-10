@@ -50,8 +50,6 @@ class FilesLocalStorage {
       params["ExtendedProps"]["FirstChunk"] = firstChunk;
     }
 
-    print("VO: params: ${params}");
-
     final body = new ApiBody(
             module: "Files",
             method: "UploadFile",

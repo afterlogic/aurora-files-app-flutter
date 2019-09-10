@@ -14,7 +14,11 @@ void showSnack({
   final snack = theme.brightness == Brightness.light
       ? SnackBar(
           duration: duration,
-          content: Text(msg),
+          content: Text(
+            msg,
+            style: TextStyle(
+                color: !isError ? theme.scaffoldBackgroundColor : Colors.white),
+          ),
           backgroundColor: isError ? theme.errorColor : null,
           action: action,
         )
@@ -23,7 +27,7 @@ void showSnack({
           content: Text(
             msg,
             style: TextStyle(
-                color: !isError ? theme.scaffoldBackgroundColor : null),
+                color: !isError ? theme.scaffoldBackgroundColor : Colors.white),
           ),
           backgroundColor: isError ? theme.errorColor : theme.iconTheme.color,
           action: action,

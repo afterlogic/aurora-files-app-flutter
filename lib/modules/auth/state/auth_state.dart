@@ -65,7 +65,7 @@ abstract class _AuthState with Store {
         final Map<String, dynamic> res = await _authApi.login(email, password);
         final String token = res['Result']['AuthToken'];
         final int id = res['AuthenticatedUserId'];
-        _setAuthSharedPrefs(token: token, email: email, id: id);
+        await _setAuthSharedPrefs(token: token, email: email, id: id);
 
         onSuccess();
       } catch (err) {

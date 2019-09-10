@@ -23,7 +23,6 @@ abstract class _SettingsState with Store {
 
   Future<bool> getUserEncryptionKeys() async {
     encryptionKeys = await _settingsLocal.getAllUserKeys();
-    print("VO: encryptionKeys: ${encryptionKeys}");
     if (encryptionKeys.length > 0) {
       final keyNames = encryptionKeys.keys.toList();
       selectedKeyName = keyNames[0];

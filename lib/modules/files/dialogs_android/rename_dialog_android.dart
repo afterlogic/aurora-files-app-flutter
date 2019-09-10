@@ -103,8 +103,9 @@ class _RenameDialogState extends State<RenameDialog> {
                         errMsg = err;
                         setState(() => isRenaming = false);
                       },
-                      onSuccess: (String newNameFromServer) {
-                        widget.filesPageState.onGetFiles(path: widget.file.path);
+                      onSuccess: (String newNameFromServer) async {
+                        await widget.filesPageState
+                            .onGetFiles(path: widget.file.path);
                         Navigator.pop(context, newNameFromServer);
                       },
                     );

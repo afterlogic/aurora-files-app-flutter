@@ -177,6 +177,7 @@ abstract class _FilesState with Store {
 
   Future onUploadFile({
     @required String path,
+    @required Function onEncryptionStart,
     @required Function onUploadStart,
     @required Function onSuccess,
     @required Function(String) onError,
@@ -190,6 +191,7 @@ abstract class _FilesState with Store {
     final shouldEncrypt = selectedStorage.type == "encrypted";
 
     if (shouldEncrypt) {
+      onEncryptionStart();
       final encryptionData = await _filesLocal.encryptFile(file);
       file = encryptionData[0];
       vector = encryptionData[1];
@@ -215,11 +217,11 @@ abstract class _FilesState with Store {
       if (res["Result"] == null || res["Result"] == false) {
         onError(getErrMsg(res));
       } else {
-        if (shouldEncrypt) file.delete();
+        if (shouldEncrypt && file.existsSync()) file.delete();
         onSuccess();
       }
     }, onError: (ex, stacktrace) {
-      if (shouldEncrypt) file.delete();
+      if (shouldEncrypt && file.existsSync()) file.delete();
       onError(ex.message);
     });
   }
@@ -240,7 +242,10 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future<List<int>> onDecryptFile({@required LocalFile file}) {
-    return _filesLocal.decryptFile(file);
+  Future<List<int>> onDecryptFile({
+    @required LocalFile file,
+    @required Function(int) updateProgress,
+  }) {
+    return _filesLocal.decryptFile(file, updateProgress);
   }
 }

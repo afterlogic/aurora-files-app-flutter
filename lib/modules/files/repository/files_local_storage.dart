@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
@@ -14,8 +13,10 @@ import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
+import 'package:intl/intl.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -24,6 +25,7 @@ class FilesLocalStorage {
   final String hostName = AppStore.authState.hostName;
   final String apiUrl = AppStore.authState.apiUrl;
   final uploader = FlutterUploader();
+  final chunkSize = 128000;
 
   Future<File> pickFiles({FileType type, String extension}) {
     return FilePicker.getFile(type: type, fileExtension: extension);
@@ -47,6 +49,8 @@ class FilesLocalStorage {
       params["ExtendedProps"]["InitializationVector"] = vector;
       params["ExtendedProps"]["FirstChunk"] = firstChunk;
     }
+
+    print("VO: params: ${params}");
 
     final body = new ApiBody(
             module: "Files",
@@ -95,34 +99,38 @@ class FilesLocalStorage {
 
   Future<List> encryptFile(File file) async {
     final fileBytes = await file.readAsBytes();
+    final chunkedList = _chunk(fileBytes);
     Directory appDocDir = await getApplicationDocumentsDirectory();
     final encryptedFile = new File(
-      '${appDocDir.path}/${FileUtils.getFileNameFromPath(file.path)}',
+      '${appDocDir.path}/temp_encrypted_files/${FileUtils.getFileNameFromPath(file.path)}',
     );
-    final createdFile = await encryptedFile.create();
+    final createdFile = await encryptedFile.create(recursive: true);
 
-    // get key object from base16
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+    final iv = IV.fromSecureRandom(16);
+    IV nextVector = iv;
+    for (final List<int> chunk in chunkedList) {
+      final padding =
+          chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
+      final encrypter =
+          Encrypter(AES(key, mode: AESMode.cbc, padding: padding));
+      final args = {
+        "encrypter": encrypter,
+        "fileBytes": chunk,
+        "iv": nextVector
+      };
+      final result = await compute(_encrypt, args);
+      await createdFile.writeAsBytes(result.bytes, mode: FileMode.append);
 
-    // generate vector
-    Random random = Random.secure();
-    var values = List<int>.generate(16, (i) => random.nextInt(256));
-    final iv = IV.fromBase64(base64Encode(values));
+      nextVector = IV(Uint8List.fromList(
+          result.bytes.sublist(result.bytes.length - 16, result.bytes.length)));
+    }
 
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-
-    final encrypted = encrypter.encryptBytes(fileBytes, iv: iv);
-    await createdFile.writeAsBytes(encrypted.bytes);
     return [createdFile, iv.base16];
   }
 
-  Future<List<int>> decryptFile(LocalFile file) async {
-    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
-    final iv = IV.fromBase16(file.initVector);
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-
-    List<int> encryptedFileBytes = new List();
-
+  Future<List<int>> decryptFile(
+      LocalFile file, Function(int) updateProgress) async {
     HttpClient client = new HttpClient();
     final HttpClientRequest request =
         await client.getUrl(Uri.parse(hostName + file.downloadUrl));
@@ -131,11 +139,45 @@ class FilesLocalStorage {
         .add("Authorization", "Bearer ${AppStore.authState.authToken}");
     HttpClientResponse response = await request.close();
 
-    await for (List<int> contents in response) {
-      encryptedFileBytes = new List.from(encryptedFileBytes)..addAll(contents);
-    }
-    final encrypted = Encrypted(Uint8List.fromList(encryptedFileBytes));
+    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+    IV iv = IV.fromBase16(file.initVector);
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: null));
+    List<int> encryptedFileBytes = new List();
+    List<int> decryptedFileBytes = new List();
 
-    return encrypter.decryptBytes(encrypted, iv: iv);
+    print(
+        "${DateFormat('H:m:s:ms').format(DateTime.now())} VO: downloading file...");
+    await for (List<int> contents in response) {
+      encryptedFileBytes = [...encryptedFileBytes, ...contents];
+      updateProgress(Uint8List.fromList(encryptedFileBytes).lengthInBytes);
+    }
+
+    final chunkedList = _chunk(encryptedFileBytes);
+    print(
+        "${DateFormat('H:m:s:ms').format(DateTime.now())} VO: decrypting file...");
+    for (final List<int> chunk in chunkedList) {
+      final encrypted = Encrypted(Uint8List.fromList(chunk));
+      final args = {"encrypter": encrypter, "encrypted": encrypted, "iv": iv};
+      final result = await compute(_decrypt, args);
+      final newVector = chunk.sublist(chunk.length - 16, chunk.length);
+
+      iv = IV(Uint8List.fromList(newVector));
+      decryptedFileBytes = [...decryptedFileBytes, ...result];
+    }
+    print("${DateFormat('H:m:s:ms').format(DateTime.now())} VO: finish");
+    return decryptedFileBytes;
+  }
+
+  _chunk(list) => list.toList().isEmpty
+      ? list.toList()
+      : ([list.take(chunkSize).toList()]
+        ..addAll(_chunk(list.skip(chunkSize).toList())));
+
+  static Encrypted _encrypt(Map args) {
+    return args["encrypter"].encryptBytes(args["fileBytes"], iv: args["iv"]);
+  }
+
+  static List<int> _decrypt(Map args) {
+    return args["encrypter"].decryptBytes(args["encrypted"], iv: args["iv"]);
   }
 }

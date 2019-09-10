@@ -43,6 +43,7 @@ class SettingsLocalStorage {
 
   Future<Map<String, String>> importKeyFromFile() async {
     final File fileWithKey = await FilePicker.getFile();
+    if (fileWithKey == null) return null;
     final String contents = await fileWithKey.readAsString();
     final fileName = FileUtils.getFileNameFromPath(fileWithKey.path);
     return {fileName: contents};

@@ -2,15 +2,12 @@ import 'dart:ui';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:moor_flutter/moor_flutter.dart';
-import 'package:provider/provider.dart';
 
-class ImageViewer extends StatelessWidget {
+class ImageViewer extends StatefulWidget {
   const ImageViewer({
     Key key,
     @required this.file,
@@ -21,45 +18,99 @@ class ImageViewer extends StatelessWidget {
   final ScaffoldState scaffoldState;
 
   @override
-  Widget build(BuildContext context) {
-    final hostName = Provider.of<AuthState>(context).hostName;
+  _ImageViewerState createState() => _ImageViewerState();
+}
 
-    final img = file.initVector != null
-        ? FutureBuilder(
-            future: AppStore.filesState.onDecryptFile(file: file),
-            builder: (_, AsyncSnapshot<List<int>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData) {
-                return Image(
-                  fit: BoxFit.cover,
-                  image: MemoryImage(Uint8List.fromList(snapshot.data)),
-                );
-              } else if (snapshot.hasError) {
-                showSnack(
-                    context: context,
-                    scaffoldState: scaffoldState,
-                    msg: snapshot.error);
-                return SizedBox();
-              } else {
-                return SizedBox(height: 50, width: 50);
-              }
-            },
-          )
-        : CachedNetworkImage(
-            imageUrl: '$hostName/${file.viewUrl}',
-            fit: BoxFit.cover,
-            fadeInDuration: Duration(milliseconds: 150),
-            httpHeaders: getHeader(),
-          );
+class _ImageViewerState extends State<ImageViewer> {
+  double _loadingProgress = 0.0;
+  List<int> _decryptedImage;
+  bool _isError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.file.initVector != null) _decryptImage();
+  }
+
+  Future _decryptImage() async {
+    final decryptedImage = await AppStore.filesState.onDecryptFile(
+        file: widget.file,
+        updateProgress: (int bytesLoaded) {
+          setState(() {
+            _loadingProgress = (100 / widget.file.size * bytesLoaded / 100);
+            if (_loadingProgress >= 1.0) _loadingProgress = null;
+          });
+        });
+    setState(() => _decryptedImage = decryptedImage);
+  }
+
+  Widget _buildImage() {
+    // if the image is encrypted
+    if (widget.file.initVector != null) {
+      if (_isError) {
+        return Row(
+          children: <Widget>[
+            Icon(Icons.error),
+            SizedBox(width: 16.0),
+            Flexible(
+              child: Text(
+                  "An error occurred during the decryption process. Perhaps, this file was encrypted with another key."),
+            ),
+          ],
+        );
+      } else if (_decryptedImage == null) {
+        return SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(value: _loadingProgress),
+                SizedBox(width: 20.0),
+                Text(_loadingProgress == null
+                    ? "Decrypting file..."
+                    : "Downloading file...")
+              ],
+            ),
+          ),
+        );
+      } else {
+        final image = Image.memory(
+          Uint8List.fromList(_decryptedImage),
+          fit: BoxFit.cover,
+        );
+        precacheImage(image.image, context, onError: (e, stackTrace) {
+          setState(() => _isError = true);
+        });
+        return ConstrainedBox(
+          constraints: BoxConstraints(minHeight: 50.0),
+          child: image,
+        );
+      }
+    } else {
+      return CachedNetworkImage(
+        imageUrl: '${AppStore.authState.hostName}/${widget.file.viewUrl}',
+        fit: BoxFit.cover,
+        fadeInDuration: Duration(milliseconds: 150),
+        httpHeaders: getHeader(),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final img = _buildImage();
+
     final placeholder = CachedNetworkImage(
-      imageUrl: '$hostName/${file.thumbnailUrl}',
+      imageUrl: '${AppStore.authState.hostName}/${widget.file.thumbnailUrl}',
       fit: BoxFit.cover,
       httpHeaders: getHeader(),
     );
 
-    if (file.viewUrl != null) {
+    if (widget.file.viewUrl != null) {
       return Hero(
-          tag: file.thumbnailUrl,
+          tag: widget.file.thumbnailUrl,
           child: SizedBox(
             width: double.infinity,
             child: Stack(
@@ -73,15 +124,8 @@ class ImageViewer extends StatelessWidget {
                         sigmaX: 8.0,
                         sigmaY: 8.0,
                       ),
-                      child: Container(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                      ),
+                      child: Container(),
                     ),
-                  ),
-                ),
-                Positioned.fill(
-                  child: Center(
-                    child: CircularProgressIndicator(),
                   ),
                 ),
                 img,

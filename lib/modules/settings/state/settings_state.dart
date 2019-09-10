@@ -54,6 +54,7 @@ abstract class _SettingsState with Store {
     try {
       final Map<String, String> encryptionKeyFromFile =
           await _settingsLocal.importKeyFromFile();
+      if (encryptionKeyFromFile == null) return;
       String keyName = encryptionKeyFromFile.keys.toList()[0];
       String keyValue = encryptionKeyFromFile.values.toList()[0];
 

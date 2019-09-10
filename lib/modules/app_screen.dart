@@ -4,6 +4,7 @@ import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:aurorafiles/themimg/material_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'auth/auth_route.dart';
 import 'files/files_route.dart';
@@ -14,6 +15,9 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final _authState = AppStore.authState;
+  final _settingsState = AppStore.settingsState;
+
   Future<List<bool>> _localStorageInitialization;
 
   @override
@@ -24,8 +28,8 @@ class _AppState extends State<App> {
 
   Future _initLocalStorage() async {
     _localStorageInitialization = Future.wait([
-      AppStore.authState.getAuthSharedPrefs(),
-      AppStore.settingsState.getUserEncryptionKeys(),
+      _authState.getAuthSharedPrefs(),
+      _settingsState.getUserEncryptionKeys(),
     ]);
   }
 
@@ -44,14 +48,18 @@ class _AppState extends State<App> {
         builder: (_, AsyncSnapshot<List<bool>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
-            return MaterialApp(
-              title: "PrivateMail Files",
-              theme: AppMaterialTheme.darkTheme,
-              darkTheme: AppMaterialTheme.darkTheme,
-              onGenerateRoute: AppNavigation.onGenerateRoute,
-              initialRoute: _canEnterMainApp(snapshot.data)
-                  ? FilesRoute.name
-                  : AuthRoute.name,
+            return Observer(
+              builder: (_) => MaterialApp(
+                title: "PrivateMail Files",
+                theme: _settingsState.isDarkTheme
+                    ? AppMaterialTheme.darkTheme
+                    : AppMaterialTheme.theme,
+//                darkTheme: AppMaterialTheme.darkTheme,
+                onGenerateRoute: AppNavigation.onGenerateRoute,
+                initialRoute: _canEnterMainApp(snapshot.data)
+                    ? FilesRoute.name
+                    : AuthRoute.name,
+              ),
             );
           } else {
             return Material(child: MainGradient());

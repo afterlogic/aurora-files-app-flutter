@@ -1,5 +1,6 @@
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
@@ -9,6 +10,9 @@ class SettingsState = _SettingsState with _$SettingsState;
 
 abstract class _SettingsState with Store {
   final _settingsLocal = SettingsLocalStorage();
+
+  @observable
+  bool isDarkTheme = true;
 
   @observable
   bool isParanoidEncryptionEnabled = true;

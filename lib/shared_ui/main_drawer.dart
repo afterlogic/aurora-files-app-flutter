@@ -5,6 +5,8 @@ import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -124,15 +126,17 @@ class MainDrawer extends StatelessWidget {
                       title: Text("Public links"),
                     ),
                   ),
-//                  SwitchListTile.adaptive(
-//                    value: Theme.of(context).brightness == Brightness.dark,
-//                    onChanged: (bool val) {},
-//                    title: ListTile(
-//                      contentPadding: EdgeInsets.zero,
-//                      leading: Icon(MdiIcons.themeLightDark),
-//                      title: Text("Dark theme"),
-//                    ),
-//                  ),
+                  Observer(
+                    builder: (_) => SwitchListTile.adaptive(
+                      value: settingsState.isDarkTheme,
+                      onChanged: (bool val) => settingsState.isDarkTheme = val,
+                      title: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(MdiIcons.themeLightDark),
+                        title: Text("Dark theme"),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

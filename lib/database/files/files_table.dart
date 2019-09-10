@@ -1,6 +1,6 @@
 import 'package:moor_flutter/moor_flutter.dart';
 
-@DataClassName("FileFromApi")
+@DataClassName("LocalFile")
 class Files extends Table {
   IntColumn get localId => integer().autoIncrement()();
 

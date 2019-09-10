@@ -63,17 +63,20 @@ class _MoveOptionsState extends State<MoveOptions> {
             children: <Widget>[
               FlatButton(
                 child: Text("Cancel"),
+                textColor: Theme.of(context).iconTheme.color,
                 onPressed: () {
                   widget.filesState.disableMoveMode();
                 },
               ),
               FlatButton(
                 child: Text("Copy"),
+                textColor: Theme.of(context).iconTheme.color,
                 onPressed:
                     _buttonsDisabled ? null : () => _moveFiles(context, true),
               ),
               FlatButton(
                 child: Text("Move"),
+                textColor: Theme.of(context).iconTheme.color,
                 onPressed:
                     _buttonsDisabled ? null : () => _moveFiles(context, false),
               ),

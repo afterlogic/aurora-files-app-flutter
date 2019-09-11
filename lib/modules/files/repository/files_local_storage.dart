@@ -140,7 +140,6 @@ class FilesLocalStorage {
 
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     IV iv = IV.fromBase16(file.initVector);
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: null));
     List<int> encryptedFileBytes = new List();
     List<int> decryptedFileBytes = new List();
 
@@ -155,6 +154,9 @@ class FilesLocalStorage {
     print(
         "${DateFormat('H:m:s:ms').format(DateTime.now())} VO: decrypting file...");
     for (final List<int> chunk in chunkedList) {
+      final padding =
+      chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
+      final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding));
       final encrypted = Encrypted(Uint8List.fromList(chunk));
       final args = {"encrypter": encrypter, "encrypted": encrypted, "iv": iv};
       final result = await compute(_decrypt, args);

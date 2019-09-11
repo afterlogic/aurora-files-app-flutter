@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:aurorafiles/models/storage.dart';
-import 'package:aurorafiles/modules/files/dialogs_android/add_folder_dialog_android.dart';
+import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/modules/app_store.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -53,6 +55,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           onPressed: () => _filesPageState.quitSelectMode(),
         ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
+        centerTitle: Platform.isIOS,
         actions: <Widget>[
           IconButton(
             icon: Icon(MdiIcons.fileMove),
@@ -77,7 +80,8 @@ class _FilesAppBarState extends State<FilesAppBar>
       return AppBar(
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: Icon(
+                    Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
                 onPressed: Navigator.of(context).pop,
               )
             : IconButton(
@@ -85,7 +89,9 @@ class _FilesAppBarState extends State<FilesAppBar>
                 onPressed: _filesState.disableMoveMode,
               ),
         title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: Platform.isIOS
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text("Move files/folders"),
@@ -97,18 +103,27 @@ class _FilesAppBarState extends State<FilesAppBar>
             )
           ],
         ),
+        centerTitle: Platform.isIOS,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.create_new_folder),
             tooltip: "Add folder",
-            onPressed: () => showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => AddFolderDialogAndroid(
-                filesState: _filesState,
-                filesPageState: _filesPageState,
-              ),
-            ),
+            onPressed: () => Platform.isIOS
+                ? showCupertinoDialog(
+                    context: context,
+                    builder: (_) => AddFolderDialogAndroid(
+                      filesState: _filesState,
+                      filesPageState: _filesPageState,
+                    ),
+                  )
+                : showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => AddFolderDialogAndroid(
+                      filesState: _filesState,
+                      filesPageState: _filesPageState,
+                    ),
+                  ),
           ),
           PopupMenuButton<Storage>(
             icon: Icon(Icons.storage),
@@ -143,7 +158,8 @@ class _FilesAppBarState extends State<FilesAppBar>
       return AppBar(
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: Icon(
+                    Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
                 onPressed: Navigator.of(context).pop,
               )
             : Padding(
@@ -156,7 +172,9 @@ class _FilesAppBarState extends State<FilesAppBar>
                 child: Image.asset("lib/assets/images/logo_white.png"),
               ),
         title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: Platform.isIOS
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text("PrivateMail Files"),
@@ -170,6 +188,7 @@ class _FilesAppBarState extends State<FilesAppBar>
               )
           ],
         ),
+        centerTitle: Platform.isIOS,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),

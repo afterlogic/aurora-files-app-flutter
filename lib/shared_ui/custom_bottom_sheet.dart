@@ -33,9 +33,7 @@ class CustomBottomSheet extends ModalRoute<void> {
     return Material(
       type: MaterialType.transparency,
       // make sure that the overlay content is not cut off
-      child: SafeArea(
-        child: _buildOverlayContent(context),
-      ),
+      child: _buildOverlayContent(context),
     );
   }
 

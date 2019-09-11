@@ -1,5 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/modules/files/dialogs_android/file_options_bottom_sheet.dart';
+import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';

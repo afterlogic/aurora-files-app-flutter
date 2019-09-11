@@ -1,14 +1,17 @@
+import 'dart:io';
+
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
-import 'package:aurorafiles/modules/files/dialogs_android/delete_confirmation_dialog.dart';
-import 'package:aurorafiles/modules/files/dialogs_android/rename_dialog_android.dart';
+import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -59,23 +62,44 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _renameFile() async {
-    final result = await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => RenameDialog(
-        file: file,
-        filesState: widget.filesState,
-        filesPageState: widget.filesPageState,
-      ),
-    );
+    final result = Platform.isIOS
+        ? await showCupertinoDialog(
+            context: context,
+            builder: (_) => RenameDialog(
+              file: file,
+              filesState: widget.filesState,
+              filesPageState: widget.filesPageState,
+            ),
+          )
+        : await showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => RenameDialog(
+              file: file,
+              filesState: widget.filesState,
+              filesPageState: widget.filesPageState,
+            ),
+          );
     if (result is String) _updateFile(result);
   }
 
   void _deleteFile() async {
-    final bool shouldDelete = await showDialog(
-        context: context,
-        builder: (_) =>
-            DeleteConfirmationDialog(itemsNumber: 1, isFolder: false));
+    bool shouldDelete;
+    if (Platform.isIOS) {
+      shouldDelete = await showCupertinoDialog(
+          context: context,
+          builder: (_) => DeleteConfirmationDialog(
+                itemsNumber: 1,
+                isFolder: false,
+              ));
+    } else {
+      shouldDelete = await showDialog(
+          context: context,
+          builder: (_) => DeleteConfirmationDialog(
+                itemsNumber: 1,
+                isFolder: false,
+              ));
+    }
     if (shouldDelete != null && shouldDelete) {
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [file],

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class AppMaterialTheme {
@@ -9,6 +11,8 @@ class AppMaterialTheme {
     primaryColorLight: Colors.purple[200],
     toggleableActiveColor: Color(0xFFbc4799),
     selectedRowColor: Color(0x11660041),
+    highlightColor: Platform.isIOS ? Colors.transparent : null,
+    splashColor: Platform.isIOS ? Colors.transparent : null,
     inputDecorationTheme: _inputTheme,
     buttonTheme: _buttonTheme,
   );
@@ -21,6 +25,8 @@ class AppMaterialTheme {
     primaryColorLight: Colors.purple[200],
     toggleableActiveColor: Color(0xFFbc4799),
     selectedRowColor: Color(0x11660041),
+    highlightColor: Platform.isIOS ? Colors.transparent : null,
+    splashColor: Platform.isIOS ? Colors.transparent : null,
     inputDecorationTheme: _inputTheme,
     buttonTheme: _buttonTheme,
   );

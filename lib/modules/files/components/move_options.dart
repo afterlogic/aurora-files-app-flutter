@@ -55,9 +55,9 @@ class _MoveOptionsState extends State<MoveOptions> {
         border: Border(top: BorderSide(color: Colors.grey)),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 3.0, bottom: 6.0),
-        child: SafeArea(
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(top: 3.0, bottom: 6.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[

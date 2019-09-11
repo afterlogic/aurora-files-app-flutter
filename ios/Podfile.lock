@@ -6,6 +6,8 @@ PODS:
   - Flutter (1.0.0)
   - flutter_downloader (0.0.1):
     - Flutter
+  - flutter_secure_storage (3.3.1):
+    - Flutter
   - flutter_uploader (0.0.1):
     - Flutter
   - FMDB (2.7.5):
@@ -24,6 +26,7 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
+  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_uploader (from `.symlinks/plugins/flutter_uploader/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -42,6 +45,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/flutter/ios"
   flutter_downloader:
     :path: ".symlinks/plugins/flutter_downloader/ios"
+  flutter_secure_storage:
+    :path: ".symlinks/plugins/flutter_secure_storage/ios"
   flutter_uploader:
     :path: ".symlinks/plugins/flutter_uploader/ios"
   path_provider:
@@ -54,8 +59,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   downloads_path_provider: fe0d06888d4b8c055a59edbc2f51f03e63cb0e28
   file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
+  flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_uploader: 848652a9bb11066e0944a2170ec0e080139dd3eb
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259

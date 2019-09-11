@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/modules/settings/screens/encryption/dialogs_android/add_key_dialog.dart';
-import 'package:aurorafiles/modules/settings/screens/encryption/dialogs_android/delete_key_confirmation_dialog.dart';
-import 'package:aurorafiles/modules/settings/screens/encryption/dialogs_android/export_key_dialog.dart';
+import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_dialog.dart';
+import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_key_confirmation_dialog.dart';
+import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/export_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +22,16 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   void _exportKey() async {
-    final exportedDir = await showDialog(
-        context: context,
-        builder: (_) => ExportKeyDialog(settingsState: _settingsState));
+    var exportedDir;
+    if (Platform.isIOS) {
+      exportedDir = await showCupertinoDialog(
+          context: context,
+          builder: (_) => ExportKeyDialog(settingsState: _settingsState));
+    } else {
+      exportedDir = await showDialog(
+          context: context,
+          builder: (_) => ExportKeyDialog(settingsState: _settingsState));
+    }
     if (exportedDir is String) {
       showSnack(
           context: context,
@@ -55,31 +65,37 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
-            child: Text("IMPORT KEY FROM TEXT"),
-            onPressed: () => showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (_) =>
-                  AddKeyDialog(settingsState: _settingsState, isImport: true),
-            ),
+            text: "Import key from text",
+            onPressed: () => Platform.isIOS
+                ? showCupertinoDialog(
+                    context: context,
+                    builder: (_) => AddKeyDialog(
+                        settingsState: _settingsState, isImport: true),
+                  )
+                : showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => AddKeyDialog(
+                        settingsState: _settingsState, isImport: true),
+                  ),
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
-            child: Text("IMPORT KEY FROM FILE"),
+            text: "Import key from file",
             onPressed: () => _settingsState.onImportKeyFromFile(
                 onError: (err) => showSnack(
                       context: context,
                       scaffoldState: _scaffoldKey.currentState,
-                      msg: err,
+                      msg: "Could not find a key in this file",
                     )),
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
-            child: Text("GENERATE KEYS"),
+            text: "Generate keys",
             onPressed: () => showDialog(
               context: context,
               barrierDismissible: false,
@@ -120,13 +136,14 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AppButton(child: Text("EXPORT KEY"), onPressed: _exportKey),
+          child: AppButton(text: "Export key", onPressed: _exportKey),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
-            color: Theme.of(context).errorColor,
-            child: Text("DELETE KEY"),
+            buttonColor: !Platform.isIOS ? Theme.of(context).errorColor : null,
+            textColor: Platform.isIOS ? Theme.of(context).errorColor : null,
+            text: "Delete key",
             onPressed: () async {
               final result = await showDialog(
                   context: context,
@@ -163,8 +180,9 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           ),
           body: ListView(
             children: <Widget>[
-              SwitchListTile(
+              SwitchListTile.adaptive(
                 value: _settingsState.isParanoidEncryptionEnabled,
+                activeColor: Theme.of(context).accentColor,
                 onChanged: (bool v) =>
                     _settingsState.isParanoidEncryptionEnabled = v,
                 title: Text("Enable Paranoid Encryption"),

@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -14,8 +17,8 @@ import 'components/files_app_bar.dart';
 import 'components/folder.dart';
 import 'components/move_options.dart';
 import 'components/skeleton_loader.dart';
-import 'dialogs_android/add_folder_dialog_android.dart';
-import 'dialogs_android/delete_confirmation_dialog.dart';
+import 'dialogs/add_folder_dialog.dart';
+import 'dialogs/delete_confirmation_dialog.dart';
 import 'state/files_page_state.dart';
 
 class FilesAndroid extends StatefulWidget {
@@ -82,11 +85,20 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   void _deleteSelected(context) async {
-    final bool shouldDelete = await showDialog(
-        context: context,
-        builder: (_) => DeleteConfirmationDialog(
-            itemsNumber: _filesPageState.selectedFilesIds.length));
-    if (shouldDelete != null && shouldDelete) {
+    bool shouldDelete;
+    if (Platform.isIOS) {
+      shouldDelete = await showCupertinoDialog(
+          context: context,
+          builder: (_) => DeleteConfirmationDialog(
+              itemsNumber: _filesPageState.selectedFilesIds.length));
+    } else {
+      shouldDelete = await showDialog(
+          context: context,
+          builder: (_) => DeleteConfirmationDialog(
+              itemsNumber: _filesPageState.selectedFilesIds.length));
+    }
+
+    if (shouldDelete == true) {
       _filesPageState.onDeleteFiles(
         storage: _filesState.selectedStorage,
         onSuccess: () {
@@ -124,7 +136,8 @@ class _FilesAndroidState extends State<FilesAndroid>
       );
     } else {
       return ListView.builder(
-        padding: EdgeInsets.only(bottom: 70.0),
+        padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).padding.bottom + 70.0),
         itemCount: _filesPageState.currentFiles.length,
         itemBuilder: (BuildContext context, int index) {
           final item = _filesPageState.currentFiles[index];
@@ -153,58 +166,57 @@ class _FilesAndroidState extends State<FilesAndroid>
           builder: (_) => AppStore.authState,
         )
       ],
-      child: SafeArea(
-        top: false,
-        bottom: false,
-        child: Observer(
-          builder: (_) => Scaffold(
-            key: _filesPageState.scaffoldKey,
-            drawer: _filesState.isMoveModeEnabled ? null : MainDrawer(),
-            appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
-            body: Observer(
-                builder: (_) => RefreshIndicator(
-                      onRefresh: () async {
-                        if (_filesState.currentStorages.length <= 0) {
-                          await _filesState.onGetStorages();
-                        }
-                        return _getFiles(context, FilesLoadingType.none);
-                      },
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Positioned.fill(
-                            child: _buildFiles(context),
+      child: Observer(
+        builder: (_) => Scaffold(
+          key: _filesPageState.scaffoldKey,
+          drawer: _filesState.isMoveModeEnabled ? null : MainDrawer(),
+          appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
+          body: Observer(
+              builder: (_) => RefreshIndicator(
+                    onRefresh: () async {
+                      if (_filesState.currentStorages.length <= 0) {
+                        await _filesState.onGetStorages();
+                      }
+                      return _getFiles(context, FilesLoadingType.none);
+                    },
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: <Widget>[
+                        Positioned.fill(
+                          child: _buildFiles(context),
+                        ),
+                        // LOADER
+                        Positioned(
+                          top: 0.0,
+                          left: 0.0,
+                          right: 0.0,
+                          height: 6.0,
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 150),
+                            opacity: _filesPageState.filesLoading ==
+                                    FilesLoadingType.filesVisible
+                                ? 1.0
+                                : 0.0,
+                            child: LinearProgressIndicator(),
                           ),
-                          // LOADER
+                        ),
+                        if (_filesState.isMoveModeEnabled)
                           Positioned(
-                            top: 0.0,
+                            bottom: 0.0,
                             left: 0.0,
                             right: 0.0,
-                            height: 6.0,
-                            child: AnimatedOpacity(
-                              duration: Duration(milliseconds: 150),
-                              opacity: _filesPageState.filesLoading ==
-                                      FilesLoadingType.filesVisible
-                                  ? 1.0
-                                  : 0.0,
-                              child: LinearProgressIndicator(),
+                            child: MoveOptions(
+                              filesState: _filesState,
+                              filesPageState: _filesPageState,
                             ),
-                          ),
-                          if (_filesState.isMoveModeEnabled)
-                            Positioned(
-                              bottom: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              height: 50.0,
-                              child: MoveOptions(
-                                filesState: _filesState,
-                                filesPageState: _filesPageState,
-                              ),
-                            )
-                        ],
-                      ),
-                    )),
-            floatingActionButton: Observer(
+                          )
+                      ],
+                    ),
+                  )),
+          floatingActionButton: Padding(
+            padding:
+                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+            child: Observer(
               builder: (_) => _filesState.isMoveModeEnabled
                   ? SizedBox()
                   : FloatingActionButton(
@@ -215,21 +227,26 @@ class _FilesAndroidState extends State<FilesAndroid>
                           CustomSpeedDial(tag: widget.path, children: [
                             MiniFab(
                               icon: Icon(Icons.create_new_folder),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (_) => AddFolderDialogAndroid(
-                                    filesState: _filesState,
-                                    filesPageState: _filesPageState,
-                                  ),
-                                );
-                              },
+                              onPressed: () => Platform.isIOS
+                                  ? showCupertinoDialog(
+                                      context: context,
+                                      builder: (_) => AddFolderDialogAndroid(
+                                        filesState: _filesState,
+                                        filesPageState: _filesPageState,
+                                      ),
+                                    )
+                                  : showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) => AddFolderDialogAndroid(
+                                        filesState: _filesState,
+                                        filesPageState: _filesPageState,
+                                      ),
+                                    ),
                             ),
                             MiniFab(
                               icon: Icon(MdiIcons.filePlus),
                               onPressed: () {
-
                                 _filesState.onUploadFile(
                                   path: widget.path,
                                   onEncryptionStart: () => showSnack(

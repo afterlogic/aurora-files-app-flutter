@@ -110,6 +110,7 @@ class MainDrawer extends StatelessWidget {
                   Divider(),
                   SwitchListTile.adaptive(
                     value: false,
+                    activeColor: Theme.of(context).accentColor,
                     onChanged: (bool val) {},
                     title: ListTile(
                       contentPadding: EdgeInsets.zero,
@@ -119,6 +120,7 @@ class MainDrawer extends StatelessWidget {
                   ),
                   SwitchListTile.adaptive(
                     value: false,
+                    activeColor: Theme.of(context).accentColor,
                     onChanged: (bool val) {},
                     title: ListTile(
                       contentPadding: EdgeInsets.zero,
@@ -129,6 +131,7 @@ class MainDrawer extends StatelessWidget {
                   Observer(
                     builder: (_) => SwitchListTile.adaptive(
                       value: settingsState.isDarkTheme,
+                      activeColor: Theme.of(context).accentColor,
                       onChanged: (bool val) => settingsState.isDarkTheme = val,
                       title: ListTile(
                         contentPadding: EdgeInsets.zero,

@@ -47,7 +47,7 @@ class SelectableFilesItemTile extends StatelessWidget {
               width: thumbnailSize,
               height: thumbnailSize,
               child:
-                  Icon(Icons.check_circle, color: Theme.of(context).cardColor),
+                  Icon(Icons.check_circle, color: Colors.white),
             ),
           ),
           SizedBox(height: 6.0),

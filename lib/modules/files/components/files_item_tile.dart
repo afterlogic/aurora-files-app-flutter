@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 // wrapper for file items
 class SelectableFilesItemTile extends StatelessWidget {
-  final ListTile child;
+  final Widget child;
   final LocalFile file;
   final bool isSelected;
   final Function onTap;

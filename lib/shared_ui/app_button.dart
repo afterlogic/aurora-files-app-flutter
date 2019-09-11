@@ -63,11 +63,7 @@ class AppButton extends StatelessWidget {
                   )
                 : child is Widget
                     ? child
-                    : Text(text.toUpperCase(),
-                        style: TextStyle(
-                            color: textColor == null
-                                ? Theme.of(context).accentColor
-                                : textColor)),
+                    : Text(text.toUpperCase()),
           ),
           onPressed: isLoading != null && isLoading ? null : onPressed);
     }

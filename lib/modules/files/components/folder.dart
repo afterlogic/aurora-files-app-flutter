@@ -44,54 +44,63 @@ class FolderWidget extends StatelessWidget {
             ),
           );
         },
-        child: ListTile(
-          leading: Icon(
-            Icons.folder,
-            size: filesState.filesTileLeadingSize,
-            color: filesState.filesToMoveCopy.contains(folder)
-                ? Theme.of(context).disabledColor.withOpacity(0.11)
-                : Theme.of(context).disabledColor,
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(folder.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-              if (folder.published || folder.localId != null)
-                SizedBox(height: 7.0),
-              Theme(
-                data: Theme.of(context).copyWith(
-                  iconTheme: IconThemeData(
-                    color: Theme.of(context).disabledColor,
-                    size: 14.0,
+        child: Stack(children: [
+          ListTile(
+            leading: Icon(
+              Icons.folder,
+              size: filesState.filesTileLeadingSize,
+              color: filesState.filesToMoveCopy.contains(folder)
+                  ? Theme.of(context).disabledColor.withOpacity(0.11)
+                  : Theme.of(context).disabledColor,
+            ),
+            title: Padding(
+              padding: const EdgeInsets.only(right: 28.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(folder.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  if (folder.published || folder.localId != null)
+                    SizedBox(height: 7.0),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      iconTheme: IconThemeData(
+                        color: Theme.of(context).disabledColor,
+                        size: 14.0,
+                      ),
+                    ),
+                    child: Row(children: <Widget>[
+                      if (folder.published)
+                        Icon(
+                          Icons.link,
+                          semanticLabel: "Has public link",
+                        ),
+                      if (folder.published) SizedBox(width: margin),
+                      if (folder.localId != null)
+                        Icon(
+                          Icons.airplanemode_active,
+                          semanticLabel: "Available offline",
+                        ),
+                    ]),
                   ),
-                ),
-                child: Row(children: <Widget>[
-                  if (folder.published)
-                    Icon(
-                      Icons.link,
-                      semanticLabel: "Has public link",
-                    ),
-                  if (folder.published) SizedBox(width: margin),
-                  if (folder.localId != null)
-                    Icon(
-                      Icons.airplanemode_active,
-                      semanticLabel: "Available offline",
-                    ),
-                ]),
+                ],
               ),
-            ],
+            ),
           ),
-          trailing: filesState.isMoveModeEnabled ||
-                  filesPageState.selectedFilesIds.length > 0
-              ? null
-              : IconButton(
-                  padding: EdgeInsets.only(left: 30.0),
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  icon: Icon(Icons.more_vert),
-                  onPressed: () => _showModalBottomSheet(context),
+          if (!filesState.isMoveModeEnabled &&
+              filesPageState.selectedFilesIds.length <= 0)
+            Positioned(
+              top: 0.0,
+              bottom: 0.0,
+              right: 4.0,
+              child: IconButton(
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Theme.of(context).disabledColor,
                 ),
-        ),
+                onPressed: () => _showModalBottomSheet(context),
+              ),
+            ),
+        ]),
       ),
     );
   }

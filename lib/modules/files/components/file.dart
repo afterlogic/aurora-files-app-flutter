@@ -110,61 +110,70 @@ class FileWidget extends StatelessWidget {
             ? _openEncryptedFile(context)
             : _openFile(context),
         isSelected: filesPageState.selectedFilesIds.contains(file.id),
-        child: ListTile(
-          leading: _getThumbnail(context),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(file.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-              SizedBox(height: 7.0),
-              Theme(
-                data: Theme.of(context).copyWith(
-                  iconTheme: IconThemeData(
-                    color: Theme.of(context).disabledColor,
-                    size: 14.0,
-                  ),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    if (file.published)
-                      Icon(
-                        Icons.link,
-                        semanticLabel: "Has public link",
+        child: Stack(children: [
+          ListTile(
+            leading: _getThumbnail(context),
+            title: Padding(
+              padding: const EdgeInsets.only(right: 28.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(file.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  SizedBox(height: 7.0),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      iconTheme: IconThemeData(
+                        color: Theme.of(context).disabledColor,
+                        size: 14.0,
                       ),
-                    if (file.published) SizedBox(width: margin),
-                    if (file.localId != null)
-                      Icon(
-                        Icons.airplanemode_active,
-                        semanticLabel: "Available offline",
-                      ),
-                    if (file.localId != null) SizedBox(width: margin),
-                    Text(filesize(file.size),
-                        style: Theme.of(context).textTheme.caption),
-                    SizedBox(width: margin),
-                    Text("|", style: Theme.of(context).textTheme.caption),
-                    SizedBox(width: margin),
-                    Text(
-                        DateFormatting.formatDateFromSeconds(
-                          timestamp: file.lastModified,
-                        ),
-                        style: Theme.of(context).textTheme.caption),
-                    SizedBox(width: margin),
-                  ],
-                ),
-              )
-            ],
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        if (file.published)
+                          Icon(
+                            Icons.link,
+                            semanticLabel: "Has public link",
+                          ),
+                        if (file.published) SizedBox(width: margin),
+                        if (file.localId != null)
+                          Icon(
+                            Icons.airplanemode_active,
+                            semanticLabel: "Available offline",
+                          ),
+                        if (file.localId != null) SizedBox(width: margin),
+                        Text(filesize(file.size),
+                            style: Theme.of(context).textTheme.caption),
+                        SizedBox(width: margin),
+                        Text("|", style: Theme.of(context).textTheme.caption),
+                        SizedBox(width: margin),
+                        Text(
+                            DateFormatting.formatDateFromSeconds(
+                              timestamp: file.lastModified,
+                            ),
+                            style: Theme.of(context).textTheme.caption),
+                        SizedBox(width: margin),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
-          trailing: filesState.isMoveModeEnabled ||
-                  filesPageState.selectedFilesIds.length > 0
-              ? null
-              : IconButton(
-                  padding: EdgeInsets.only(left: 30.0),
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  icon: Icon(Icons.more_vert),
-                  onPressed: () => _showModalBottomSheet(context),
+          if (!filesState.isMoveModeEnabled &&
+              filesPageState.selectedFilesIds.length <= 0)
+            Positioned(
+              top: 0.0,
+              bottom: 0.0,
+              right: 4.0,
+              child: IconButton(
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Theme.of(context).disabledColor,
                 ),
-        ),
+                onPressed: () => _showModalBottomSheet(context),
+              ),
+            ),
+        ]),
       ),
     );
   }

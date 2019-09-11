@@ -54,7 +54,6 @@ class _AppState extends State<App> {
                 theme: _settingsState.isDarkTheme
                     ? AppMaterialTheme.darkTheme
                     : AppMaterialTheme.theme,
-//                darkTheme: AppMaterialTheme.darkTheme,
                 onGenerateRoute: AppNavigation.onGenerateRoute,
                 initialRoute: _canEnterMainApp(snapshot.data)
                     ? FilesRoute.name

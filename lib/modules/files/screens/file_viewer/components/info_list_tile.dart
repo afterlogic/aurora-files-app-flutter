@@ -43,6 +43,7 @@ class _InfoListTileState extends State<InfoListTile> {
                   style: Theme.of(context).textTheme.subhead,
                   maxLines: _expanded ? 20 : 1,
                   overflow: TextOverflow.ellipsis,
+                  softWrap: true,
                 ),
               ),
               Theme(

@@ -42,6 +42,7 @@ class FilesLocalStorage {
       "Type": storageType,
       "Path": path,
       "SubPath": "",
+      "Overwrite": false,
     };
 
     if (vector is String) {

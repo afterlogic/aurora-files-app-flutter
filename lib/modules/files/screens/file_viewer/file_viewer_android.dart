@@ -232,6 +232,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               updateFile: _updateFile,
               scaffoldKey: _fileViewerScaffoldKey,
             ),
+            SizedBox(height: 16.0 + MediaQuery.of(context).padding.bottom,)
           ],
         ),
       ),

@@ -44,6 +44,13 @@ class _FilesAppBarState extends State<FilesAppBar>
     _appBarIconAnimCtrl.dispose();
   }
 
+  void _search() {
+    FocusScope.of(context).requestFocus(new FocusNode());
+    _filesPageState.onGetFiles(
+      searchPattern: _searchInputCtrl.text,
+    );
+  }
+
   AppBar _getAppBar(BuildContext context) {
     if (_filesPageState.selectedFilesIds.length > 0) {
       return AppBar(
@@ -188,18 +195,15 @@ class _FilesAppBarState extends State<FilesAppBar>
               padding: const EdgeInsets.all(12.0),
               child: Platform.isIOS
                   ? CupertinoTextField(
-                      onSubmitted: (_) => _filesPageState.onGetFiles(
-                        searchPattern: _searchInputCtrl.text,
-                      ),
+                      onSubmitted: (_) => _search(),
                       autofocus: true,
                       controller: _searchInputCtrl,
                       placeholder: "Search",
+                      style: TextStyle(color: Colors.white),
                       suffix: IconButton(
                         icon: Icon(Icons.search),
                         color: Colors.white,
-                        onPressed: () => _filesPageState.onGetFiles(
-                          searchPattern: _searchInputCtrl.text,
-                        ),
+                        onPressed: _search
                       ),
                     )
                   : ClipRRect(
@@ -210,9 +214,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                           padding: const EdgeInsets.only(left: 12.0, top: 2.0),
                           child: TextField(
                             autofocus: true,
-                            onSubmitted: (_) => _filesPageState.onGetFiles(
-                              searchPattern: _searchInputCtrl.text,
-                            ),
+                            onSubmitted: (_) => _search(),
                             style: TextStyle(color: Colors.black),
                             controller: _searchInputCtrl,
                             decoration: InputDecoration(
@@ -222,9 +224,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                                 suffixIcon: IconButton(
                                   icon: Icon(Icons.search),
                                   color: Colors.black,
-                                  onPressed: () => _filesPageState.onGetFiles(
-                                    searchPattern: _searchInputCtrl.text,
-                                  ),
+                                  onPressed: _search,
                                 )),
                           ),
                         ),

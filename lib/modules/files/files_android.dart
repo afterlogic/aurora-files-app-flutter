@@ -129,7 +129,7 @@ class _FilesAndroidState extends State<FilesAndroid>
             padding:
                 const EdgeInsets.symmetric(vertical: 68.0, horizontal: 16.0),
             child: Center(
-              child: Text("Empty here"),
+              child: Text(_filesPageState.isSearchMode ? "No results" : "Empty here"),
             ),
           ),
         ],
@@ -227,7 +227,7 @@ class _FilesAndroidState extends State<FilesAndroid>
             padding:
                 EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: Observer(
-              builder: (_) => _filesState.isMoveModeEnabled
+              builder: (_) => _filesState.isMoveModeEnabled || _filesState.selectedStorage.type == "shared"
                   ? SizedBox()
                   : FloatingActionButton(
                       heroTag: widget.path,

@@ -170,7 +170,14 @@ class _FilesAndroidState extends State<FilesAndroid>
         builder: (_) => Scaffold(
           key: _filesPageState.scaffoldKey,
           drawer: _filesState.isMoveModeEnabled ? null : MainDrawer(),
-          appBar: FilesAppBar(onDeleteFiles: _deleteSelected),
+          appBar: PreferredSize(
+              preferredSize: Size.fromHeight(AppBar().preferredSize.height *
+                  (_filesPageState.isSearchMode &&
+                          !_filesState.isMoveModeEnabled &&
+                          _filesPageState.selectedFilesIds.isEmpty
+                      ? 2.3
+                      : 1)),
+              child: FilesAppBar(onDeleteFiles: _deleteSelected)),
           body: Observer(
               builder: (_) => RefreshIndicator(
                     onRefresh: () async {

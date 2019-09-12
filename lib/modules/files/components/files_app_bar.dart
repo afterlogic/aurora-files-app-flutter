@@ -12,16 +12,13 @@ import 'package:provider/provider.dart';
 
 import '../files_route.dart';
 
-class FilesAppBar extends StatefulWidget with PreferredSizeWidget {
+class FilesAppBar extends StatefulWidget {
   final Function(BuildContext) onDeleteFiles;
 
   FilesAppBar({Key key, @required this.onDeleteFiles}) : super(key: key);
 
   @override
   _FilesAppBarState createState() => _FilesAppBarState();
-
-  @override
-  Size get preferredSize => new Size.fromHeight(AppBar().preferredSize.height);
 }
 
 class _FilesAppBarState extends State<FilesAppBar>
@@ -154,6 +151,88 @@ class _FilesAppBarState extends State<FilesAppBar>
           )
         ],
       );
+    } else if (_filesPageState.isSearchMode) {
+      return AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () {
+            _searchInputCtrl.text = "";
+            _filesPageState.isSearchMode = false;
+            _filesPageState.onGetFiles(
+              showLoading: FilesLoadingType.filesHidden,
+            );
+          },
+        ),
+        title: Column(
+          crossAxisAlignment: Platform.isIOS
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Search"),
+            if (_filesState.selectedStorage.displayName.length > 0)
+              SizedBox(height: 2),
+            if (_filesState.selectedStorage.displayName.length > 0)
+              Text(
+                _filesState.selectedStorage.displayName +
+                    _filesPageState.pagePath,
+                style: TextStyle(fontSize: 10.0),
+              )
+          ],
+        ),
+        centerTitle: Platform.isIOS,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(AppBar().preferredSize.height),
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Platform.isIOS
+                  ? CupertinoTextField(
+                      onSubmitted: (_) => _filesPageState.onGetFiles(
+                        searchPattern: _searchInputCtrl.text,
+                      ),
+                      autofocus: true,
+                      controller: _searchInputCtrl,
+                      placeholder: "Search",
+                      suffix: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () => _filesPageState.onGetFiles(
+                          searchPattern: _searchInputCtrl.text,
+                        ),
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      child: Container(
+                        color: Colors.white54,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 12.0, top: 2.0),
+                          child: TextField(
+                            autofocus: true,
+                            onSubmitted: (_) => _filesPageState.onGetFiles(
+                              searchPattern: _searchInputCtrl.text,
+                            ),
+                            style: TextStyle(color: Colors.black),
+                            controller: _searchInputCtrl,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintStyle: TextStyle(color: Colors.black38),
+                                hintText: "Search",
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.search),
+                                  color: Colors.black,
+                                  onPressed: () => _filesPageState.onGetFiles(
+                                    searchPattern: _searchInputCtrl.text,
+                                  ),
+                                )),
+                          ),
+                        ),
+                      ),
+                    ),
+            ),
+          ),
+        ),
+      );
     } else {
       return AppBar(
         leading: _filesPageState.pagePath.length > 0
@@ -193,7 +272,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           IconButton(
             icon: Icon(Icons.search),
             tooltip: "Search",
-            onPressed: () {},
+            onPressed: () => _filesPageState.isSearchMode = true,
           ),
           IconButton(
             icon: Icon(Icons.menu),
@@ -202,41 +281,6 @@ class _FilesAppBarState extends State<FilesAppBar>
           ),
         ],
       );
-//        return AppBar(
-//          leading: IconButton(
-//            icon: Icon(Icons.arrow_back),
-//            color: Colors.black45,
-//            onPressed: () {
-//              _searchInputCtrl.text = "";
-//              _filesState.disableSearchMode();
-//              _filesState.onGetFiles(
-//                showLoading: FilesLoadingType.filesHidden,
-//              );
-//            },
-//          ),
-//          title: TextField(
-//            controller: _searchInputCtrl,
-//            autofocus: true,
-//            decoration: InputDecoration.collapsed(
-//              hintText: "Search",
-//              hintStyle: TextStyle(
-//                fontSize: Theme.of(context).textTheme.title.fontSize,
-//                fontWeight: Theme.of(context).textTheme.title.fontWeight,
-//              ),
-//            ),
-//            style: Theme.of(context).textTheme.title,
-//          ),
-//          actions: <Widget>[
-//            IconButton(
-//              icon: Icon(Icons.search),
-//              color: Colors.black45,
-//              onPressed: () => _filesState.onGetFiles(
-//                searchPattern: _searchInputCtrl.text,
-//              ),
-//            )
-//          ],
-//          backgroundColor: Colors.white,
-//        );
     }
   }
 

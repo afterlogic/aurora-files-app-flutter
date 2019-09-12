@@ -31,6 +31,9 @@ abstract class _FilesPageState with Store {
   Set<String> selectedFilesIds = new Set();
 
   @observable
+  bool isSearchMode = false;
+
+  @observable
   FilesLoadingType filesLoading = FilesLoadingType.none;
 
   void selectFile(String id) {

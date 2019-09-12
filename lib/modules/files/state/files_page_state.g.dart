@@ -26,6 +26,23 @@ mixin _$FilesPageState on _FilesPageState, Store {
     }, _$selectedFilesIdsAtom, name: '${_$selectedFilesIdsAtom.name}_set');
   }
 
+  final _$isSearchModeAtom = Atom(name: '_FilesPageState.isSearchMode');
+
+  @override
+  bool get isSearchMode {
+    _$isSearchModeAtom.context.enforceReadPolicy(_$isSearchModeAtom);
+    _$isSearchModeAtom.reportObserved();
+    return super.isSearchMode;
+  }
+
+  @override
+  set isSearchMode(bool value) {
+    _$isSearchModeAtom.context.conditionallyRunInAction(() {
+      super.isSearchMode = value;
+      _$isSearchModeAtom.reportChanged();
+    }, _$isSearchModeAtom, name: '${_$isSearchModeAtom.name}_set');
+  }
+
   final _$filesLoadingAtom = Atom(name: '_FilesPageState.filesLoading');
 
   @override

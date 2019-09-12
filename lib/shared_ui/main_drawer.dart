@@ -128,18 +128,6 @@ class MainDrawer extends StatelessWidget {
                       title: Text("Public links"),
                     ),
                   ),
-                  Observer(
-                    builder: (_) => SwitchListTile.adaptive(
-                      value: settingsState.isDarkTheme,
-                      activeColor: Theme.of(context).accentColor,
-                      onChanged: (bool val) => settingsState.isDarkTheme = val,
-                      title: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: Icon(MdiIcons.themeLightDark),
-                        title: Text("Dark theme"),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

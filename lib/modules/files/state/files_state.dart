@@ -235,8 +235,8 @@ abstract class _FilesState with Store {
   }) async {
     try {
       onStart();
-      await _filesLocal.downloadFile(url, fileName);
-      _filesLocal.getDownloadStatus(onSuccess);
+      final path = await _filesLocal.downloadFile(url, fileName);
+      _filesLocal.getDownloadStatus(() => onSuccess(path));
     } catch (err) {
       onError(err.toString());
     }

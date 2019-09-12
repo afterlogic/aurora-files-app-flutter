@@ -6,6 +6,8 @@ import 'package:aurorafiles/modules/files/files_android.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_android.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
+import 'package:aurorafiles/modules/settings/screens/common/common_android.dart';
+import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_android.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
 import 'package:aurorafiles/modules/settings/settings_android.dart';
@@ -73,6 +75,14 @@ class AppNavigation {
           return MaterialPageRoute(builder: (context) => EncryptionAndroid());
         } else {
           return FadeRoute(page: EncryptionAndroid(), duration: 150);
+        }
+        break;
+
+      case CommonSettingsRoute.name:
+        if (Platform.isIOS) {
+          return MaterialPageRoute(builder: (context) => CommonSettingsAndroid());
+        } else {
+          return FadeRoute(page: CommonSettingsAndroid(), duration: 150);
         }
         break;
 

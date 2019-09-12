@@ -77,7 +77,7 @@ class FilesLocalStorage {
     if (!dir.existsSync())
       throw CustomException("Could not resolve save directory");
 
-    return FlutterDownloader.enqueue(
+    await FlutterDownloader.enqueue(
       url: hostName + url,
       savedDir: dir.path,
       fileName: fileName,
@@ -85,6 +85,7 @@ class FilesLocalStorage {
       showNotification: true,
       openFileFromNotification: true,
     );
+    return dir.path;
   }
 
   void getDownloadStatus(Function onSuccess) {

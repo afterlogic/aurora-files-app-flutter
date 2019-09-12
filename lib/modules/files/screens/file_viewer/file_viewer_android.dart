@@ -131,12 +131,16 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         msg: "Downloading ${file.name}",
         isError: false,
       ),
-      onSuccess: () => showSnack(
-        context: context,
-        scaffoldState: _fileViewerScaffoldKey.currentState,
-        msg: "${file.name} downloaded successfully",
-        isError: false,
-      ),
+      onSuccess: (String path) => showSnack(
+          context: context,
+          scaffoldState: _fileViewerScaffoldKey.currentState,
+          msg: "${file.name} downloaded successfully into: $path",
+          isError: false,
+          duration: Duration(minutes: 10),
+          action: SnackBarAction(
+            label: "OK",
+            onPressed: _fileViewerScaffoldKey.currentState.hideCurrentSnackBar,
+          )),
       onError: (String err) => showSnack(
         context: context,
         scaffoldState: _fileViewerScaffoldKey.currentState,
@@ -168,7 +172,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               tooltip: "Move/Copy",
               onPressed: _moveFile,
             ),
-            if (file.downloadUrl != null)
+            if (file.downloadUrl != null && !Platform.isIOS)
               IconButton(
                 icon: Icon(Icons.file_download),
                 tooltip: "Download",

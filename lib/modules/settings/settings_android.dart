@@ -1,7 +1,7 @@
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
-import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +26,8 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             ListTile(
               title: Text("Common"),
               leading: Icon(Icons.tune),
-              onTap: () {},
+              onTap: () =>
+                  Navigator.pushNamed(context, CommonSettingsRoute.name),
             ),
             ListTile(
               title: Text("Encryption"),

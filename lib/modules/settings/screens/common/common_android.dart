@@ -23,7 +23,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
             builder: (_) => SwitchListTile.adaptive(
               value: _settingsState.isDarkTheme,
               activeColor: Theme.of(context).accentColor,
-              onChanged: (bool val) => _settingsState.isDarkTheme = val,
+              onChanged: (bool val) => _settingsState.toggleDarkTheme(val),
               title: ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(MdiIcons.themeLightDark),

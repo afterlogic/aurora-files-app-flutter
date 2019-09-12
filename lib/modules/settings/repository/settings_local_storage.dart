@@ -8,9 +8,10 @@ import 'package:encrypt/encrypt.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsLocalStorage {
-  final storage = new FlutterSecureStorage();
+  final secureStorage = new FlutterSecureStorage();
 
   String _getNameWithOwner([String keyName = ""]) =>
       "${AppStore.authState.userEmail}_$keyName";
@@ -38,7 +39,7 @@ class SettingsLocalStorage {
   // Encryption Keys are stored as Map<OwnerEmail_KeyName, KeyInBase16>
   Future<void> addKey(String keyName, String key) {
     final nameWithOwner = _getNameWithOwner(keyName);
-    return storage.write(key: nameWithOwner, value: key);
+    return secureStorage.write(key: nameWithOwner, value: key);
   }
 
   Future<Map<String, String>> importKeyFromFile() async {
@@ -51,12 +52,12 @@ class SettingsLocalStorage {
 
   Future<String> getKey(String keyName) {
     final nameWithOwner = _getNameWithOwner(keyName);
-    return storage.read(key: nameWithOwner);
+    return secureStorage.read(key: nameWithOwner);
   }
 
   // returns only owner's keys
   Future<Map<String, String>> getAllUserKeys() async {
-    final encryptionKeys = await storage.readAll();
+    final encryptionKeys = await secureStorage.readAll();
     // return key names without owner's prefix
     final Map<String, String> userKeys = new Map();
     encryptionKeys.keys.forEach((nameWithOwner) {
@@ -72,6 +73,24 @@ class SettingsLocalStorage {
 
   Future<void> deleteKey(keyName) {
     final nameWithOwner = _getNameWithOwner(keyName);
-    return storage.delete(key: nameWithOwner);
+    return secureStorage.delete(key: nameWithOwner);
+  }
+
+
+
+  // Dark Theme
+  Future<bool> getDarkThemeFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool("isDartkThemeEnabled");
+  }
+
+  Future<bool> setDarkThemeToStorage(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool("isDartkThemeEnabled", value);
+  }
+
+  Future<bool> deleteDarkThemeFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove("isDartkThemeEnabled");
   }
 }

@@ -30,6 +30,7 @@ class _AppState extends State<App> {
     _localStorageInitialization = Future.wait([
       _authState.getAuthSharedPrefs(),
       _settingsState.getUserEncryptionKeys(),
+      _settingsState.getUserSettings(),
     ]);
   }
 

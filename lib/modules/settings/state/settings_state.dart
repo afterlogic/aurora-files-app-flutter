@@ -36,6 +36,19 @@ abstract class _SettingsState with Store {
     return true;
   }
 
+  Future<bool> getUserSettings() async {
+    final result = await Future.wait([
+      _settingsLocal.getDarkThemeFromStorage(),
+    ]);
+    isDarkTheme = result[0];
+    return true;
+  }
+
+  void toggleDarkTheme(bool val) {
+    isDarkTheme = val;
+    _settingsLocal.setDarkThemeToStorage(val);
+  }
+
   // for both generating and importing from text
   Future<void> onAddKey({
     @required String name,

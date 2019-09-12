@@ -40,7 +40,9 @@ abstract class _SettingsState with Store {
     final result = await Future.wait([
       _settingsLocal.getDarkThemeFromStorage(),
     ]);
-    isDarkTheme = result[0];
+    if (result[0] != null) {
+      isDarkTheme = result[0];
+    }
     return true;
   }
 

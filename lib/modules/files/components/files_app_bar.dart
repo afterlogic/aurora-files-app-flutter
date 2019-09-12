@@ -196,6 +196,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                       placeholder: "Search",
                       suffix: IconButton(
                         icon: Icon(Icons.search),
+                        color: Colors.white,
                         onPressed: () => _filesPageState.onGetFiles(
                           searchPattern: _searchInputCtrl.text,
                         ),

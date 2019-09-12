@@ -204,7 +204,10 @@ class _FilesAndroidState extends State<FilesAndroid>
                                     FilesLoadingType.filesVisible
                                 ? 1.0
                                 : 0.0,
-                            child: LinearProgressIndicator(),
+                            child: LinearProgressIndicator(
+                                backgroundColor: Theme.of(context)
+                                    .disabledColor
+                                    .withOpacity(0.1)),
                           ),
                         ),
                         if (_filesState.isMoveModeEnabled)

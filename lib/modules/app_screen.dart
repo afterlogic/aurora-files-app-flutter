@@ -37,7 +37,7 @@ class _AppState extends State<App> {
   bool _canEnterMainApp(List<bool> localStorageInitializationResults) {
     bool canEnterMailApp = true;
     localStorageInitializationResults.forEach((result) {
-      if (!result) canEnterMailApp = false;
+      if (result == null || result == false) canEnterMailApp = false;
     });
     return canEnterMailApp;
   }

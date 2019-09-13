@@ -54,6 +54,7 @@ class _FilesAppBarState extends State<FilesAppBar>
   AppBar _getAppBar(BuildContext context) {
     if (_filesPageState.selectedFilesIds.length > 0) {
       return AppBar(
+        backgroundColor: Theme.of(context).primaryColorDark,
         leading: IconButton(
           icon: Icon(Icons.clear),
           onPressed: () => _filesPageState.quitSelectMode(),
@@ -82,6 +83,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else if (_filesState.isMoveModeEnabled) {
       return AppBar(
+        backgroundColor: Theme.of(context).accentColor,
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
                 icon: Icon(
@@ -129,33 +131,39 @@ class _FilesAppBarState extends State<FilesAppBar>
                     ),
                   ),
           ),
-          PopupMenuButton<Storage>(
-            icon: Icon(Icons.storage),
-            onSelected: (Storage storage) async {
-              Navigator.of(context).popUntil((Route<dynamic> route) {
-                return route.isFirst;
-              });
-              // set new storage and reload files
-              _filesState.selectedStorage = storage;
-              Navigator.of(context).pushReplacementNamed(
-                FilesRoute.name,
-                arguments: FilesScreenArguments(
-                  path: "",
-                ),
-              );
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<Storage>>[
-              ..._filesState.currentStorages.map((Storage storage) {
-                return PopupMenuItem<Storage>(
-                  value: storage,
-                  child: ListTile(
-                    leading: Icon(Icons.storage),
-                    title: Text(storage.displayName),
+          if (_filesState.currentStorages.length > 1)
+            PopupMenuButton<Storage>(
+              icon: Icon(Icons.storage),
+              onSelected: (Storage storage) async {
+                Navigator.of(context).popUntil((Route<dynamic> route) {
+                  return route.isFirst;
+                });
+                // set new storage and reload files
+                _filesState.selectedStorage = storage;
+                Navigator.of(context).pushReplacementNamed(
+                  FilesRoute.name,
+                  arguments: FilesScreenArguments(
+                    path: "",
                   ),
                 );
-              }),
-            ],
-          )
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<Storage>>[
+                ..._filesState.currentStorages.map((Storage storage) {
+                  if (storage.type != "shared") {
+                    return PopupMenuItem<Storage>(
+                      enabled: storage.type != _filesState.selectedStorage.type,
+                      value: storage,
+                      child: ListTile(
+                        leading: Icon(Icons.storage),
+                        title: Text(storage.displayName),
+                      ),
+                    );
+                  } else {
+                    return null;
+                  }
+                }),
+              ],
+            )
         ],
       );
     } else if (_filesPageState.isSearchMode) {
@@ -258,13 +266,17 @@ class _FilesAppBarState extends State<FilesAppBar>
           children: <Widget>[
             PopupMenuButton<String>(
               child: Row(
-                mainAxisAlignment: Platform.isIOS ? MainAxisAlignment.center : MainAxisAlignment.start,
+                mainAxisAlignment: Platform.isIOS
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
                 children: <Widget>[
                   if (_filesPageState.pagePath.isNotEmpty && Platform.isIOS)
                     SizedBox(width: 16.0),
-                  Text(_filesPageState.pagePath.split("/").last.isNotEmpty
-                      ? _filesPageState.pagePath.split("/").last
-                      : "PrivateMail Files"),
+                  Text(
+                      _filesPageState.pagePath.split("/").last.isNotEmpty
+                          ? _filesPageState.pagePath.split("/").last
+                          : "PrivateMail Files",
+                      overflow: TextOverflow.ellipsis),
                   if (_filesPageState.pagePath.isNotEmpty)
                     Icon(Icons.arrow_drop_down),
                 ],
@@ -278,28 +290,33 @@ class _FilesAppBarState extends State<FilesAppBar>
               },
               itemBuilder: (BuildContext context) {
                 return <PopupMenuEntry<String>>[
-                ..._filesState.folderNavStack.map((String path) {
-                  if (_filesState.folderNavStack.indexOf(path) == _filesState.folderNavStack.length - 1) {
-                    return null;
-                  } else if (path.isNotEmpty) {
-                    return PopupMenuItem<String>(
-                      value: path,
-                      child: ListTile(
-                        leading: Icon(Icons.folder),
-                        title: Text(path.split("/").last),
-                      ),
-                    );
-                  } else {
-                    return PopupMenuItem<String>(
-                      value: "",
-                      child: ListTile(
-                        leading: Icon(Icons.storage),
-                        title: Text(_filesState.selectedStorage.displayName),
-                      ),
-                    );
-                  }
-                }),
-              ];
+                  ..._filesState.folderNavStack.map((String path) {
+                    if (_filesState.folderNavStack.indexOf(path) ==
+                        _filesState.folderNavStack.length - 1) {
+                      return null;
+                    } else if (path.isNotEmpty) {
+                      return PopupMenuItem<String>(
+                        value: path,
+                        child: ListTile(
+                          leading: Icon(Icons.folder),
+                          title: Text(
+                            path.split("/").last,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return PopupMenuItem<String>(
+                        value: "",
+                        child: ListTile(
+                          leading: Icon(Icons.storage),
+                          title: Text(_filesState.selectedStorage.displayName),
+                        ),
+                      );
+                    }
+                  }),
+                ];
               },
             ),
             if (_filesState.selectedStorage.displayName.length > 0)

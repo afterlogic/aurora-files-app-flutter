@@ -42,7 +42,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
         content: isAdding
             ? Row(
                 children: <Widget>[
-                  CircularProgressIndicator(),
+                  CupertinoActivityIndicator(),
                   SizedBox(width: 20.0),
                   Text("Adding ${_folderNameCtrl.text} folder")
                 ],

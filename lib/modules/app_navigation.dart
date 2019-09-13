@@ -17,31 +17,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AppNavigation {
-  static String _currentRoute = "/";
-
-  static String get currentRoute => _currentRoute;
+  static String currentRoute = "/";
 
   static Route onGenerateRoute(RouteSettings settings) {
+    if (settings.name.startsWith(FilesRoute.name)) {
+      final FilesScreenArguments args = settings.arguments;
+      if (Platform.isIOS) {
+        return MaterialPageRoute(
+          settings: RouteSettings(
+            name: FilesRoute.name + (args == null ? "" : args.path),
+          ),
+          builder: (context) =>
+          args != null ? FilesAndroid(path: args.path) : FilesAndroid());
+      } else {
+        return FadeRoute(
+          page: args != null ? FilesAndroid(path: args.path) : FilesAndroid(),
+          settings: RouteSettings(
+            name: FilesRoute.name + (args == null ? "" : args.path),
+          ),
+          duration: 200,
+        );
+      }
+    }
     switch (settings.name) {
       case AuthRoute.name:
-        _currentRoute = AuthRoute.name;
         return MaterialPageRoute(builder: (context) => AuthAndroid());
-
-      case FilesRoute.name:
-        _currentRoute = FilesRoute.name;
-        final FilesScreenArguments args = settings.arguments;
-        if (Platform.isIOS) {
-          return MaterialPageRoute(
-              builder: (context) => args != null
-                  ? FilesAndroid(path: args.path)
-                  : FilesAndroid());
-        } else {
-          return FadeRoute(
-            page: args != null ? FilesAndroid(path: args.path) : FilesAndroid(),
-            duration: 200,
-          );
-        }
-        break;
 
       case FileViewerRoute.name:
         final FileViewerScreenArguments args = settings.arguments;
@@ -80,14 +80,14 @@ class AppNavigation {
 
       case CommonSettingsRoute.name:
         if (Platform.isIOS) {
-          return MaterialPageRoute(builder: (context) => CommonSettingsAndroid());
+          return MaterialPageRoute(
+              builder: (context) => CommonSettingsAndroid());
         } else {
           return FadeRoute(page: CommonSettingsAndroid(), duration: 150);
         }
         break;
 
       default:
-        _currentRoute = "";
         return MaterialPageRoute(
             builder: (_) => Scaffold(
                   body: Center(

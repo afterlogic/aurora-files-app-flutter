@@ -1,5 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
+import 'package:aurorafiles/modules/files/files_android.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
@@ -58,7 +59,8 @@ class FolderWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(folder.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Text(folder.name,
+                      maxLines: 1, overflow: TextOverflow.ellipsis),
                   if (folder.published || folder.localId != null)
                     SizedBox(height: 7.0),
                   Theme(

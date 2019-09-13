@@ -201,10 +201,9 @@ class _FilesAppBarState extends State<FilesAppBar>
                       placeholder: "Search",
                       style: TextStyle(color: Colors.white),
                       suffix: IconButton(
-                        icon: Icon(Icons.search),
-                        color: Colors.white,
-                        onPressed: _search
-                      ),
+                          icon: Icon(Icons.search),
+                          color: Colors.white,
+                          onPressed: _search),
                     )
                   : ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -257,13 +256,57 @@ class _FilesAppBarState extends State<FilesAppBar>
               : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("PrivateMail Files"),
+            PopupMenuButton<String>(
+              child: Row(
+                mainAxisAlignment: Platform.isIOS ? MainAxisAlignment.center : MainAxisAlignment.start,
+                children: <Widget>[
+                  if (_filesPageState.pagePath.isNotEmpty && Platform.isIOS)
+                    SizedBox(width: 16.0),
+                  Text(_filesPageState.pagePath.split("/").last.isNotEmpty
+                      ? _filesPageState.pagePath.split("/").last
+                      : "PrivateMail Files"),
+                  if (_filesPageState.pagePath.isNotEmpty)
+                    Icon(Icons.arrow_drop_down),
+                ],
+              ),
+              enabled: _filesPageState.pagePath.isNotEmpty,
+              onSelected: (String folder) {
+                Navigator.popUntil(
+                  context,
+                  ModalRoute.withName(FilesRoute.name + folder),
+                );
+              },
+              itemBuilder: (BuildContext context) {
+                return <PopupMenuEntry<String>>[
+                ..._filesState.folderNavStack.map((String path) {
+                  if (_filesState.folderNavStack.indexOf(path) == _filesState.folderNavStack.length - 1) {
+                    return null;
+                  } else if (path.isNotEmpty) {
+                    return PopupMenuItem<String>(
+                      value: path,
+                      child: ListTile(
+                        leading: Icon(Icons.folder),
+                        title: Text(path.split("/").last),
+                      ),
+                    );
+                  } else {
+                    return PopupMenuItem<String>(
+                      value: "",
+                      child: ListTile(
+                        leading: Icon(Icons.storage),
+                        title: Text(_filesState.selectedStorage.displayName),
+                      ),
+                    );
+                  }
+                }),
+              ];
+              },
+            ),
             if (_filesState.selectedStorage.displayName.length > 0)
               SizedBox(height: 2),
             if (_filesState.selectedStorage.displayName.length > 0)
               Text(
-                _filesState.selectedStorage.displayName +
-                    _filesPageState.pagePath,
+                _filesState.selectedStorage.displayName,
                 style: TextStyle(fontSize: 10.0),
               )
           ],

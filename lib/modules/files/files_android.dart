@@ -6,6 +6,7 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -22,12 +23,10 @@ import 'dialogs/delete_confirmation_dialog.dart';
 import 'state/files_page_state.dart';
 
 class FilesAndroid extends StatefulWidget {
-  final FilesState filesState;
   final String path;
 
   FilesAndroid({
     Key key,
-    this.filesState,
     this.path = "",
   }) : super(key: key);
 
@@ -37,13 +36,21 @@ class FilesAndroid extends StatefulWidget {
 
 class _FilesAndroidState extends State<FilesAndroid>
     with TickerProviderStateMixin {
-  FilesState _filesState;
+  FilesState _filesState = AppStore.filesState;
   FilesPageState _filesPageState;
 
   @override
   void initState() {
     super.initState();
+    _filesState.folderNavStack.add(widget.path);
     _initFiles();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _filesState.folderNavStack.removeLast();
+    _filesPageState.dispose();
   }
 
   Future<void> _initFiles() async {
@@ -64,12 +71,6 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (_filesState.selectedStorage != null) {
       _getFiles(context, FilesLoadingType.filesHidden);
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _filesState.dispose();
   }
 
   Future<void> _getFiles(BuildContext context,

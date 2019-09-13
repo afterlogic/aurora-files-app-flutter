@@ -25,6 +25,8 @@ abstract class _FilesState with Store {
 
   final filesTileLeadingSize = 48.0;
 
+  final List<String> folderNavStack = new List();
+
   @observable
   List<Storage> currentStorages = new List();
 

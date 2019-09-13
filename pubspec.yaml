@@ -55,6 +55,7 @@ dependencies:
 #  just_debounce_it: ^3.0.0+1
   filesize: ^1.0.4
   intl: ^0.15.8
+  back_button_interceptor: ^4.1.1
 
 dev_dependencies:
   flutter_test:

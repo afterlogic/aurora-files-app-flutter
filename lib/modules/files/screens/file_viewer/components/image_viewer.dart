@@ -128,6 +128,10 @@ class _ImageViewerState extends State<ImageViewer> {
                     ),
                   ),
                 ),
+                if (widget.file.initVector == null)
+                Positioned.fill(
+                  child: Center(child: CircularProgressIndicator()),
+                ),
                 img,
               ],
             ),

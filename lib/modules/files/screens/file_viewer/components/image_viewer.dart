@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 class ImageViewer extends StatefulWidget {
@@ -22,25 +24,26 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  double _loadingProgress = 0.0;
+  FileViewerState _fileViewerState;
   List<int> _decryptedImage;
   bool _isError = false;
 
   @override
   void initState() {
     super.initState();
+    _fileViewerState = new FileViewerState();
+    _fileViewerState.file = widget.file;
     if (widget.file.initVector != null) _decryptImage();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _fileViewerState.dispose();
+  }
+
   Future _decryptImage() async {
-    final decryptedImage = await AppStore.filesState.onDecryptFile(
-        file: widget.file,
-        updateProgress: (int bytesLoaded) {
-          setState(() {
-            _loadingProgress = (100 / widget.file.size * bytesLoaded / 100);
-            if (_loadingProgress >= 1.0) _loadingProgress = null;
-          });
-        });
+    final decryptedImage = await _fileViewerState.onDecryptFile();
     setState(() => _decryptedImage = decryptedImage);
   }
 
@@ -63,15 +66,20 @@ class _ImageViewerState extends State<ImageViewer> {
           height: 50.0,
           width: 50.0,
           child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CircularProgressIndicator(value: _loadingProgress, backgroundColor: Colors.grey.withOpacity(0.3),),
-                SizedBox(width: 20.0),
-                Text(_loadingProgress == null
-                    ? "Decrypting file..."
-                    : "Downloading file...")
-              ],
+            child: Observer(
+              builder: (_) => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CircularProgressIndicator(
+                    value: _fileViewerState.downloadProgress,
+                    backgroundColor: Colors.grey.withOpacity(0.3),
+                  ),
+                  SizedBox(width: 20.0),
+                  Text(_fileViewerState.downloadProgress == null
+                      ? "Decrypting file..."
+                      : "Downloading file...")
+                ],
+              ),
             ),
           ),
         );
@@ -132,7 +140,10 @@ class _ImageViewerState extends State<ImageViewer> {
                   ),
                   if (widget.file.initVector == null)
                     Positioned.fill(
-                      child: Center(child: CircularProgressIndicator(backgroundColor: Colors.grey.withOpacity(0.3),)),
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        backgroundColor: Colors.grey.withOpacity(0.3),
+                      )),
                     ),
                   img,
                 ],

@@ -132,7 +132,6 @@ class FilesLocalStorage {
   Future<List<int>> decryptFile({
     @required LocalFile file,
     @required List<int> fileBytes,
-    Function(int) updateProgress,
   }) async {
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     IV iv = IV.fromBase16(file.initVector);

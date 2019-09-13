@@ -9,23 +9,6 @@ part of 'file_viewer_state.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FileViewerState on _FileViewerState, Store {
-  final _$previewTextAtom = Atom(name: '_FileViewerState.previewText');
-
-  @override
-  String get previewText {
-    _$previewTextAtom.context.enforceReadPolicy(_$previewTextAtom);
-    _$previewTextAtom.reportObserved();
-    return super.previewText;
-  }
-
-  @override
-  set previewText(String value) {
-    _$previewTextAtom.context.conditionallyRunInAction(() {
-      super.previewText = value;
-      _$previewTextAtom.reportChanged();
-    }, _$previewTextAtom, name: '${_$previewTextAtom.name}_set');
-  }
-
   final _$downloadProgressAtom =
       Atom(name: '_FileViewerState.downloadProgress');
 

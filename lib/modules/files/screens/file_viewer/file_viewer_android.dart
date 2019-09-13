@@ -6,6 +6,7 @@ import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
+import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
@@ -200,8 +201,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 file: file,
                 scaffoldState: _fileViewerScaffoldKey.currentState,
               ),
-            if (file.contentType == "text/plain" || file.contentType == "application/json")
+            if (file.contentType == "text/plain" ||
+                file.contentType == "application/json")
               TextViewer(
+                file: file,
+                scaffoldState: _fileViewerScaffoldKey.currentState,
+              ),
+            if (file.contentType == "application/pdf")
+              PdfViewer(
                 file: file,
                 scaffoldState: _fileViewerScaffoldKey.currentState,
               ),

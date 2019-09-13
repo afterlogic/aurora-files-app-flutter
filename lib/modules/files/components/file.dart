@@ -13,6 +13,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'files_item_tile.dart';
@@ -91,8 +92,23 @@ class FileWidget extends StatelessWidget {
           ),
         ),
       );
+    } else if (file.contentType.startsWith("image")) {
+      return Icon(MdiIcons.fileImageOutline,
+          size: thumbnailSize, color: Theme.of(context).disabledColor);
+    } else if (file.contentType.startsWith("text")) {
+      return Icon(MdiIcons.fileDocumentOutline,
+          size: thumbnailSize, color: Theme.of(context).disabledColor);
+    } else if (file.contentType == "application/json") {
+      return Icon(MdiIcons.fileCode,
+          size: thumbnailSize, color: Theme.of(context).disabledColor);
+    } else if (file.contentType == "application/zip") {
+      return Icon(MdiIcons.zipBoxOutline,
+          size: thumbnailSize, color: Theme.of(context).disabledColor);
+    } else if (file.contentType == "application/pdf") {
+      return Icon(MdiIcons.filePdfOutline,
+          size: thumbnailSize, color: Theme.of(context).disabledColor);
     } else {
-      return Icon(Icons.description,
+      return Icon(MdiIcons.fileOutline,
           size: thumbnailSize, color: Theme.of(context).disabledColor);
     }
   }

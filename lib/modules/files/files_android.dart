@@ -6,7 +6,6 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -130,7 +129,8 @@ class _FilesAndroidState extends State<FilesAndroid>
             padding:
                 const EdgeInsets.symmetric(vertical: 68.0, horizontal: 16.0),
             child: Center(
-              child: Text(_filesPageState.isSearchMode ? "No results" : "Empty here"),
+              child: Text(
+                  _filesPageState.isSearchMode ? "No results" : "Empty here"),
             ),
           ),
         ],
@@ -228,7 +228,8 @@ class _FilesAndroidState extends State<FilesAndroid>
             padding:
                 EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: Observer(
-              builder: (_) => _filesState.isMoveModeEnabled || _filesState.selectedStorage.type == "shared"
+              builder: (_) => _filesState.isMoveModeEnabled ||
+                      _filesState.selectedStorage.type == "shared"
                   ? SizedBox()
                   : FloatingActionButton(
                       heroTag: widget.path,

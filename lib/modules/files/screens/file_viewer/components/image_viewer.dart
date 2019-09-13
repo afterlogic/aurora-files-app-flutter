@@ -66,7 +66,7 @@ class _ImageViewerState extends State<ImageViewer> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                CircularProgressIndicator(value: _loadingProgress),
+                CircularProgressIndicator(value: _loadingProgress, backgroundColor: Colors.grey.withOpacity(0.3),),
                 SizedBox(width: 20.0),
                 Text(_loadingProgress == null
                     ? "Decrypting file..."
@@ -109,33 +109,36 @@ class _ImageViewerState extends State<ImageViewer> {
     );
 
     if (widget.file.viewUrl != null) {
-      return Hero(
-          tag: widget.file.thumbnailUrl,
-          child: SizedBox(
-            width: double.infinity,
-            child: Stack(
-              fit: StackFit.passthrough,
-              children: <Widget>[
-                placeholder,
-                Positioned.fill(
-                  child: ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: 8.0,
-                        sigmaY: 8.0,
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 30.0),
+        child: Hero(
+            tag: widget.file.thumbnailUrl,
+            child: SizedBox(
+              width: double.infinity,
+              child: Stack(
+                fit: StackFit.passthrough,
+                children: <Widget>[
+                  placeholder,
+                  Positioned.fill(
+                    child: ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(
+                          sigmaX: 8.0,
+                          sigmaY: 8.0,
+                        ),
+                        child: Container(),
                       ),
-                      child: Container(),
                     ),
                   ),
-                ),
-                if (widget.file.initVector == null)
-                Positioned.fill(
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-                img,
-              ],
-            ),
-          ));
+                  if (widget.file.initVector == null)
+                    Positioned.fill(
+                      child: Center(child: CircularProgressIndicator(backgroundColor: Colors.grey.withOpacity(0.3),)),
+                    ),
+                  img,
+                ],
+              ),
+            )),
+      );
     } else {
       return SizedBox();
     }

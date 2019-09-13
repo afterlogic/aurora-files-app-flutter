@@ -247,7 +247,9 @@ abstract class _FilesState with Store {
   Future<List<int>> onDecryptFile({
     @required LocalFile file,
     @required Function(int) updateProgress,
-  }) {
-    return _filesLocal.decryptFile(file, updateProgress);
+  }) async {
+    final fileBytes = await _filesApi.downloadFileForPreview(file.downloadUrl);
+    return _filesLocal.decryptFile(
+        file: file, fileBytes: fileBytes, updateProgress: updateProgress);
   }
 }

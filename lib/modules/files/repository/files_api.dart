@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
@@ -64,6 +66,26 @@ class FilesApi {
     } else {
       throw CustomException(getErrMsg(res));
     }
+  }
+
+  Future<List<int>> downloadFileForPreview(url,
+      {Function(int) updateProgress}) async {
+    HttpClient client = new HttpClient();
+    final HttpClientRequest request =
+        await client.getUrl(Uri.parse(hostName + url));
+
+    request.headers
+        .add("Authorization", "Bearer ${AppStore.authState.authToken}");
+    final HttpClientResponse response = await request.close();
+
+    List<int> fileBytes = new List();
+
+    await for (List<int> contents in response) {
+      fileBytes = [...fileBytes, ...contents];
+      updateProgress(Uint8List.fromList(fileBytes).lengthInBytes);
+    }
+
+    return fileBytes;
   }
 
   Future<String> renameFile({

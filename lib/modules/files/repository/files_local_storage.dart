@@ -129,35 +129,24 @@ class FilesLocalStorage {
     return [createdFile, iv.base16];
   }
 
-  Future<List<int>> decryptFile(
-      LocalFile file, Function(int) updateProgress) async {
-    HttpClient client = new HttpClient();
-    final HttpClientRequest request =
-        await client.getUrl(Uri.parse(hostName + file.downloadUrl));
-
-    request.headers
-        .add("Authorization", "Bearer ${AppStore.authState.authToken}");
-    HttpClientResponse response = await request.close();
-
+  Future<List<int>> decryptFile({
+    @required LocalFile file,
+    @required List<int> fileBytes,
+    Function(int) updateProgress,
+  }) async {
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     IV iv = IV.fromBase16(file.initVector);
-    List<int> encryptedFileBytes = new List();
+    List<int> encryptedFileBytes = fileBytes;
     List<int> decryptedFileBytes = new List();
-
-    print(
-        "${DateFormat('H:m:s:ms').format(DateTime.now())} VO: downloading file...");
-    await for (List<int> contents in response) {
-      encryptedFileBytes = [...encryptedFileBytes, ...contents];
-      updateProgress(Uint8List.fromList(encryptedFileBytes).lengthInBytes);
-    }
 
     final chunkedList = _chunk(encryptedFileBytes);
     print(
         "${DateFormat('H:m:s:ms').format(DateTime.now())} VO: decrypting file...");
     for (final List<int> chunk in chunkedList) {
       final padding =
-      chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
-      final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding));
+          chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
+      final encrypter =
+          Encrypter(AES(key, mode: AESMode.cbc, padding: padding));
       final encrypted = Encrypted(Uint8List.fromList(chunk));
       final args = {"encrypter": encrypter, "encrypted": encrypted, "iv": iv};
       final result = await compute(_decrypt, args);

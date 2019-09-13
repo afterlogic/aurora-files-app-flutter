@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 
 import 'components/image_viewer.dart';
 import 'components/info_list_tile.dart';
+import 'components/text_viewer.dart';
 
 class FileViewerAndroid extends StatefulWidget {
   final LocalFile file;
@@ -45,6 +46,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   void initState() {
     super.initState();
     file = widget.file;
+    print("VO: file.type: ${file.contentType}");
   }
 
   void _updateFile(String fileId) {
@@ -198,7 +200,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 file: file,
                 scaffoldState: _fileViewerScaffoldKey.currentState,
               ),
-            if (file.contentType.startsWith("image")) SizedBox(height: 30.0),
+            if (file.contentType == "text/plain" || file.contentType == "application/json")
+              TextViewer(
+                file: file,
+                scaffoldState: _fileViewerScaffoldKey.currentState,
+              ),
             InfoListTile(
               label: "Filename",
               content: file.name,
@@ -232,7 +238,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               updateFile: _updateFile,
               scaffoldKey: _fileViewerScaffoldKey,
             ),
-            SizedBox(height: 16.0 + MediaQuery.of(context).padding.bottom,)
+            SizedBox(
+              height: 16.0 + MediaQuery.of(context).padding.bottom,
+            )
           ],
         ),
       ),

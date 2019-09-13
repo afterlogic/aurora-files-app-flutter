@@ -7,7 +7,7 @@ class FadeRoute extends PageRouteBuilder {
 
   FadeRoute({this.settings, this.duration = 300, @required this.page})
       : super(
-    settings: settings,
+            settings: settings,
             transitionDuration: Duration(milliseconds: duration),
             pageBuilder: (
               BuildContext context,

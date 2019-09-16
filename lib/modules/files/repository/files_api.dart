@@ -82,7 +82,9 @@ class FilesApi {
 
     await for (List<int> contents in response) {
       fileBytes = [...fileBytes, ...contents];
-      updateProgress(Uint8List.fromList(fileBytes).lengthInBytes);
+      if (updateProgress != null) {
+        updateProgress(Uint8List.fromList(fileBytes).lengthInBytes);
+      }
     }
 
     return fileBytes;

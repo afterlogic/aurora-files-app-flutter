@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,7 @@ abstract class _SettingsState with Store {
   final _settingsLocal = SettingsLocalStorage();
 
   @observable
-  bool isDarkTheme = true;
+  bool isDarkTheme = !Platform.isIOS;
 
   @observable
   bool isParanoidEncryptionEnabled = true;

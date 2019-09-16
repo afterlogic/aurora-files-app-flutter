@@ -243,4 +243,11 @@ abstract class _FilesState with Store {
       onError(err.toString());
     }
   }
+
+  Future<void> onShareFile(LocalFile file,
+      {Function(int) updateProgress}) async {
+    final fileBytes = await _filesApi.downloadFileForPreview(file.downloadUrl,
+        updateProgress: updateProgress);
+    return _filesLocal.shareFile(fileBytes, file);
+  }
 }

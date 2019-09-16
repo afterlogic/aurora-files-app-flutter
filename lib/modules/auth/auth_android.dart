@@ -28,15 +28,15 @@ class _AuthAndroidState extends State<AuthAndroid> {
     if (Platform.isIOS) {
       return [
         CupertinoTextField(
-          cursorColor: Theme
-              .of(context)
-              .accentColor,
+          cursorColor: Theme.of(context).accentColor,
           controller: _authState.emailCtrl,
           keyboardType: TextInputType.emailAddress,
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white38))),
+          decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: Colors.white38))),
 //          validator: (value) => validateInput(value,
 //              [ValidationTypes.empty, ValidationTypes.email]),
           placeholder: "Email",
+          autocorrect: false,
           prefix: Opacity(
             opacity: 0.6,
             child: Padding(
@@ -47,20 +47,22 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
         SizedBox(height: 20),
         CupertinoTextField(
-          cursorColor: Theme
-              .of(context)
-              .accentColor,
+          cursorColor: Theme.of(context).accentColor,
           controller: _authState.passwordCtrl,
 //          validator: (value) =>
 //              validateInput(value, [ValidationTypes.empty]),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white38))),
-          obscureText: true,
+          decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: Colors.white38))),
           placeholder: "Password",
+          obscureText: true,
+          autocorrect: false,
           prefix: Opacity(
             opacity: 0.6,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-              child: Icon(Icons.lock,),
+              child: Icon(
+                Icons.lock,
+              ),
             ),
           ),
         ),
@@ -68,14 +70,11 @@ class _AuthAndroidState extends State<AuthAndroid> {
     } else {
       return [
         TextFormField(
-          cursorColor: Theme
-              .of(context)
-              .accentColor,
+          cursorColor: Theme.of(context).accentColor,
           controller: _authState.emailCtrl,
           keyboardType: TextInputType.emailAddress,
-          validator: (value) =>
-              validateInput(
-                  value, [ValidationTypes.empty, ValidationTypes.email]),
+          validator: (value) => validateInput(
+              value, [ValidationTypes.empty, ValidationTypes.email]),
           decoration: InputDecoration(
             hintText: "Email",
             icon: Icon(Icons.email),
@@ -83,9 +82,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
         SizedBox(height: 20),
         TextFormField(
-          cursorColor: Theme
-              .of(context)
-              .accentColor,
+          cursorColor: Theme.of(context).accentColor,
           controller: _authState.passwordCtrl,
           validator: (value) => validateInput(value, [ValidationTypes.empty]),
           obscureText: true,
@@ -110,59 +107,47 @@ class _AuthAndroidState extends State<AuthAndroid> {
               padding: EdgeInsets.all(16.0),
               child: SizedBox(
                 // height - padding
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height - 32.0,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
+                height: MediaQuery.of(context).size.height - 32.0,
+                width: MediaQuery.of(context).size.width,
                 child: Form(
                   key: AuthAndroid._authFormKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("Login", style: Theme
-                          .of(context)
-                          .textTheme
-                          .display1.copyWith(color: Colors.white70)),
+                      Text("Login",
+                          style: Theme.of(context)
+                              .textTheme
+                              .display1
+                              .copyWith(color: Colors.white70)),
                       SizedBox(height: 23.0),
                       ..._buildTextFields(),
                       SizedBox(height: 30),
                       SizedBox(
                         width: double.infinity,
                         child: Observer(
-                          builder: (BuildContext context) =>
-                              AppButton(
-                                text: "Login",
-                                buttonColor: Theme
-                                    .of(context)
-                                    .accentColor,
-                                textColor: Colors.white,
-                                isLoading: _authState.isLoggingIn,
-                                onPressed: () =>
-                                    _authState.onLogin(
-                                      isFormValid: AuthAndroid._authFormKey
-                                          .currentState
-                                          .validate(),
-                                      onSuccess: () async {
-                                        await AppStore.settingsState
-                                            .getUserEncryptionKeys();
-                                        Navigator.pushReplacementNamed(
-                                            context, FilesRoute.name,
-                                            arguments: FilesScreenArguments(
-                                                path: ""));
-                                      },
-                                      onError: (String err) =>
-                                          showSnack(
-                                            context: context,
-                                            scaffoldState: Scaffold.of(context),
-                                            msg: err,
-                                          ),
-                                    ),
+                          builder: (BuildContext context) => AppButton(
+                            text: "Login",
+                            buttonColor: Theme.of(context).accentColor,
+                            textColor: Colors.white,
+                            isLoading: _authState.isLoggingIn,
+                            onPressed: () => _authState.onLogin(
+                              isFormValid: AuthAndroid._authFormKey.currentState
+                                  .validate(),
+                              onSuccess: () async {
+                                await AppStore.settingsState
+                                    .getUserEncryptionKeys();
+                                Navigator.pushReplacementNamed(
+                                    context, FilesRoute.name,
+                                    arguments: FilesScreenArguments(path: ""));
+                              },
+                              onError: (String err) => showSnack(
+                                context: context,
+                                scaffoldState: Scaffold.of(context),
+                                msg: err,
                               ),
+                            ),
+                          ),
                         ),
                       ),
                     ],

@@ -6,6 +6,7 @@ import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
+import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -175,6 +176,23 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               tooltip: "Move/Copy",
               onPressed: _moveFile,
             ),
+            IconButton(
+                icon:
+                    Icon(Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+                tooltip: "Share",
+                onPressed: () => Platform.isIOS
+                    ? showCupertinoDialog(
+                        context: context,
+                        builder: (_) => ShareDialog(
+                              filesState: widget.filesState,
+                              file: file,
+                            ))
+                    : showDialog(
+                        context: context,
+                        builder: (_) => ShareDialog(
+                              filesState: widget.filesState,
+                              file: file,
+                            ))),
             if (file.downloadUrl != null && !Platform.isIOS)
               IconButton(
                 icon: Icon(Icons.file_download),

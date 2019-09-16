@@ -1,7 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -37,10 +36,11 @@ class _PdfViewerState extends State<PdfViewer> {
       padding: const EdgeInsets.only(bottom: 30.0),
       child: AppButton(
         text: "Download and open PDF",
-        onPressed: () => _fileViewerState.launchURL(
-          onError: (String err) => showSnack(
-              context: context, scaffoldState: widget.scaffoldState, msg: err),
-        ),
+        onPressed: null,
+//        onPressed: () => _fileViewerState.launchURL(
+//          onError: (String err) => showSnack(
+//              context: context, scaffoldState: widget.scaffoldState, msg: err),
+//        ),
       ),
     );
   }

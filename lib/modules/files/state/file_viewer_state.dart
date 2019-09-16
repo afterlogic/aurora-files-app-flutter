@@ -1,12 +1,9 @@
 import 'dart:convert';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
-import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:mobx/mobx.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 part 'file_viewer_state.g.dart';
 
@@ -49,14 +46,14 @@ abstract class _FileViewerState with Store {
     return _filesLocal.decryptFile(file: file, fileBytes: fileBytes);
   }
 
-  void launchURL({Function(String) onError}) async {
-    String url = "${AppStore.authState.hostName}/${file.downloadUrl}/view";
-    if (url.startsWith("http://")) url.replaceFirst("http", "https");
-
-    if (await canLaunch(url)) {
-      await launch(url, headers: getHeader());
-    } else {
-      onError("Could not launch $url");
-    }
-  }
+//  void launchURL({Function(String) onError}) async {
+//    String url = "${AppStore.authState.hostName}/${file.downloadUrl}/view";
+//    if (url.startsWith("http://")) url.replaceFirst("http", "https");
+//
+//    if (await canLaunch(url)) {
+//      await launch(url, headers: getHeader());
+//    } else {
+//      onError("Could not launch $url");
+//    }
+//  }
 }

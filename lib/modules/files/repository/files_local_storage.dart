@@ -19,6 +19,7 @@ import 'package:flutter_uploader/flutter_uploader.dart';
 import 'package:intl/intl.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_extend/share_extend.dart';
 
 class FilesLocalStorage {
   final String authToken = AppStore.authState.authToken;
@@ -86,6 +87,23 @@ class FilesLocalStorage {
       openFileFromNotification: true,
     );
     return dir.path;
+  }
+
+  Future<void> shareFile(List<int> fileBytes, LocalFile file) async {
+    final Directory dir = await getApplicationDocumentsDirectory();
+    File tempFileForShare = new File("${dir.path}/temp/${file.name}");
+    if (!await tempFileForShare.exists()) {
+      await tempFileForShare.create(recursive: true);
+      await tempFileForShare.writeAsBytes(fileBytes);
+    }
+
+    String fileType;
+    // TODO add check for video
+    if (file.contentType.startsWith("image"))
+      fileType = "image";
+    else
+      fileType = "file";
+    return ShareExtend.share(tempFileForShare.path, fileType);
   }
 
   void getDownloadStatus(Function onSuccess) {

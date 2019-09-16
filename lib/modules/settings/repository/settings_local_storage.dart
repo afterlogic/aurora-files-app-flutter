@@ -8,6 +8,7 @@ import 'package:encrypt/encrypt.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsLocalStorage {
@@ -33,6 +34,10 @@ class SettingsLocalStorage {
     final exportedTextFile = new File(filePath);
     await exportedTextFile.create(recursive: true);
     await exportedTextFile.writeAsString(encryptionKey);
+
+    if (Platform.isIOS) {
+      ShareExtend.share(filePath, "file");
+    }
     return filePath;
   }
 

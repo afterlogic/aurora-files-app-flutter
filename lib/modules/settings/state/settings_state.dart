@@ -103,7 +103,7 @@ abstract class _SettingsState with Store {
       if (exportedFileDir == null) {
         throw CustomException("Unresolved directory");
       } else {
-        onSuccess(exportedFileDir);
+        onSuccess(Platform.isIOS ? null : exportedFileDir);
       }
     } catch (err) {
       onError(err.toString());

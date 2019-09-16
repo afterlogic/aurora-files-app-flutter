@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -12,11 +11,11 @@ import 'package:moor_flutter/moor_flutter.dart';
 class ImageViewer extends StatefulWidget {
   const ImageViewer({
     Key key,
-    @required this.file,
+    @required this.fileViewerState,
     @required this.scaffoldState,
   }) : super(key: key);
 
-  final LocalFile file;
+  final FileViewerState fileViewerState;
   final ScaffoldState scaffoldState;
 
   @override
@@ -31,15 +30,12 @@ class _ImageViewerState extends State<ImageViewer> {
   @override
   void initState() {
     super.initState();
-    _fileViewerState = new FileViewerState();
-    _fileViewerState.file = widget.file;
-    if (widget.file.initVector != null) _decryptImage();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _fileViewerState.dispose();
+    _fileViewerState = widget.fileViewerState;
+    if (_fileViewerState.file.initVector != null) {
+      _decryptImage();
+    } else {
+      _fileViewerState.onGetPreviewImage();
+    }
   }
 
   Future _decryptImage() async {
@@ -49,7 +45,7 @@ class _ImageViewerState extends State<ImageViewer> {
 
   Widget _buildImage() {
     // if the image is encrypted
-    if (widget.file.initVector != null) {
+    if (_fileViewerState.file.initVector != null) {
       if (_isError) {
         return Row(
           children: <Widget>[
@@ -97,30 +93,44 @@ class _ImageViewerState extends State<ImageViewer> {
         );
       }
     } else {
-      return CachedNetworkImage(
-        imageUrl: '${AppStore.authState.hostName}/${widget.file.viewUrl}',
-        fit: BoxFit.cover,
-        fadeInDuration: Duration(milliseconds: 150),
-        httpHeaders: getHeader(),
-      );
+      if (_fileViewerState.downloadProgress < 1.0) {
+        return Positioned.fill(
+          child: Center(
+              child: CircularProgressIndicator(
+                value: _fileViewerState.downloadProgress,
+                backgroundColor: Colors.grey.withOpacity(0.3),
+              )),
+        );
+      } else {
+        final image = Image.memory(
+          Uint8List.fromList(_fileViewerState.fileBytes),
+          fit: BoxFit.cover,
+        );
+        precacheImage(image.image, context, onError: (e, stackTrace) {
+          setState(() => _isError = true);
+        });
+        return ConstrainedBox(
+          constraints: BoxConstraints(minHeight: 50.0),
+          child: image,
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final img = _buildImage();
-
     final placeholder = CachedNetworkImage(
-      imageUrl: '${AppStore.authState.hostName}/${widget.file.thumbnailUrl}',
+      imageUrl:
+          '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
       fit: BoxFit.cover,
       httpHeaders: getHeader(),
     );
 
-    if (widget.file.viewUrl != null) {
+    if (_fileViewerState.file.viewUrl != null) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 30.0),
         child: Hero(
-            tag: widget.file.thumbnailUrl,
+            tag: _fileViewerState.file.thumbnailUrl,
             child: SizedBox(
               width: double.infinity,
               child: Stack(
@@ -138,14 +148,7 @@ class _ImageViewerState extends State<ImageViewer> {
                       ),
                     ),
                   ),
-                  if (widget.file.initVector == null)
-                    Positioned.fill(
-                      child: Center(
-                          child: CircularProgressIndicator(
-                        backgroundColor: Colors.grey.withOpacity(0.3),
-                      )),
-                    ),
-                  img,
+                  Observer(builder: (_) => _buildImage()),
                 ],
               ),
             )),

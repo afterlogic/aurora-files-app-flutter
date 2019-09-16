@@ -11,6 +11,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import 'delete_confirmation_dialog.dart';
 import 'rename_dialog_android.dart';
+import 'share_dialog.dart';
 
 class FileOptionsBottomSheet extends StatefulWidget {
   final LocalFile file;
@@ -30,6 +31,53 @@ class FileOptionsBottomSheet extends StatefulWidget {
 
 class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
+  void _shareFile() {
+    Navigator.pop(context);
+    Platform.isIOS
+        ? showCupertinoDialog(
+            context: context,
+            builder: (_) => ShareDialog(
+                  filesState: widget.filesState,
+                  file: widget.file,
+                ))
+        : showDialog(
+            context: context,
+            builder: (_) => ShareDialog(
+                  filesState: widget.filesState,
+                  file: widget.file,
+                ));
+  }
+
+  void _downloadFile() {
+    Navigator.pop(context);
+    widget.filesState.onDownloadFile(
+      url: widget.file.downloadUrl,
+      fileName: widget.file.name,
+      onStart: () => showSnack(
+        context: context,
+        scaffoldState: widget.filesPageState.scaffoldKey.currentState,
+        msg: "Downloading ${widget.file.name}",
+        isError: false,
+      ),
+      onSuccess: (String path) => showSnack(
+          context: context,
+          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
+          msg: "${widget.file.name} downloaded successfully into: $path",
+          isError: false,
+          duration: Duration(minutes: 10),
+          action: SnackBarAction(
+            label: "OK",
+            onPressed: widget
+                .filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
+          )),
+      onError: (String err) => showSnack(
+        context: context,
+        scaffoldState: widget.filesPageState.scaffoldKey.currentState,
+        msg: err,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -47,7 +95,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         LimitedBox(
           maxHeight: 260.0,
           child: ListView(
-            padding: EdgeInsets.only(top: 0.0, bottom: MediaQuery.of(context).padding.bottom),
+            padding: EdgeInsets.only(
+                top: 0.0, bottom: MediaQuery.of(context).padding.bottom),
             children: <Widget>[
               PublicLinkSwitch(
                 file: widget.file,
@@ -69,15 +118,16 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               ),
               if (!widget.file.isFolder)
                 ListTile(
-                  leading: Icon(Icons.share),
+                  leading: Icon(
+                      Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
                   title: Text("Share"),
-                  onTap: () => {},
+                  onTap: _shareFile,
                 ),
               if (!Platform.isIOS && !widget.file.isFolder)
                 ListTile(
                   leading: Icon(Icons.file_download),
                   title: Text("Download"),
-                  onTap: () {},
+                  onTap: _downloadFile,
                 ),
               ListTile(
                 leading: Icon(Icons.edit),

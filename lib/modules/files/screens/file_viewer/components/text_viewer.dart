@@ -1,4 +1,3 @@
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -6,19 +5,18 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 class TextViewer extends StatefulWidget {
   const TextViewer({
     Key key,
-    @required this.file,
     @required this.scaffoldState,
+    @required this.fileViewerState,
   }) : super(key: key);
 
-  final LocalFile file;
   final ScaffoldState scaffoldState;
+  final FileViewerState fileViewerState;
 
   @override
   _TextViewerState createState() => _TextViewerState();
 }
 
 class _TextViewerState extends State<TextViewer> {
-  final _fileViewerState = new FileViewerState();
   String previewText;
 
   @override
@@ -27,15 +25,8 @@ class _TextViewerState extends State<TextViewer> {
     _initTextViewer();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _fileViewerState.dispose();
-  }
-
   Future _initTextViewer() async {
-    _fileViewerState.file = widget.file;
-    final text = await _fileViewerState.onGetPreviewText();
+    final text = await widget.fileViewerState.onGetPreviewText();
     setState(() => previewText = text);
   }
 
@@ -47,7 +38,7 @@ class _TextViewerState extends State<TextViewer> {
           ? Observer(
               builder: (_) => Center(
                       child: CircularProgressIndicator(
-                    value: _fileViewerState.downloadProgress,
+                    value: widget.fileViewerState.downloadProgress,
                     backgroundColor: Colors.grey.withOpacity(0.3),
                   )))
           : ConstrainedBox(
@@ -73,10 +64,10 @@ class _TextViewerState extends State<TextViewer> {
                       child: SelectableText(
                     previewText,
                     style: TextStyle(
-                        fontFamily:
-                            widget.file.contentType == "application/json"
-                                ? "monospace"
-                                : null),
+                        fontFamily: widget.fileViewerState.file.contentType ==
+                                "application/json"
+                            ? "monospace"
+                            : null),
                   )),
                 ),
               ),

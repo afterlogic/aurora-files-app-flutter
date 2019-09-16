@@ -18,9 +18,11 @@ abstract class _FileViewerState with Store {
   @observable
   double downloadProgress;
 
-  Future<List<int>> _getPreviewFile() {
+  List<int> fileBytes;
+
+  Future<void> _getPreviewFile() async {
     downloadProgress = 0.0;
-    return _filesApi.downloadFileForPreview(
+    fileBytes = await _filesApi.downloadFileForPreview(
       file.downloadUrl,
       updateProgress: (int bytesLoaded) {
         downloadProgress = 100 / file.size * bytesLoaded / 100;
@@ -31,8 +33,12 @@ abstract class _FileViewerState with Store {
     );
   }
 
+  Future<void> onGetPreviewImage() async {
+    return _getPreviewFile();
+  }
+
   Future<String> onGetPreviewText() async {
-    final fileBytes = await _getPreviewFile();
+    await _getPreviewFile();
 
     String previewText;
     // to give some time for progress indicator to show filled state
@@ -42,7 +48,7 @@ abstract class _FileViewerState with Store {
   }
 
   Future<List<int>> onDecryptFile() async {
-    final fileBytes = await _getPreviewFile();
+    await _getPreviewFile();
     return _filesLocal.decryptFile(file: file, fileBytes: fileBytes);
   }
 

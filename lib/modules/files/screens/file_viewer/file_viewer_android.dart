@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dar
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
+import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
@@ -42,13 +43,22 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   final GlobalKey<ScaffoldState> _fileViewerScaffoldKey =
       GlobalKey<ScaffoldState>();
 
+  final _fileViewerState = FileViewerState();
+
   LocalFile file;
 
   @override
   void initState() {
     super.initState();
     file = widget.file;
+    _fileViewerState.file = widget.file;
     print("VO: file.type: ${file.contentType}");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _fileViewerState.dispose();
   }
 
   void _updateFile(String fileId) {
@@ -63,6 +73,20 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     widget.filesState.updateFilesCb = widget.filesPageState.onGetFiles;
     widget.filesState.enableMoveMode(filesToMove: [file]);
     Navigator.pop(context);
+  }
+
+  void _shareFile() {
+    if (_fileViewerState.fileBytes != null) {
+      widget.filesState
+          .onShareFile(widget.file, fileBytes: _fileViewerState.fileBytes);
+    } else {
+      showSnack(
+        context: context,
+        scaffoldState: _fileViewerScaffoldKey.currentState,
+        msg: "Please wait until the file finishes loading",
+        isError: false,
+      );
+    }
   }
 
   void _renameFile() async {
@@ -177,22 +201,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               onPressed: _moveFile,
             ),
             IconButton(
-                icon:
-                    Icon(Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
-                tooltip: "Share",
-                onPressed: () => Platform.isIOS
-                    ? showCupertinoDialog(
-                        context: context,
-                        builder: (_) => ShareDialog(
-                              filesState: widget.filesState,
-                              file: file,
-                            ))
-                    : showDialog(
-                        context: context,
-                        builder: (_) => ShareDialog(
-                              filesState: widget.filesState,
-                              file: file,
-                            ))),
+              icon: Icon(Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+              tooltip: "Share",
+              onPressed: _shareFile,
+            ),
             if (file.downloadUrl != null && !Platform.isIOS)
               IconButton(
                 icon: Icon(Icons.file_download),
@@ -216,13 +228,13 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           children: <Widget>[
             if (file.contentType.startsWith("image"))
               ImageViewer(
-                file: file,
+                fileViewerState: _fileViewerState,
                 scaffoldState: _fileViewerScaffoldKey.currentState,
               ),
             if (file.contentType == "text/plain" ||
                 file.contentType == "application/json")
               TextViewer(
-                file: file,
+                fileViewerState: _fileViewerState,
                 scaffoldState: _fileViewerScaffoldKey.currentState,
               ),
             if (file.contentType == "application/pdf")

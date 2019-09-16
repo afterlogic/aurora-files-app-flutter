@@ -95,10 +95,14 @@ class FileWidget extends StatelessWidget {
     } else if (file.contentType.startsWith("image")) {
       return Icon(MdiIcons.fileImageOutline,
           size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else if (file.contentType.startsWith("text")) {
+    } else if (file.contentType == "text/plain") {
       return Icon(MdiIcons.fileDocumentOutline,
           size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else if (file.contentType == "application/json") {
+    } else if (file.contentType == "text/html" ||
+        file.contentType == "application/json" ||
+        file.contentType == "application/javascript" ||
+        file.contentType == "application/xml" ||
+        file.contentType == "application/json") {
       return Icon(MdiIcons.fileCode,
           size: thumbnailSize, color: Theme.of(context).disabledColor);
     } else if (file.contentType == "application/zip") {

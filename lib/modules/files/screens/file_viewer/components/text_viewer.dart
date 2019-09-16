@@ -1,3 +1,4 @@
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -18,14 +19,17 @@ class TextViewer extends StatefulWidget {
 
 class _TextViewerState extends State<TextViewer> {
   String previewText;
+  LocalFile file;
 
   @override
   void initState() {
     super.initState();
     _initTextViewer();
+    print("VO: file.contentType: ${file.contentType}");
   }
 
   Future _initTextViewer() async {
+    file = widget.fileViewerState.file;
     final text = await widget.fileViewerState.onGetPreviewText();
     setState(() => previewText = text);
   }
@@ -64,10 +68,13 @@ class _TextViewerState extends State<TextViewer> {
                       child: SelectableText(
                     previewText,
                     style: TextStyle(
-                        fontFamily: widget.fileViewerState.file.contentType ==
-                                "application/json"
+                        fontFamily: file.contentType == "text/html" ||
+                                file.contentType == "application/json" ||
+                                file.contentType == "application/javascript" ||
+                                file.contentType == "application/xml" ||
+                                file.contentType == "application/json"
                             ? "monospace"
-                            : null),
+                            : "sans-serif"),
                   )),
                 ),
               ),

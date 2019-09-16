@@ -70,6 +70,9 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (_filesState.selectedStorage != null) {
       _getFiles(context, FilesLoadingType.filesHidden);
     }
+    if (!_filesState.isMoveModeEnabled) {
+      _filesState.updateFilesCb = _filesPageState.onGetFiles;
+    }
   }
 
   Future<void> _getFiles(BuildContext context,
@@ -103,6 +106,47 @@ class _FilesAndroidState extends State<FilesAndroid>
         storage: _filesState.selectedStorage,
         onSuccess: () {
           _filesPageState.quitSelectMode();
+          _getFiles(context);
+        },
+        onError: (String err) => showSnack(
+          context: context,
+          scaffoldState: _filesPageState.scaffoldKey.currentState,
+          msg: err,
+        ),
+      );
+    }
+  }
+
+  void _uploadFile() {
+    if (_filesState.selectedStorage.type == "encrypted" &&
+        AppStore.settingsState.currentKey == null) {
+      showSnack(
+        context: context,
+        scaffoldState: _filesPageState.scaffoldKey.currentState,
+        msg: "You need to set an encryption key before uploading files.",
+      );
+    } else {
+      _filesState.onUploadFile(
+        path: widget.path,
+        onEncryptionStart: () => showSnack(
+          context: context,
+          scaffoldState: _filesPageState.scaffoldKey.currentState,
+          msg: "Encrypting file...",
+          isError: false,
+        ),
+        onUploadStart: () => showSnack(
+          context: context,
+          scaffoldState: _filesPageState.scaffoldKey.currentState,
+          msg: "Uploading file...",
+          isError: false,
+        ),
+        onSuccess: () {
+          showSnack(
+            context: context,
+            scaffoldState: _filesPageState.scaffoldKey.currentState,
+            msg: "File successfully uploaded",
+            isError: false,
+          );
           _getFiles(context);
         },
         onError: (String err) => showSnack(
@@ -229,6 +273,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                 EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: Observer(
               builder: (_) => _filesState.isMoveModeEnabled ||
+                      _filesPageState.isSearchMode ||
                       _filesState.selectedStorage.type == "shared"
                   ? SizedBox()
                   : FloatingActionButton(
@@ -257,43 +302,8 @@ class _FilesAndroidState extends State<FilesAndroid>
                                     ),
                             ),
                             MiniFab(
-                              icon: Icon(MdiIcons.filePlus),
-                              onPressed: () {
-                                _filesState.onUploadFile(
-                                  path: widget.path,
-                                  onEncryptionStart: () => showSnack(
-                                    context: context,
-                                    scaffoldState: _filesPageState
-                                        .scaffoldKey.currentState,
-                                    msg: "Encrypting file...",
-                                    isError: false,
-                                  ),
-                                  onUploadStart: () => showSnack(
-                                    context: context,
-                                    scaffoldState: _filesPageState
-                                        .scaffoldKey.currentState,
-                                    msg: "Uploading file...",
-                                    isError: false,
-                                  ),
-                                  onSuccess: () {
-                                    showSnack(
-                                      context: context,
-                                      scaffoldState: _filesPageState
-                                          .scaffoldKey.currentState,
-                                      msg: "File successfully uploaded",
-                                      isError: false,
-                                    );
-                                    _getFiles(context);
-                                  },
-                                  onError: (String err) => showSnack(
-                                    context: context,
-                                    scaffoldState: _filesPageState
-                                        .scaffoldKey.currentState,
-                                    msg: err,
-                                  ),
-                                );
-                              },
-                            ),
+                                icon: Icon(MdiIcons.filePlus),
+                                onPressed: _uploadFile),
                           ])),
                     ),
             ),

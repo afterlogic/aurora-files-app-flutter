@@ -183,8 +183,15 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
               SwitchListTile.adaptive(
                 value: _settingsState.isParanoidEncryptionEnabled,
                 activeColor: Theme.of(context).accentColor,
-                onChanged: (bool v) =>
-                    _settingsState.isParanoidEncryptionEnabled = v,
+                onChanged: (bool v) {
+                  _settingsState.isParanoidEncryptionEnabled = v;
+                  final filesState = AppStore.filesState;
+                  if (filesState.selectedStorage.type == "encrypted") {
+                    filesState.selectedStorage =
+                        filesState.currentStorages[0];
+                        filesState.updateFilesCb();
+                  }
+                },
                 title: Text("Enable Paranoid Encryption"),
               ),
               Padding(

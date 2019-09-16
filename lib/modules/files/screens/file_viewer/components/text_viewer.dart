@@ -69,8 +69,15 @@ class _TextViewerState extends State<TextViewer> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child:
-                      SingleChildScrollView(child: SelectableText(previewText)),
+                  child: SingleChildScrollView(
+                      child: SelectableText(
+                    previewText,
+                    style: TextStyle(
+                        fontFamily:
+                            widget.file.contentType == "application/json"
+                                ? "monospace"
+                                : null),
+                  )),
                 ),
               ),
             ),

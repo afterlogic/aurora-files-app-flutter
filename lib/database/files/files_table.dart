@@ -18,6 +18,8 @@ class Files extends Table {
 
   BoolColumn get isFolder => boolean()();
 
+  BoolColumn get isOpenable => boolean()();
+
   BoolColumn get isLink => boolean()();
 
   TextColumn get linkType => text()();

@@ -164,7 +164,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         child: Scaffold(
           body: MainGradient(
             child: SizedBox(
-              height: mq.size.height - mq.viewInsets.bottom - mq.padding.bottom,
+              height: mq.size.height - mq.viewInsets.bottom,
               width: mq.size.width,
               child: Center(
                 child: SingleChildScrollView(

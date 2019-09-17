@@ -148,6 +148,8 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
     name: rawFile["Name"],
     size: rawFile["Size"],
     isFolder: rawFile["IsFolder"],
+    isOpenable:
+        rawFile["Actions"] != null && rawFile["Actions"]["list"] != null,
     isLink: rawFile["IsLink"],
     linkType: rawFile["LinkType"],
     linkUrl: rawFile["LinkUrl"],

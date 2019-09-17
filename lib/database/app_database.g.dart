@@ -16,6 +16,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   final String name;
   final int size;
   final bool isFolder;
+  final bool isOpenable;
   final bool isLink;
   final String linkType;
   final String linkUrl;
@@ -41,6 +42,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       @required this.name,
       @required this.size,
       @required this.isFolder,
+      @required this.isOpenable,
       @required this.isLink,
       @required this.linkType,
       @required this.linkUrl,
@@ -75,6 +77,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       size: intType.mapFromDatabaseResponse(data['${effectivePrefix}size']),
       isFolder:
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_folder']),
+      isOpenable: boolType
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_openable']),
       isLink:
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_link']),
       linkType: stringType
@@ -119,6 +123,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       name: serializer.fromJson<String>(json['name']),
       size: serializer.fromJson<int>(json['size']),
       isFolder: serializer.fromJson<bool>(json['isFolder']),
+      isOpenable: serializer.fromJson<bool>(json['isOpenable']),
       isLink: serializer.fromJson<bool>(json['isLink']),
       linkType: serializer.fromJson<String>(json['linkType']),
       linkUrl: serializer.fromJson<String>(json['linkUrl']),
@@ -149,6 +154,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       'name': serializer.toJson<String>(name),
       'size': serializer.toJson<int>(size),
       'isFolder': serializer.toJson<bool>(isFolder),
+      'isOpenable': serializer.toJson<bool>(isOpenable),
       'isLink': serializer.toJson<bool>(isLink),
       'linkType': serializer.toJson<String>(linkType),
       'linkUrl': serializer.toJson<String>(linkUrl),
@@ -185,6 +191,9 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       isFolder: isFolder == null && nullToAbsent
           ? const Value.absent()
           : Value(isFolder),
+      isOpenable: isOpenable == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isOpenable),
       isLink:
           isLink == null && nullToAbsent ? const Value.absent() : Value(isLink),
       linkType: linkType == null && nullToAbsent
@@ -241,6 +250,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           String name,
           int size,
           bool isFolder,
+          bool isOpenable,
           bool isLink,
           String linkType,
           String linkUrl,
@@ -266,6 +276,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
         name: name ?? this.name,
         size: size ?? this.size,
         isFolder: isFolder ?? this.isFolder,
+        isOpenable: isOpenable ?? this.isOpenable,
         isLink: isLink ?? this.isLink,
         linkType: linkType ?? this.linkType,
         linkUrl: linkUrl ?? this.linkUrl,
@@ -294,6 +305,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           ..write('name: $name, ')
           ..write('size: $size, ')
           ..write('isFolder: $isFolder, ')
+          ..write('isOpenable: $isOpenable, ')
           ..write('isLink: $isLink, ')
           ..write('linkType: $linkType, ')
           ..write('linkUrl: $linkUrl, ')
@@ -332,32 +344,32 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
                               $mrjc(
                                   isFolder.hashCode,
                                   $mrjc(
-                                      isLink.hashCode,
+                                      isOpenable.hashCode,
                                       $mrjc(
-                                          linkType.hashCode,
+                                          isLink.hashCode,
                                           $mrjc(
-                                              linkUrl.hashCode,
+                                              linkType.hashCode,
                                               $mrjc(
-                                                  lastModified.hashCode,
+                                                  linkUrl.hashCode,
                                                   $mrjc(
-                                                      contentType.hashCode,
+                                                      lastModified.hashCode,
                                                       $mrjc(
-                                                          oEmbedHtml.hashCode,
+                                                          contentType.hashCode,
                                                           $mrjc(
-                                                              published
+                                                              oEmbedHtml
                                                                   .hashCode,
                                                               $mrjc(
-                                                                  owner
+                                                                  published
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      content
+                                                                      owner
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          viewUrl
+                                                                          content
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              downloadUrl.hashCode,
-                                                                              $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, initVector.hashCode))))))))))))))))))))))));
+                                                                              viewUrl.hashCode,
+                                                                              $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, initVector.hashCode)))))))))))))))))))))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
@@ -370,6 +382,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           other.name == name &&
           other.size == size &&
           other.isFolder == isFolder &&
+          other.isOpenable == isOpenable &&
           other.isLink == isLink &&
           other.linkType == linkType &&
           other.linkUrl == linkUrl &&
@@ -397,6 +410,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
   final Value<String> name;
   final Value<int> size;
   final Value<bool> isFolder;
+  final Value<bool> isOpenable;
   final Value<bool> isLink;
   final Value<String> linkType;
   final Value<String> linkUrl;
@@ -422,6 +436,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
     this.name = const Value.absent(),
     this.size = const Value.absent(),
     this.isFolder = const Value.absent(),
+    this.isOpenable = const Value.absent(),
     this.isLink = const Value.absent(),
     this.linkType = const Value.absent(),
     this.linkUrl = const Value.absent(),
@@ -448,6 +463,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       Value<String> name,
       Value<int> size,
       Value<bool> isFolder,
+      Value<bool> isOpenable,
       Value<bool> isLink,
       Value<String> linkType,
       Value<String> linkUrl,
@@ -473,6 +489,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       name: name ?? this.name,
       size: size ?? this.size,
       isFolder: isFolder ?? this.isFolder,
+      isOpenable: isOpenable ?? this.isOpenable,
       isLink: isLink ?? this.isLink,
       linkType: linkType ?? this.linkType,
       linkUrl: linkUrl ?? this.linkUrl,
@@ -585,6 +602,18 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   GeneratedBoolColumn _constructIsFolder() {
     return GeneratedBoolColumn(
       'is_folder',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _isOpenableMeta = const VerificationMeta('isOpenable');
+  GeneratedBoolColumn _isOpenable;
+  @override
+  GeneratedBoolColumn get isOpenable => _isOpenable ??= _constructIsOpenable();
+  GeneratedBoolColumn _constructIsOpenable() {
+    return GeneratedBoolColumn(
+      'is_openable',
       $tableName,
       false,
     );
@@ -802,6 +831,7 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
         name,
         size,
         isFolder,
+        isOpenable,
         isLink,
         linkType,
         linkUrl,
@@ -875,6 +905,12 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
           isFolder.isAcceptableValue(d.isFolder.value, _isFolderMeta));
     } else if (isFolder.isRequired && isInserting) {
       context.missing(_isFolderMeta);
+    }
+    if (d.isOpenable.present) {
+      context.handle(_isOpenableMeta,
+          isOpenable.isAcceptableValue(d.isOpenable.value, _isOpenableMeta));
+    } else if (isOpenable.isRequired && isInserting) {
+      context.missing(_isOpenableMeta);
     }
     if (d.isLink.present) {
       context.handle(
@@ -1015,6 +1051,9 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     }
     if (d.isFolder.present) {
       map['is_folder'] = Variable<bool, BoolType>(d.isFolder.value);
+    }
+    if (d.isOpenable.present) {
+      map['is_openable'] = Variable<bool, BoolType>(d.isOpenable.value);
     }
     if (d.isLink.present) {
       map['is_link'] = Variable<bool, BoolType>(d.isLink.value);

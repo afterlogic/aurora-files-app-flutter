@@ -17,6 +17,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../files_route.dart';
 import 'files_item_tile.dart';
 
 class FileWidget extends StatelessWidget {
@@ -51,15 +52,25 @@ class FileWidget extends StatelessWidget {
     final filesState = Provider.of<FilesState>(context);
     final filesPageState = Provider.of<FilesPageState>(context);
 
-    Navigator.pushNamed(
-      context,
-      FileViewerRoute.name,
-      arguments: FileViewerScreenArguments(
-        file: file,
-        filesState: filesState,
-        filesPageState: filesPageState,
-      ),
-    );
+    if (file.isOpenable) {
+      Navigator.pushNamed(
+        context,
+        FilesRoute.name,
+        arguments: FilesScreenArguments(
+          path: file.fullPath,
+        ),
+      );
+    } else {
+      Navigator.pushNamed(
+        context,
+        FileViewerRoute.name,
+        arguments: FileViewerScreenArguments(
+          file: file,
+          filesState: filesState,
+          filesPageState: filesPageState,
+        ),
+      );
+    }
   }
 
   Widget _getThumbnail(BuildContext context) {

@@ -44,6 +44,15 @@ class _FilesAppBarState extends State<FilesAppBar>
     _appBarIconAnimCtrl.dispose();
   }
 
+  String _getFolderName() {
+    String fullPath = _filesPageState.pagePath;
+    if (fullPath.endsWith("/")) {
+      fullPath = fullPath.substring(0, fullPath.length - 1);
+    }
+    final splitPath = fullPath.split(RegExp(r"/|\$ZIP:"));
+    return splitPath.last.isNotEmpty ? splitPath.last : "PrivateMail Files";
+  }
+
   void _search() {
     FocusScope.of(context).requestFocus(new FocusNode());
     _filesPageState.onGetFiles(
@@ -272,11 +281,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                 children: <Widget>[
                   if (_filesPageState.pagePath.isNotEmpty && Platform.isIOS)
                     SizedBox(width: 16.0),
-                  Text(
-                      _filesPageState.pagePath.split("/").last.isNotEmpty
-                          ? _filesPageState.pagePath.split("/").last
-                          : "PrivateMail Files",
-                      overflow: TextOverflow.ellipsis),
+                  Text(_getFolderName(), overflow: TextOverflow.ellipsis),
                   if (_filesPageState.pagePath.isNotEmpty)
                     Icon(Icons.arrow_drop_down),
                 ],
@@ -294,6 +299,18 @@ class _FilesAppBarState extends State<FilesAppBar>
                     if (_filesState.folderNavStack.indexOf(path) ==
                         _filesState.folderNavStack.length - 1) {
                       return null;
+                    } else if (path.isNotEmpty && (path.endsWith(".zip"))) {
+                      return PopupMenuItem<String>(
+                        value: path,
+                        child: ListTile(
+                          leading: Icon(MdiIcons.zipBoxOutline),
+                          title: Text(
+                            path.split("/").last,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      );
                     } else if (path.isNotEmpty) {
                       return PopupMenuItem<String>(
                         value: path,

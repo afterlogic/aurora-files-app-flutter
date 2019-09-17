@@ -274,7 +274,9 @@ class _FilesAndroidState extends State<FilesAndroid>
             child: Observer(
               builder: (_) => _filesState.isMoveModeEnabled ||
                       _filesPageState.isSearchMode ||
-                      _filesState.selectedStorage.type == "shared"
+                      _filesState.selectedStorage.type == "shared" ||
+                _filesPageState.pagePath.contains("\$ZIP:") ||
+                _filesPageState.pagePath.endsWith(".zip")
                   ? SizedBox()
                   : FloatingActionButton(
                       heroTag: widget.path,

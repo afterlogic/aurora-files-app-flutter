@@ -258,15 +258,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                     Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
                 onPressed: Navigator.of(context).pop,
               )
-            : Padding(
-                padding: EdgeInsets.only(
-                  left: 15.0,
-                  top: 6.0,
-                  right: 6.0,
-                  bottom: 6.0,
-                ),
-                child: Image.asset("lib/assets/images/logo_white.png"),
-              ),
+            : null,
         title: Column(
           crossAxisAlignment: Platform.isIOS
               ? CrossAxisAlignment.center
@@ -279,8 +271,6 @@ class _FilesAppBarState extends State<FilesAppBar>
                     ? MainAxisAlignment.center
                     : MainAxisAlignment.start,
                 children: <Widget>[
-                  if (_filesPageState.pagePath.isNotEmpty && Platform.isIOS)
-                    SizedBox(width: 16.0),
                   Text(_getFolderName(), overflow: TextOverflow.ellipsis),
                   if (_filesPageState.pagePath.isNotEmpty)
                     Icon(Icons.arrow_drop_down),
@@ -352,11 +342,11 @@ class _FilesAppBarState extends State<FilesAppBar>
             tooltip: "Search",
             onPressed: () => _filesPageState.isSearchMode = true,
           ),
-          IconButton(
-            icon: Icon(Icons.menu),
-            tooltip: "Menu",
-            onPressed: _filesPageState.scaffoldKey.currentState.openDrawer,
-          ),
+//          IconButton(
+//            icon: Icon(Icons.menu),
+//            tooltip: "Menu",
+//            onPressed: _filesPageState.scaffoldKey.currentState.openDrawer,
+//          ),
         ],
       );
     }

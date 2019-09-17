@@ -34,6 +34,8 @@ abstract class _FilesPageState with Store {
   @observable
   bool isSearchMode = false;
 
+  bool isInsideZip = false;
+
   @observable
   FilesLoadingType filesLoading = FilesLoadingType.none;
 

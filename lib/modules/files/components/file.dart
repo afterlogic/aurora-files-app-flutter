@@ -51,13 +51,13 @@ class FileWidget extends StatelessWidget {
   void _openFile(BuildContext context) {
     final filesState = Provider.of<FilesState>(context);
     final filesPageState = Provider.of<FilesPageState>(context);
-
     if (file.isOpenable) {
       Navigator.pushNamed(
         context,
         FilesRoute.name,
         arguments: FilesScreenArguments(
           path: file.fullPath,
+          isZip: true,
         ),
       );
     } else {
@@ -191,7 +191,8 @@ class FileWidget extends StatelessWidget {
             ),
           ),
           if (!filesState.isMoveModeEnabled &&
-              filesPageState.selectedFilesIds.length <= 0)
+              filesPageState.selectedFilesIds.length <= 0 &&
+              !filesPageState.isInsideZip)
             Positioned(
               top: 0.0,
               bottom: 0.0,

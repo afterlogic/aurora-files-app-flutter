@@ -13,6 +13,8 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - open_file (0.0.1):
+    - Flutter
   - path_provider (0.0.1):
     - Flutter
   - share_extend (0.0.1):
@@ -30,6 +32,7 @@ DEPENDENCIES:
   - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_uploader (from `.symlinks/plugins/flutter_uploader/ios`)
+  - open_file (from `.symlinks/plugins/open_file/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - share_extend (from `.symlinks/plugins/share_extend/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -52,6 +55,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   flutter_uploader:
     :path: ".symlinks/plugins/flutter_uploader/ios"
+  open_file:
+    :path: ".symlinks/plugins/open_file/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   share_extend:
@@ -69,6 +74,7 @@ SPEC CHECKSUMS:
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_uploader: 848652a9bb11066e0944a2170ec0e080139dd3eb
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523

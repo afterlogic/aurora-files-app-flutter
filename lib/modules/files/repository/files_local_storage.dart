@@ -18,6 +18,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
 import 'package:intl/intl.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -90,20 +91,21 @@ class FilesLocalStorage {
   }
 
   Future<void> shareFile(List<int> fileBytes, LocalFile file) async {
-    final Directory dir = await getApplicationDocumentsDirectory();
-    File tempFileForShare = new File("${dir.path}/temp/${file.name}");
-    if (!await tempFileForShare.exists()) {
-      await tempFileForShare.create(recursive: true);
-      await tempFileForShare.writeAsBytes(fileBytes);
-    }
-
     String fileType;
-    // TODO add check for video
     if (file.contentType.startsWith("image"))
       fileType = "image";
+    else if (file.contentType.startsWith("video"))
+      fileType = "video";
     else
       fileType = "file";
+
+    final tempFileForShare = await _createTempFile(fileBytes, file);
     return ShareExtend.share(tempFileForShare.path, fileType);
+  }
+
+  Future<void> openFileWith(List<int> fileBytes, LocalFile file) async {
+    final tempFileForShare = await _createTempFile(fileBytes, file);
+    return OpenFile.open(tempFileForShare.path);
   }
 
   void getDownloadStatus(Function onSuccess) {
@@ -187,5 +189,15 @@ class FilesLocalStorage {
 
   static List<int> _decrypt(Map args) {
     return args["encrypter"].decryptBytes(args["encrypted"], iv: args["iv"]);
+  }
+
+  Future<File> _createTempFile(List<int> fileBytes, LocalFile file) async {
+    final Directory dir = await getTemporaryDirectory();
+    File tempFileForShare = new File("${dir.path}/temp/${file.name}");
+    if (!await tempFileForShare.exists()) {
+      await tempFileForShare.create(recursive: true);
+      await tempFileForShare.writeAsBytes(fileBytes);
+    }
+    return tempFileForShare;
   }
 }

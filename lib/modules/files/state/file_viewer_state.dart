@@ -47,19 +47,14 @@ abstract class _FileViewerState with Store {
     return previewText;
   }
 
+  Future<void> onOpenPdf() async {
+    if (fileBytes == null) await _getPreviewFile();
+
+    _filesLocal.openFileWith(fileBytes, file);
+  }
+
   Future<List<int>> onDecryptFile() async {
     await _getPreviewFile();
     return _filesLocal.decryptFile(file: file, fileBytes: fileBytes);
   }
-
-//  void launchURL({Function(String) onError}) async {
-//    String url = "${AppStore.authState.hostName}/${file.downloadUrl}/view";
-//    if (url.startsWith("http://")) url.replaceFirst("http", "https");
-//
-//    if (await canLaunch(url)) {
-//      await launch(url, headers: getHeader());
-//    } else {
-//      onError("Could not launch $url");
-//    }
-//  }
 }

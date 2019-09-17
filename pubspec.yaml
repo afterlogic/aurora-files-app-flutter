@@ -44,8 +44,11 @@ dependencies:
   # file encryption
   encrypt: ^3.2.0
 
-  #file share
+  # file share
   share_extend: ^1.0.9
+
+  # opening files with other apps
+  open_file: ^2.0.3
 
   # ui
   material_design_icons_flutter: ^3.2.4096

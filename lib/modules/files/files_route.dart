@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'state/files_state.dart';
-
 class FilesRoute {
   static const name = "files";
 }
 
 class FilesScreenArguments {
   final String path;
+  final bool isZip;
 
-  FilesScreenArguments({@required this.path});
+  FilesScreenArguments({this.isZip = false, @required this.path, });
 }

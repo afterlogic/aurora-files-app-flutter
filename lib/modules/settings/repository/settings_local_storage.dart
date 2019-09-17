@@ -86,16 +86,16 @@ class SettingsLocalStorage {
   // Dark Theme
   Future<bool> getDarkThemeFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("isDartkThemeEnabled");
+    return prefs.getBool("isDarkThemeEnabled");
   }
 
   Future<bool> setDarkThemeToStorage(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setBool("isDartkThemeEnabled", value);
+    return prefs.setBool("isDarkThemeEnabled", value);
   }
 
   Future<bool> deleteDarkThemeFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove("isDartkThemeEnabled");
+    return prefs.remove("isDarkThemeEnabled");
   }
 }

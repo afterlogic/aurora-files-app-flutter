@@ -1,6 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
-import 'package:aurorafiles/modules/files/files_android.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
@@ -42,6 +41,7 @@ class FolderWidget extends StatelessWidget {
             FilesRoute.name,
             arguments: FilesScreenArguments(
               path: folder.fullPath,
+              isZip: filesPageState.isInsideZip,
             ),
           );
         },
@@ -89,7 +89,8 @@ class FolderWidget extends StatelessWidget {
             ),
           ),
           if (!filesState.isMoveModeEnabled &&
-              filesPageState.selectedFilesIds.length <= 0)
+              filesPageState.selectedFilesIds.length <= 0 &&
+              !filesPageState.isInsideZip)
             Positioned(
               top: 0.0,
               bottom: 0.0,

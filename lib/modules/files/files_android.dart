@@ -23,10 +23,12 @@ import 'state/files_page_state.dart';
 
 class FilesAndroid extends StatefulWidget {
   final String path;
+  final bool isZip;
 
   FilesAndroid({
     Key key,
     this.path = "",
+    this.isZip = false,
   }) : super(key: key);
 
   @override
@@ -56,6 +58,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     _filesState = AppStore.filesState;
     _filesPageState = FilesPageState();
     _filesPageState.pagePath = widget.path;
+    _filesPageState.isInsideZip = widget.isZip;
 
     if (_filesState.currentStorages.length <= 0) {
       _filesPageState.filesLoading = FilesLoadingType.filesHidden;
@@ -213,12 +216,14 @@ class _FilesAndroidState extends State<FilesAndroid>
       ],
       child: Observer(
         builder: (_) => WillPopScope(
-          onWillPop: !Platform.isIOS ? null : () async {
-            if (Navigator.of(context).userGestureInProgress)
-              return false;
-            else
-              return true;
-          },
+          onWillPop: !Platform.isIOS
+              ? null
+              : () async {
+                  if (Navigator.of(context).userGestureInProgress)
+                    return false;
+                  else
+                    return true;
+                },
           child: Scaffold(
             key: _filesPageState.scaffoldKey,
             drawer: _filesState.isMoveModeEnabled ? null : MainDrawer(),
@@ -276,14 +281,13 @@ class _FilesAndroidState extends State<FilesAndroid>
                       ),
                     )),
             floatingActionButton: Padding(
-              padding:
-                  EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
               child: Observer(
                 builder: (_) => _filesState.isMoveModeEnabled ||
                         _filesPageState.isSearchMode ||
                         _filesState.selectedStorage.type == "shared" ||
-                  _filesPageState.pagePath.contains("\$ZIP:") ||
-                  _filesPageState.pagePath.endsWith(".zip")
+                        _filesPageState.isInsideZip
                     ? SizedBox()
                     : FloatingActionButton(
                         heroTag: widget.path,

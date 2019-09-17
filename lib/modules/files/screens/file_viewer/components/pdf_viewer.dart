@@ -3,6 +3,7 @@ import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class PdfViewer extends StatefulWidget {
   final LocalFile file;
@@ -34,13 +35,18 @@ class _PdfViewerState extends State<PdfViewer> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0),
-      child: AppButton(
-        text: "Download and open PDF",
-        onPressed: null,
-//        onPressed: () => _fileViewerState.launchURL(
-//          onError: (String err) => showSnack(
-//              context: context, scaffoldState: widget.scaffoldState, msg: err),
-//        ),
+      child: Observer(
+        builder: (_) => _fileViewerState.downloadProgress != null &&
+                _fileViewerState.downloadProgress < 1.0
+            ? SizedBox(
+                height: 3.0,
+                child: LinearProgressIndicator(
+                    value: _fileViewerState.downloadProgress),
+              )
+            : AppButton(
+                text: "Download and open PDF",
+                onPressed: _fileViewerState.onOpenPdf,
+              ),
       ),
     );
   }

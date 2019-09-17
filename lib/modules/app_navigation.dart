@@ -28,11 +28,20 @@ class AppNavigation {
             settings: RouteSettings(
               name: FilesRoute.name + (args == null ? "" : args.path),
             ),
-            builder: (context) =>
-                args != null ? FilesAndroid(path: args.path) : FilesAndroid());
+            builder: (context) => args != null
+                ? FilesAndroid(
+                    path: args.path,
+                    isZip: args.isZip,
+                  )
+                : FilesAndroid());
       } else {
         return FadeRoute(
-          page: args != null ? FilesAndroid(path: args.path) : FilesAndroid(),
+          page: args != null
+              ? FilesAndroid(
+                  path: args.path,
+                  isZip: args.isZip,
+                )
+              : FilesAndroid(),
           settings: RouteSettings(
             name: FilesRoute.name + (args == null ? "" : args.path),
           ),
@@ -77,13 +86,13 @@ class AppNavigation {
         if (Platform.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
-              name: settings.name,
+                name: settings.name,
               ),
               builder: (context) => SettingsAndroid());
         } else {
           return FadeRoute(
               settings: RouteSettings(
-              name: settings.name,
+                name: settings.name,
               ),
               page: SettingsAndroid(),
               duration: 150);
@@ -95,12 +104,15 @@ class AppNavigation {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
-              ),builder: (context) => EncryptionAndroid());
+              ),
+              builder: (context) => EncryptionAndroid());
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
-              ),page: EncryptionAndroid(), duration: 150);
+              ),
+              page: EncryptionAndroid(),
+              duration: 150);
         }
         break;
 
@@ -114,8 +126,10 @@ class AppNavigation {
         } else {
           return FadeRoute(
               settings: RouteSettings(
-              name: settings.name,
-              ),page: CommonSettingsAndroid(), duration: 150);
+                name: settings.name,
+              ),
+              page: CommonSettingsAndroid(),
+              duration: 150);
         }
         break;
 

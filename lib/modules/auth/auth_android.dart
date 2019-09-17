@@ -38,7 +38,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
     _authState.emailCtrl.text = _authState.userEmail;
   }
 
-
   @override
   void dispose() {
     super.dispose();
@@ -51,6 +50,40 @@ class _AuthAndroidState extends State<AuthAndroid> {
     ]);
   }
 
+  void _login(BuildContext context) {
+    String errMsg = "";
+    if (Platform.isIOS) {
+      if (_authState.hostCtrl.text.isEmpty) {
+        errMsg = "Please enter hostname";
+      } else if (_authState.emailCtrl.text.isEmpty) {
+        errMsg = "Please enter email";
+      } else if (_authState.passwordCtrl.text.isEmpty) {
+        errMsg = "Please enter password";
+      }
+    }
+    if (errMsg.isEmpty) {
+      _authState.onLogin(
+        isFormValid: AuthAndroid._authFormKey.currentState.validate(),
+        onSuccess: () async {
+          await AppStore.settingsState.getUserEncryptionKeys();
+          Navigator.pushReplacementNamed(context, FilesRoute.name,
+              arguments: FilesScreenArguments(path: ""));
+        },
+        onError: (String err) => showSnack(
+          context: context,
+          scaffoldState: Scaffold.of(context),
+          msg: err,
+        ),
+      );
+    } else {
+      showSnack(
+        context: context,
+        scaffoldState: Scaffold.of(context),
+        msg: errMsg,
+      );
+    }
+  }
+
   List<Widget> _buildTextFields() {
     if (Platform.isIOS) {
       return [
@@ -60,8 +93,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
           keyboardType: TextInputType.url,
           decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: Colors.white38))),
-//          validator: (value) => validateInput(value,
-//              [ValidationTypes.empty, ValidationTypes.email]),
           placeholder: "Host",
           autocorrect: false,
           prefix: Opacity(
@@ -79,8 +110,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
           keyboardType: TextInputType.emailAddress,
           decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: Colors.white38))),
-//          validator: (value) => validateInput(value,
-//              [ValidationTypes.empty, ValidationTypes.email]),
           placeholder: "Email",
           autocorrect: false,
           prefix: Opacity(
@@ -95,12 +124,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
         CupertinoTextField(
           cursorColor: Theme.of(context).accentColor,
           controller: _authState.passwordCtrl,
-//          validator: (value) =>
-//              validateInput(value, [ValidationTypes.empty]),
           decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: Colors.white38))),
           placeholder: "Password",
-          obscureText: true,
+          obscureText: _obscureText,
           autocorrect: false,
           prefix: Opacity(
             opacity: 0.6,
@@ -110,6 +137,13 @@ class _AuthAndroidState extends State<AuthAndroid> {
                 Icons.lock,
               ),
             ),
+          ),
+          suffix: IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: Colors.white70,
+            ),
+            onPressed: () => setState(() => _obscureText = !_obscureText),
           ),
         ),
       ];
@@ -144,8 +178,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
           decoration: InputDecoration(
             labelText: "Password",
             suffixIcon: GestureDetector(
-              child:
-                  Icon(_obscureText ? Icons.visibility : Icons.visibility_off, color: Colors.white70,),
+              child: Icon(
+                _obscureText ? Icons.visibility : Icons.visibility_off,
+                color: Colors.white70,
+              ),
               onTap: () => setState(() => _obscureText = !_obscureText),
             ),
           ),
@@ -189,22 +225,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                               buttonColor: Theme.of(context).accentColor,
                               textColor: Colors.white,
                               isLoading: _authState.isLoggingIn,
-                              onPressed: () => _authState.onLogin(
-                                isFormValid: AuthAndroid._authFormKey.currentState
-                                    .validate(),
-                                onSuccess: () async {
-                                  await AppStore.settingsState
-                                      .getUserEncryptionKeys();
-                                  Navigator.pushReplacementNamed(
-                                      context, FilesRoute.name,
-                                      arguments: FilesScreenArguments(path: ""));
-                                },
-                                onError: (String err) => showSnack(
-                                  context: context,
-                                  scaffoldState: Scaffold.of(context),
-                                  msg: err,
-                                ),
-                              ),
+                              onPressed: () => _login(context),
                             ),
                           ),
                         ),

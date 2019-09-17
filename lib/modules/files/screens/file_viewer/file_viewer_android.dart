@@ -6,11 +6,13 @@ import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
+import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
+import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,12 +47,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   final _fileViewerState = FileViewerState();
 
   LocalFile file;
+  FileType _fileType;
 
   @override
   void initState() {
     super.initState();
     file = widget.file;
     _fileViewerState.file = widget.file;
+    _fileType = getFileType(file);
     print("VO: file.type: ${file.contentType}");
   }
 
@@ -75,16 +79,31 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _shareFile() {
+    final type = getFileType(file);
     if (_fileViewerState.fileBytes != null) {
       widget.filesState
           .onShareFile(widget.file, fileBytes: _fileViewerState.fileBytes);
-    } else {
+    } else if (_fileViewerState.downloadProgress != null) {
       showSnack(
         context: context,
         scaffoldState: _fileViewerScaffoldKey.currentState,
         msg: "Please wait until the file finishes loading",
         isError: false,
       );
+    } else {
+      Platform.isIOS
+          ? showCupertinoDialog(
+              context: context,
+              builder: (_) => ShareDialog(
+                    filesState: widget.filesState,
+                    file: widget.file,
+                  ))
+          : showDialog(
+              context: context,
+              builder: (_) => ShareDialog(
+                    filesState: widget.filesState,
+                    file: widget.file,
+                  ));
     }
   }
 
@@ -225,22 +244,17 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         body: ListView(
           padding: const EdgeInsets.all(16.0),
           children: <Widget>[
-            if (file.contentType.startsWith("image"))
+            if (_fileType == FileType.image)
               ImageViewer(
                 fileViewerState: _fileViewerState,
                 scaffoldState: _fileViewerScaffoldKey.currentState,
               ),
-            if (file.contentType == "text/plain" ||
-                file.contentType == "text/html" ||
-                file.contentType == "message/rfc822" ||
-                file.contentType == "application/javascript" ||
-                file.contentType == "application/xml" ||
-                file.contentType == "application/json")
+            if (_fileType == FileType.text || _fileType == FileType.code)
               TextViewer(
                 fileViewerState: _fileViewerState,
                 scaffoldState: _fileViewerScaffoldKey.currentState,
               ),
-            if (file.contentType == "application/pdf")
+            if (_fileType == FileType.pdf)
               PdfViewer(
                 file: file,
                 scaffoldState: _fileViewerScaffoldKey.currentState,

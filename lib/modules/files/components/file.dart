@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
+import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filesize/filesize.dart';
@@ -92,28 +93,27 @@ class FileWidget extends StatelessWidget {
           ),
         ),
       );
-    } else if (file.contentType.startsWith("image")) {
-      return Icon(MdiIcons.fileImageOutline,
-          size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else if (file.contentType == "text/plain") {
-      return Icon(MdiIcons.fileDocumentOutline,
-          size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else if (file.contentType == "text/html" ||
-        file.contentType == "application/json" ||
-        file.contentType == "application/javascript" ||
-        file.contentType == "application/xml" ||
-        file.contentType == "application/json") {
-      return Icon(MdiIcons.fileCode,
-          size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else if (file.contentType == "application/zip") {
-      return Icon(MdiIcons.zipBoxOutline,
-          size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else if (file.contentType == "application/pdf") {
-      return Icon(MdiIcons.filePdfOutline,
-          size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else {
-      return Icon(MdiIcons.fileOutline,
-          size: thumbnailSize, color: Theme.of(context).disabledColor);
+    }
+
+    switch (getFileType(file)) {
+      case FileType.text:
+        return Icon(MdiIcons.fileDocumentOutline,
+            size: thumbnailSize, color: Theme.of(context).disabledColor);
+      case FileType.code:
+        return Icon(MdiIcons.fileCode,
+            size: thumbnailSize, color: Theme.of(context).disabledColor);
+      case FileType.pdf:
+        return Icon(MdiIcons.filePdfOutline,
+            size: thumbnailSize, color: Theme.of(context).disabledColor);
+      case FileType.zip:
+        return Icon(MdiIcons.zipBoxOutline,
+            size: thumbnailSize, color: Theme.of(context).disabledColor);
+      case FileType.image:
+        return Icon(MdiIcons.fileImageOutline,
+            size: thumbnailSize, color: Theme.of(context).disabledColor);
+      case FileType.unknown:
+        return Icon(MdiIcons.fileOutline,
+            size: thumbnailSize, color: Theme.of(context).disabledColor);
     }
   }
 

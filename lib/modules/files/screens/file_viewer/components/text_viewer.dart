@@ -1,5 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
+import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -68,11 +69,7 @@ class _TextViewerState extends State<TextViewer> {
                       child: SelectableText(
                     previewText,
                     style: TextStyle(
-                        fontFamily: file.contentType == "text/html" ||
-                                file.contentType == "application/json" ||
-                                file.contentType == "application/javascript" ||
-                                file.contentType == "application/xml" ||
-                                file.contentType == "application/json"
+                        fontFamily: getFileType(file) == FileType.code
                             ? "monospace"
                             : "sans-serif"),
                   )),

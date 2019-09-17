@@ -2,6 +2,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthLocalStorage {
   // Token
+  Future<String> getHostFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("host");
+  }
+
+  Future<bool> setHostToStorage(String value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString("host", value);
+  }
+
+  Future<bool> deleteHostFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove("host");
+  }
+
+  // Token
   Future<String> getTokenFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("authToken");

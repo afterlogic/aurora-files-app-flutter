@@ -180,24 +180,24 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           ),
           body: ListView(
             children: <Widget>[
-              SwitchListTile.adaptive(
-                value: _settingsState.isParanoidEncryptionEnabled,
-                activeColor: Theme.of(context).accentColor,
-                onChanged: (bool v) {
-                  _settingsState.isParanoidEncryptionEnabled = v;
-                  final filesState = AppStore.filesState;
-                  if (filesState.selectedStorage.type == "encrypted") {
-                    filesState.selectedStorage =
-                        filesState.currentStorages[0];
-                        filesState.updateFilesCb();
-                  }
-                },
-                title: Text("Enable Paranoid Encryption"),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Divider(height: 0),
-              ),
+//              SwitchListTile.adaptive(
+//                value: _settingsState.isParanoidEncryptionEnabled,
+//                activeColor: Theme.of(context).accentColor,
+//                onChanged: (bool v) {
+//                  _settingsState.isParanoidEncryptionEnabled = v;
+//                  final filesState = AppStore.filesState;
+//                  if (filesState.selectedStorage.type == "encrypted") {
+//                    filesState.selectedStorage =
+//                        filesState.currentStorages[0];
+//                        filesState.updateFilesCb();
+//                  }
+//                },
+//                title: Text("Enable Paranoid Encryption"),
+//              ),
+//              Padding(
+//                padding: EdgeInsets.symmetric(horizontal: 16.0),
+//                child: Divider(height: 0),
+//              ),
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(

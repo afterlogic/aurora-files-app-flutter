@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
+import 'package:aurorafiles/utils/permissions.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
@@ -16,7 +17,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
-import 'package:intl/intl.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -74,10 +74,12 @@ class FilesLocalStorage {
 
   // returns taskId e.g. b95fa992-3113-4ecc-bbec-80117206e3e3
   Future<String> downloadFile(String url, String fileName) async {
+    await getStoragePermissions();
     Directory dir = await DownloadsPathProvider.downloadsDirectory;
     if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
-    if (!dir.existsSync())
+    if (!dir.existsSync()) {
       throw CustomException("Could not resolve save directory");
+    }
 
     await FlutterDownloader.enqueue(
       url: hostName + url,

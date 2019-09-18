@@ -26,11 +26,11 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
     if (Platform.isIOS) {
       await showCupertinoDialog(
           context: context,
-          builder: (_) => ExportKeyDialog(settingsState: _settingsState));
+          builder: (_) => ExportKeyDialog(settingsState: _settingsState, scaffoldState: _scaffoldKey.currentState,));
     } else {
       exportedDir = await showDialog(
           context: context,
-          builder: (_) => ExportKeyDialog(settingsState: _settingsState));
+          builder: (_) => ExportKeyDialog(settingsState: _settingsState, scaffoldState: _scaffoldKey.currentState,));
     }
     if (exportedDir is String) {
       showSnack(

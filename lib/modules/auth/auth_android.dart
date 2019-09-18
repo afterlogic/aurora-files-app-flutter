@@ -181,9 +181,12 @@ class _AuthAndroidState extends State<AuthAndroid> {
             labelText: "Password",
             alignLabelWithHint: true,
             suffixIcon: GestureDetector(
-              child: Icon(
-                _obscureText ? Icons.visibility : Icons.visibility_off,
-                color: Colors.white70,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Icon(
+                  _obscureText ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.white70,
+                ),
               ),
               onTap: () => setState(() => _obscureText = !_obscureText),
             ),

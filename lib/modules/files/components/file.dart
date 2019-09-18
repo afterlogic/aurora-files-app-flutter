@@ -137,9 +137,12 @@ class FileWidget extends StatelessWidget {
     return Observer(
       builder: (_) => SelectableFilesItemTile(
         file: file,
-        onTap: () => file.initVector != null
+        onTap: () {
+          filesPageState.scaffoldKey.currentState.removeCurrentSnackBar();
+          file.initVector != null
             ? _openEncryptedFile(context)
-            : _openFile(context),
+            : _openFile(context);
+        },
         isSelected: filesPageState.selectedFilesIds.contains(file.id),
         child: Stack(children: [
           ListTile(

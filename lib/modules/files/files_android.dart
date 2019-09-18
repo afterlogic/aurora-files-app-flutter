@@ -292,32 +292,38 @@ class _FilesAndroidState extends State<FilesAndroid>
                     : FloatingActionButton(
                         heroTag: widget.path,
                         child: Icon(Icons.add),
-                        onPressed: () => Navigator.push(
-                            context,
-                            CustomSpeedDial(tag: widget.path, children: [
-                              MiniFab(
-                                icon: Icon(Icons.create_new_folder),
-                                onPressed: () => Platform.isIOS
-                                    ? showCupertinoDialog(
-                                        context: context,
-                                        builder: (_) => AddFolderDialogAndroid(
-                                          filesState: _filesState,
-                                          filesPageState: _filesPageState,
+                        onPressed: () {
+                          _filesPageState.scaffoldKey.currentState
+                              .removeCurrentSnackBar();
+                          Navigator.push(
+                              context,
+                              CustomSpeedDial(tag: widget.path, children: [
+                                MiniFab(
+                                  icon: Icon(Icons.create_new_folder),
+                                  onPressed: () => Platform.isIOS
+                                      ? showCupertinoDialog(
+                                          context: context,
+                                          builder: (_) =>
+                                              AddFolderDialogAndroid(
+                                            filesState: _filesState,
+                                            filesPageState: _filesPageState,
+                                          ),
+                                        )
+                                      : showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (_) =>
+                                              AddFolderDialogAndroid(
+                                            filesState: _filesState,
+                                            filesPageState: _filesPageState,
+                                          ),
                                         ),
-                                      )
-                                    : showDialog(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (_) => AddFolderDialogAndroid(
-                                          filesState: _filesState,
-                                          filesPageState: _filesPageState,
-                                        ),
-                                      ),
-                              ),
-                              MiniFab(
-                                  icon: Icon(MdiIcons.filePlus),
-                                  onPressed: _uploadFile),
-                            ])),
+                                ),
+                                MiniFab(
+                                    icon: Icon(MdiIcons.filePlus),
+                                    onPressed: _uploadFile),
+                              ]));
+                        },
                       ),
               ),
             ),

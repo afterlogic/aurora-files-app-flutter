@@ -159,7 +159,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
             labelText: "Host",
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 10),
         TextFormField(
           cursorColor: Theme.of(context).accentColor,
           controller: _authState.emailCtrl,
@@ -171,7 +171,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
             alignLabelWithHint: true,
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 10),
         TextFormField(
           cursorColor: Theme.of(context).accentColor,
           controller: _authState.passwordCtrl,
@@ -219,7 +219,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                         ),
                         SizedBox(height: 70.0),
                         ..._buildTextFields(),
-                        SizedBox(height: 50.0),
+                        SizedBox(height: 40.0),
                         SizedBox(
                           width: double.infinity,
                           child: Observer(

@@ -26,12 +26,11 @@ class _TextViewerState extends State<TextViewer> {
   void initState() {
     super.initState();
     _initTextViewer();
-    print("VO: file.contentType: ${file.contentType}");
   }
 
   Future _initTextViewer() async {
     file = widget.fileViewerState.file;
-    final text = await widget.fileViewerState.onGetPreviewText();
+    final text = await widget.fileViewerState.getPreviewText();
     setState(() => previewText = text);
   }
 

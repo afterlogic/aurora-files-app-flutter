@@ -29,12 +29,10 @@ String getErrMsg(dynamic err) {
 
 String _getErrMsgFromCode(int code) {
   switch (code) {
-    case 102:
-      return "Invalid email/password";
     case 101:
       return "Invalid token";
     case 102:
-      return "Authentication error";
+      return "Invalid email/password";
     case 103:
       return "Invalid input parameter";
     case 104:

@@ -33,11 +33,18 @@ abstract class _FileViewerState with Store {
     );
   }
 
-  Future<void> onGetPreviewImage() async {
-    return _getPreviewFile();
+  Future<void> getFileFromCache() async {
+    downloadProgress = 0.0;
+    fileBytes = await _filesLocal.getFileFromCache(file);
+    downloadProgress = 1.0;
   }
 
-  Future<String> onGetPreviewText() async {
+  Future<void> getPreviewImage() async {
+    await _getPreviewFile();
+    _filesLocal.cacheFile(fileBytes, file);
+  }
+
+  Future<String> getPreviewText() async {
     await _getPreviewFile();
 
     String previewText;
@@ -53,7 +60,7 @@ abstract class _FileViewerState with Store {
     _filesLocal.openFileWith(fileBytes, file);
   }
 
-  Future<List<int>> onDecryptFile() async {
+  Future<List<int>> decryptFile() async {
     await _getPreviewFile();
     return _filesLocal.decryptFile(file: file, fileBytes: fileBytes);
   }

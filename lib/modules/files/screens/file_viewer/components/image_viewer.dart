@@ -2,11 +2,13 @@ import 'dart:ui';
 
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
+import 'package:aurorafiles/shared_ui/progress_loader.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class ImageViewer extends StatefulWidget {
   const ImageViewer({
@@ -26,20 +28,28 @@ class _ImageViewerState extends State<ImageViewer> {
   FileViewerState _fileViewerState;
   List<int> _decryptedImage;
   bool _isError = false;
+  Widget builtImage;
 
   @override
   void initState() {
     super.initState();
+    _initImage();
+  }
+
+  void _initImage() async {
     _fileViewerState = widget.fileViewerState;
     if (_fileViewerState.file.initVector != null) {
       _decryptImage();
     } else {
-      _fileViewerState.onGetPreviewImage();
+      await _fileViewerState.getFileFromCache();
+      if (widget.fileViewerState.fileBytes == null) {
+        _fileViewerState.getPreviewImage();
+      }
     }
   }
 
   Future _decryptImage() async {
-    final decryptedImage = await _fileViewerState.onDecryptFile();
+    final decryptedImage = await _fileViewerState.decryptFile();
     setState(() => _decryptedImage = decryptedImage);
   }
 
@@ -93,13 +103,12 @@ class _ImageViewerState extends State<ImageViewer> {
         );
       }
     } else {
-      if (_fileViewerState.downloadProgress < 1.0) {
+      if (_fileViewerState.downloadProgress != null &&
+              _fileViewerState.downloadProgress < 1.0) {
         return Positioned.fill(
           child: Center(
-              child: CircularProgressIndicator(
-                value: _fileViewerState.downloadProgress,
-                backgroundColor: Colors.grey.withOpacity(0.3),
-              )),
+            child: ProgressLoader(_fileViewerState.downloadProgress),
+          ),
         );
       } else {
         final image = Image.memory(
@@ -119,6 +128,7 @@ class _ImageViewerState extends State<ImageViewer> {
 
   @override
   Widget build(BuildContext context) {
+    double prevProgress = 999;
     final placeholder = CachedNetworkImage(
       imageUrl:
           '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
@@ -144,11 +154,19 @@ class _ImageViewerState extends State<ImageViewer> {
                           sigmaX: 8.0,
                           sigmaY: 8.0,
                         ),
-                        child: Container(),
+                        child: Container(
+                          color: Colors.transparent,
+                        ),
                       ),
                     ),
                   ),
-                  Observer(builder: (_) => _buildImage()),
+                  Observer(builder: (_) {
+                    if (prevProgress != _fileViewerState.downloadProgress) {
+                      builtImage = _buildImage();
+                      prevProgress = _fileViewerState.downloadProgress;
+                    }
+                    return builtImage;
+                  }),
                 ],
               ),
             )),

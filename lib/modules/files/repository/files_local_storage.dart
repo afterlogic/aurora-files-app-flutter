@@ -99,12 +99,12 @@ class FilesLocalStorage {
     else
       fileType = "file";
 
-    final tempFileForShare = await _createTempFile(fileBytes, file);
+    final tempFileForShare = await cacheFile(fileBytes, file);
     return ShareExtend.share(tempFileForShare.path, fileType);
   }
 
   Future<void> openFileWith(List<int> fileBytes, LocalFile file) async {
-    final tempFileForShare = await _createTempFile(fileBytes, file);
+    final tempFileForShare = await cacheFile(fileBytes, file);
     return OpenFile.open(tempFileForShare.path);
   }
 
@@ -115,6 +115,38 @@ class FilesLocalStorage {
         FlutterDownloader.registerCallback(null);
       }
     });
+  }
+
+  Future<File> cacheFile(List<int> fileBytes, LocalFile file) async {
+    final Directory dir = await getTemporaryDirectory();
+    File tempFileForShare = new File("${dir.path}/temp/${file.name}");
+    if (!await tempFileForShare.exists()) {
+      await tempFileForShare.create(recursive: true);
+      await tempFileForShare.writeAsBytes(fileBytes);
+    }
+    return tempFileForShare;
+  }
+
+  // if file not found returns null
+  Future<List<int>> getFileFromCache(LocalFile file) async {
+    List<int> fileBytes;
+
+    final tempDir = await getTemporaryDirectory();
+    final tempFolder = Directory("${tempDir.path}/temp");
+    final folderExists = await tempFolder.exists();
+    if (folderExists) {
+      final itemsInTemp = await tempFolder.list().toList();
+      final fileObj = file;
+      itemsInTemp.forEach((file) async {
+        if (file.path.contains(fileObj.name) && file is File) {
+          final fileContents = file.readAsBytesSync();
+          if (fileContents.lengthInBytes == fileObj.size) {
+            fileBytes = fileContents;
+          }
+        }
+      });
+    }
+    return fileBytes;
   }
 
   Future<List> encryptFile(File file) async {
@@ -159,8 +191,7 @@ class FilesLocalStorage {
     List<int> decryptedFileBytes = new List();
 
     final chunkedList = _chunk(encryptedFileBytes);
-    print(
-        "${DateFormat('H:m:s:ms').format(DateTime.now())} VO: decrypting file...");
+
     for (final List<int> chunk in chunkedList) {
       final padding =
           chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
@@ -174,7 +205,6 @@ class FilesLocalStorage {
       iv = IV(Uint8List.fromList(newVector));
       decryptedFileBytes = [...decryptedFileBytes, ...result];
     }
-    print("${DateFormat('H:m:s:ms').format(DateTime.now())} VO: finish");
     return decryptedFileBytes;
   }
 
@@ -189,15 +219,5 @@ class FilesLocalStorage {
 
   static List<int> _decrypt(Map args) {
     return args["encrypter"].decryptBytes(args["encrypted"], iv: args["iv"]);
-  }
-
-  Future<File> _createTempFile(List<int> fileBytes, LocalFile file) async {
-    final Directory dir = await getTemporaryDirectory();
-    File tempFileForShare = new File("${dir.path}/temp/${file.name}");
-    if (!await tempFileForShare.exists()) {
-      await tempFileForShare.create(recursive: true);
-      await tempFileForShare.writeAsBytes(fileBytes);
-    }
-    return tempFileForShare;
   }
 }

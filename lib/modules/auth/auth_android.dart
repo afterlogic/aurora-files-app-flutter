@@ -155,6 +155,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           keyboardType: TextInputType.url,
           validator: (value) => validateInput(value, [ValidationTypes.empty]),
           decoration: InputDecoration(
+            alignLabelWithHint: true,
             labelText: "Host",
           ),
         ),
@@ -167,6 +168,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
               value, [ValidationTypes.empty, ValidationTypes.email]),
           decoration: InputDecoration(
             labelText: "Email",
+            alignLabelWithHint: true,
           ),
         ),
         SizedBox(height: 20),
@@ -177,6 +179,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           obscureText: _obscureText,
           decoration: InputDecoration(
             labelText: "Password",
+            alignLabelWithHint: true,
             suffixIcon: GestureDetector(
               child: Icon(
                 _obscureText ? Icons.visibility : Icons.visibility_off,

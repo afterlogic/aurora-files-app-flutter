@@ -36,6 +36,7 @@ class FolderWidget extends StatelessWidget {
         file: folder,
         isSelected: filesPageState.selectedFilesIds.contains(folder.id),
         onTap: () {
+          filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
           Navigator.pushNamed(
             context,
             FilesRoute.name,

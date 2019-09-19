@@ -37,15 +37,22 @@ class _InfoListTileState extends State<InfoListTile> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Flexible(
-                child: Text(
+              if (_expanded)
+                Flexible(
+                  child: Text.rich(
+                    TextSpan(text: widget.content),
+                    style: Theme.of(context).textTheme.subhead,
+                    maxLines: 20,
+                    overflow: TextOverflow.clip,
+                    softWrap: true,
+                  ),
+                ),
+              if (!_expanded)
+                Text(
                   widget.content,
                   style: Theme.of(context).textTheme.subhead,
-                  maxLines: _expanded ? 20 : 1,
                   overflow: TextOverflow.ellipsis,
-                  softWrap: true,
                 ),
-              ),
               Theme(
                 data: Theme.of(context).copyWith(
                   iconTheme: IconThemeData(

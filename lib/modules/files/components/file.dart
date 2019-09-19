@@ -140,8 +140,8 @@ class FileWidget extends StatelessWidget {
         onTap: () {
           filesPageState.scaffoldKey.currentState.removeCurrentSnackBar();
           file.initVector != null
-            ? _openEncryptedFile(context)
-            : _openFile(context);
+              ? _openEncryptedFile(context)
+              : _openFile(context);
         },
         isSelected: filesPageState.selectedFilesIds.contains(file.id),
         child: Stack(children: [
@@ -152,7 +152,13 @@ class FileWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(file.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        file.name,
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 7.0),
                   Theme(
                     data: Theme.of(context).copyWith(

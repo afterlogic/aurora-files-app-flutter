@@ -59,8 +59,13 @@ class FolderWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(folder.name,
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        folder.name,
+                      ),
+                    ],
+                  ),
                   if (folder.published || folder.localId != null)
                     SizedBox(height: 7.0),
                   Theme(

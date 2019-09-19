@@ -111,10 +111,14 @@ class _FilesAppBarState extends State<FilesAppBar>
           children: <Widget>[
             Text("Move files/folders"),
             SizedBox(height: 2),
-            Text(
-              _filesState.selectedStorage.displayName +
-                  _filesPageState.pagePath,
-              style: TextStyle(fontSize: 10.0),
+            Row(
+              children: <Widget>[
+                Text(
+                  _filesState.selectedStorage.displayName +
+                      _filesPageState.pagePath,
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ],
             )
           ],
         ),

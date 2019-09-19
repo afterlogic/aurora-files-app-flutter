@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/shared_ui/app_bottom_nav_bar.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -12,9 +13,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'components/file.dart';
 import 'components/files_app_bar.dart';
-import 'components/folder.dart';
+import 'components/files_list.dart';
 import 'components/move_options.dart';
 import 'components/skeleton_loader.dart';
 import 'dialogs/add_folder_dialog.dart';
@@ -183,19 +183,7 @@ class _FilesAndroidState extends State<FilesAndroid>
         ],
       );
     } else {
-      return ListView.builder(
-        padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).padding.bottom + 70.0),
-        itemCount: _filesPageState.currentFiles.length,
-        itemBuilder: (BuildContext context, int index) {
-          final item = _filesPageState.currentFiles[index];
-          if (item.isFolder) {
-            return FolderWidget(key: Key(item.id), folder: item);
-          } else {
-            return FileWidget(key: Key(item.id), file: item);
-          }
-        },
-      );
+      return FilesList(filesPageState: _filesPageState);
     }
   }
 

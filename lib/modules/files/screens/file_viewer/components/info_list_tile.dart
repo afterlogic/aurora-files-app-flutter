@@ -34,56 +34,56 @@ class _InfoListTileState extends State<InfoListTile> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text(widget.label, style: Theme.of(context).textTheme.caption),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              if (_expanded)
-                Flexible(
-                  child: Text.rich(
-                    TextSpan(text: widget.content),
+          SingleChildScrollView(
+            scrollDirection: _expanded ? Axis.vertical : Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                if (_expanded)
+                  Flexible(
+                    child: Text(
+                      widget.content,
+                      style: Theme.of(context).textTheme.subhead,
+                      maxLines: 20,
+                    ),
+                  ),
+                if (!_expanded)
+                  Text(
+                    widget.content,
                     style: Theme.of(context).textTheme.subhead,
-                    maxLines: 20,
-                    overflow: TextOverflow.clip,
-                    softWrap: true,
                   ),
-                ),
-              if (!_expanded)
-                Text(
-                  widget.content,
-                  style: Theme.of(context).textTheme.subhead,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              Theme(
-                data: Theme.of(context).copyWith(
-                  iconTheme: IconThemeData(
-                    color: Theme.of(context).disabledColor,
-                    size: 18.0,
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    iconTheme: IconThemeData(
+                      color: Theme.of(context).disabledColor,
+                      size: 18.0,
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    if (widget.isPublic) SizedBox(width: 10),
-                    if (widget.isPublic)
-                      Icon(
-                        Icons.link,
-                        semanticLabel: "Has public link",
-                      ),
-                    if (widget.isOffline) SizedBox(width: 10),
-                    if (widget.isOffline)
-                      Icon(
-                        Icons.airplanemode_active,
-                        semanticLabel: "Available offline",
-                      ),
-                    if (widget.isEncrypted) SizedBox(width: 10),
-                    if (widget.isEncrypted)
-                      Icon(
-                        MdiIcons.alien,
-                        semanticLabel: "Encrypted",
-                      ),
-                  ],
-                ),
-              )
-            ],
+                  child: Row(
+                    children: <Widget>[
+                      if (widget.isPublic) SizedBox(width: 10),
+                      if (widget.isPublic)
+                        Icon(
+                          Icons.link,
+                          semanticLabel: "Has public link",
+                        ),
+                      if (widget.isOffline) SizedBox(width: 10),
+                      if (widget.isOffline)
+                        Icon(
+                          Icons.airplanemode_active,
+                          semanticLabel: "Available offline",
+                        ),
+                      if (widget.isEncrypted) SizedBox(width: 10),
+                      if (widget.isEncrypted)
+                        Icon(
+                          MdiIcons.alien,
+                          semanticLabel: "Encrypted",
+                        ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
           Divider(
             height: 26.0,

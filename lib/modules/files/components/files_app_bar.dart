@@ -111,14 +111,13 @@ class _FilesAppBarState extends State<FilesAppBar>
           children: <Widget>[
             Text("Move files/folders"),
             SizedBox(height: 2),
-            Row(
-              children: <Widget>[
-                Text(
-                  _filesState.selectedStorage.displayName +
-                      _filesPageState.pagePath,
-                  style: TextStyle(fontSize: 10.0),
-                ),
-              ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                _filesState.selectedStorage.displayName +
+                    _filesPageState.pagePath,
+                style: TextStyle(fontSize: 10.0),
+              ),
             )
           ],
         ),
@@ -201,10 +200,13 @@ class _FilesAppBarState extends State<FilesAppBar>
             if (_filesState.selectedStorage.displayName.length > 0)
               SizedBox(height: 2),
             if (_filesState.selectedStorage.displayName.length > 0)
-              Text(
-                _filesState.selectedStorage.displayName +
-                    _filesPageState.pagePath,
-                style: TextStyle(fontSize: 10.0),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  _filesState.selectedStorage.displayName +
+                      _filesPageState.pagePath,
+                  style: TextStyle(fontSize: 10.0),
+                ),
               )
           ],
         ),
@@ -270,15 +272,18 @@ class _FilesAppBarState extends State<FilesAppBar>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             PopupMenuButton<String>(
-              child: Row(
-                mainAxisAlignment: Platform.isIOS
-                    ? MainAxisAlignment.center
-                    : MainAxisAlignment.start,
-                children: <Widget>[
-                  Text(_getFolderName(), overflow: TextOverflow.ellipsis),
-                  if (_filesPageState.pagePath.isNotEmpty)
-                    Icon(Icons.arrow_drop_down),
-                ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: Platform.isIOS
+                      ? MainAxisAlignment.center
+                      : MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(_getFolderName()),
+                    if (_filesPageState.pagePath.isNotEmpty)
+                      Icon(Icons.arrow_drop_down),
+                  ],
+                ),
               ),
               enabled: _filesPageState.pagePath.isNotEmpty,
               onSelected: (String folder) {

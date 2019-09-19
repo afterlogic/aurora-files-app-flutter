@@ -59,12 +59,9 @@ class FolderWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        folder.name,
-                      ),
-                    ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(folder.name),
                   ),
                   if (folder.published || folder.localId != null)
                     SizedBox(height: 7.0),

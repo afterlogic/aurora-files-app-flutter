@@ -152,12 +152,9 @@ class FileWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        file.name,
-                      ),
-                    ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(file.name),
                   ),
                   SizedBox(height: 7.0),
                   Theme(

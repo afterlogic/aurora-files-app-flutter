@@ -23,7 +23,7 @@ class AppNavigation {
   static Route onGenerateRoute(RouteSettings settings) {
     if (settings.name.startsWith(FilesRoute.name)) {
       final FilesScreenArguments args = settings.arguments;
-      if (Platform.isIOS) {
+      if (Platform.isIOS && false) {
         return CupertinoPageRoute(
             settings: RouteSettings(
               name: FilesRoute.name + (args == null ? "" : args.path),
@@ -45,7 +45,7 @@ class AppNavigation {
           settings: RouteSettings(
             name: FilesRoute.name + (args == null ? "" : args.path),
           ),
-          duration: 200,
+          duration: 150,
         );
       }
     }

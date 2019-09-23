@@ -48,6 +48,20 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 ));
   }
 
+  Future _setFileForOffline() async {
+    try {
+      await widget.filesState.onSetFileOffline(widget.file);
+      Navigator.pop(context);
+      await widget.filesPageState.onGetFiles();
+    } catch (err) {
+      showSnack(
+        context: context,
+        scaffoldState: widget.filesPageState.scaffoldKey.currentState,
+        msg: err.toString(),
+      );
+    }
+  }
+
   void _downloadFile() {
     Navigator.pop(context);
     widget.filesState.onDownloadFile(
@@ -103,6 +117,18 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 filesState: widget.filesState,
                 filesPageState: widget.filesPageState,
               ),
+              if (!widget.file.isFolder) Divider(height: 0),
+              if (!widget.file.isFolder)
+                ListTile(
+                  onTap: _setFileForOffline,
+                  leading: Icon(Icons.airplanemode_active),
+                  title: Text("Offline"),
+                  trailing: Switch.adaptive(
+                    value: widget.file.localId != null,
+                    activeColor: Theme.of(context).accentColor,
+                    onChanged: (bool val) => _setFileForOffline(),
+                  ),
+                ),
               Divider(height: 0),
               ListTile(
                 leading: Icon(widget.file.isFolder

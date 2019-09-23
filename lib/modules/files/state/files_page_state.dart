@@ -1,9 +1,10 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 
@@ -22,6 +23,7 @@ class FilesPageState = _FilesPageState with _$FilesPageState;
 // State instance per each files location
 abstract class _FilesPageState with Store {
   final _filesApi = FilesApi();
+  final _filesDao = FilesDao(AppStore.appDb);
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -60,13 +62,62 @@ abstract class _FilesPageState with Store {
     String searchPattern = "",
     Function(String) onError,
   }) async {
+    if (AppStore.filesState.isOfflineMode) {
+      return _getOfflineFiles(showLoading, path, searchPattern, onError);
+    } else {
+      return _getOnlineFiles(showLoading, path, searchPattern, onError);
+    }
+  }
+
+  Future _getOnlineFiles(
+    FilesLoadingType showLoading,
+    String path,
+    String searchPattern,
+    Function(String) onError,
+  ) async {
     try {
       filesLoading = showLoading;
-      currentFiles = await _filesApi.getFiles(
+      final filesFromServer = await _filesApi.getFiles(
         AppStore.filesState.selectedStorage.type,
         path != null ? path : pagePath,
         searchPattern,
       );
+      final offlineFiles = await _filesDao.getFilesAtPath(pagePath);
+      if (offlineFiles.isNotEmpty) {
+        currentFiles = [];
+        filesFromServer.forEach((apiFile) {
+          try {
+            final foundOfflineFile = offlineFiles.firstWhere((offlineFile) {
+              return apiFile.id == offlineFile.id;
+            });
+            currentFiles.add(foundOfflineFile);
+          } catch (err) {
+            currentFiles.add(apiFile);
+          }
+        });
+      } else {
+        currentFiles = filesFromServer;
+      }
+    } catch (err) {
+      if (!AppStore.filesState.isOfflineMode &&
+          AppStore.settingsState.internetConnection !=
+              ConnectivityResult.none) {
+        onError(err.toString());
+      }
+    } finally {
+      filesLoading = FilesLoadingType.none;
+    }
+  }
+
+  Future<void> _getOfflineFiles(
+    FilesLoadingType showLoading,
+    String path,
+    String searchPattern,
+    Function(String) onError,
+  ) async {
+    try {
+      filesLoading = showLoading;
+      currentFiles = await _filesDao.getFilesAtPath(pagePath);
     } catch (err) {
       onError(err.toString());
     } finally {
@@ -104,7 +155,7 @@ abstract class _FilesPageState with Store {
       filesLoading = FilesLoadingType.filesVisible;
       await _filesApi.delete(storage.type, pagePath, mappedFilesToDelete);
       onSuccess();
-    } catch (err) {
+    } catch (stack, err) {
       onError(err.toString());
       filesLoading = FilesLoadingType.none;
     }

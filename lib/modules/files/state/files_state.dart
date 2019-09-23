@@ -2,12 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/storage.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,10 +25,13 @@ class FilesState = _FilesState with _$FilesState;
 abstract class _FilesState with Store {
   final _filesApi = FilesApi();
   final _filesLocal = FilesLocalStorage();
+  final _filesDao = FilesDao(AppStore.appDb);
 
   final filesTileLeadingSize = 48.0;
 
   final List<String> folderNavStack = new List();
+
+  bool isOfflineMode = false;
 
   @observable
   List<Storage> currentStorages = new List();
@@ -45,6 +51,11 @@ abstract class _FilesState with Store {
     String path,
     Function(String) onError,
   }) updateFilesCb;
+
+  void toggleOffline(bool val) {
+    currentStorages = new List();
+    isOfflineMode = val;
+  }
 
   void enableMoveMode({
     List<LocalFile> filesToMove,
@@ -68,8 +79,31 @@ abstract class _FilesState with Store {
   }
 
   Future<void> onGetStorages({Function(String) onError}) async {
+    if (isOfflineMode) {
+      await _getOfflineStorages(onError);
+    } else {
+      await _getOnlineStorages(onError);
+    }
+  }
+
+  Future _getOnlineStorages(Function(String) onError) async {
     try {
       currentStorages = await _filesApi.getStorages();
+      if (currentStorages.length > 0) {
+        selectedStorage = currentStorages[0];
+      }
+    } catch (err) {
+      if (!isOfflineMode &&
+          AppStore.settingsState.internetConnection !=
+              ConnectivityResult.none) {
+        onError(err.toString());
+      }
+    }
+  }
+
+  Future<void> _getOfflineStorages(Function(String) onError) async {
+    try {
+      currentStorages = await _filesDao.getStorages();
       if (currentStorages.length > 0) {
         selectedStorage = currentStorages[0];
       }
@@ -257,5 +291,13 @@ abstract class _FilesState with Store {
       fileContents = fileBytes;
     }
     return _filesLocal.shareFile(fileContents, file);
+  }
+
+  Future<void> onSetFileOffline(LocalFile file) async {
+    if (file.localId == null) {
+      await _filesDao.addFile(file);
+    } else {
+      await _filesDao.deleteFiles([file]);
+    }
   }
 }

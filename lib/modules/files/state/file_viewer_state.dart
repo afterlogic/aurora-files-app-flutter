@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:mobx/mobx.dart';
@@ -22,15 +24,21 @@ abstract class _FileViewerState with Store {
 
   Future<void> _getPreviewFile() async {
     downloadProgress = 0.0;
-    fileBytes = await _filesApi.downloadFileForPreview(
-      file.downloadUrl,
-      updateProgress: (int bytesLoaded) {
-        downloadProgress = 100 / file.size * bytesLoaded / 100;
-        if (downloadProgress >= 1.0 && file.initVector != null) {
-          downloadProgress = null;
-        }
-      },
-    );
+    if (AppStore.filesState.isOfflineMode) {
+      final localFile = new File(file.localPath);
+      fileBytes = await localFile.readAsBytes();
+      downloadProgress = 1.0;
+    } else {
+      fileBytes = await _filesApi.downloadFileForPreview(
+        file.downloadUrl,
+        updateProgress: (int bytesLoaded) {
+          downloadProgress = 100 / file.size * bytesLoaded / 100;
+          if (downloadProgress >= 1.0 && file.initVector != null) {
+            downloadProgress = null;
+          }
+        },
+      );
+    }
   }
 
   Future<void> getFileFromCache() async {

@@ -51,10 +51,6 @@ class SelectableFilesItemTile extends StatelessWidget {
             ),
           ),
           SizedBox(height: 6.0),
-          Padding(
-            padding: const EdgeInsets.only(left: 80.0),
-            child: Divider(height: 0.0),
-          ),
         ],
       ),
     );
@@ -79,10 +75,6 @@ class SelectableFilesItemTile extends StatelessWidget {
               SizedBox(height: 6.0),
               child,
               SizedBox(height: 6.0),
-              Padding(
-                padding: const EdgeInsets.only(left: 80.0),
-                child: Divider(height: 0.0),
-              ),
             ],
           ),
           if (isSelected) _buildSelectionOverlay(context),

@@ -13,6 +13,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   final String type;
   final String path;
   final String fullPath;
+  final String localPath;
   final String name;
   final int size;
   final bool isFolder;
@@ -39,6 +40,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       @required this.type,
       @required this.path,
       @required this.fullPath,
+      @required this.localPath,
       @required this.name,
       @required this.size,
       @required this.isFolder,
@@ -54,11 +56,11 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       @required this.content,
       @required this.viewUrl,
       @required this.downloadUrl,
-      @required this.thumbnailUrl,
+      this.thumbnailUrl,
       @required this.hash,
       @required this.extendedProps,
       @required this.isExternal,
-      @required this.initVector});
+      this.initVector});
   factory LocalFile.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -73,6 +75,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       path: stringType.mapFromDatabaseResponse(data['${effectivePrefix}path']),
       fullPath: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}full_path']),
+      localPath: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}local_path']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
       size: intType.mapFromDatabaseResponse(data['${effectivePrefix}size']),
       isFolder:
@@ -120,6 +124,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       type: serializer.fromJson<String>(json['type']),
       path: serializer.fromJson<String>(json['path']),
       fullPath: serializer.fromJson<String>(json['fullPath']),
+      localPath: serializer.fromJson<String>(json['localPath']),
       name: serializer.fromJson<String>(json['name']),
       size: serializer.fromJson<int>(json['size']),
       isFolder: serializer.fromJson<bool>(json['isFolder']),
@@ -151,6 +156,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       'type': serializer.toJson<String>(type),
       'path': serializer.toJson<String>(path),
       'fullPath': serializer.toJson<String>(fullPath),
+      'localPath': serializer.toJson<String>(localPath),
       'name': serializer.toJson<String>(name),
       'size': serializer.toJson<int>(size),
       'isFolder': serializer.toJson<bool>(isFolder),
@@ -186,6 +192,9 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       fullPath: fullPath == null && nullToAbsent
           ? const Value.absent()
           : Value(fullPath),
+      localPath: localPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localPath),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       size: size == null && nullToAbsent ? const Value.absent() : Value(size),
       isFolder: isFolder == null && nullToAbsent
@@ -247,6 +256,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           String type,
           String path,
           String fullPath,
+          String localPath,
           String name,
           int size,
           bool isFolder,
@@ -273,6 +283,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
         type: type ?? this.type,
         path: path ?? this.path,
         fullPath: fullPath ?? this.fullPath,
+        localPath: localPath ?? this.localPath,
         name: name ?? this.name,
         size: size ?? this.size,
         isFolder: isFolder ?? this.isFolder,
@@ -302,6 +313,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           ..write('type: $type, ')
           ..write('path: $path, ')
           ..write('fullPath: $fullPath, ')
+          ..write('localPath: $localPath, ')
           ..write('name: $name, ')
           ..write('size: $size, ')
           ..write('isFolder: $isFolder, ')
@@ -338,38 +350,38 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
                   $mrjc(
                       fullPath.hashCode,
                       $mrjc(
-                          name.hashCode,
+                          localPath.hashCode,
                           $mrjc(
-                              size.hashCode,
+                              name.hashCode,
                               $mrjc(
-                                  isFolder.hashCode,
+                                  size.hashCode,
                                   $mrjc(
-                                      isOpenable.hashCode,
+                                      isFolder.hashCode,
                                       $mrjc(
-                                          isLink.hashCode,
+                                          isOpenable.hashCode,
                                           $mrjc(
-                                              linkType.hashCode,
+                                              isLink.hashCode,
                                               $mrjc(
-                                                  linkUrl.hashCode,
+                                                  linkType.hashCode,
                                                   $mrjc(
-                                                      lastModified.hashCode,
+                                                      linkUrl.hashCode,
                                                       $mrjc(
-                                                          contentType.hashCode,
+                                                          lastModified.hashCode,
                                                           $mrjc(
-                                                              oEmbedHtml
+                                                              contentType
                                                                   .hashCode,
                                                               $mrjc(
-                                                                  published
+                                                                  oEmbedHtml
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      owner
+                                                                      published
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          content
+                                                                          owner
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              viewUrl.hashCode,
-                                                                              $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, initVector.hashCode)))))))))))))))))))))))));
+                                                                              content.hashCode,
+                                                                              $mrjc(viewUrl.hashCode, $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, initVector.hashCode))))))))))))))))))))))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
@@ -379,6 +391,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           other.type == type &&
           other.path == path &&
           other.fullPath == fullPath &&
+          other.localPath == localPath &&
           other.name == name &&
           other.size == size &&
           other.isFolder == isFolder &&
@@ -407,6 +420,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
   final Value<String> type;
   final Value<String> path;
   final Value<String> fullPath;
+  final Value<String> localPath;
   final Value<String> name;
   final Value<int> size;
   final Value<bool> isFolder;
@@ -433,6 +447,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
     this.type = const Value.absent(),
     this.path = const Value.absent(),
     this.fullPath = const Value.absent(),
+    this.localPath = const Value.absent(),
     this.name = const Value.absent(),
     this.size = const Value.absent(),
     this.isFolder = const Value.absent(),
@@ -460,6 +475,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       Value<String> type,
       Value<String> path,
       Value<String> fullPath,
+      Value<String> localPath,
       Value<String> name,
       Value<int> size,
       Value<bool> isFolder,
@@ -486,6 +502,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       type: type ?? this.type,
       path: path ?? this.path,
       fullPath: fullPath ?? this.fullPath,
+      localPath: localPath ?? this.localPath,
       name: name ?? this.name,
       size: size ?? this.size,
       isFolder: isFolder ?? this.isFolder,
@@ -566,6 +583,18 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   GeneratedTextColumn _constructFullPath() {
     return GeneratedTextColumn(
       'full_path',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _localPathMeta = const VerificationMeta('localPath');
+  GeneratedTextColumn _localPath;
+  @override
+  GeneratedTextColumn get localPath => _localPath ??= _constructLocalPath();
+  GeneratedTextColumn _constructLocalPath() {
+    return GeneratedTextColumn(
+      'local_path',
       $tableName,
       false,
     );
@@ -767,7 +796,7 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     return GeneratedTextColumn(
       'thumbnail_url',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -817,7 +846,7 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     return GeneratedTextColumn(
       'init_vector',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -828,6 +857,7 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
         type,
         path,
         fullPath,
+        localPath,
         name,
         size,
         isFolder,
@@ -887,6 +917,12 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
           fullPath.isAcceptableValue(d.fullPath.value, _fullPathMeta));
     } else if (fullPath.isRequired && isInserting) {
       context.missing(_fullPathMeta);
+    }
+    if (d.localPath.present) {
+      context.handle(_localPathMeta,
+          localPath.isAcceptableValue(d.localPath.value, _localPathMeta));
+    } else if (localPath.isRequired && isInserting) {
+      context.missing(_localPathMeta);
     }
     if (d.name.present) {
       context.handle(
@@ -1042,6 +1078,9 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     }
     if (d.fullPath.present) {
       map['full_path'] = Variable<String, StringType>(d.fullPath.value);
+    }
+    if (d.localPath.present) {
+      map['local_path'] = Variable<String, StringType>(d.localPath.value);
     }
     if (d.name.present) {
       map['name'] = Variable<String, StringType>(d.name.value);

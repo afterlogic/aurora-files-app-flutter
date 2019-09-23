@@ -12,6 +12,8 @@ class Files extends Table {
 
   TextColumn get fullPath => text()();
 
+  TextColumn get localPath => text()();
+
   TextColumn get name => text()();
 
   IntColumn get size => integer()();
@@ -42,7 +44,7 @@ class Files extends Table {
 
   TextColumn get downloadUrl => text()();
 
-  TextColumn get thumbnailUrl => text()();
+  TextColumn get thumbnailUrl => text().nullable()();
 
   TextColumn get hash => text()();
 
@@ -50,5 +52,5 @@ class Files extends Table {
 
   BoolColumn get isExternal => boolean()();
 
-  TextColumn get initVector => text()();
+  TextColumn get initVector => text().nullable()();
 }

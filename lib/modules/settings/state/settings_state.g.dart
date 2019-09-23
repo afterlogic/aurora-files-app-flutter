@@ -9,6 +9,25 @@ part of 'settings_state.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SettingsState on _SettingsState, Store {
+  final _$internetConnectionAtom =
+      Atom(name: '_SettingsState.internetConnection');
+
+  @override
+  ConnectivityResult get internetConnection {
+    _$internetConnectionAtom.context
+        .enforceReadPolicy(_$internetConnectionAtom);
+    _$internetConnectionAtom.reportObserved();
+    return super.internetConnection;
+  }
+
+  @override
+  set internetConnection(ConnectivityResult value) {
+    _$internetConnectionAtom.context.conditionallyRunInAction(() {
+      super.internetConnection = value;
+      _$internetConnectionAtom.reportChanged();
+    }, _$internetConnectionAtom, name: '${_$internetConnectionAtom.name}_set');
+  }
+
   final _$isDarkThemeAtom = Atom(name: '_SettingsState.isDarkTheme');
 
   @override

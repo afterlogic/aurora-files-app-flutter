@@ -26,12 +26,6 @@ class _PdfViewerState extends State<PdfViewer> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _fileViewerState.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0),

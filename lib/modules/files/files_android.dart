@@ -1,12 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/shared_ui/app_bottom_nav_bar.dart';
+import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -19,6 +21,7 @@ import 'components/move_options.dart';
 import 'components/skeleton_loader.dart';
 import 'dialogs/add_folder_dialog.dart';
 import 'dialogs/delete_confirmation_dialog.dart';
+import 'files_route.dart';
 import 'state/files_page_state.dart';
 
 class FilesAndroid extends StatefulWidget {
@@ -39,12 +42,29 @@ class _FilesAndroidState extends State<FilesAndroid>
     with TickerProviderStateMixin {
   FilesState _filesState = AppStore.filesState;
   FilesPageState _filesPageState;
+  SettingsState _settingsState;
 
   @override
   void initState() {
     super.initState();
     _filesState.folderNavStack.add(widget.path);
+    _settingsState = AppStore.settingsState;
     _initFiles();
+    Connectivity().onConnectivityChanged.listen((res) async {
+      if (res != ConnectivityResult.none) {
+        if (_filesState.currentStorages.length <= 0) {
+          _filesPageState.filesLoading = FilesLoadingType.filesHidden;
+          await _filesState.onGetStorages(
+            onError: (String err) => showSnack(
+              context: context,
+              scaffoldState: _filesPageState.scaffoldKey.currentState,
+              msg: err,
+            ),
+          );
+        }
+        _getFiles(context, FilesLoadingType.filesHidden);
+      }
+    });
   }
 
   @override
@@ -79,7 +99,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   Future<void> _getFiles(BuildContext context,
-      [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) {
+      [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) async {
     return _filesPageState.onGetFiles(
       showLoading: showLoading,
       onError: (String err) => showSnack(
@@ -88,6 +108,16 @@ class _FilesAndroidState extends State<FilesAndroid>
         msg: err,
       ),
     );
+  }
+
+  void _goOffline() {
+    Navigator.popUntil(
+      context,
+      ModalRoute.withName(FilesRoute.name),
+    );
+    Navigator.pushReplacementNamed(context, FilesRoute.name,
+        arguments: FilesScreenArguments(path: ""));
+    _filesState.toggleOffline(true);
   }
 
   void _deleteSelected(context) async {
@@ -166,6 +196,25 @@ class _FilesAndroidState extends State<FilesAndroid>
       return ListView.builder(
         itemBuilder: (_, index) => SkeletonLoader(),
         itemCount: 6,
+      );
+    } else if (!_filesState.isOfflineMode &&
+        _settingsState.internetConnection == ConnectivityResult.none &&
+        _filesPageState.currentFiles.isEmpty) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.signal_wifi_off, size: 48.0),
+          Text("No internet connection"),
+          SizedBox(height: 16.0),
+          FlatButton(
+            child: Text("Retry"),
+            onPressed: () => _getFiles(context),
+          ),
+          FlatButton(
+            child: Text("Go offline"),
+            onPressed: () => _goOffline(),
+          ),
+        ],
       );
     } else if (_filesPageState.currentFiles == null ||
         _filesPageState.currentFiles.length <= 0) {
@@ -273,6 +322,9 @@ class _FilesAndroidState extends State<FilesAndroid>
                   bottom: MediaQuery.of(context).padding.bottom),
               child: Observer(
                 builder: (_) => _filesState.isMoveModeEnabled ||
+                        _filesState.isOfflineMode ||
+                        _settingsState.internetConnection ==
+                            ConnectivityResult.none ||
                         _filesPageState.isSearchMode ||
                         _filesState.selectedStorage.type == "shared" ||
                         _filesPageState.isInsideZip

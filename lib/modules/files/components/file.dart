@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
@@ -74,7 +76,8 @@ class FileWidget extends StatelessWidget {
   }
 
   Widget _getThumbnail(BuildContext context) {
-    final thumbnailSize = Provider.of<FilesState>(context).filesTileLeadingSize;
+    final filesState = Provider.of<FilesState>(context);
+    final thumbnailSize = filesState.filesTileLeadingSize;
     final hostName = Provider.of<AuthState>(context).hostName;
 
     if (file.initVector != null) {
@@ -94,12 +97,14 @@ class FileWidget extends StatelessWidget {
                         AssetImage("lib/assets/images/image_placeholder.jpg"))),
             child: Hero(
               tag: file.thumbnailUrl,
-              child: CachedNetworkImage(
-                imageUrl: '$hostName/${file.thumbnailUrl}',
-                httpHeaders: getHeader(),
-                fit: BoxFit.cover,
-                fadeInDuration: Duration(milliseconds: 200),
-              ),
+              child: filesState.isOfflineMode && file.localPath != null
+                  ? Image.file(new File(file.localPath), fit: BoxFit.cover)
+                  : CachedNetworkImage(
+                      imageUrl: '$hostName/${file.thumbnailUrl}',
+                      httpHeaders: getHeader(),
+                      fit: BoxFit.cover,
+                      fadeInDuration: Duration(milliseconds: 200),
+                    ),
             ),
           ),
         ),
@@ -123,6 +128,9 @@ class FileWidget extends StatelessWidget {
         return Icon(MdiIcons.fileImageOutline,
             size: thumbnailSize, color: Theme.of(context).disabledColor);
       case FileType.unknown:
+        return Icon(MdiIcons.fileOutline,
+            size: thumbnailSize, color: Theme.of(context).disabledColor);
+      default:
         return Icon(MdiIcons.fileOutline,
             size: thumbnailSize, color: Theme.of(context).disabledColor);
     }

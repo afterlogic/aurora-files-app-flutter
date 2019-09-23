@@ -5,8 +5,6 @@ import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -48,11 +46,12 @@ class MainDrawer extends StatelessWidget {
                               height: 60,
                               width: 60,
                               child: CircleAvatar(
-                                child: Text(authState.userEmail[0].toUpperCase(),
-                                    style: TextStyle(
-                                      fontSize: 25.0,
-                                      fontWeight: FontWeight.w600,
-                                    )),
+                                child:
+                                    Text(authState.userEmail[0].toUpperCase(),
+                                        style: TextStyle(
+                                          fontSize: 25.0,
+                                          fontWeight: FontWeight.w600,
+                                        )),
                               ),
                             ),
                             SizedBox(height: 20),
@@ -109,9 +108,17 @@ class MainDrawer extends StatelessWidget {
                   }),
                   Divider(),
                   SwitchListTile.adaptive(
-                    value: false,
+                    value: filesState.isOfflineMode,
                     activeColor: Theme.of(context).accentColor,
-                    onChanged: (bool val) {},
+                    onChanged: (bool val) async {
+                      Navigator.popUntil(
+                        context,
+                        ModalRoute.withName(FilesRoute.name),
+                      );
+                      Navigator.pushReplacementNamed(context, FilesRoute.name,
+                          arguments: FilesScreenArguments(path: ""));
+                      filesState.toggleOffline(val);
+                    },
                     title: ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: Icon(Icons.airplanemode_active),

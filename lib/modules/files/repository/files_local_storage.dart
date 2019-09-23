@@ -72,7 +72,6 @@ class FilesLocalStorage {
     return uploader.result;
   }
 
-  // returns taskId e.g. b95fa992-3113-4ecc-bbec-80117206e3e3
   Future<String> downloadFile(String url, String fileName) async {
     await getStoragePermissions();
     Directory dir = await DownloadsPathProvider.downloadsDirectory;

@@ -64,6 +64,7 @@ dependencies:
   filesize: ^1.0.4
   intl: ^0.15.8
   permission_handler: ^3.2.2
+  connectivity: ^0.4.4
 
 dev_dependencies:
   flutter_test:

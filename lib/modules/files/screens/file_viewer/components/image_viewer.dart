@@ -4,7 +4,6 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/progress_loader.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -148,32 +147,39 @@ class _ImageViewerState extends State<ImageViewer> {
             tag: _fileViewerState.file.thumbnailUrl,
             child: SizedBox(
               width: double.infinity,
-              child: Stack(
-                fit: StackFit.passthrough,
-                children: <Widget>[
-                  placeholder,
-                  Positioned.fill(
-                    child: ClipRect(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: 8.0,
-                          sigmaY: 8.0,
+              child: AppStore.filesState.isOfflineMode &&
+                      _fileViewerState.fileBytes != null
+                  ? Image.memory(
+                      Uint8List.fromList(_fileViewerState.fileBytes),
+                      fit: BoxFit.cover,
+                    )
+                  : Stack(
+                      fit: StackFit.passthrough,
+                      children: <Widget>[
+                        placeholder,
+                        Positioned.fill(
+                          child: ClipRect(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 8.0,
+                                sigmaY: 8.0,
+                              ),
+                              child: Container(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                          ),
                         ),
-                        child: Container(
-                          color: Colors.transparent,
-                        ),
-                      ),
+                        Observer(builder: (_) {
+                          if (prevProgress !=
+                              _fileViewerState.downloadProgress) {
+                            builtImage = _buildImage();
+                            prevProgress = _fileViewerState.downloadProgress;
+                          }
+                          return builtImage;
+                        }),
+                      ],
                     ),
-                  ),
-                  Observer(builder: (_) {
-                    if (prevProgress != _fileViewerState.downloadProgress) {
-                      builtImage = _buildImage();
-                      prevProgress = _fileViewerState.downloadProgress;
-                    }
-                    return builtImage;
-                  }),
-                ],
-              ),
             )),
       );
     } else {

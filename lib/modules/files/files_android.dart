@@ -62,7 +62,11 @@ class _FilesAndroidState extends State<FilesAndroid>
             ),
           );
         }
-        _getFiles(context, FilesLoadingType.filesHidden);
+        _getFiles(
+            context,
+            _filesPageState.currentFiles.isEmpty
+                ? FilesLoadingType.filesHidden
+                : FilesLoadingType.filesVisible);
       }
     });
   }
@@ -323,8 +327,9 @@ class _FilesAndroidState extends State<FilesAndroid>
               child: Observer(
                 builder: (_) => _filesState.isMoveModeEnabled ||
                         _filesState.isOfflineMode ||
-                        _settingsState.internetConnection ==
-                            ConnectivityResult.none ||
+                        (_settingsState.internetConnection ==
+                                ConnectivityResult.none &&
+                            _filesPageState.currentFiles.isEmpty) ||
                         _filesPageState.isSearchMode ||
                         _filesState.selectedStorage.type == "shared" ||
                         _filesPageState.isInsideZip

@@ -20,6 +20,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final _authState = AppStore.authState;
   final _settingsState = AppStore.settingsState;
+  final _filesState = AppStore.filesState;
 
   Future<List<bool>> _localStorageInitialization;
 
@@ -27,13 +28,17 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
     _initLocalStorage();
-    Connectivity().onConnectivityChanged.listen((res) {
-      print("VO: internetConnection: ${res}");
-      _settingsState.internetConnection = res;
-    });
   }
 
   Future _initLocalStorage() async {
+    final connectivity = Connectivity();
+    final connection = await connectivity.checkConnectivity();
+    _filesState.isOfflineMode = connection == ConnectivityResult.none;
+    _settingsState.internetConnection = connection;
+    connectivity.onConnectivityChanged.listen((res) {
+      print("internetConnection: ${res}");
+      _settingsState.internetConnection = res;
+    });
     _localStorageInitialization = Future.wait([
       _authState.getAuthSharedPrefs(),
       _settingsState.getUserEncryptionKeys(),

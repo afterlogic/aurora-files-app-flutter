@@ -10,15 +10,14 @@ class ProgressLoader extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(50.0),
       child: Container(
-        height: 73.0,
-        width: 73.0,
-        color: Colors.white38,
+        height: 53.0,
+        width: 53.0,
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: CircularPercentIndicator(
             lineWidth: 3.0,
             circularStrokeCap: CircularStrokeCap.round,
-            radius: 60.0,
+            radius: 45.0,
             animation: true,
             animateFromLastPercent: true,
             animationDuration: 150,

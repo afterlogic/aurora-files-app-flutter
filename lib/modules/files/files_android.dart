@@ -197,9 +197,13 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   Widget _buildFiles(BuildContext context) {
     if (_filesPageState.filesLoading == FilesLoadingType.filesHidden) {
-      return ListView.builder(
+      return ListView.separated(
         itemBuilder: (_, index) => SkeletonLoader(),
         itemCount: 6,
+        separatorBuilder: (BuildContext context, int index) => Padding(
+          padding: const EdgeInsets.only(left: 80.0),
+          child: Divider(height: 0.0),
+        ),
       );
     } else if (!_filesState.isOfflineMode &&
         _settingsState.internetConnection == ConnectivityResult.none &&

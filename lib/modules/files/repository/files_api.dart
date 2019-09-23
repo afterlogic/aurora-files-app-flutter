@@ -71,23 +71,30 @@ class FilesApi {
   Future<List<int>> downloadFileForPreview(url,
       {Function(int) updateProgress}) async {
     HttpClient client = new HttpClient();
-    final HttpClientRequest request =
-        await client.getUrl(Uri.parse(hostName + url));
 
-    request.headers
-        .add("Authorization", "Bearer ${AppStore.authState.authToken}");
-    final HttpClientResponse response = await request.close();
+    try {
+      final HttpClientRequest request =
+      await client.getUrl(Uri.parse(hostName + url));
 
-    List<int> fileBytes = new List();
+      request.headers
+          .add("Authorization", "Bearer ${AppStore.authState.authToken}");
+      final HttpClientResponse response = await request.close();
 
-    await for (List<int> contents in response) {
-      fileBytes = [...fileBytes, ...contents];
-      if (updateProgress != null) {
-        updateProgress(Uint8List.fromList(fileBytes).lengthInBytes);
+      List<int> fileBytes = new List();
+
+      await for (List<int> contents in response) {
+        fileBytes = [...fileBytes, ...contents];
+        if (updateProgress != null) {
+          updateProgress(Uint8List
+              .fromList(fileBytes)
+              .lengthInBytes);
+        }
       }
-    }
 
-    return fileBytes;
+      return fileBytes;
+    } catch(err) {
+      throw CustomException(err.toString());
+    }
   }
 
   Future<String> renameFile({

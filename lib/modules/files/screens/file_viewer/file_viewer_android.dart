@@ -55,7 +55,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     file = widget.file;
     _fileViewerState.file = widget.file;
     _fileType = getFileType(file);
-    print("VO: file.type: ${file.contentType}");
   }
 
   @override

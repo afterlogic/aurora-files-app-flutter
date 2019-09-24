@@ -51,7 +51,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     _settingsState = AppStore.settingsState;
     _initFiles();
     Connectivity().onConnectivityChanged.listen((res) async {
-      if (res != ConnectivityResult.none) {
+      if (!_filesState.isOfflineMode && res != ConnectivityResult.none) {
         if (_filesState.currentStorages.length <= 0) {
           _filesPageState.filesLoading = FilesLoadingType.filesHidden;
           await _filesState.onGetStorages(

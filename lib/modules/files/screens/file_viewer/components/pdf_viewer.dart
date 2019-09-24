@@ -38,7 +38,7 @@ class _PdfViewerState extends State<PdfViewer> {
                     value: _fileViewerState.downloadProgress),
               )
             : AppButton(
-                text: "Download and open PDF",
+                text: "Open PDF",
                 onPressed: _fileViewerState.onOpenPdf,
               ),
       ),

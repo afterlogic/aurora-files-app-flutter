@@ -90,7 +90,12 @@ abstract class _FilesPageState with Store {
             final foundOfflineFile = offlineFiles.firstWhere((offlineFile) {
               return apiFile.id == offlineFile.id;
             });
-            currentFiles.add(foundOfflineFile);
+
+            final morphedFile = apiFile.toJson();
+            morphedFile["localId"] = foundOfflineFile.localId;
+            morphedFile["localPath"] = foundOfflineFile.localPath;
+
+            currentFiles.add(LocalFile.fromJson(morphedFile));
           } catch (err) {
             currentFiles.add(apiFile);
           }

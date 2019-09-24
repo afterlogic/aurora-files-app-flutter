@@ -125,16 +125,16 @@ class MainDrawer extends StatelessWidget {
                       title: Text("Offline mode"),
                     ),
                   ),
-                  SwitchListTile.adaptive(
-                    value: false,
-                    activeColor: Theme.of(context).accentColor,
-                    onChanged: (bool val) {},
-                    title: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: Icon(Icons.link),
-                      title: Text("Public links"),
-                    ),
-                  ),
+//                  SwitchListTile.adaptive(
+//                    value: false,
+//                    activeColor: Theme.of(context).accentColor,
+//                    onChanged: (bool val) {},
+//                    title: ListTile(
+//                      contentPadding: EdgeInsets.zero,
+//                      leading: Icon(Icons.link),
+//                      title: Text("Public links"),
+//                    ),
+//                  ),
                 ],
               ),
             ),

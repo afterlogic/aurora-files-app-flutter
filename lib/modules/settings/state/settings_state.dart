@@ -16,7 +16,7 @@ abstract class _SettingsState with Store {
   final _settingsLocal = SettingsLocalStorage();
 
   @observable
-  ConnectivityResult internetConnection = ConnectivityResult.none;
+  ConnectivityResult internetConnection;
 
   @observable
   bool isDarkTheme = !Platform.isIOS;
@@ -48,15 +48,14 @@ abstract class _SettingsState with Store {
 
     connectivity.onConnectivityChanged.listen((res) {
       internetConnection = res;
+      print("VO: internetConnection: ${internetConnection}");
     });
     final result = await Future.wait([
       _settingsLocal.getDarkThemeFromStorage(),
       connectivity.checkConnectivity(),
     ]);
-    if (result[0] != null) {
-      isDarkTheme = result[0];
-      internetConnection = result[1];
-    }
+    if (result[0] != null) isDarkTheme = result[0];
+    internetConnection = result[1];
     return true;
   }
 

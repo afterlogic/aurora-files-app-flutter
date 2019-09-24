@@ -30,7 +30,7 @@ abstract class _FileViewerState with Store {
       downloadProgress = 1.0;
     } else {
       fileBytes = await _filesApi.downloadFileForPreview(
-        file.downloadUrl,
+        file.viewUrl,
         updateProgress: (int bytesLoaded) {
           downloadProgress = 100 / file.size * bytesLoaded / 100;
           if (downloadProgress >= 1.0 && file.initVector != null) {

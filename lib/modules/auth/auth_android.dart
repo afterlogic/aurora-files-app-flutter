@@ -36,6 +36,9 @@ class _AuthAndroidState extends State<AuthAndroid> {
     _authState.isLoggingIn = false;
     _authState.hostCtrl.text = _authState.hostName;
     _authState.emailCtrl.text = _authState.userEmail;
+//    _authState.hostCtrl.text = "https://mail.privatemail.com";
+//    _authState.emailCtrl.text = "test@privatemail.tv";
+//    _authState.passwordCtrl.text = "am9mW583yH?o";
   }
 
   @override

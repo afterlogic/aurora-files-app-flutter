@@ -24,7 +24,6 @@ import 'package:share_extend/share_extend.dart';
 
 class FilesLocalStorage {
   final String authToken = AppStore.authState.authToken;
-  final String hostName = AppStore.authState.hostName;
   final String apiUrl = AppStore.authState.apiUrl;
   final uploader = FlutterUploader();
   final chunkSize = 128000;
@@ -73,6 +72,7 @@ class FilesLocalStorage {
   }
 
   Future<String> downloadFile(String url, String fileName) async {
+    final String hostName = AppStore.authState.hostName;
     await getStoragePermissions();
     Directory dir = await DownloadsPathProvider.downloadsDirectory;
     if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();

@@ -69,30 +69,33 @@ class FilesApi {
   }
 
   Future<List<int>> downloadFileForPreview(url,
-      {Function(int) updateProgress}) async {
+      {Function(int) updateProgress, isRedirect = false}) async {
     HttpClient client = new HttpClient();
-
     try {
       final HttpClientRequest request =
-      await client.getUrl(Uri.parse(hostName + url));
-
-      request.headers
-          .add("Authorization", "Bearer ${AppStore.authState.authToken}");
+          await client.getUrl(Uri.parse(isRedirect ? url : hostName + url));
+      request.followRedirects = false;
+      if (!isRedirect) {
+        request.headers
+            .add("Authorization", "Bearer ${AppStore.authState.authToken}");
+      }
       final HttpClientResponse response = await request.close();
 
-      List<int> fileBytes = new List();
+      if (response.isRedirect) {
+        return await downloadFileForPreview(response.headers.value("location"),
+            updateProgress: updateProgress, isRedirect: true);
+      } else {
 
-      await for (List<int> contents in response) {
-        fileBytes = [...fileBytes, ...contents];
-        if (updateProgress != null) {
-          updateProgress(Uint8List
-              .fromList(fileBytes)
-              .lengthInBytes);
+        List<int> fileBytes = new List();
+        await for (List<int> contents in response) {
+          fileBytes = [...fileBytes, ...contents];
+          if (updateProgress != null) {
+            updateProgress(Uint8List.fromList(fileBytes).lengthInBytes);
+          }
         }
+        return fileBytes;
       }
-
-      return fileBytes;
-    } catch(err) {
+    } catch (err) {
       throw CustomException(err.toString());
     }
   }

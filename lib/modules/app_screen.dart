@@ -31,14 +31,6 @@ class _AppState extends State<App> {
   }
 
   Future _initLocalStorage() async {
-    final connectivity = Connectivity();
-    final connection = await connectivity.checkConnectivity();
-    _filesState.isOfflineMode = connection == ConnectivityResult.none;
-    _settingsState.internetConnection = connection;
-    connectivity.onConnectivityChanged.listen((res) {
-      print("internetConnection: ${res}");
-      _settingsState.internetConnection = res;
-    });
     _localStorageInitialization = Future.wait([
       _authState.getAuthSharedPrefs(),
       _settingsState.getUserEncryptionKeys(),

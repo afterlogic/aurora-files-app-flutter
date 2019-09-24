@@ -44,11 +44,18 @@ abstract class _SettingsState with Store {
   }
 
   Future<bool> getUserSettings() async {
+    final connectivity = Connectivity();
+
+    connectivity.onConnectivityChanged.listen((res) {
+      internetConnection = res;
+    });
     final result = await Future.wait([
       _settingsLocal.getDarkThemeFromStorage(),
+      connectivity.checkConnectivity(),
     ]);
     if (result[0] != null) {
       isDarkTheme = result[0];
+      internetConnection = result[1];
     }
     return true;
   }

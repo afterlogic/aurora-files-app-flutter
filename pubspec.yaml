@@ -59,7 +59,6 @@ dependencies:
 #  fluttertoast: 3.0.5
 
   # misc
-#  just_debounce_it: ^3.0.0+1
 #  url_launcher: ^5.1.2
   filesize: ^1.0.4
   intl: ^0.15.8

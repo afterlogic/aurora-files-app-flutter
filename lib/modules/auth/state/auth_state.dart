@@ -36,8 +36,8 @@ abstract class _AuthState with Store {
       _authLocal.getUserIdFromStorage(), // 2 - id
       _authLocal.getHostFromStorage(), // 3 - host
     ]);
-    authToken = results[0];
     userEmail = results[1];
+    authToken = results[0];
     userId = results[2];
     hostName = results[3];
     return hostName is String &&

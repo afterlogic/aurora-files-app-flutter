@@ -112,7 +112,7 @@ class _InfoListTileState extends State<InfoListTile> {
                         Theme.of(context).scaffoldBackgroundColor,
                       ], stops: [
                         0.0,
-                        0.2
+                        0.3
                       ]),
                     ),
                     child: _buildStatusIcons(),

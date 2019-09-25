@@ -62,20 +62,20 @@ class _RenameDialogState extends State<RenameDialog> {
         title: Text("Rename ${widget.file.name}"),
         content: isRenaming
             ? Row(
-          children: <Widget>[
-            CupertinoActivityIndicator(),
-            SizedBox(width: 20.0),
-            Text("Renaming to ${_fileNameCtrl.text}")
-          ],
-        )
+                children: <Widget>[
+                  CupertinoActivityIndicator(),
+                  SizedBox(width: 20.0),
+                  Text("Renaming to ${_fileNameCtrl.text}")
+                ],
+              )
             : Form(
-          key: _renameFormKey,
-          child: AlertInputIos(
-            controller: _fileNameCtrl,
-            autofocus: true,
-            placeholder: "Enter new name",
-          ),
-        ),
+                key: _renameFormKey,
+                child: AlertInputIos(
+                  controller: _fileNameCtrl,
+                  autofocus: true,
+                  placeholder: "Enter new name",
+                ),
+              ),
         actions: <Widget>[
           CupertinoButton(
             child: Text("Cancel"),
@@ -86,56 +86,61 @@ class _RenameDialogState extends State<RenameDialog> {
               onPressed: isRenaming
                   ? null
                   : () {
-                if (!_renameFormKey.currentState.validate()) return;
-                errMsg = "";
-                setState(() => isRenaming = true);
-                widget.filesState.onRename(
-                  file: widget.file,
-                  newName: _fileNameCtrl.text,
-                  onError: (String err) {
-                    errMsg = err;
-                    setState(() => isRenaming = false);
-                  },
-                  onSuccess: (String newNameFromServer) async {
-                    await widget.filesPageState
-                        .onGetFiles(path: widget.file.path);
-                    Navigator.pop(context, newNameFromServer);
-                  },
-                );
-              }),
+                      if (!_renameFormKey.currentState.validate()) return;
+                      errMsg = "";
+                      setState(() => isRenaming = true);
+                      widget.filesState.onRename(
+                        file: widget.file,
+                        newName: _fileNameCtrl.text,
+                        onError: (String err) {
+                          errMsg = err;
+                          setState(() => isRenaming = false);
+                        },
+                        onSuccess: (String newNameFromServer) async {
+                          await widget.filesPageState
+                              .onGetFiles(path: widget.file.path);
+                          Navigator.pop(context, newNameFromServer);
+                        },
+                      );
+                    }),
         ],
       );
     } else {
       return AlertDialog(
-        title: Text("Rename ${widget.file.name}"),
+        title: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text("Rename ${widget.file.name}")),
         content: isRenaming
             ? Row(
-          children: <Widget>[
-            CircularProgressIndicator(),
-            SizedBox(width: 20.0),
-            Text("Renaming to ${_fileNameCtrl.text}")
-          ],
-        )
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                  SizedBox(width: 20.0),
+                  Text("Renaming to ${_fileNameCtrl.text}")
+                ],
+              )
             : Form(
-          key: _renameFormKey,
-          child: TextFormField(
-            controller: _fileNameCtrl,
-            autofocus: true,
-            decoration: InputDecoration(
-              hintText: "Enter new name",
-              border: UnderlineInputBorder(),
-            ),
-            validator: (value) => validateInput(
-              value,
-              [
-                ValidationTypes.empty,
-                ValidationTypes.uniqueName,
-                ValidationTypes.fileName,
-              ],
-              widget.filesPageState.currentFiles,
-            ),
-          ),
-        ),
+                key: _renameFormKey,
+                child: TextFormField(
+                  controller: _fileNameCtrl,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    hintText: "Enter new name",
+                    border: UnderlineInputBorder(),
+                  ),
+                  validator: (value) => validateInput(
+                    value,
+                    [
+                      ValidationTypes.empty,
+                      ValidationTypes.uniqueName,
+                      ValidationTypes.fileName,
+                    ],
+                    widget.filesPageState.currentFiles,
+                  ),
+                ),
+              ),
         actions: <Widget>[
           FlatButton(
             child: Text("CANCEL"),
@@ -146,23 +151,23 @@ class _RenameDialogState extends State<RenameDialog> {
               onPressed: isRenaming
                   ? null
                   : () {
-                if (!_renameFormKey.currentState.validate()) return;
-                errMsg = "";
-                setState(() => isRenaming = true);
-                widget.filesState.onRename(
-                  file: widget.file,
-                  newName: _fileNameCtrl.text,
-                  onError: (String err) {
-                    errMsg = err;
-                    setState(() => isRenaming = false);
-                  },
-                  onSuccess: (String newNameFromServer) async {
-                    await widget.filesPageState
-                        .onGetFiles(path: widget.file.path);
-                    Navigator.pop(context, newNameFromServer);
-                  },
-                );
-              }),
+                      if (!_renameFormKey.currentState.validate()) return;
+                      errMsg = "";
+                      setState(() => isRenaming = true);
+                      widget.filesState.onRename(
+                        file: widget.file,
+                        newName: _fileNameCtrl.text,
+                        onError: (String err) {
+                          errMsg = err;
+                          setState(() => isRenaming = false);
+                        },
+                        onSuccess: (String newNameFromServer) async {
+                          await widget.filesPageState
+                              .onGetFiles(path: widget.file.path);
+                          Navigator.pop(context, newNameFromServer);
+                        },
+                      );
+                    }),
         ],
       );
     }

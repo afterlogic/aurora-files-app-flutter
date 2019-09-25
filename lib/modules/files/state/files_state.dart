@@ -38,8 +38,12 @@ abstract class _FilesState with Store {
   List<Storage> currentStorages = new List();
 
   @observable
-  Storage selectedStorage =
-      new Storage(type: "", displayName: "", isExternal: false);
+  Storage selectedStorage = new Storage(
+      type: "",
+      displayName: "",
+      isExternal: false,
+      isDroppable: false,
+      order: 0);
 
   @observable
   bool isMoveModeEnabled = false;
@@ -302,11 +306,12 @@ abstract class _FilesState with Store {
   Future<void> onSetFileOffline(LocalFile file,
       {Function(int) updateProgress}) async {
     if (file.localId == null) {
-      final fileBytes = await _filesApi.downloadFile(file.downloadUrl, updateProgress: updateProgress);
+      final fileBytes = await _filesApi.downloadFile(file.downloadUrl,
+          updateProgress: updateProgress);
       final dartFile = await _filesLocal.saveFileForOffline(fileBytes, file);
       // TODO VO: replace with guid
-      final FilesCompanion filesCompanion =
-          getCompanionFromLocalFile(file, "${dartFile.parent.path}/${file.name}");
+      final FilesCompanion filesCompanion = getCompanionFromLocalFile(
+          file, "${dartFile.parent.path}/${file.name}");
       await _filesDao.addFile(filesCompanion);
     } else {
       await _filesDao.deleteFiles([file]);

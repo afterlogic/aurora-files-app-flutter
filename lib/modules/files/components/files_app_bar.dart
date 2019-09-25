@@ -26,7 +26,6 @@ class _FilesAppBarState extends State<FilesAppBar>
   FilesState _filesState;
   FilesPageState _filesPageState;
   AnimationController _appBarIconAnimCtrl;
-  AppBar _currentAppBar;
   final _searchInputCtrl = TextEditingController();
 
   @override
@@ -63,6 +62,7 @@ class _FilesAppBarState extends State<FilesAppBar>
   AppBar _getAppBar(BuildContext context) {
     if (_filesPageState.selectedFilesIds.length > 0) {
       return AppBar(
+        key: Key("select"),
         backgroundColor: Theme.of(context).primaryColorDark,
         leading: IconButton(
           icon: Icon(Icons.clear),
@@ -98,6 +98,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else if (_filesState.isMoveModeEnabled) {
       return AppBar(
+        key: Key("move"),
         backgroundColor: Theme.of(context).accentColor,
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
@@ -186,6 +187,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else if (_filesPageState.isSearchMode) {
       return AppBar(
+      key: Key("defaault"),
         leading: IconButton(
           icon: Icon(Icons.close),
           onPressed: () {
@@ -264,6 +266,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else {
       return AppBar(
+        key: Key("default"),
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
                 icon: Icon(
@@ -371,17 +374,13 @@ class _FilesAppBarState extends State<FilesAppBar>
   Widget build(BuildContext context) {
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
-    _currentAppBar = _getAppBar(context);
 
     return Observer(
-      builder: (_) {
-        _currentAppBar = _getAppBar(context);
-
-        return AnimatedSwitcher(
-          duration: Duration(milliseconds: 300),
-          child: _currentAppBar,
-        );
-      },
+      builder: (_) => AnimatedSwitcher(
+          duration: Duration(milliseconds: 100),
+          reverseDuration: Duration(milliseconds: 300),
+          child: _getAppBar(context),
+        ),
     );
   }
 }

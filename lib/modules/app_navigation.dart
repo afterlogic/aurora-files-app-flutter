@@ -59,7 +59,7 @@ class AppNavigation {
 
       case FileViewerRoute.name:
         final FileViewerScreenArguments args = settings.arguments;
-        if (Platform.isIOS) {
+        if (Platform.isIOS && false) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,

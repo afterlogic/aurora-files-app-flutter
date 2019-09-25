@@ -11,11 +11,6 @@ import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:flutter/widgets.dart';
 
 class FilesApi {
-  final String hostName = AppStore.authState.hostName;
-  final String apiUrl = AppStore.authState.apiUrl;
-  final String authToken = AppStore.authState.authToken;
-  final int userId = AppStore.authState.userId;
-
   List<LocalFile> _sortFiles(List<LocalFile> unsortedFiles) {
     final List<LocalFile> folders = List();
     final List<LocalFile> files = List();
@@ -68,8 +63,9 @@ class FilesApi {
     }
   }
 
-  Future<List<int>> downloadFileForPreview(url,
+  Future<List<int>> downloadFile(url,
       {Function(int) updateProgress, isRedirect = false}) async {
+    final String hostName = AppStore.authState.hostName;
     HttpClient client = new HttpClient();
     try {
       final HttpClientRequest request =
@@ -82,10 +78,10 @@ class FilesApi {
       final HttpClientResponse response = await request.close();
 
       if (response.isRedirect) {
-        return await downloadFileForPreview(response.headers.value("location"),
+        // redirect manually with different headers
+        return await downloadFile(response.headers.value("location"),
             updateProgress: updateProgress, isRedirect: true);
       } else {
-
         List<int> fileBytes = new List();
         await for (List<int> contents in response) {
           fileBytes = [...fileBytes, ...contents];
@@ -164,6 +160,8 @@ class FilesApi {
 
   Future<String> createPublicLink(
       String type, String path, String name, int size, bool isFolder) async {
+    final int userId = AppStore.authState.userId;
+    final String hostName = AppStore.authState.hostName;
     final parameters = json.encode({
       "UserId": userId,
       "Type": type,

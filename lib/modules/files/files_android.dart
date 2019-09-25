@@ -263,12 +263,7 @@ class _FilesAndroidState extends State<FilesAndroid>
         builder: (_) => WillPopScope(
           onWillPop: !Platform.isIOS
               ? null
-              : () async {
-                  if (Navigator.of(context).userGestureInProgress)
-                    return false;
-                  else
-                    return true;
-                },
+              : () async => !Navigator.of(context).userGestureInProgress,
           child: Scaffold(
             key: _filesPageState.scaffoldKey,
             drawer: _filesState.isMoveModeEnabled ? null : MainDrawer(),

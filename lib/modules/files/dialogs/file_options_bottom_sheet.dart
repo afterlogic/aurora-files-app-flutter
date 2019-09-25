@@ -66,7 +66,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     Navigator.pop(context);
     widget.filesState.onDownloadFile(
       url: widget.file.downloadUrl,
-      fileName: widget.file.name,
+      file: widget.file,
       onStart: () => showSnack(
         context: context,
         scaffoldState: widget.filesPageState.scaffoldKey.currentState,

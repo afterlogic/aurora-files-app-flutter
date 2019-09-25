@@ -27,48 +27,35 @@ class MainDrawer extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
                     ),
-                    child: Stack(
-                      children: [
-//                        Positioned(
-//                          right: -10,
-//                          bottom: -5,
-//                          child: IconButton(
-//                            icon: Icon(Icons.settings),
-//                            color: Colors.white,
-//                            onPressed: () {},
-//                          ),
-//                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(
-                              height: 60,
-                              width: 60,
-                              child: CircleAvatar(
-                                child:
-                                    Text(authState.userEmail[0].toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 25.0,
-                                          fontWeight: FontWeight.w600,
-                                        )),
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            Padding(
-//                              padding: const EdgeInsets.only(right: 45.0),
-                              padding: const EdgeInsets.all(0.0),
-                              child: Text(
-                                authState.userEmail,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16.0),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 60,
+                          width: 60,
+                          child: CircleAvatar(
+                            child:
+                                Text(authState.userEmail[0].toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.w600,
+                                    )),
+                          ),
                         ),
+                        SizedBox(height: 20),
+                        Padding(
+//                              padding: const EdgeInsets.only(right: 45.0),
+                          padding: const EdgeInsets.all(0.0),
+                          child: Text(
+                            authState.userEmail,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 16.0),
+                          ),
+                        ),
+                        SizedBox(height: 10),
                       ],
                     ),
                   ),

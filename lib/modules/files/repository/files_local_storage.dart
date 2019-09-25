@@ -24,7 +24,6 @@ import 'package:share_extend/share_extend.dart';
 
 class FilesLocalStorage {
   final String authToken = AppStore.authState.authToken;
-  final String apiUrl = AppStore.authState.apiUrl;
   final uploader = FlutterUploader();
   final chunkSize = 128000;
 
@@ -39,6 +38,7 @@ class FilesLocalStorage {
     String vector,
     bool firstChunk = true,
   }) {
+    final String apiUrl = AppStore.authState.apiUrl;
     final Map<String, dynamic> params = {
       "Type": storageType,
       "Path": path,
@@ -57,7 +57,7 @@ class FilesLocalStorage {
             method: "UploadFile",
             parameters: jsonEncode(params))
         .toMap();
-
+  print("VO: apiUrl: ${apiUrl}");
     uploader.enqueue(
       url: apiUrl,
       files: [fileItem],
@@ -69,26 +69,6 @@ class FilesLocalStorage {
     );
 
     return uploader.result;
-  }
-
-  Future<String> downloadFile(String url, String fileName) async {
-    final String hostName = AppStore.authState.hostName;
-    await getStoragePermissions();
-    Directory dir = await DownloadsPathProvider.downloadsDirectory;
-    if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
-    if (!dir.existsSync()) {
-      throw CustomException("Could not resolve save directory");
-    }
-
-    await FlutterDownloader.enqueue(
-      url: hostName + url,
-      savedDir: dir.path,
-      fileName: fileName,
-      headers: getHeader(),
-      showNotification: true,
-      openFileFromNotification: true,
-    );
-    return dir.path;
   }
 
   Future<void> shareFile(List<int> fileBytes, LocalFile file) async {
@@ -109,13 +89,15 @@ class FilesLocalStorage {
     return OpenFile.open(tempFileForShare.path);
   }
 
-  void getDownloadStatus(Function onSuccess) {
-    FlutterDownloader.registerCallback((id, status, progress) {
-      if (status == DownloadTaskStatus.complete) {
-        onSuccess();
-        FlutterDownloader.registerCallback(null);
-      }
-    });
+  Future<String> saveFileInDownloads(List<int> fileBytes, LocalFile file) async {
+    await getStoragePermissions();
+    Directory dir = await DownloadsPathProvider.downloadsDirectory;
+
+    final fileToDownload = new File("${dir.path}/${file.name}");
+    await fileToDownload.create(recursive: true);
+    await fileToDownload.writeAsBytes(fileBytes);
+
+    return "${dir.path}/${file.name}";
   }
 
   Future<File> cacheFile(List<int> fileBytes, LocalFile file) async {

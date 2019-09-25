@@ -168,7 +168,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   void _downloadFile() {
     widget.filesState.onDownloadFile(
       url: file.downloadUrl,
-      fileName: file.name,
+      file: file,
       onStart: () => showSnack(
         context: context,
         scaffoldState: _fileViewerScaffoldKey.currentState,

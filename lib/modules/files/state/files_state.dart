@@ -264,15 +264,19 @@ abstract class _FilesState with Store {
 
   void onDownloadFile({
     String url,
-    String fileName,
+    LocalFile file,
     Function onStart,
+    Function onUpdateProgress,
     Function onSuccess,
     Function onError,
   }) async {
     try {
       onStart();
-      final path = await _filesLocal.downloadFile(url, fileName);
-      _filesLocal.getDownloadStatus(() => onSuccess(path));
+      final downloadedBytes =
+          await _filesApi.downloadFile(url, updateProgress: onUpdateProgress);
+      final savedPath =
+          await _filesLocal.saveFileInDownloads(downloadedBytes, file);
+      onSuccess(savedPath);
     } catch (err) {
       onError(err.toString());
     }
@@ -285,7 +289,7 @@ abstract class _FilesState with Store {
   }) async {
     List<int> fileContents;
     if (fileBytes == null) {
-      fileContents = await _filesApi.downloadFileForPreview(file.downloadUrl,
+      fileContents = await _filesApi.downloadFile(file.downloadUrl,
           updateProgress: updateProgress);
     } else {
       fileContents = fileBytes;

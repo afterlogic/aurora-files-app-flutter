@@ -29,7 +29,7 @@ abstract class _FileViewerState with Store {
       fileBytes = await localFile.readAsBytes();
       downloadProgress = 1.0;
     } else {
-      fileBytes = await _filesApi.downloadFileForPreview(
+      fileBytes = await _filesApi.downloadFile(
         file.viewUrl,
         updateProgress: (int bytesLoaded) {
           downloadProgress = 100 / file.size * bytesLoaded / 100;

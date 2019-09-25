@@ -97,7 +97,7 @@ class FilesLocalStorage {
     await fileToDownload.create(recursive: true);
     await fileToDownload.writeAsBytes(fileBytes);
 
-    return "${dir.path}/${file.name}";
+    return fileToDownload.path;
   }
 
   Future<File> cacheFile(List<int> fileBytes, LocalFile file) async {
@@ -111,7 +111,7 @@ class FilesLocalStorage {
   }
 
   // if file not found returns null
-  Future<List<int>> getFileFromCache(LocalFile file) async {
+  Future<List<int>> getFileFromCache(LocalFile fileObj) async {
     List<int> fileBytes;
 
     final tempDir = await getTemporaryDirectory();
@@ -119,7 +119,7 @@ class FilesLocalStorage {
     final folderExists = await tempFolder.exists();
     if (folderExists) {
       final itemsInTemp = await tempFolder.list().toList();
-      final fileObj = file;
+
       itemsInTemp.forEach((file) async {
         if (file.path.contains(fileObj.name) && file is File) {
           final fileContents = file.readAsBytesSync();

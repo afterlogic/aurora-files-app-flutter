@@ -49,7 +49,9 @@ abstract class _FileViewerState with Store {
 
   Future<void> getPreviewImage() async {
     await _getPreviewFile();
-    _filesLocal.cacheFile(fileBytes, file);
+    if (!AppStore.filesState.isOfflineMode) {
+      _filesLocal.cacheFile(fileBytes, file);
+    }
   }
 
   Future<String> getPreviewText() async {

@@ -97,7 +97,7 @@ class _FileWidgetState extends State<FileWidget> {
   void _openFile(BuildContext context) {
     final filesState = Provider.of<FilesState>(context);
     final filesPageState = Provider.of<FilesPageState>(context);
-    // TODO disable opening ZIP files
+    // TODO enable opening ZIP files for Aurora
     if (false && widget.file.isOpenable) {
       Navigator.pushNamed(
         context,
@@ -189,85 +189,89 @@ class _FileWidgetState extends State<FileWidget> {
     final margin = 5.0;
 
     return Observer(
-      builder: (_) => SelectableFilesItemTile(
-        file: widget.file,
-        onTap: () {
-          filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
-          widget.file.initVector != null
-              ? _openEncryptedFile(context)
-              : _openFile(context);
-        },
-        isSelected: filesPageState.selectedFilesIds.contains(widget.file.id),
-        child: Stack(children: [
-          ListTile(
-            leading: _getThumbnail(context),
-            title: Padding(
-              padding: const EdgeInsets.only(right: 28.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(widget.file.name),
-                  ),
-                  SizedBox(height: 7.0),
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      iconTheme: IconThemeData(
-                        color: Theme.of(context).disabledColor,
-                        size: 14.0,
+      builder: (_) {
+        final isMenuVisible = !filesState.isMoveModeEnabled &&
+            !filesState.isOfflineMode &&
+            filesPageState.selectedFilesIds.length <= 0 &&
+            !filesPageState.isInsideZip;
+        return SelectableFilesItemTile(
+          file: widget.file,
+          onTap: () {
+            filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
+            widget.file.initVector != null
+                ? _openEncryptedFile(context)
+                : _openFile(context);
+          },
+          isSelected: filesPageState.selectedFilesIds.contains(widget.file.id),
+          child: Stack(children: [
+            ListTile(
+              leading: _getThumbnail(context),
+              title: Padding(
+                padding: EdgeInsets.only(right: isMenuVisible ? 28.0 : 0.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(widget.file.name),
+                    ),
+                    SizedBox(height: 7.0),
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        iconTheme: IconThemeData(
+                          color: Theme.of(context).disabledColor,
+                          size: 14.0,
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        if (widget.file.published)
-                          Icon(
-                            Icons.link,
-                            semanticLabel: "Has public link",
-                          ),
-                        if (widget.file.published) SizedBox(width: margin),
-                        if (widget.file.localId != null)
-                          Icon(
-                            Icons.airplanemode_active,
-                            semanticLabel: "Available offline",
-                          ),
-                        if (widget.file.localId != null)
-                          SizedBox(width: margin),
-                        Text(filesize(widget.file.size),
-                            style: Theme.of(context).textTheme.caption),
-                        SizedBox(width: margin),
-                        Text("|", style: Theme.of(context).textTheme.caption),
-                        SizedBox(width: margin),
-                        Text(
-                            DateFormatting.formatDateFromSeconds(
-                              timestamp: widget.file.lastModified,
+                      child: Row(
+                        children: <Widget>[
+                          if (widget.file.published)
+                            Icon(
+                              Icons.link,
+                              semanticLabel: "Has public link",
                             ),
-                            style: Theme.of(context).textTheme.caption),
-                        SizedBox(width: margin),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          if (!filesState.isMoveModeEnabled &&
-              filesPageState.selectedFilesIds.length <= 0 &&
-              !filesPageState.isInsideZip)
-            Positioned(
-              top: 0.0,
-              bottom: 0.0,
-              right: 4.0,
-              child: IconButton(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: Theme.of(context).disabledColor,
+                          if (widget.file.published) SizedBox(width: margin),
+                          if (widget.file.localId != null)
+                            Icon(
+                              Icons.airplanemode_active,
+                              semanticLabel: "Available offline",
+                            ),
+                          if (widget.file.localId != null)
+                            SizedBox(width: margin),
+                          Text(filesize(widget.file.size),
+                              style: Theme.of(context).textTheme.caption),
+                          SizedBox(width: margin),
+                          Text("|", style: Theme.of(context).textTheme.caption),
+                          SizedBox(width: margin),
+                          Text(
+                              DateFormatting.formatDateFromSeconds(
+                                timestamp: widget.file.lastModified,
+                              ),
+                              style: Theme.of(context).textTheme.caption),
+                          SizedBox(width: margin),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-                onPressed: () => _showModalBottomSheet(context),
               ),
             ),
-        ]),
-      ),
+            if (isMenuVisible)
+              Positioned(
+                top: 0.0,
+                bottom: 0.0,
+                right: 4.0,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: Theme.of(context).disabledColor,
+                  ),
+                  onPressed: () => _showModalBottomSheet(context),
+                ),
+              ),
+          ]),
+        );
+      },
     );
   }
 }

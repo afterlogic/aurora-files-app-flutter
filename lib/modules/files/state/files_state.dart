@@ -304,11 +304,15 @@ abstract class _FilesState with Store {
   }
 
   Future<void> onSetFileOffline(LocalFile file,
-      {Function(int) updateProgress}) async {
+      {List<int> fileBytes, Function(int) updateProgress}) async {
     if (file.localId == null) {
-      final fileBytes = await _filesApi.downloadFile(file.downloadUrl,
-          updateProgress: updateProgress);
-      final dartFile = await _filesLocal.saveFileForOffline(fileBytes, file);
+      List<int> contentBytes = fileBytes;
+      if (contentBytes == null) {
+        contentBytes = await _filesApi.downloadFile(file.downloadUrl,
+            updateProgress: updateProgress);
+      }
+
+      final dartFile = await _filesLocal.saveFileForOffline(contentBytes, file);
       // TODO VO: replace with guid
       final FilesCompanion filesCompanion = getCompanionFromLocalFile(
           file, "${dartFile.parent.path}/${file.name}");

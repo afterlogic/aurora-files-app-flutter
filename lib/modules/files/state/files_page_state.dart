@@ -138,9 +138,13 @@ abstract class _FilesPageState with Store {
     @required Function(String) onError,
   }) async {
     final List<Map<String, dynamic>> mappedFilesToDelete = [];
+    // files, that are deleted from direct mode are automatically deleted from offline
+    final List<LocalFile> filesToDeleteLocally = [];
 
     if (filesToDelete is List) {
       filesToDelete.forEach((file) {
+        if (file.localPath != null) filesToDeleteLocally.add(file);
+
         mappedFilesToDelete.add(FileToDelete(
                 path: file.path, name: file.name, isFolder: file.isFolder)
             .toMap());
@@ -149,6 +153,7 @@ abstract class _FilesPageState with Store {
       // find selected files by their id
       currentFiles.forEach((file) {
         if (selectedFilesIds.contains(file.id)) {
+          if (file.localPath != null) filesToDeleteLocally.add(file);
           mappedFilesToDelete.add(FileToDelete(
                   path: file.path, name: file.name, isFolder: file.isFolder)
               .toMap());
@@ -159,6 +164,7 @@ abstract class _FilesPageState with Store {
     try {
       filesLoading = FilesLoadingType.filesVisible;
       await _filesApi.delete(storage.type, pagePath, mappedFilesToDelete);
+      await _filesDao.deleteFiles(filesToDeleteLocally);
       onSuccess();
     } catch (stack, err) {
       onError(err.toString());

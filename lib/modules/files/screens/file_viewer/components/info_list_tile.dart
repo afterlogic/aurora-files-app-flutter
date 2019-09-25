@@ -76,6 +76,7 @@ class _InfoListTileState extends State<InfoListTile> {
           Text(widget.label, style: Theme.of(context).textTheme.caption),
           if (_expanded)
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Flexible(
                   child: Text(
@@ -105,7 +106,9 @@ class _InfoListTileState extends State<InfoListTile> {
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(colors: [
-                        Colors.white.withOpacity(0.0),
+                        Theme.of(context)
+                            .scaffoldBackgroundColor
+                            .withOpacity(0.0),
                         Theme.of(context).scaffoldBackgroundColor,
                       ], stops: [
                         0.0,

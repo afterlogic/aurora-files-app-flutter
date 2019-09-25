@@ -2,12 +2,9 @@ import 'dart:io';
 
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/utils/api_utils.dart';
-import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:moor_flutter/moor_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../app_database.dart';
 import 'files_table.dart';
@@ -40,7 +37,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     final storageNames = new Set<String>();
     offlineFiles.forEach((file) => storageNames.add(file.type));
 
-    return storageNames.map((name) => _getStorageFromName(name)).toList();
+    return storageNames.map((name) => getStorageFromName(name)).toList();
   }
 
   Future<List<LocalFile>> getFilesAtPath(String nullablePath) async {
@@ -49,7 +46,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
           ..where((file) => file.owner.equals(userEmail))
           ..where((file) => file.type.equals(storageType)))
         .get();
-    // get files from subfolders to recreate filesStructure
+    // get files from subfolders to recreate folders structure
     final childFiles =
         offlineFiles.where((file) => file.path.contains(path)).toList();
     final folderNames = new Set<String>();
@@ -64,7 +61,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     });
     Set<LocalFile> filesAtPath = new Set();
     folderNames.forEach((name) {
-      filesAtPath.add(_getFolderFromName(name, path));
+      filesAtPath.add(getFolderFromName(name, path));
     });
     filesAtPath = [
       ...filesAtPath,
@@ -73,103 +70,18 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     return filesAtPath.toList();
   }
 
-  Future<int> addFile(LocalFile file) async {
-    if (!Platform.isIOS) await getStoragePermissions();
-    Directory dir = await getApplicationDocumentsDirectory();
-    if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
-    if (!dir.existsSync()) {
-      throw CustomException("Could not resolve save directory");
-    }
-
-    String fileId = file.path.replaceAll("/", ".");
-    fileId += "%FILENAME:${file.name}";
-
-    await FlutterDownloader.enqueue(
-      url: hostName + file.downloadUrl,
-      savedDir: dir.path,
-      fileName: fileId,
-      headers: getHeader(),
-      showNotification: false,
-      openFileFromNotification: false,
-    );
-    return into(files)
-        .insert(_getCompanionFromLocalFile(file, "${dir.path}/$fileId"));
+  Future<int> addFile(FilesCompanion file) async {
+    return into(files).insert(file);
   }
 
   Future<int> deleteFiles(List<LocalFile> filesToDelete) async {
-    final List<int> ids = filesToDelete.map((file) => file.localId).toList();
     if (!Platform.isIOS) await getStoragePermissions();
+
+    final List<int> ids = filesToDelete.map((file) => file.localId).toList();
     filesToDelete.forEach((file) {
       final fileToDelete = new File(file.localPath);
       if (fileToDelete.existsSync()) fileToDelete.delete();
     });
     return (delete(files)..where((file) => isIn(file.localId, ids))).go();
-  }
-
-  Storage _getStorageFromName(String name) {
-    return new Storage(
-      type: name,
-      displayName: name[0].toUpperCase() + name.substring(1),
-      isExternal: false,
-    );
-  }
-
-  FilesCompanion _getCompanionFromLocalFile(LocalFile file, String pathToFile) {
-    return new FilesCompanion(
-      id: Value(file.id),
-      type: Value(file.type),
-      path: Value(file.path),
-      fullPath: Value(file.fullPath),
-      localPath: Value(pathToFile),
-      name: Value(file.name),
-      size: Value(file.size),
-      isFolder: Value(file.isFolder),
-      isOpenable: Value(file.isOpenable),
-      isLink: Value(file.isLink),
-      linkType: Value(file.linkType),
-      linkUrl: Value(file.linkUrl),
-      lastModified: Value(file.lastModified),
-      contentType: Value(file.contentType),
-      oEmbedHtml: Value(file.oEmbedHtml),
-      published: Value(file.published),
-      owner: Value(file.owner),
-      content: Value(file.content),
-      viewUrl: Value(file.viewUrl),
-      downloadUrl: Value(file.downloadUrl),
-      thumbnailUrl: Value(file.thumbnailUrl),
-      hash: Value(file.hash),
-      extendedProps: Value(file.extendedProps),
-      isExternal: Value(file.isExternal),
-      initVector: Value(file.initVector),
-    );
-  }
-
-  LocalFile _getFolderFromName(String name, String path) {
-    return new LocalFile(
-      localId: null,
-      id: name,
-      type: storageType,
-      path: path,
-      fullPath: path.isEmpty ? "/" + name : "$path/$name",
-      localPath: null,
-      name: name,
-      size: 0,
-      isFolder: true,
-      isOpenable: true,
-      isLink: false,
-      linkType: "",
-      linkUrl: "",
-      lastModified: 0,
-      contentType: "",
-      oEmbedHtml: "",
-      published: false,
-      owner: userEmail,
-      content: "",
-      viewUrl: null,
-      downloadUrl: null,
-      hash: null,
-      extendedProps: "[]",
-      isExternal: false,
-    );
   }
 }

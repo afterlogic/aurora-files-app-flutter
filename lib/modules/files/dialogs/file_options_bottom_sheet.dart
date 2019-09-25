@@ -13,6 +13,10 @@ import 'delete_confirmation_dialog.dart';
 import 'rename_dialog_android.dart';
 import 'share_dialog.dart';
 
+enum FileOptionsBottomSheetResult {
+  toggleOffline,
+}
+
 class FileOptionsBottomSheet extends StatefulWidget {
   final LocalFile file;
   final FilesState filesState;
@@ -48,20 +52,6 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 ));
   }
 
-  Future _setFileForOffline() async {
-    try {
-      await widget.filesState.onSetFileOffline(widget.file);
-      Navigator.pop(context);
-      await widget.filesPageState.onGetFiles();
-    } catch (err) {
-      showSnack(
-        context: context,
-        scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-        msg: err.toString(),
-      );
-    }
-  }
-
   void _downloadFile() {
     Navigator.pop(context);
     widget.filesState.onDownloadFile(
@@ -92,6 +82,10 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     );
   }
 
+  void onItemSelected(FileOptionsBottomSheetResult result) {
+    Navigator.pop(context, result);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -120,13 +114,15 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               if (!widget.file.isFolder) Divider(height: 0),
               if (!widget.file.isFolder)
                 ListTile(
-                  onTap: _setFileForOffline,
+                  onTap: () => onItemSelected(
+                      FileOptionsBottomSheetResult.toggleOffline),
                   leading: Icon(Icons.airplanemode_active),
                   title: Text("Offline"),
                   trailing: Switch.adaptive(
                     value: widget.file.localId != null,
                     activeColor: Theme.of(context).accentColor,
-                    onChanged: (bool val) => _setFileForOffline(),
+                    onChanged: (bool val) => onItemSelected(
+                        FileOptionsBottomSheetResult.toggleOffline),
                   ),
                 ),
               Divider(height: 0),

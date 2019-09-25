@@ -1,6 +1,7 @@
+import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
-class CustomBottomSheet extends ModalRoute<void> {
+class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
   final Widget child;
 
   CustomBottomSheet({@required this.child});

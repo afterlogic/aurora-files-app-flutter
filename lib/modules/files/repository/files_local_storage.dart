@@ -6,7 +6,6 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
-import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
@@ -15,7 +14,6 @@ import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:open_file/open_file.dart';
@@ -23,7 +21,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
 class FilesLocalStorage {
-  final String authToken = AppStore.authState.authToken;
   final uploader = FlutterUploader();
   final chunkSize = 128000;
 
@@ -57,7 +54,6 @@ class FilesLocalStorage {
             method: "UploadFile",
             parameters: jsonEncode(params))
         .toMap();
-  print("VO: apiUrl: ${apiUrl}");
     uploader.enqueue(
       url: apiUrl,
       files: [fileItem],
@@ -89,8 +85,9 @@ class FilesLocalStorage {
     return OpenFile.open(tempFileForShare.path);
   }
 
-  Future<String> saveFileInDownloads(List<int> fileBytes, LocalFile file) async {
-    await getStoragePermissions();
+  Future<String> saveFileInDownloads(
+      List<int> fileBytes, LocalFile file) async {
+    if (!Platform.isIOS) await getStoragePermissions();
     Directory dir = await DownloadsPathProvider.downloadsDirectory;
 
     final fileToDownload = new File("${dir.path}/${file.name}");
@@ -100,8 +97,21 @@ class FilesLocalStorage {
     return fileToDownload.path;
   }
 
+  Future<File> saveFileForOffline(fileBytes, LocalFile file) async {
+    if (!Platform.isIOS) await getStoragePermissions();
+    Directory dir = await getApplicationDocumentsDirectory();
+
+    // TODO VO: replace with guid
+    final offlineFile = new File("${dir.path}/${file.name}");
+    await offlineFile.create(recursive: true);
+    await offlineFile.writeAsBytes(fileBytes);
+
+    return offlineFile;
+  }
+
   Future<File> cacheFile(List<int> fileBytes, LocalFile file) async {
     final Directory dir = await getTemporaryDirectory();
+    // TODO VO: replace with guid
     File tempFileForShare = new File("${dir.path}/temp/${file.name}");
     if (!await tempFileForShare.exists()) {
       await tempFileForShare.create(recursive: true);
@@ -121,6 +131,7 @@ class FilesLocalStorage {
       final itemsInTemp = await tempFolder.list().toList();
 
       itemsInTemp.forEach((file) async {
+        // TODO VO: replace with guid
         if (file.path.contains(fileObj.name) && file is File) {
           final fileContents = file.readAsBytesSync();
           if (fileContents.lengthInBytes == fileObj.size) {

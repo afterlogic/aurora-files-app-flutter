@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_local_storage.dart';
 import 'package:flutter/material.dart';
@@ -94,6 +95,7 @@ abstract class _AuthState with Store {
   }
 
   void onLogout() {
+    AppStore.filesState.currentStorages = new List();
     _authLocal.deleteTokenFromStorage();
     _authLocal.deleteUserIdFromStorage();
     authToken = null;

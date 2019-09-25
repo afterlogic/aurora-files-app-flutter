@@ -141,6 +141,7 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
     localId: null,
     id: rawFile["Id"],
     type: rawFile["Type"],
+    localPath: null,
     path: rawFile["Path"],
     fullPath: rawFile["FullPath"],
     name: rawFile["Name"],

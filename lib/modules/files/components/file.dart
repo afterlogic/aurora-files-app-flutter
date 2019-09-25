@@ -22,19 +22,32 @@ import 'package:provider/provider.dart';
 import '../files_route.dart';
 import 'files_item_tile.dart';
 
-class FileWidget extends StatelessWidget {
+class FileWidget extends StatefulWidget {
   final LocalFile file;
 
   const FileWidget({Key key, @required this.file}) : super(key: key);
 
+  @override
+  _FileWidgetState createState() => _FileWidgetState();
+}
+
+class _FileWidgetState extends State<FileWidget> {
   Future _showModalBottomSheet(context) async {
-    Navigator.of(context).push(CustomBottomSheet(
-      child: FileOptionsBottomSheet(
-        file: file,
-        filesState: Provider.of<FilesState>(context),
-        filesPageState: Provider.of<FilesPageState>(context),
-      ),
-    ));
+    final result = await Navigator.push(
+        context,
+        CustomBottomSheet(
+          child: FileOptionsBottomSheet(
+            file: widget.file,
+            filesState: Provider.of<FilesState>(context),
+            filesPageState: Provider.of<FilesPageState>(context),
+          ),
+        ));
+
+    switch (result) {
+      case FileOptionsBottomSheetResult.toggleOffline:
+        _setFileForOffline();
+        break;
+    }
   }
 
   void _openEncryptedFile(BuildContext context) {
@@ -50,15 +63,47 @@ class FileWidget extends StatelessWidget {
     }
   }
 
+  Future _setFileForOffline() async {
+    final filesState = Provider.of<FilesState>(context);
+    final filesPageState = Provider.of<FilesPageState>(context);
+    try {
+      if (widget.file.localId == null) {
+        showSnack(
+          context: context,
+          scaffoldState: filesPageState.scaffoldKey.currentState,
+          msg: "Synching file...",
+          isError: false,
+        );
+      }
+      await filesState.onSetFileOffline(widget.file);
+      if (widget.file.localId == null) {
+        showSnack(
+          context: context,
+          scaffoldState: filesPageState.scaffoldKey.currentState,
+          msg: "File synched successfully",
+          isError: false,
+        );
+      }
+      await filesPageState.onGetFiles();
+    } catch (err) {
+      showSnack(
+        context: context,
+        scaffoldState: filesPageState.scaffoldKey.currentState,
+        msg: err.toString(),
+      );
+    }
+  }
+
   void _openFile(BuildContext context) {
     final filesState = Provider.of<FilesState>(context);
     final filesPageState = Provider.of<FilesPageState>(context);
-    if (file.isOpenable) {
+    // TODO disable opening ZIP files
+    if (false && widget.file.isOpenable) {
       Navigator.pushNamed(
         context,
         FilesRoute.name,
         arguments: FilesScreenArguments(
-          path: file.fullPath,
+          path: widget.file.fullPath,
           isZip: true,
         ),
       );
@@ -67,7 +112,7 @@ class FileWidget extends StatelessWidget {
         context,
         FileViewerRoute.name,
         arguments: FileViewerScreenArguments(
-          file: file,
+          file: widget.file,
           filesState: filesState,
           filesPageState: filesPageState,
         ),
@@ -80,10 +125,10 @@ class FileWidget extends StatelessWidget {
     final thumbnailSize = filesState.filesTileLeadingSize;
     final hostName = Provider.of<AuthState>(context).hostName;
 
-    if (file.initVector != null) {
+    if (widget.file.initVector != null) {
       return Icon(Icons.lock_outline,
           size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else if (file.thumbnailUrl != null) {
+    } else if (widget.file.thumbnailUrl != null) {
       return SizedBox(
         width: thumbnailSize,
         height: thumbnailSize,
@@ -96,11 +141,12 @@ class FileWidget extends StatelessWidget {
                     image:
                         AssetImage("lib/assets/images/image_placeholder.jpg"))),
             child: Hero(
-              tag: file.thumbnailUrl,
-              child: filesState.isOfflineMode && file.localPath != null
-                  ? Image.file(new File(file.localPath), fit: BoxFit.cover)
+              tag: widget.file.thumbnailUrl,
+              child: filesState.isOfflineMode && widget.file.localPath != null
+                  ? Image.file(new File(widget.file.localPath),
+                      fit: BoxFit.cover)
                   : CachedNetworkImage(
-                      imageUrl: '$hostName/${file.thumbnailUrl}',
+                      imageUrl: '$hostName/${widget.file.thumbnailUrl}',
                       httpHeaders: getHeader(),
                       fit: BoxFit.cover,
                       fadeInDuration: Duration(milliseconds: 200),
@@ -111,7 +157,7 @@ class FileWidget extends StatelessWidget {
       );
     }
 
-    switch (getFileType(file)) {
+    switch (getFileType(widget.file)) {
       case FileType.text:
         return Icon(MdiIcons.fileDocumentOutline,
             size: thumbnailSize, color: Theme.of(context).disabledColor);
@@ -144,14 +190,14 @@ class FileWidget extends StatelessWidget {
 
     return Observer(
       builder: (_) => SelectableFilesItemTile(
-        file: file,
+        file: widget.file,
         onTap: () {
           filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
-          file.initVector != null
+          widget.file.initVector != null
               ? _openEncryptedFile(context)
               : _openFile(context);
         },
-        isSelected: filesPageState.selectedFilesIds.contains(file.id),
+        isSelected: filesPageState.selectedFilesIds.contains(widget.file.id),
         child: Stack(children: [
           ListTile(
             leading: _getThumbnail(context),
@@ -162,7 +208,7 @@ class FileWidget extends StatelessWidget {
                 children: <Widget>[
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Text(file.name),
+                    child: Text(widget.file.name),
                   ),
                   SizedBox(height: 7.0),
                   Theme(
@@ -174,26 +220,27 @@ class FileWidget extends StatelessWidget {
                     ),
                     child: Row(
                       children: <Widget>[
-                        if (file.published)
+                        if (widget.file.published)
                           Icon(
                             Icons.link,
                             semanticLabel: "Has public link",
                           ),
-                        if (file.published) SizedBox(width: margin),
-                        if (file.localId != null)
+                        if (widget.file.published) SizedBox(width: margin),
+                        if (widget.file.localId != null)
                           Icon(
                             Icons.airplanemode_active,
                             semanticLabel: "Available offline",
                           ),
-                        if (file.localId != null) SizedBox(width: margin),
-                        Text(filesize(file.size),
+                        if (widget.file.localId != null)
+                          SizedBox(width: margin),
+                        Text(filesize(widget.file.size),
                             style: Theme.of(context).textTheme.caption),
                         SizedBox(width: margin),
                         Text("|", style: Theme.of(context).textTheme.caption),
                         SizedBox(width: margin),
                         Text(
                             DateFormatting.formatDateFromSeconds(
-                              timestamp: file.lastModified,
+                              timestamp: widget.file.lastModified,
                             ),
                             style: Theme.of(context).textTheme.caption),
                         SizedBox(width: margin),

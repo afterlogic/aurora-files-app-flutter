@@ -10,6 +10,7 @@ import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
+import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -89,6 +90,7 @@ abstract class _FilesState with Store {
   Future _getOnlineStorages(Function(String) onError) async {
     try {
       currentStorages = await _filesApi.getStorages();
+      currentStorages.sort((a, b) => a.order.compareTo(b.order));
       if (currentStorages.length > 0) {
         selectedStorage = currentStorages[0];
       }
@@ -297,9 +299,15 @@ abstract class _FilesState with Store {
     return _filesLocal.shareFile(fileContents, file);
   }
 
-  Future<void> onSetFileOffline(LocalFile file) async {
+  Future<void> onSetFileOffline(LocalFile file,
+      {Function(int) updateProgress}) async {
     if (file.localId == null) {
-      await _filesDao.addFile(file);
+      final fileBytes = await _filesApi.downloadFile(file.downloadUrl, updateProgress: updateProgress);
+      final dartFile = await _filesLocal.saveFileForOffline(fileBytes, file);
+      // TODO VO: replace with guid
+      final FilesCompanion filesCompanion =
+          getCompanionFromLocalFile(file, "${dartFile.parent.path}/${file.name}");
+      await _filesDao.addFile(filesCompanion);
     } else {
       await _filesDao.deleteFiles([file]);
     }

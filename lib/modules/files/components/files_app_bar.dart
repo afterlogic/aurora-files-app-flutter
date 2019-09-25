@@ -70,7 +70,13 @@ class _FilesAppBarState extends State<FilesAppBar>
         ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
         centerTitle: Platform.isIOS,
-        actions: <Widget>[
+        actions: _filesState.isOfflineMode ? [
+//          IconButton(
+//            icon: Icon(Icons.airplanemode_inactive),
+//            tooltip: "Delete files from offline",
+//            onPressed: () {},
+//          ),
+        ] : [
           IconButton(
             icon: Icon(MdiIcons.fileMove),
             tooltip: "Move/Copy files",

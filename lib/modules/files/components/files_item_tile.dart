@@ -63,7 +63,7 @@ class SelectableFilesItemTile extends StatelessWidget {
 
     return InkWell(
       onTap: _getOnTapCb(filesState, filesPageState),
-      onLongPress: filesState.isMoveModeEnabled ||
+      onLongPress: filesState.isOfflineMode || filesState.isMoveModeEnabled ||
               file == null ||
               filesPageState.selectedFilesIds.length > 0
           ? null

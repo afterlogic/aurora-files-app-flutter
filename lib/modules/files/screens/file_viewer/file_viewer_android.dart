@@ -264,7 +264,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               ? [
                   IconButton(
                     icon: Icon(Icons.airplanemode_inactive),
-                    tooltip: "Delete file",
+                    tooltip: "Delete file from offline",
                     onPressed: _setFileForOffline,
                   ),
                 ]

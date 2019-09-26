@@ -48,7 +48,7 @@ abstract class _SettingsState with Store {
 
     connectivity.onConnectivityChanged.listen((res) {
       internetConnection = res;
-      print("VO: internetConnection: ${internetConnection}");
+      print("internetConnection: ${internetConnection}");
     });
     final result = await Future.wait([
       _settingsLocal.getDarkThemeFromStorage(),

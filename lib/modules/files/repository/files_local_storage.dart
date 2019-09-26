@@ -76,8 +76,8 @@ class FilesLocalStorage {
     else
       fileType = "file";
 
-    final tempFileForShare = await cacheFile(fileBytes, file);
-    return ShareExtend.share(tempFileForShare.path, fileType);
+    final tempFileForShare = await saveFileForShare(fileBytes, file);
+    await ShareExtend.share(tempFileForShare.path, fileType);
   }
 
   Future<void> openFileWith(List<int> fileBytes, LocalFile file) async {
@@ -101,18 +101,16 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
     Directory dir = await getApplicationDocumentsDirectory();
 
-    // TODO VO: replace with guid
-    final offlineFile = new File("${dir.path}/${file.name}");
+    final offlineFile = new File("${dir.path}/${file.guid}");
     await offlineFile.create(recursive: true);
     await offlineFile.writeAsBytes(fileBytes);
 
     return offlineFile;
   }
 
-  Future<File> cacheFile(List<int> fileBytes, LocalFile file) async {
+  Future<File> saveFileForShare(List<int> fileBytes, LocalFile file) async {
     final Directory dir = await getTemporaryDirectory();
-    // TODO VO: replace with guid
-    File tempFileForShare = new File("${dir.path}/temp/${file.name}");
+    File tempFileForShare = new File("${dir.path}/share/${file.name}");
     if (!await tempFileForShare.exists()) {
       await tempFileForShare.create(recursive: true);
       await tempFileForShare.writeAsBytes(fileBytes);
@@ -120,19 +118,28 @@ class FilesLocalStorage {
     return tempFileForShare;
   }
 
+  Future<File> cacheFile(List<int> fileBytes, LocalFile file) async {
+    final Directory dir = await getTemporaryDirectory();
+    File cachedFile = new File("${dir.path}/files/${file.guid}");
+    if (!await cachedFile.exists()) {
+      await cachedFile.create(recursive: true);
+      await cachedFile.writeAsBytes(fileBytes);
+    }
+    return cachedFile;
+  }
+
   // if file not found returns null
   Future<List<int>> getFileFromCache(LocalFile fileObj) async {
     List<int> fileBytes;
 
     final tempDir = await getTemporaryDirectory();
-    final tempFolder = Directory("${tempDir.path}/temp");
+    final tempFolder = Directory("${tempDir.path}/files");
     final folderExists = await tempFolder.exists();
     if (folderExists) {
       final itemsInTemp = await tempFolder.list().toList();
 
       itemsInTemp.forEach((file) async {
-        // TODO VO: replace with guid
-        if (file.path.contains(fileObj.name) && file is File) {
+        if (file.path.contains(fileObj.guid) && file is File) {
           final fileContents = file.readAsBytesSync();
           if (fileContents.lengthInBytes == fileObj.size) {
             fileBytes = fileContents;
@@ -141,6 +148,23 @@ class FilesLocalStorage {
       });
     }
     return fileBytes;
+  }
+
+  Future<void> deleteFileFromCache([List<LocalFile> files]) async {
+      final Directory dir = await getTemporaryDirectory();
+    if (files != null) {
+      for (final file in files) {
+        File cachedFile = new File("${dir.path}/files/${file.guid}");
+        if (cachedFile.existsSync()) {
+          await cachedFile.delete(recursive: true);
+        }
+      }
+    } else {
+      final cacheDir = new Directory("${dir.path}/files");
+      if (cacheDir.existsSync()) {
+        await cacheDir.delete(recursive: true);
+      }
+    }
   }
 
   Future<List> encryptFile(File file) async {

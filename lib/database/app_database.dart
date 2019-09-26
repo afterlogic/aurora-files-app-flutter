@@ -14,8 +14,8 @@ class AppDatabase extends _$AppDatabase {
         return m.createAllTables();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        if (from == 3) {
-          await m.addColumn(files, files.localPath);
+        if (from == 1) {
+          await m.addColumn(files, files.guid);
         }
       }
   );
@@ -23,5 +23,5 @@ class AppDatabase extends _$AppDatabase {
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 1;
 }

@@ -3,6 +3,7 @@ import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
+import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,6 +25,7 @@ class FilesPageState = _FilesPageState with _$FilesPageState;
 abstract class _FilesPageState with Store {
   final _filesApi = FilesApi();
   final _filesDao = FilesDao(AppStore.appDb);
+  final _filesLocal = FilesLocalStorage();
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -140,11 +142,12 @@ abstract class _FilesPageState with Store {
     final List<Map<String, dynamic>> mappedFilesToDelete = [];
     // files, that are deleted from direct mode are automatically deleted from offline
     final List<LocalFile> filesToDeleteLocally = [];
+    final List<LocalFile> filesToDeleteFromCache = [];
 
     if (filesToDelete is List) {
       filesToDelete.forEach((file) {
         if (file.localPath != null) filesToDeleteLocally.add(file);
-
+        filesToDeleteFromCache.add(file);
         mappedFilesToDelete.add(FileToDelete(
                 path: file.path, name: file.name, isFolder: file.isFolder)
             .toMap());
@@ -154,6 +157,7 @@ abstract class _FilesPageState with Store {
       currentFiles.forEach((file) {
         if (selectedFilesIds.contains(file.id)) {
           if (file.localPath != null) filesToDeleteLocally.add(file);
+          filesToDeleteFromCache.add(file);
           mappedFilesToDelete.add(FileToDelete(
                   path: file.path, name: file.name, isFolder: file.isFolder)
               .toMap());
@@ -164,6 +168,7 @@ abstract class _FilesPageState with Store {
     try {
       filesLoading = FilesLoadingType.filesVisible;
       await _filesApi.delete(storage.type, pagePath, mappedFilesToDelete);
+      await _filesLocal.deleteFileFromCache(filesToDeleteFromCache);
       await _filesDao.deleteFiles(filesToDeleteLocally);
       onSuccess();
     } catch (stack, err) {

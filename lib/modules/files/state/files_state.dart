@@ -313,9 +313,8 @@ abstract class _FilesState with Store {
       }
 
       final dartFile = await _filesLocal.saveFileForOffline(contentBytes, file);
-      // TODO VO: replace with guid
       final FilesCompanion filesCompanion = getCompanionFromLocalFile(
-          file, "${dartFile.parent.path}/${file.name}");
+          file, "${dartFile.parent.path}/${file.guid}");
       await _filesDao.addFile(filesCompanion);
     } else {
       await _filesDao.deleteFiles([file]);

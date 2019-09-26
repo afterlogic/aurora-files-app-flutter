@@ -10,6 +10,7 @@ part of 'app_database.dart';
 class LocalFile extends DataClass implements Insertable<LocalFile> {
   final int localId;
   final String id;
+  final String guid;
   final String type;
   final String path;
   final String fullPath;
@@ -37,6 +38,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   LocalFile(
       {@required this.localId,
       @required this.id,
+      this.guid,
       @required this.type,
       @required this.path,
       @required this.fullPath,
@@ -71,6 +73,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       localId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      guid: stringType.mapFromDatabaseResponse(data['${effectivePrefix}guid']),
       type: stringType.mapFromDatabaseResponse(data['${effectivePrefix}type']),
       path: stringType.mapFromDatabaseResponse(data['${effectivePrefix}path']),
       fullPath: stringType
@@ -121,6 +124,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
     return LocalFile(
       localId: serializer.fromJson<int>(json['localId']),
       id: serializer.fromJson<String>(json['id']),
+      guid: serializer.fromJson<String>(json['guid']),
       type: serializer.fromJson<String>(json['type']),
       path: serializer.fromJson<String>(json['path']),
       fullPath: serializer.fromJson<String>(json['fullPath']),
@@ -153,6 +157,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
     return {
       'localId': serializer.toJson<int>(localId),
       'id': serializer.toJson<String>(id),
+      'guid': serializer.toJson<String>(guid),
       'type': serializer.toJson<String>(type),
       'path': serializer.toJson<String>(path),
       'fullPath': serializer.toJson<String>(fullPath),
@@ -187,6 +192,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           ? const Value.absent()
           : Value(localId),
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      guid: guid == null && nullToAbsent ? const Value.absent() : Value(guid),
       type: type == null && nullToAbsent ? const Value.absent() : Value(type),
       path: path == null && nullToAbsent ? const Value.absent() : Value(path),
       fullPath: fullPath == null && nullToAbsent
@@ -253,6 +259,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   LocalFile copyWith(
           {int localId,
           String id,
+          String guid,
           String type,
           String path,
           String fullPath,
@@ -280,6 +287,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       LocalFile(
         localId: localId ?? this.localId,
         id: id ?? this.id,
+        guid: guid ?? this.guid,
         type: type ?? this.type,
         path: path ?? this.path,
         fullPath: fullPath ?? this.fullPath,
@@ -310,6 +318,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
     return (StringBuffer('LocalFile(')
           ..write('localId: $localId, ')
           ..write('id: $id, ')
+          ..write('guid: $guid, ')
           ..write('type: $type, ')
           ..write('path: $path, ')
           ..write('fullPath: $fullPath, ')
@@ -344,50 +353,51 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       $mrjc(
           id.hashCode,
           $mrjc(
-              type.hashCode,
+              guid.hashCode,
               $mrjc(
-                  path.hashCode,
+                  type.hashCode,
                   $mrjc(
-                      fullPath.hashCode,
+                      path.hashCode,
                       $mrjc(
-                          localPath.hashCode,
+                          fullPath.hashCode,
                           $mrjc(
-                              name.hashCode,
+                              localPath.hashCode,
                               $mrjc(
-                                  size.hashCode,
+                                  name.hashCode,
                                   $mrjc(
-                                      isFolder.hashCode,
+                                      size.hashCode,
                                       $mrjc(
-                                          isOpenable.hashCode,
+                                          isFolder.hashCode,
                                           $mrjc(
-                                              isLink.hashCode,
+                                              isOpenable.hashCode,
                                               $mrjc(
-                                                  linkType.hashCode,
+                                                  isLink.hashCode,
                                                   $mrjc(
-                                                      linkUrl.hashCode,
+                                                      linkType.hashCode,
                                                       $mrjc(
-                                                          lastModified.hashCode,
+                                                          linkUrl.hashCode,
                                                           $mrjc(
-                                                              contentType
+                                                              lastModified
                                                                   .hashCode,
                                                               $mrjc(
-                                                                  oEmbedHtml
+                                                                  contentType
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      published
+                                                                      oEmbedHtml
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          owner
+                                                                          published
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              content.hashCode,
-                                                                              $mrjc(viewUrl.hashCode, $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, initVector.hashCode))))))))))))))))))))))))));
+                                                                              owner.hashCode,
+                                                                              $mrjc(content.hashCode, $mrjc(viewUrl.hashCode, $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, initVector.hashCode)))))))))))))))))))))))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
       (other is LocalFile &&
           other.localId == localId &&
           other.id == id &&
+          other.guid == guid &&
           other.type == type &&
           other.path == path &&
           other.fullPath == fullPath &&
@@ -417,6 +427,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
 class FilesCompanion extends UpdateCompanion<LocalFile> {
   final Value<int> localId;
   final Value<String> id;
+  final Value<String> guid;
   final Value<String> type;
   final Value<String> path;
   final Value<String> fullPath;
@@ -444,6 +455,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
   const FilesCompanion({
     this.localId = const Value.absent(),
     this.id = const Value.absent(),
+    this.guid = const Value.absent(),
     this.type = const Value.absent(),
     this.path = const Value.absent(),
     this.fullPath = const Value.absent(),
@@ -472,6 +484,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
   FilesCompanion copyWith(
       {Value<int> localId,
       Value<String> id,
+      Value<String> guid,
       Value<String> type,
       Value<String> path,
       Value<String> fullPath,
@@ -499,6 +512,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
     return FilesCompanion(
       localId: localId ?? this.localId,
       id: id ?? this.id,
+      guid: guid ?? this.guid,
       type: type ?? this.type,
       path: path ?? this.path,
       fullPath: fullPath ?? this.fullPath,
@@ -549,6 +563,18 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
       'id',
       $tableName,
       false,
+    );
+  }
+
+  final VerificationMeta _guidMeta = const VerificationMeta('guid');
+  GeneratedTextColumn _guid;
+  @override
+  GeneratedTextColumn get guid => _guid ??= _constructGuid();
+  GeneratedTextColumn _constructGuid() {
+    return GeneratedTextColumn(
+      'guid',
+      $tableName,
+      true,
     );
   }
 
@@ -854,6 +880,7 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   List<GeneratedColumn> get $columns => [
         localId,
         id,
+        guid,
         type,
         path,
         fullPath,
@@ -899,6 +926,12 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
       context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
     } else if (id.isRequired && isInserting) {
       context.missing(_idMeta);
+    }
+    if (d.guid.present) {
+      context.handle(
+          _guidMeta, guid.isAcceptableValue(d.guid.value, _guidMeta));
+    } else if (guid.isRequired && isInserting) {
+      context.missing(_guidMeta);
     }
     if (d.type.present) {
       context.handle(
@@ -1069,6 +1102,9 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     }
     if (d.id.present) {
       map['id'] = Variable<String, StringType>(d.id.value);
+    }
+    if (d.guid.present) {
+      map['guid'] = Variable<String, StringType>(d.guid.value);
     }
     if (d.type.present) {
       map['type'] = Variable<String, StringType>(d.type.value);

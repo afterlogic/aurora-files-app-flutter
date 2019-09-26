@@ -144,7 +144,7 @@ class _ImageViewerState extends State<ImageViewer> {
       return Padding(
         padding: const EdgeInsets.only(bottom: 30.0),
         child: Hero(
-            tag: _fileViewerState.file.thumbnailUrl,
+            tag: _fileViewerState.file.guid,
             child: SizedBox(
               width: double.infinity,
               child: AppStore.filesState.isOfflineMode &&

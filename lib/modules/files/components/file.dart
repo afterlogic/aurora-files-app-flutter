@@ -141,7 +141,7 @@ class _FileWidgetState extends State<FileWidget> {
                     image:
                         AssetImage("lib/assets/images/image_placeholder.jpg"))),
             child: Hero(
-              tag: widget.file.thumbnailUrl,
+              tag: widget.file.guid,
               child: filesState.isOfflineMode && widget.file.localPath != null
                   ? Image.file(new File(widget.file.localPath),
                       fit: BoxFit.cover)

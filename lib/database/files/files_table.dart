@@ -6,6 +6,8 @@ class Files extends Table {
 
   TextColumn get id => text()();
 
+  TextColumn get guid => text().nullable()();
+
   TextColumn get type => text()();
 
   TextColumn get path => text()();

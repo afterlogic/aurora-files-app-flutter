@@ -8,12 +8,15 @@ Storage getStorageFromName(String name) {
     type: name,
     displayName: name[0].toUpperCase() + name.substring(1),
     isExternal: false,
+    isDroppable: false,
+    order: 0,
   );
 }
 
 FilesCompanion getCompanionFromLocalFile(LocalFile file, String pathToFile) {
   return new FilesCompanion(
     id: Value(file.id),
+    guid: Value(file.guid),
     type: Value(file.type),
     path: Value(file.path),
     fullPath: Value(file.fullPath),
@@ -47,6 +50,7 @@ LocalFile getFolderFromName(String name, String path) {
   return new LocalFile(
     localId: null,
     id: name,
+    guid: null,
     type: storageType,
     path: path,
     fullPath: path.isEmpty ? "/" + name : "$path/$name",

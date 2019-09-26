@@ -9,6 +9,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
+import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
@@ -277,11 +278,19 @@ abstract class _FilesState with Store {
     Function onError,
   }) async {
     try {
+      if (file.initVector != null &&
+          AppStore.settingsState.currentKey == null) {
+        throw CustomException("You need an encryption key to download files.");
+      }
+      // else
       onStart();
-      final downloadedBytes =
+      List<int> fileBytes =
           await _filesApi.downloadFile(url, updateProgress: onUpdateProgress);
-      final savedPath =
-          await _filesLocal.saveFileInDownloads(downloadedBytes, file);
+      if (file.initVector != null) {
+        fileBytes =
+            await _filesLocal.decryptFile(file: file, fileBytes: fileBytes);
+      }
+      final savedPath = await _filesLocal.saveFileInDownloads(fileBytes, file);
       onSuccess(savedPath);
     } catch (err) {
       onError(err.toString());

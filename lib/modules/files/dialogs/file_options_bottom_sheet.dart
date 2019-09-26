@@ -15,6 +15,7 @@ import 'share_dialog.dart';
 
 enum FileOptionsBottomSheetResult {
   toggleOffline,
+  download,
 }
 
 class FileOptionsBottomSheet extends StatefulWidget {
@@ -50,36 +51,6 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   filesState: widget.filesState,
                   file: widget.file,
                 ));
-  }
-
-  void _downloadFile() {
-    Navigator.pop(context);
-    widget.filesState.onDownloadFile(
-      url: widget.file.downloadUrl,
-      file: widget.file,
-      onStart: () => showSnack(
-        context: context,
-        scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-        msg: "Downloading ${widget.file.name}",
-        isError: false,
-      ),
-      onSuccess: (String path) => showSnack(
-          context: context,
-          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-          msg: "${widget.file.name} downloaded successfully into: $path",
-          isError: false,
-          duration: Duration(minutes: 10),
-          action: SnackBarAction(
-            label: "OK",
-            onPressed: widget
-                .filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
-          )),
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-        msg: err,
-      ),
-    );
   }
 
   void onItemSelected(FileOptionsBottomSheetResult result) {
@@ -149,7 +120,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 ListTile(
                   leading: Icon(Icons.file_download),
                   title: Text("Download"),
-                  onTap: _downloadFile,
+                  onTap: () =>
+                      onItemSelected(FileOptionsBottomSheetResult.download),
                 ),
               ListTile(
                 leading: Icon(Icons.edit),

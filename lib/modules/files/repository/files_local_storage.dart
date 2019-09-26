@@ -151,7 +151,7 @@ class FilesLocalStorage {
   }
 
   Future<void> deleteFileFromCache([List<LocalFile> files]) async {
-      final Directory dir = await getTemporaryDirectory();
+    final Directory dir = await getTemporaryDirectory();
     if (files != null) {
       for (final file in files) {
         File cachedFile = new File("${dir.path}/files/${file.guid}");
@@ -199,8 +199,10 @@ class FilesLocalStorage {
     return [createdFile, iv.base16];
   }
 
+  // updateDecryptionProgress returns decrypted chunk index and total # of chunks
   Future<List<int>> decryptFile({
     @required LocalFile file,
+    Function(int, int) updateDecryptionProgress,
     @required List<int> fileBytes,
   }) async {
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
@@ -210,7 +212,8 @@ class FilesLocalStorage {
 
     final chunkedList = _chunk(encryptedFileBytes);
 
-    for (final List<int> chunk in chunkedList) {
+    for (var i = 0; i < chunkedList.length; i++) {
+      final chunk = chunkedList[i];
       final padding =
           chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
       final encrypter =
@@ -220,13 +223,18 @@ class FilesLocalStorage {
       final result = await compute(_decrypt, args);
       final newVector = chunk.sublist(chunk.length - 16, chunk.length);
 
+      if (updateDecryptionProgress != null) {
+        updateDecryptionProgress(i + 1, chunkedList.length);
+      }
+
       iv = IV(Uint8List.fromList(newVector));
       decryptedFileBytes = [...decryptedFileBytes, ...result];
     }
+
     return decryptedFileBytes;
   }
 
-  _chunk(list) => list.toList().isEmpty
+  List _chunk(list) => list.toList().isEmpty
       ? list.toList()
       : ([list.take(chunkSize).toList()]
         ..addAll(_chunk(list.skip(chunkSize).toList())));

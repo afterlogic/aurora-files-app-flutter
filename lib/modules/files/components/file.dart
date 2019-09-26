@@ -47,6 +47,9 @@ class _FileWidgetState extends State<FileWidget> {
       case FileOptionsBottomSheetResult.toggleOffline:
         _setFileForOffline();
         break;
+      case FileOptionsBottomSheetResult.download:
+        _downloadFile();
+        break;
     }
   }
 
@@ -61,6 +64,38 @@ class _FileWidgetState extends State<FileWidget> {
     } else {
       _openFile(context);
     }
+  }
+
+
+
+  void _downloadFile() {
+    final filesState = Provider.of<FilesState>(context);
+    final filesPageState = Provider.of<FilesPageState>(context);
+    filesState.onDownloadFile(
+      url: widget.file.downloadUrl,
+      file: widget.file,
+      onStart: () => showSnack(
+        context: context,
+        scaffoldState: filesPageState.scaffoldKey.currentState,
+        msg: "Downloading ${widget.file.name}",
+        isError: false,
+      ),
+      onSuccess: (String path) => showSnack(
+          context: context,
+          scaffoldState: filesPageState.scaffoldKey.currentState,
+          msg: "${widget.file.name} downloaded successfully into: $path",
+          isError: false,
+          duration: Duration(minutes: 10),
+          action: SnackBarAction(
+            label: "OK",
+            onPressed: filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
+          )),
+      onError: (String err) => showSnack(
+        context: context,
+        scaffoldState: filesPageState.scaffoldKey.currentState,
+        msg: err,
+      ),
+    );
   }
 
   Future _setFileForOffline() async {

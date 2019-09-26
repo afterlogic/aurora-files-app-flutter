@@ -81,7 +81,8 @@ class _ImageViewerState extends State<ImageViewer> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   CircularProgressIndicator(
-                    value: _fileViewerState.downloadProgress,
+                    value: _fileViewerState.downloadProgress ??
+                        _fileViewerState.decryptionProgress,
                     backgroundColor: Colors.grey.withOpacity(0.3),
                   ),
                   SizedBox(width: 20.0),

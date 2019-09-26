@@ -82,12 +82,10 @@ class FilesApi {
         return await downloadFile(response.headers.value("location"),
             updateProgress: updateProgress, isRedirect: true);
       } else {
-        List<int> fileBytes = new List();
+        final List<int> fileBytes = new List();
         await for (List<int> contents in response) {
-          fileBytes = [...fileBytes, ...contents];
-          if (updateProgress != null) {
-            updateProgress(Uint8List.fromList(fileBytes).lengthInBytes);
-          }
+          fileBytes.addAll(contents);
+          if (updateProgress != null) updateProgress(fileBytes.length);
         }
         return fileBytes;
       }

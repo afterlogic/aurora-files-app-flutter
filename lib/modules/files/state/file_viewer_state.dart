@@ -16,9 +16,12 @@ abstract class _FileViewerState with Store {
   final _filesLocal = new FilesLocalStorage();
 
   LocalFile file;
-
+  
   @observable
   double downloadProgress;
+
+  @observable
+  double decryptionProgress;
 
   List<int> fileBytes;
 
@@ -33,9 +36,6 @@ abstract class _FileViewerState with Store {
         file.viewUrl,
         updateProgress: (int bytesLoaded) {
           downloadProgress = 100 / file.size * bytesLoaded / 100;
-          if (downloadProgress >= 1.0 && file.initVector != null) {
-            downloadProgress = null;
-          }
         },
       );
     }
@@ -72,6 +72,14 @@ abstract class _FileViewerState with Store {
 
   Future<List<int>> decryptFile() async {
     await _getPreviewFile();
-    return _filesLocal.decryptFile(file: file, fileBytes: fileBytes);
+    downloadProgress = null;
+    decryptionProgress = 0.0;
+    return _filesLocal.decryptFile(
+      file: file,
+      fileBytes: fileBytes,
+      updateDecryptionProgress: (int currentChunk, int totalChunks) {
+        decryptionProgress = 100 / totalChunks * currentChunk / 100;
+      },
+    );
   }
 }

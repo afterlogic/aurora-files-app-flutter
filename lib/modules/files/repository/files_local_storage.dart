@@ -15,6 +15,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
+import 'package:intl/intl.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -208,28 +209,41 @@ class FilesLocalStorage {
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     IV iv = IV.fromBase16(file.initVector);
     List<int> encryptedFileBytes = fileBytes;
-    List<int> decryptedFileBytes = new List();
+    final List<int> decryptedFileBytes = new List();
 
     final chunkedList = _chunk(encryptedFileBytes);
+    final chunksToSort = new List<Future<DecryptionResult>>();
 
-    for (var i = 0; i < chunkedList.length; i++) {
-      final chunk = chunkedList[i];
+    chunkedList.forEach((chunk) async {
+      final i = chunkedList.indexOf(chunk);
       final padding =
           chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
       final encrypter =
           Encrypter(AES(key, mode: AESMode.cbc, padding: padding));
       final encrypted = Encrypted(Uint8List.fromList(chunk));
-      final args = {"encrypter": encrypter, "encrypted": encrypted, "iv": iv};
-      final result = await compute(_decrypt, args);
+      final args = DecryptionArgs(encrypter, encrypted, iv, i);
+      final result = compute(_decrypt, args);
       final newVector = chunk.sublist(chunk.length - 16, chunk.length);
 
-      if (updateDecryptionProgress != null) {
-        updateDecryptionProgress(i + 1, chunkedList.length);
-      }
-
       iv = IV(Uint8List.fromList(newVector));
-      decryptedFileBytes = [...decryptedFileBytes, ...result];
+      chunksToSort.add(result);
+    });
+
+    // decrypt chunks in parallel
+    final decryptionResults = new List<DecryptionResult>();
+    final decryptionStream = Stream.fromFutures(chunksToSort);
+    int index = 1;
+    await for (final res in decryptionStream) {
+      if (updateDecryptionProgress != null) {
+        updateDecryptionProgress(index, chunkedList.length);
+      }
+      decryptionResults.add(res);
+      index++;
     }
+
+    decryptionResults.sort((a, b) => a.index.compareTo(b.index));
+    decryptionResults
+        .forEach((result) => decryptedFileBytes.addAll(result.bytes));
 
     return decryptedFileBytes;
   }
@@ -243,7 +257,25 @@ class FilesLocalStorage {
     return args["encrypter"].encryptBytes(args["fileBytes"], iv: args["iv"]);
   }
 
-  static List<int> _decrypt(Map args) {
-    return args["encrypter"].decryptBytes(args["encrypted"], iv: args["iv"]);
+  static Future<DecryptionResult> _decrypt(DecryptionArgs args) async {
+    final decryptedBytes =
+        args.encrypter.decryptBytes(args.encrypted, iv: args.iv);
+    return new DecryptionResult(args.chunkIndex, decryptedBytes);
   }
+}
+
+class DecryptionArgs {
+  final Encrypter encrypter;
+  final Encrypted encrypted;
+  final IV iv;
+  final int chunkIndex;
+
+  DecryptionArgs(this.encrypter, this.encrypted, this.iv, this.chunkIndex);
+}
+
+class DecryptionResult {
+  final List<int> bytes;
+  final int index;
+
+  DecryptionResult(this.index, this.bytes);
 }

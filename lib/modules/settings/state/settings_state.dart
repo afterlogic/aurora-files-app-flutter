@@ -19,7 +19,7 @@ abstract class _SettingsState with Store {
   ConnectivityResult internetConnection;
 
   @observable
-  bool isDarkTheme;
+  bool isDarkTheme = !Platform.isIOS;
 
   @observable
   bool isParanoidEncryptionEnabled = true;

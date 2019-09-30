@@ -4,7 +4,6 @@ import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:aurorafiles/themimg/material_theme.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -20,7 +19,6 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final _authState = AppStore.authState;
   final _settingsState = AppStore.settingsState;
-  final _filesState = AppStore.filesState;
 
   Future<List<bool>> _localStorageInitialization;
 
@@ -56,7 +54,7 @@ class _AppState extends State<App> {
             return Observer(
               builder: (_) => MaterialApp(
                 title: "PrivateMail Files",
-                theme: _settingsState.isDarkTheme
+                theme: _settingsState.isDarkTheme == true
                     ? AppMaterialTheme.darkTheme
                     : AppMaterialTheme.theme,
                 onGenerateRoute: AppNavigation.onGenerateRoute,

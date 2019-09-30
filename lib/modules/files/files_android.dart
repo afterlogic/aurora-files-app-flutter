@@ -69,6 +69,8 @@ class _FilesAndroidState extends State<FilesAndroid>
                 : FilesLoadingType.filesVisible);
       }
     });
+
+    _settingsState.setAppTheme(context);
   }
 
   @override

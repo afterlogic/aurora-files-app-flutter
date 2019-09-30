@@ -19,7 +19,7 @@ abstract class _SettingsState with Store {
   ConnectivityResult internetConnection;
 
   @observable
-  bool isDarkTheme = !Platform.isIOS;
+  bool isDarkTheme;
 
   @observable
   bool isParanoidEncryptionEnabled = true;
@@ -31,6 +31,13 @@ abstract class _SettingsState with Store {
   String selectedKeyName;
 
   String get currentKey => encryptionKeys[selectedKeyName];
+
+  void setAppTheme(BuildContext context) {
+    if (context != null && isDarkTheme == null) {
+      isDarkTheme =
+          MediaQuery.of(context).platformBrightness == Brightness.dark;
+    }
+  }
 
   Future<bool> getUserEncryptionKeys() async {
     encryptionKeys = await _settingsLocal.getAllUserKeys();
@@ -48,7 +55,7 @@ abstract class _SettingsState with Store {
 
     connectivity.onConnectivityChanged.listen((res) {
       internetConnection = res;
-      print("internetConnection: ${internetConnection}");
+      print("internetConnection: $internetConnection");
     });
     final result = await Future.wait([
       _settingsLocal.getDarkThemeFromStorage(),

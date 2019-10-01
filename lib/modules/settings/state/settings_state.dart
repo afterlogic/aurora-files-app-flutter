@@ -40,14 +40,20 @@ abstract class _SettingsState with Store {
   }
 
   Future<bool> getUserEncryptionKeys() async {
-    encryptionKeys = await _settingsLocal.getAllUserKeys();
-    if (encryptionKeys.length > 0) {
-      final keyNames = encryptionKeys.keys.toList();
-      selectedKeyName = keyNames[0];
-    } else {
+    try {
+      encryptionKeys = await _settingsLocal.getAllUserKeys();
+      if (encryptionKeys.length > 0) {
+        final keyNames = encryptionKeys.keys.toList();
+        selectedKeyName = keyNames[0];
+      } else {
+        selectedKeyName = null;
+      }
+      return true;
+    } catch(err) {
+      print("VO: getUserEncryptionKeys ERRORR: $err");
       selectedKeyName = null;
+      return true;
     }
-    return true;
   }
 
   Future<bool> getUserSettings() async {

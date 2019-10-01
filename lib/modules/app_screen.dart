@@ -37,6 +37,7 @@ class _AppState extends State<App> {
   }
 
   bool _canEnterMainApp(List<bool> localStorageInitializationResults) {
+    if (localStorageInitializationResults == null) return false;
     bool canEnterMailApp = true;
     localStorageInitializationResults.forEach((result) {
       if (result == null || result == false) canEnterMailApp = false;
@@ -63,6 +64,12 @@ class _AppState extends State<App> {
                     : AuthRoute.name,
               ),
             );
+          } else if (snapshot.hasError) {
+            final err = snapshot.error.toString();
+            return Material(
+                child: Center(
+                    child: SelectableText(
+                        "Could not start the app, please make a screenshot of the error and send it to support@afterlogic.com and we'll fix it!\nERROR: $err")));
           } else {
             return Material(child: MainGradient());
           }

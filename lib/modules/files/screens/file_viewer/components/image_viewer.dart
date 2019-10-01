@@ -25,35 +25,19 @@ class ImageViewer extends StatefulWidget {
 
 class _ImageViewerState extends State<ImageViewer> {
   FileViewerState _fileViewerState;
-  List<int> _decryptedImage;
   bool _isError = false;
   Widget builtImage;
 
   @override
   void initState() {
     super.initState();
-    _initImage();
-  }
-
-  void _initImage() async {
     _fileViewerState = widget.fileViewerState;
-    if (_fileViewerState.file.initVector != null) {
-      _decryptImage();
+    if (AppStore.filesState.isOfflineMode &&
+        _fileViewerState.file.initVector != null) {
+      Future.delayed(
+          Duration(milliseconds: 250), _fileViewerState.getPreviewImage);
     } else {
-      await _fileViewerState.getFileFromCache();
-      if (widget.fileViewerState.fileBytes == null) {
-        _fileViewerState.getPreviewImage();
-      }
-    }
-  }
-
-  Future _decryptImage() async {
-    setState(() => _isError = false);
-    try {
-      final decryptedImage = await _fileViewerState.decryptFile();
-      setState(() => _decryptedImage = decryptedImage);
-    } catch (err) {
-      setState(() => _isError = true);
+      _fileViewerState.getPreviewImage();
     }
   }
 
@@ -71,45 +55,41 @@ class _ImageViewerState extends State<ImageViewer> {
             ),
           ],
         );
-      } else if (_decryptedImage == null) {
-        return SizedBox(
-          height: 50.0,
-          width: 50.0,
-          child: Center(
-            child: Observer(
-              builder: (_) => Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(
-                    value: _fileViewerState.downloadProgress ??
-                        _fileViewerState.decryptionProgress,
-                    backgroundColor: Colors.grey.withOpacity(0.3),
-                  ),
-                  SizedBox(width: 20.0),
-                  Text(_fileViewerState.downloadProgress == null
-                      ? "Decrypting file..."
-                      : "Downloading file...")
-                ],
-              ),
+      } else if (_fileViewerState.fileBytes == null) {
+        return Center(
+          child: Observer(
+            builder: (_) => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+//                  CircularProgressIndicator(
+//                    value: _fileViewerState.downloadProgress ??
+//                        _fileViewerState.decryptionProgress,
+//                    backgroundColor: Colors.grey.withOpacity(0.3),
+//                  ),
+                ProgressLoader(_fileViewerState.downloadProgress),
+//                  SizedBox(width: 20.0),
+//                  Text(_fileViewerState.downloadProgress == null
+//                      ? "Decrypting file..."
+//                      : "Downloading file...")
+              ],
             ),
           ),
         );
       } else {
         final image = Image.memory(
-          Uint8List.fromList(_decryptedImage),
+          Uint8List.fromList(_fileViewerState.fileBytes),
           fit: BoxFit.cover,
         );
         precacheImage(image.image, context, onError: (e, stackTrace) {
           setState(() => _isError = true);
         });
         return ConstrainedBox(
-          constraints: BoxConstraints(minHeight: 50.0),
+          constraints: BoxConstraints(minHeight: 60.0),
           child: image,
         );
       }
     } else {
-      if (_fileViewerState.downloadProgress != null &&
-          _fileViewerState.downloadProgress < 1.0) {
+      if (_fileViewerState.fileBytes == null) {
         return Positioned.fill(
           child: Center(
             child: ProgressLoader(_fileViewerState.downloadProgress),
@@ -124,7 +104,7 @@ class _ImageViewerState extends State<ImageViewer> {
           setState(() => _isError = true);
         });
         return ConstrainedBox(
-          constraints: BoxConstraints(minHeight: 50.0),
+          constraints: BoxConstraints(minHeight: 60.0),
           child: image,
         );
       }
@@ -157,7 +137,10 @@ class _ImageViewerState extends State<ImageViewer> {
                   : Stack(
                       fit: StackFit.passthrough,
                       children: <Widget>[
-                        placeholder,
+                        ConstrainedBox(
+                          constraints: BoxConstraints(minHeight: 60.0),
+                          child: placeholder,
+                        ),
                         Positioned.fill(
                           child: ClipRect(
                             child: BackdropFilter(

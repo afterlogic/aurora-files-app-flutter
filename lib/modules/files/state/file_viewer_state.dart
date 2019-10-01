@@ -26,29 +26,45 @@ abstract class _FileViewerState with Store {
   List<int> fileBytes;
 
   Future<void> _getPreviewFile() async {
+    List<int> fileContent;
     downloadProgress = 0.0;
+
+    // get file contents
     if (AppStore.filesState.isOfflineMode) {
       final localFile = new File(file.localPath);
-      fileBytes = await localFile.readAsBytes();
+      fileContent = await localFile.readAsBytes();
       downloadProgress = 1.0;
     } else {
-      fileBytes = await _filesApi.downloadFile(
+      fileContent = await _filesApi.downloadFile(
         file.viewUrl,
         updateProgress: (int bytesLoaded) {
           downloadProgress = 100 / file.size * bytesLoaded / 100;
         },
       );
     }
-  }
+    // if encrypted - decrypt
+    if (file.initVector != null) {
+      fileBytes = await _filesLocal.decryptFile(
+        file: file,
+        fileBytes: fileContent,
+      );
+    } else {
+      fileBytes = fileContent;
+    }
 
-  Future<void> getFileFromCache() async {
-    downloadProgress = 0.0;
-    fileBytes = await _filesLocal.getFileFromCache(file);
-    downloadProgress = 1.0;
+    downloadProgress = null;
   }
 
   Future<void> getPreviewImage() async {
-    await _getPreviewFile();
+    downloadProgress = 0.0;
+    // try to retrieve the file from cache
+    fileBytes = await _filesLocal.getFileFromCache(file);
+    // if no cache, get file
+    if (fileBytes == null) {
+      await _getPreviewFile();
+    } else {
+      downloadProgress = 1.0;
+    }
     if (!AppStore.filesState.isOfflineMode) {
       _filesLocal.cacheFile(fileBytes, file);
     }
@@ -68,14 +84,5 @@ abstract class _FileViewerState with Store {
     if (fileBytes == null) await _getPreviewFile();
 
     _filesLocal.openFileWith(fileBytes, file);
-  }
-
-  Future<List<int>> decryptFile() async {
-    await _getPreviewFile();
-    downloadProgress = null;
-    return _filesLocal.decryptFile(
-      file: file,
-      fileBytes: fileBytes,
-    );
   }
 }

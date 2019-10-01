@@ -50,7 +50,7 @@ abstract class _SettingsState with Store {
       }
       return true;
     } catch(err) {
-      print("VO: getUserEncryptionKeys ERRORR: $err");
+      print("getUserEncryptionKeys ERRORR: $err");
       selectedKeyName = null;
       return true;
     }

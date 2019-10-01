@@ -21,7 +21,7 @@ class ProgressLoader extends StatelessWidget {
             animation: true,
             animateFromLastPercent: true,
             animationDuration: 150,
-            percent: progress,
+            percent: progress ?? 0,
             backgroundColor: Colors.grey.withOpacity(0.3),
             progressColor: Theme.of(context).accentColor,
           ),

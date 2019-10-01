@@ -6,6 +6,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
+import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
@@ -14,16 +15,19 @@ import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
-import 'package:intl/intl.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
 class FilesLocalStorage {
+  static const platformEncryptionChannel =
+      const MethodChannel("PrivateMailFiles.PrivateRouter.com/encryption");
+
   final uploader = FlutterUploader();
-  final chunkSize = 128000;
+//  final chunkSize = 128000;
 
   Future<File> pickFiles({FileType type, String extension}) {
     return FilePicker.getFile(type: type, fileExtension: extension);
@@ -170,34 +174,43 @@ class FilesLocalStorage {
 
   Future<List> encryptFile(File file) async {
     final fileBytes = await file.readAsBytes();
-    final chunkedList = _chunk(fileBytes);
+//    final chunkedList = _chunk(fileBytes);
     Directory appDocDir = await getApplicationDocumentsDirectory();
     final encryptedFile = new File(
       '${appDocDir.path}/temp_encrypted_files/${FileUtils.getFileNameFromPath(file.path)}',
     );
-    final createdFile = await encryptedFile.create(recursive: true);
+    await encryptedFile.create(recursive: true);
 
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     final iv = IV.fromSecureRandom(16);
-    IV nextVector = iv;
-    for (final List<int> chunk in chunkedList) {
-      final padding =
-          chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
-      final encrypter =
-          Encrypter(AES(key, mode: AESMode.cbc, padding: padding));
-      final args = {
-        "encrypter": encrypter,
-        "fileBytes": chunk,
-        "iv": nextVector
-      };
-      final result = await compute(_encrypt, args);
-      await createdFile.writeAsBytes(result.bytes, mode: FileMode.append);
-
-      nextVector = IV(Uint8List.fromList(
-          result.bytes.sublist(result.bytes.length - 16, result.bytes.length)));
+    try {
+      final encryptedData = await platformEncryptionChannel.invokeMethod('encrypt',
+          [Base64Encoder().convert(fileBytes), key.base64, iv.base64]);
+      await encryptedFile.writeAsBytes(encryptedData);
+      return [encryptedFile, iv.base16];
+    } on PlatformException catch (e) {
+      print("PlatformException: $e");
+      throw CustomException("This device is unable to encrypt/decrypt files");
     }
-
-    return [createdFile, iv.base16];
+//    IV nextVector = iv;
+//    for (final List<int> chunk in chunkedList) {
+//      final padding =
+//          chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
+//      final encrypter =
+//          Encrypter(AES(key, mode: AESMode.cbc, padding: padding));
+//      final args = {
+//        "encrypter": encrypter,
+//        "fileBytes": chunk,
+//        "iv": nextVector
+//      };
+//      final result = await compute(_encrypt, args);
+//      await encryptedFile.writeAsBytes(result.bytes, mode: FileMode.append);
+//
+//      nextVector = IV(Uint8List.fromList(
+//          result.bytes.sublist(result.bytes.length - 16, result.bytes.length)));
+//    }
+//
+//    return [encryptedFile, iv.base16];
   }
 
   // updateDecryptionProgress returns decrypted chunk index and total # of chunks
@@ -208,74 +221,84 @@ class FilesLocalStorage {
   }) async {
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     IV iv = IV.fromBase16(file.initVector);
-    List<int> encryptedFileBytes = fileBytes;
-    final List<int> decryptedFileBytes = new List();
 
-    final chunkedList = _chunk(encryptedFileBytes);
-    final chunksToSort = new List<Future<DecryptionResult>>();
-
-    chunkedList.forEach((chunk) async {
-      final i = chunkedList.indexOf(chunk);
-      final padding =
-          chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
-      final encrypter =
-          Encrypter(AES(key, mode: AESMode.cbc, padding: padding));
-      final encrypted = Encrypted(Uint8List.fromList(chunk));
-      final args = DecryptionArgs(encrypter, encrypted, iv, i);
-      final result = compute(_decrypt, args);
-      final newVector = chunk.sublist(chunk.length - 16, chunk.length);
-
-      iv = IV(Uint8List.fromList(newVector));
-      chunksToSort.add(result);
-    });
-
-    // decrypt chunks in parallel
-    final decryptionResults = new List<DecryptionResult>();
-    final decryptionStream = Stream.fromFutures(chunksToSort);
-    int index = 1;
-    await for (final res in decryptionStream) {
-      if (updateDecryptionProgress != null) {
-        updateDecryptionProgress(index, chunkedList.length);
-      }
-      decryptionResults.add(res);
-      index++;
+    try {
+      return platformEncryptionChannel.invokeMethod('decrypt',
+          [Base64Encoder().convert(fileBytes), key.base64, iv.base64]);
+    } on PlatformException catch (e) {
+      print("PlatformException: $e");
+      throw CustomException("This device is unable to encrypt/decrypt files");
     }
 
-    decryptionResults.sort((a, b) => a.index.compareTo(b.index));
-    decryptionResults
-        .forEach((result) => decryptedFileBytes.addAll(result.bytes));
+    // OLD DART ENCRYPTION. VERY SLOW!
 
-    return decryptedFileBytes;
+//    List<int> encryptedFileBytes = fileBytes;
+//    final List<int> decryptedFileBytes = new List();
+//    final chunkedList = _chunk(encryptedFileBytes);
+//    final chunksToSort = new List<Future<DecryptionResult>>();
+//
+//    chunkedList.forEach((chunk) async {
+//      final i = chunkedList.indexOf(chunk);
+//      final padding =
+//          chunkedList.indexOf(chunk) == chunkedList.length - 1 ? "PKCS7" : null;
+//      final encrypter =
+//          Encrypter(AES(key, mode: AESMode.cbc, padding: padding));
+//      final encrypted = Encrypted(Uint8List.fromList(chunk));
+//      final args = DecryptionArgs(encrypter, encrypted, iv, i);
+//      final result = compute(_decrypt, args);
+//      final newVector = chunk.sublist(chunk.length - 16, chunk.length);
+//
+//      iv = IV(Uint8List.fromList(newVector));
+//      chunksToSort.add(result);
+//    });
+//
+//    // decrypt chunks in parallel
+//    final decryptionResults = new List<DecryptionResult>();
+//    final decryptionStream = Stream.fromFutures(chunksToSort);
+//    int index = 1;
+//    await for (final res in decryptionStream) {
+//      if (updateDecryptionProgress != null) {
+//        updateDecryptionProgress(index, chunkedList.length);
+//      }
+//      decryptionResults.add(res);
+//      index++;
+//    }
+//
+//    decryptionResults.sort((a, b) => a.index.compareTo(b.index));
+//    decryptionResults
+//        .forEach((result) => decryptedFileBytes.addAll(result.bytes));
+//
+//    return decryptedFileBytes;
   }
 
-  List _chunk(list) => list.toList().isEmpty
-      ? list.toList()
-      : ([list.take(chunkSize).toList()]
-        ..addAll(_chunk(list.skip(chunkSize).toList())));
+//  List _chunk(list) => list.toList().isEmpty
+//      ? list.toList()
+//      : ([list.take(chunkSize).toList()]
+//        ..addAll(_chunk(list.skip(chunkSize).toList())));
 
-  static Encrypted _encrypt(Map args) {
-    return args["encrypter"].encryptBytes(args["fileBytes"], iv: args["iv"]);
-  }
-
-  static Future<DecryptionResult> _decrypt(DecryptionArgs args) async {
-    final decryptedBytes =
-        args.encrypter.decryptBytes(args.encrypted, iv: args.iv);
-    return new DecryptionResult(args.chunkIndex, decryptedBytes);
-  }
+//  static Encrypted _encrypt(Map args) {
+//    return args["encrypter"].encryptBytes(args["fileBytes"], iv: args["iv"]);
+//  }
+//
+//  static Future<DecryptionResult> _decrypt(DecryptionArgs args) async {
+//    final decryptedBytes =
+//        args.encrypter.decryptBytes(args.encrypted, iv: args.iv);
+//    return new DecryptionResult(args.chunkIndex, decryptedBytes);
+//  }
 }
 
-class DecryptionArgs {
-  final Encrypter encrypter;
-  final Encrypted encrypted;
-  final IV iv;
-  final int chunkIndex;
-
-  DecryptionArgs(this.encrypter, this.encrypted, this.iv, this.chunkIndex);
-}
-
-class DecryptionResult {
-  final List<int> bytes;
-  final int index;
-
-  DecryptionResult(this.index, this.bytes);
-}
+//class DecryptionArgs {
+//  final Encrypter encrypter;
+//  final Encrypted encrypted;
+//  final IV iv;
+//  final int chunkIndex;
+//
+//  DecryptionArgs(this.encrypter, this.encrypted, this.iv, this.chunkIndex);
+//}
+//
+//class DecryptionResult {
+//  final List<int> bytes;
+//  final int index;
+//
+//  DecryptionResult(this.index, this.bytes);
+//}

@@ -63,7 +63,7 @@ packages:
       name: build_resolvers
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.8"
+    version: "1.1.1"
   build_runner:
     dependency: "direct dev"
     description:
@@ -119,7 +119,7 @@ packages:
       name: chopper
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   chopper_generator:
     dependency: "direct dev"
     description:
@@ -210,7 +210,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.1"
+    version: "1.4.2"
   filesize:
     dependency: "direct main"
     description:
@@ -269,7 +269,7 @@ packages:
       name: flutter_uploader
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3+2"
+    version: "1.0.5+1"
   front_end:
     dependency: transitive
     description:
@@ -374,7 +374,7 @@ packages:
       name: material_design_icons_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.4096"
+    version: "3.2.4495"
   meta:
     dependency: transitive
     description:

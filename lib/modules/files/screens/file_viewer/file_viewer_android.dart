@@ -217,7 +217,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             isError: false,
           );
         }
-        await widget.filesState.onSetFileOffline(_file, fileBytes: _fileViewerState.fileBytes);
+        await widget.filesState
+            .onSetFileOffline(_file, fileBytes: _fileViewerState.fileBytes);
         await widget.filesPageState.onGetFiles();
         if (_file.localId == null) {
           showSnack(
@@ -240,6 +241,38 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           msg: err.toString(),
         );
       }
+    }
+  }
+
+  Widget _getPreviewContent() {
+    final previewIconSize = 120.0;
+    switch (_fileType) {
+      case FileType.image:
+        return ImageViewer(
+          fileViewerState: _fileViewerState,
+          scaffoldState: _fileViewerScaffoldKey.currentState,
+        );
+      case FileType.text:
+      case FileType.code:
+        return TextViewer(
+          fileViewerState: _fileViewerState,
+          scaffoldState: _fileViewerScaffoldKey.currentState,
+        );
+      case FileType.pdf:
+        return PdfViewer(
+          file: _file,
+          scaffoldState: _fileViewerScaffoldKey.currentState,
+        );
+      case FileType.zip:
+        return Icon(MdiIcons.zipBoxOutline,
+            size: previewIconSize, color: Theme.of(context).disabledColor);
+
+      case FileType.unknown:
+        return Icon(MdiIcons.fileOutline,
+            size: previewIconSize, color: Theme.of(context).disabledColor);
+      default:
+        return Icon(MdiIcons.fileOutline,
+            size: previewIconSize, color: Theme.of(context).disabledColor);
     }
   }
 
@@ -301,21 +334,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         body: ListView(
           padding: const EdgeInsets.all(16.0),
           children: <Widget>[
-            if (_fileType == FileType.image)
-              ImageViewer(
-                fileViewerState: _fileViewerState,
-                scaffoldState: _fileViewerScaffoldKey.currentState,
-              ),
-            if (_fileType == FileType.text || _fileType == FileType.code)
-              TextViewer(
-                fileViewerState: _fileViewerState,
-                scaffoldState: _fileViewerScaffoldKey.currentState,
-              ),
-            if (_fileType == FileType.pdf)
-              PdfViewer(
-                file: _file,
-                scaffoldState: _fileViewerScaffoldKey.currentState,
-              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30.0),
+              child: _getPreviewContent(),
+            ),
             InfoListTile(
               label: "Filename",
               content: _file.name,
@@ -326,8 +348,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child:
-                      InfoListTile(label: "Size", content: filesize(_file.size)),
+                  child: InfoListTile(
+                      label: "Size", content: filesize(_file.size)),
                 ),
                 SizedBox(width: 30),
                 Expanded(
@@ -341,7 +363,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               ],
             ),
             InfoListTile(
-                label: "Location", content: _file.path == "" ? "/" : _file.path),
+                label: "Location",
+                content: _file.path == "" ? "/" : _file.path),
             InfoListTile(label: "Owner", content: _file.owner),
             if (!widget.filesState.isOfflineMode)
               PublicLinkSwitch(

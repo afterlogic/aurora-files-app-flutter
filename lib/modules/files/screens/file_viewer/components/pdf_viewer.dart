@@ -27,21 +27,18 @@ class _PdfViewerState extends State<PdfViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 30.0),
-      child: Observer(
-        builder: (_) => _fileViewerState.downloadProgress != null &&
-                _fileViewerState.downloadProgress < 1.0
-            ? SizedBox(
-                height: 3.0,
-                child: LinearProgressIndicator(
-                    value: _fileViewerState.downloadProgress),
-              )
-            : AppButton(
-                text: "Open PDF",
-                onPressed: _fileViewerState.onOpenPdf,
-              ),
-      ),
+    return Observer(
+      builder: (_) => _fileViewerState.downloadProgress != null &&
+              _fileViewerState.downloadProgress < 1.0
+          ? SizedBox(
+              height: 3.0,
+              child: LinearProgressIndicator(
+                  value: _fileViewerState.downloadProgress),
+            )
+          : AppButton(
+              text: "Open PDF",
+              onPressed: _fileViewerState.onOpenPdf,
+            ),
     );
   }
 }

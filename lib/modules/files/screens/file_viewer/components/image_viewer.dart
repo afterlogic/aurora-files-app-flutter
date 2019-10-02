@@ -122,50 +122,47 @@ class _ImageViewerState extends State<ImageViewer> {
     );
 
     if (_fileViewerState.file.viewUrl != null) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 30.0),
-        child: Hero(
-            tag: _fileViewerState.file.guid,
-            child: SizedBox(
-              width: double.infinity,
-              child: AppStore.filesState.isOfflineMode &&
-                      _fileViewerState.fileBytes != null
-                  ? Image.memory(
-                      Uint8List.fromList(_fileViewerState.fileBytes),
-                      fit: BoxFit.cover,
-                    )
-                  : Stack(
-                      fit: StackFit.passthrough,
-                      children: <Widget>[
-                        ConstrainedBox(
-                          constraints: BoxConstraints(minHeight: 60.0),
-                          child: placeholder,
-                        ),
-                        Positioned.fill(
-                          child: ClipRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(
-                                sigmaX: 8.0,
-                                sigmaY: 8.0,
-                              ),
-                              child: Container(
-                                color: Colors.transparent,
-                              ),
+      return Hero(
+          tag: _fileViewerState.file.guid,
+          child: SizedBox(
+            width: double.infinity,
+            child: AppStore.filesState.isOfflineMode &&
+                    _fileViewerState.fileBytes != null
+                ? Image.memory(
+                    Uint8List.fromList(_fileViewerState.fileBytes),
+                    fit: BoxFit.cover,
+                  )
+                : Stack(
+                    fit: StackFit.passthrough,
+                    children: <Widget>[
+                      ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: 60.0),
+                        child: placeholder,
+                      ),
+                      Positioned.fill(
+                        child: ClipRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 8.0,
+                              sigmaY: 8.0,
+                            ),
+                            child: Container(
+                              color: Colors.transparent,
                             ),
                           ),
                         ),
-                        Observer(builder: (_) {
-                          if (prevProgress !=
-                              _fileViewerState.downloadProgress) {
-                            builtImage = _buildImage();
-                            prevProgress = _fileViewerState.downloadProgress;
-                          }
-                          return builtImage;
-                        }),
-                      ],
-                    ),
-            )),
-      );
+                      ),
+                      Observer(builder: (_) {
+                        if (prevProgress !=
+                            _fileViewerState.downloadProgress) {
+                          builtImage = _buildImage();
+                          prevProgress = _fileViewerState.downloadProgress;
+                        }
+                        return builtImage;
+                      }),
+                    ],
+                  ),
+          ));
     } else {
       return SizedBox();
     }

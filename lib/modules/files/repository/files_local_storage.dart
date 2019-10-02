@@ -184,9 +184,10 @@ class FilesLocalStorage {
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     final iv = IV.fromSecureRandom(16);
     try {
-      final encryptedData = await platformEncryptionChannel.invokeMethod('encrypt',
+      final List<dynamic> encryptedData = await platformEncryptionChannel.invokeMethod('encrypt',
           [Base64Encoder().convert(fileBytes), key.base64, iv.base64]);
-      await encryptedFile.writeAsBytes(encryptedData);
+      // cast to List<int> (mostly for iOS)
+      await encryptedFile.writeAsBytes(new List<int>.from(encryptedData));
       return [encryptedFile, iv.base16];
     } on PlatformException catch (e) {
       print("PlatformException: $e");
@@ -223,8 +224,10 @@ class FilesLocalStorage {
     IV iv = IV.fromBase16(file.initVector);
 
     try {
-      return platformEncryptionChannel.invokeMethod('decrypt',
+      final List<dynamic> result = await platformEncryptionChannel.invokeMethod('decrypt',
           [Base64Encoder().convert(fileBytes), key.base64, iv.base64]);
+      // cast to List<int> (mostly for iOS)
+      return new List<int>.from(result);
     } on PlatformException catch (e) {
       print("PlatformException: $e");
       throw CustomException("This device is unable to encrypt/decrypt files");

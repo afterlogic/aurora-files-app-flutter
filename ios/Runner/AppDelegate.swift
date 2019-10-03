@@ -16,10 +16,10 @@ import Foundation
     encryptionChannel.setMethodCallHandler({
         [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
         if (call.method == "encrypt") {
-            result(self?.encrypt(call: call))
+            result(self?.performCryption(call: call, isDecrypt: false))
             return
         } else if (call.method == "decrypt") {
-            result(self?.decrypt(call: call))
+            result(self?.performCryption(call: call, isDecrypt: true))
             return
         } else {
             result(FlutterMethodNotImplemented)
@@ -31,7 +31,7 @@ import Foundation
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
-    private func encrypt(call: FlutterMethodCall) -> [UInt8] {
+    private func performCryption(call: FlutterMethodCall, isDecrypt: Bool) -> [UInt8] {
         // all arguments are in base64
         let args = call.arguments as? [String]
         let fileContent = args?[0]
@@ -42,30 +42,11 @@ import Foundation
             data: Data.init(base64Encoded: fileContent!)!,
             keyData: Data.init(base64Encoded: key!)!,
             ivData: Data.init(base64Encoded: iv!)!,
-            operation:kCCEncrypt
+            operation: isDecrypt ? kCCDecrypt : kCCEncrypt
         )
         
         return encryptedData.withUnsafeBytes {
             [UInt8](UnsafeBufferPointer(start: $0, count: encryptedData.count))
-        }
-    }
-    
-    private func decrypt(call: FlutterMethodCall) -> [UInt8] {
-        // all arguments are in base64
-        let args = call.arguments as? [String]
-        let fileContent = args?[0]
-        let key = args?[1]
-        let iv = args?[2]
-        
-        let decryptedData = crypt(
-            data: Data.init(base64Encoded: fileContent!)!,
-            keyData: Data.init(base64Encoded: key!)!,
-            ivData: Data.init(base64Encoded: iv!)!,
-            operation:kCCDecrypt
-        )
-        
-        return decryptedData.withUnsafeBytes {
-            [UInt8](UnsafeBufferPointer(start: $0, count: decryptedData.count))
         }
     }
     

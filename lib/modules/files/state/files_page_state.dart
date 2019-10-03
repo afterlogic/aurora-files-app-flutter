@@ -124,9 +124,13 @@ abstract class _FilesPageState with Store {
   ) async {
     try {
       filesLoading = showLoading;
-      currentFiles = await _filesDao.getFilesAtPath(pagePath);
-    } catch (err) {
-      onError(err.toString());
+      if (searchPattern != null && searchPattern.isNotEmpty) {
+        currentFiles = await _filesDao.searchFiles(pagePath, searchPattern);
+      } else {
+        currentFiles = await _filesDao.getFilesAtPath(pagePath);
+      }
+    } catch (err, a) {
+      if (onError != null) onError(err.toString());
     } finally {
       filesLoading = FilesLoadingType.none;
     }

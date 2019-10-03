@@ -70,6 +70,49 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     return filesAtPath.toList();
   }
 
+  Future<List<LocalFile>> searchFiles(
+      String nullablePath, String searchPattern) async {
+    final path = nullablePath == null ? "" : nullablePath;
+    final query = searchPattern.toLowerCase().trim();
+    final offlineFiles = await (select(files)
+          ..where((file) => file.owner.equals(userEmail))
+          ..where((file) => file.type.equals(storageType)))
+        .get();
+    // get files from subfolders to recreate folders structure
+    final childFiles =
+        offlineFiles.where((file) => file.path.contains(path)).toList();
+    final folders = new Set<Map<String, String>>();
+    try {
+      childFiles.forEach((file) {
+        String trimmedPath = file.path.substring(path.length);
+        if (trimmedPath.isNotEmpty &&
+            trimmedPath.toLowerCase().contains(query)) {
+          final splitFolderPath = trimmedPath.split("/");
+          final matchingFolder = splitFolderPath.lastWhere((folderName) {
+            return folderName.toLowerCase().contains(query);
+          });
+          final splitFilePath = file.path.split("/");
+          final index = splitFilePath.lastIndexOf(matchingFolder);
+          final folderPath = splitFilePath.sublist(0, index).join("/");
+          if (!folders.contains({"name": matchingFolder, "path": folderPath})) {
+            folders.add({"name": matchingFolder, "path": folderPath});
+          }
+        }
+      });
+    } catch (err) {}
+    Set<LocalFile> filesAtPath = new Set();
+    folders.forEach((folder) {
+      filesAtPath.add(getFolderFromName(folder["name"], folder["path"]));
+    });
+    filesAtPath = [
+      ...filesAtPath,
+      ...childFiles
+          .where((file) => file.name.toLowerCase().contains(query))
+          .toList()
+    ].toSet();
+    return filesAtPath.toList();
+  }
+
   Future<int> addFile(FilesCompanion file) async {
     return into(files).insert(file);
   }

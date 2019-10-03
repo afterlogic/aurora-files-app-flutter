@@ -44,7 +44,7 @@ class FilesApi {
     final parameters = json.encode({
       "Type": type,
       "Path": path,
-      "Pattern": pattern,
+      "Pattern": pattern.toLowerCase().trim(),
       "PathRequired": false,
     });
 

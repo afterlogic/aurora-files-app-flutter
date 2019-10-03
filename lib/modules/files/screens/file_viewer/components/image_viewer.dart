@@ -123,7 +123,7 @@ class _ImageViewerState extends State<ImageViewer> {
 
     if (_fileViewerState.file.viewUrl != null) {
       return Hero(
-          tag: _fileViewerState.file.guid,
+          tag: _fileViewerState.file.localId ?? _fileViewerState.file.guid,
           child: SizedBox(
             width: double.infinity,
             child: AppStore.filesState.isOfflineMode &&

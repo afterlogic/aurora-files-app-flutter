@@ -129,7 +129,7 @@ abstract class _FilesPageState with Store {
       } else {
         currentFiles = await _filesDao.getFilesAtPath(pagePath);
       }
-    } catch (err, a) {
+    } catch (err) {
       if (onError != null) onError(err.toString());
     } finally {
       filesLoading = FilesLoadingType.none;

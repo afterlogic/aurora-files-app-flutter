@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -23,11 +24,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
 class FilesLocalStorage {
-  static const platformEncryptionChannel =
-      const MethodChannel("PrivateMailFiles.PrivateRouter.com/encryption");
-
   final uploader = FlutterUploader();
-//  final chunkSize = 128000;
+  final cryptor = NativeFileCryptor();
 
   Future<File> pickFiles({FileType type, String extension}) {
     return FilePicker.getFile(type: type, fileExtension: extension);
@@ -90,17 +88,17 @@ class FilesLocalStorage {
     return OpenFile.open(tempFileForShare.path);
   }
 
-  Future<String> saveFileInDownloads(
-      List<int> fileBytes, LocalFile file) async {
-    if (!Platform.isIOS) await getStoragePermissions();
-    Directory dir = await DownloadsPathProvider.downloadsDirectory;
-
-    final fileToDownload = new File("${dir.path}/${file.name}");
-    await fileToDownload.create(recursive: true);
-    await fileToDownload.writeAsBytes(fileBytes);
-
-    return fileToDownload.path;
-  }
+//  Future<String> saveFileInDownloads(
+//      List<int> fileBytes, LocalFile file) async {
+//    if (!Platform.isIOS) await getStoragePermissions();
+//    Directory dir = await DownloadsPathProvider.downloadsDirectory;
+//
+//    final fileToDownload = new File("${dir.path}/${file.name}");
+//    await fileToDownload.create(recursive: true);
+//    await fileToDownload.writeAsBytes(fileBytes);
+//
+//    return fileToDownload.path;
+//  }
 
   Future<File> saveFileForOffline(fileBytes, LocalFile file) async {
     if (!Platform.isIOS) await getStoragePermissions();
@@ -184,11 +182,11 @@ class FilesLocalStorage {
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     final iv = IV.fromSecureRandom(16);
     try {
-      final List<dynamic> encryptedData = await platformEncryptionChannel.invokeMethod('encrypt',
-          [Base64Encoder().convert(fileBytes), key.base64, iv.base64]);
-      // cast to List<int> (mostly for iOS)
-      await encryptedFile.writeAsBytes(new List<int>.from(encryptedData));
-      return [encryptedFile, iv.base16];
+//      final List<dynamic> encryptedData = await _platformEncryptionChannel.invokeMethod('encrypt',
+//          [Base64Encoder().convert(fileBytes), key.base64, iv.base64]);
+//      // cast to List<int> (mostly for iOS)
+//      await encryptedFile.writeAsBytes(new List<int>.from(encryptedData));
+//      return [encryptedFile, iv.base16];
     } on PlatformException catch (e) {
       print("PlatformException: $e");
       throw CustomException("This device is unable to encrypt/decrypt files");
@@ -215,22 +213,31 @@ class FilesLocalStorage {
   }
 
   // updateDecryptionProgress returns decrypted chunk index and total # of chunks
-  Future<List<int>> decryptFile({
+  Future<void> decryptFile({
     @required LocalFile file,
-    Function(int, int) updateDecryptionProgress,
     @required List<int> fileBytes,
+    @required Function(List<int>) getChunk,
+    Function(double) updateDecryptionProgress,
   }) async {
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
     IV iv = IV.fromBase16(file.initVector);
 
     try {
-      final List<dynamic> result = await platformEncryptionChannel.invokeMethod('decrypt',
-          [Base64Encoder().convert(fileBytes), key.base64, iv.base64]);
-      // cast to List<int> (mostly for iOS)
-      return new List<int>.from(result);
+
+      // TODO VO: broken
+//      cryptor.decrypt(
+//        fileBytes: fileBytes,
+//        keyBase64: key.base64,
+//        ivBase64: iv.base64,
+//        updateProgress: updateDecryptionProgress,
+//        getChunk: getChunk,
+//      );
     } on PlatformException catch (e) {
       print("PlatformException: $e");
-      throw CustomException("This device is unable to encrypt/decrypt files");
+      throw CustomException(
+          "This device is unable to encrypt/decrypt the file");
+    } catch (err) {
+      throw CustomException(err.message ?? "Unknown error");
     }
 
     // OLD DART ENCRYPTION. VERY SLOW!

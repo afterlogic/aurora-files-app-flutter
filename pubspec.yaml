@@ -55,6 +55,7 @@ dependencies:
   intl: ^0.15.8
   permission_handler: ^3.2.2
   connectivity: ^0.4.4
+  flutter_isolate: ^1.0.0+9
 
 dev_dependencies:
   flutter_test:

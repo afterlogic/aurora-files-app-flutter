@@ -284,14 +284,13 @@ abstract class _FilesState with Store {
       }
       // else
       onStart();
-      List<int> fileBytes =
-          await _filesApi.downloadFile(url, updateProgress: onUpdateProgress);
-      if (file.initVector != null) {
-        fileBytes =
-            await _filesLocal.decryptFile(file: file, fileBytes: fileBytes);
-      }
-      final savedPath = await _filesLocal.saveFileInDownloads(fileBytes, file);
-      onSuccess(savedPath);
+      await _filesApi.downloadFile(url, file, onSuccess: onSuccess,
+          updateProgress: onUpdateProgress);
+//      if (file.initVector != null) {
+//        fileBytes =
+//            await _filesLocal.decryptFile(file: file, fileBytes: fileBytes);
+//      }
+//      final savedPath = await _filesLocal.saveFileInDownloads(fileBytes, file);
     } catch (err) {
       onError(err.toString());
     }
@@ -303,12 +302,13 @@ abstract class _FilesState with Store {
     Function(int) updateProgress,
   }) async {
     List<int> fileContents;
-    if (fileBytes == null) {
-      fileContents = await _filesApi.downloadFile(file.downloadUrl,
-          updateProgress: updateProgress);
-    } else {
-      fileContents = fileBytes;
-    }
+    // TODO VO: broken
+//    if (fileBytes == null) {
+//      fileContents = await _filesApi.downloadFile(file.downloadUrl,
+//          updateProgress: updateProgress);
+//    } else {
+//      fileContents = fileBytes;
+//    }
     return _filesLocal.shareFile(fileContents, file);
   }
 
@@ -317,8 +317,9 @@ abstract class _FilesState with Store {
     if (file.localId == null) {
       List<int> contentBytes = fileBytes;
       if (contentBytes == null) {
-        contentBytes = await _filesApi.downloadFile(file.downloadUrl,
-            updateProgress: updateProgress);
+        // TODO VO: broken
+//        contentBytes = await _filesApi.downloadFile(file.downloadUrl,
+//            updateProgress: updateProgress);
       }
 
       final dartFile = await _filesLocal.saveFileForOffline(contentBytes, file);

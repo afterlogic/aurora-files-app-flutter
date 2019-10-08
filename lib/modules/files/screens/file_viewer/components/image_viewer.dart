@@ -4,6 +4,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/progress_loader.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -34,11 +35,15 @@ class _ImageViewerState extends State<ImageViewer> {
     _fileViewerState = widget.fileViewerState;
     if (AppStore.filesState.isOfflineMode &&
         _fileViewerState.file.initVector != null) {
-      Future.delayed(
-          Duration(milliseconds: 250), _fileViewerState.getPreviewImage);
+      Future.delayed(Duration(milliseconds: 250),
+          () => _fileViewerState.getPreviewImage((err) => showError(err)));
     } else {
-      _fileViewerState.getPreviewImage();
+      _fileViewerState.getPreviewImage((err) => showError(err));
     }
+  }
+
+  void showError(String err) {
+    showSnack(context: context, scaffoldState: widget.scaffoldState, msg: err);
   }
 
   Widget _buildImage() {
@@ -153,8 +158,7 @@ class _ImageViewerState extends State<ImageViewer> {
                         ),
                       ),
                       Observer(builder: (_) {
-                        if (prevProgress !=
-                            _fileViewerState.downloadProgress) {
+                        if (prevProgress != _fileViewerState.downloadProgress) {
                           builtImage = _buildImage();
                           prevProgress = _fileViewerState.downloadProgress;
                         }

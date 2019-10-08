@@ -1,13 +1,19 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:aurorafiles/utils/permissions.dart';
+import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/widgets.dart';
 
 class FilesApi {
@@ -63,8 +69,11 @@ class FilesApi {
     }
   }
 
-  Future<List<int>> downloadFile(url,
-      {Function(int) updateProgress, isRedirect = false}) async {
+  Future<void> downloadFile(String url, LocalFile file,
+      {Function(int) updateProgress,
+      @required Function(String) onSuccess,
+      isRedirect = false}) async {
+    if (!Platform.isIOS) await getStoragePermissions();
     final String hostName = AppStore.authState.hostName;
     HttpClient client = new HttpClient();
     try {
@@ -79,18 +88,71 @@ class FilesApi {
 
       if (response.isRedirect) {
         // redirect manually with different headers
-        return await downloadFile(response.headers.value("location"),
-            updateProgress: updateProgress, isRedirect: true);
+        return await downloadFile(response.headers.value("location"), file,
+            onSuccess: onSuccess, updateProgress: updateProgress, isRedirect: true);
       } else {
-        final List<int> fileBytes = new List();
-        await for (List<int> contents in response) {
-          fileBytes.addAll(contents);
-          if (updateProgress != null) updateProgress(fileBytes.length);
+        List<int> fileBytes = new List();
+        Directory dir = await DownloadsPathProvider.downloadsDirectory;
+        final fileToDownload = new File("${dir.path}/${file.name}");
+        if (fileToDownload.existsSync()) {
+          fileToDownload.delete();
         }
-        return fileBytes;
+        await fileToDownload.create(recursive: true);
+
+        if (file.initVector != null) {
+          IV iv = IV.fromBase16(file.initVector);
+          NativeFileCryptor.ivBase64 = iv.base64;
+        }
+        StreamSubscription sub;
+        sub = response.listen((List<int> contents) async {
+          List<int> contentsForCurrent;
+          List<int> contentsForNext = contents;
+          if (NativeFileCryptor.chunkMaxSize <=
+              fileBytes.length + contents.length) {
+            contentsForCurrent = contents.sublist(0, NativeFileCryptor.chunkMaxSize - fileBytes.length);
+            contentsForNext = contents.sublist(NativeFileCryptor.chunkMaxSize - fileBytes.length, contents.length);
+            fileBytes.addAll(contentsForCurrent);
+            sub.pause();
+            await _writeChunkToFile(
+                fileBytes, file.initVector, fileToDownload, false);
+            fileBytes = new List();
+            sub.resume();
+          }
+          fileBytes.addAll(contentsForNext);
+          if (updateProgress != null) updateProgress(fileBytes.length);
+        }, onDone: () async {
+          await _writeChunkToFile(
+              fileBytes, file.initVector, fileToDownload, true);
+          onSuccess(fileToDownload.path);
+          sub.cancel();
+        }, onError: (err) {
+          print("VO: err: ${err}");
+          final fileToDownload = new File("${dir.path}/${file.name}");
+          fileToDownload.delete(recursive: true);
+        }, cancelOnError: true);
       }
-    } catch (err) {
+    } catch (err, stack) {
+      print("VO: err: ${err}");
+      print("VO: stack: ${stack}");
       throw CustomException(err.toString());
+    }
+  }
+
+  Future<void> _writeChunkToFile(List<int> fileBytes, String initVector,
+      File fileToDownload, bool isLast) async {
+    // if encrypted - decrypt
+    if (initVector != null) {
+      final key =
+          prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+      final decrypted = await NativeFileCryptor.decrypt(
+          fileBytes: fileBytes, keyBase64: key.base64, isLast: isLast);
+      await fileToDownload.writeAsBytes(decrypted, mode: FileMode.append);
+      // write data to file
+      final newVector =
+          decrypted.sublist(decrypted.length - 16, decrypted.length);
+      NativeFileCryptor.ivBase64 = IV(Uint8List.fromList(newVector)).base64;
+    } else {
+      await fileToDownload.writeAsBytes(fileBytes, mode: FileMode.append);
     }
   }
 

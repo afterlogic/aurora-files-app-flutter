@@ -77,7 +77,7 @@ class _ShareDialogState extends State<ShareDialog> {
           FlatButton(
             child: Text("CANCEL"),
             onPressed: () {
-              widget.filesState.clearFilesToDeleteAndStopDownload();
+              widget.filesState.clearFilesToDeleteAndCancelDownload();
               Navigator.pop(context);
             },
           )

@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,12 @@ class _TextViewerState extends State<TextViewer> {
   void initState() {
     super.initState();
     _initTextViewer();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    AppStore.filesState.clearFilesToDeleteAndCancelDownload();
   }
 
   Future _initTextViewer() async {

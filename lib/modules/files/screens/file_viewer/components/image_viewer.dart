@@ -42,6 +42,12 @@ class _ImageViewerState extends State<ImageViewer> {
     }
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    AppStore.filesState.clearFilesToDeleteAndCancelDownload();
+  }
+
   void showError(String err) {
     showSnack(context: context, scaffoldState: widget.scaffoldState, msg: err);
   }

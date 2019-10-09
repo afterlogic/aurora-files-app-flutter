@@ -64,7 +64,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   @override
   void dispose() {
     super.dispose();
-    widget.filesState.clearFilesToDeleteAndStopDownload();
     _fileViewerState.dispose();
   }
 

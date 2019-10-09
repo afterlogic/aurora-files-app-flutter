@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,12 @@ class _PdfViewerState extends State<PdfViewer> {
   void initState() {
     super.initState();
     _fileViewerState.file = widget.file;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    AppStore.filesState.clearFilesToDeleteAndCancelDownload();
   }
 
   @override

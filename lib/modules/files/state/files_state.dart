@@ -341,7 +341,7 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future<void> clearFilesToDeleteAndStopDownload() async {
+  Future<void> clearFilesToDeleteAndCancelDownload() async {
     final sub = FilesApi.downloadSubscription;
     final file = FilesApi.fileBeingLoaded;
     if (sub != null) await sub.cancel();

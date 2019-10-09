@@ -270,7 +270,6 @@ abstract class _FilesState with Store {
   }
 
   void onDownloadFile({
-    String url,
     LocalFile file,
     Function onStart,
     Function onUpdateProgress,
@@ -284,13 +283,11 @@ abstract class _FilesState with Store {
       }
       // else
       onStart();
-      await _filesApi.downloadFile(url, file, onSuccess: onSuccess,
-          updateProgress: onUpdateProgress);
-//      if (file.initVector != null) {
-//        fileBytes =
-//            await _filesLocal.decryptFile(file: file, fileBytes: fileBytes);
-//      }
-//      final savedPath = await _filesLocal.saveFileInDownloads(fileBytes, file);
+      final fileToDownloadInto =
+          await _filesLocal.createFileForDownloadAndroid(file);
+      await _filesApi.getFileContentsFromServer(
+          file.downloadUrl, file, fileToDownloadInto, true,
+          onSuccess: onSuccess, updateProgress: onUpdateProgress);
     } catch (err) {
       onError(err.toString());
     }
@@ -298,36 +295,49 @@ abstract class _FilesState with Store {
 
   Future<void> onShareFile(
     LocalFile file, {
-    List<int> fileBytes,
+    File storedFile,
+    Function(File) onSuccess,
     Function(int) updateProgress,
   }) async {
-    List<int> fileContents;
-    // TODO VO: broken
-//    if (fileBytes == null) {
-//      fileContents = await _filesApi.downloadFile(file.downloadUrl,
-//          updateProgress: updateProgress);
-//    } else {
-//      fileContents = fileBytes;
-//    }
-    return _filesLocal.shareFile(fileContents, file);
+    File fileWithContents;
+    if (storedFile == null) {
+      final File tempFileForShare =
+          await _filesLocal.createTempFile(file, useName: true);
+
+      if (await tempFileForShare.length() <= 0) {
+        await _filesApi.getFileContentsFromServer(
+            file.downloadUrl, file, tempFileForShare, true,
+            onSuccess: (File savedFile) {
+              fileWithContents = savedFile;
+              onSuccess(savedFile);
+              _filesLocal.shareFile(fileWithContents, file);
+            }, updateProgress: updateProgress);
+      } else {
+        fileWithContents = tempFileForShare;
+        onSuccess(fileWithContents);
+        _filesLocal.shareFile(fileWithContents, file);
+      }
+    } else {
+      fileWithContents = storedFile;
+      onSuccess(fileWithContents);
+      _filesLocal.shareFile(fileWithContents, file);
+    }
   }
 
   Future<void> onSetFileOffline(LocalFile file,
-      {List<int> fileBytes, Function(int) updateProgress}) async {
+      {Function(int) updateProgress, Function() onSuccess}) async {
     if (file.localId == null) {
-      List<int> contentBytes = fileBytes;
-      if (contentBytes == null) {
-        // TODO VO: broken
-//        contentBytes = await _filesApi.downloadFile(file.downloadUrl,
-//            updateProgress: updateProgress);
-      }
-
-      final dartFile = await _filesLocal.saveFileForOffline(contentBytes, file);
-      final FilesCompanion filesCompanion = getCompanionFromLocalFile(
-          file, "${dartFile.parent.path}/${file.guid}");
+      final createdFileForOffline =
+          await _filesLocal.createFileForOffline(file);
+      await _filesApi.getFileContentsFromServer(
+          file.downloadUrl, file, createdFileForOffline, false,
+          onSuccess: (_) => onSuccess(), updateProgress: updateProgress);
+      final FilesCompanion filesCompanion =
+          getCompanionFromLocalFile(file, createdFileForOffline.path);
       await _filesDao.addFile(filesCompanion);
     } else {
       await _filesDao.deleteFiles([file]);
+      onSuccess();
     }
   }
 }

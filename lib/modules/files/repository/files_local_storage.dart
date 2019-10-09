@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -25,7 +24,6 @@ import 'package:share_extend/share_extend.dart';
 
 class FilesLocalStorage {
   final uploader = FlutterUploader();
-  final cryptor = NativeFileCryptor();
 
   Future<File> pickFiles({FileType type, String extension}) {
     return FilePicker.getFile(type: type, fileExtension: extension);
@@ -70,7 +68,8 @@ class FilesLocalStorage {
     return uploader.result;
   }
 
-  Future<void> shareFile(List<int> fileBytes, LocalFile file) async {
+  // is used to download files on iOS
+  Future<void> shareFile(File storedFile, LocalFile file) async {
     String fileType;
     if (file.contentType.startsWith("image"))
       fileType = "image";
@@ -79,13 +78,12 @@ class FilesLocalStorage {
     else
       fileType = "file";
 
-    final tempFileForShare = await saveFileForShare(fileBytes, file);
-    await ShareExtend.share(tempFileForShare.path, fileType);
+    await ShareExtend.share(storedFile.path, fileType);
   }
 
-  Future<void> openFileWith(List<int> fileBytes, LocalFile file) async {
-    final tempFileForShare = await cacheFile(fileBytes, file);
-    return OpenFile.open(tempFileForShare.path);
+  Future<void> openFileWith(File file) async {
+//    final tempFileForShare = await cacheFile(fileBytes, file);
+    return OpenFile.open(file.path);
   }
 
 //  Future<String> saveFileInDownloads(
@@ -100,58 +98,111 @@ class FilesLocalStorage {
 //    return fileToDownload.path;
 //  }
 
-  Future<File> saveFileForOffline(fileBytes, LocalFile file) async {
+  // works on android only, to download files on iOS use Share
+  Future<File> createFileForDownloadAndroid(LocalFile file) async {
     if (!Platform.isIOS) await getStoragePermissions();
-    Directory dir = await getApplicationDocumentsDirectory();
 
-    final offlineFile = new File("${dir.path}/${file.guid}");
-    await offlineFile.create(recursive: true);
-    await offlineFile.writeAsBytes(fileBytes);
+    final Directory dir = await DownloadsPathProvider.downloadsDirectory;
+    File dartFile = new File("${dir.path}/${file.name}");
 
-    return offlineFile;
-  }
-
-  Future<File> saveFileForShare(List<int> fileBytes, LocalFile file) async {
-    final Directory dir = await getTemporaryDirectory();
-    File tempFileForShare = new File("${dir.path}/share/${file.name}");
-    if (!await tempFileForShare.exists()) {
-      await tempFileForShare.create(recursive: true);
-      await tempFileForShare.writeAsBytes(fileBytes);
+    // if name exists add suffix (name_0.png)
+    int suffix = 0;
+    while (await dartFile.exists()) {
+      final List splitName = file.name.split(".");
+      final String ext = splitName.last;
+      splitName.removeLast();
+      final String nameWithoutExt = splitName.join(".");
+      dartFile = new File("${dir.path}/${nameWithoutExt}_$suffix.$ext");
+      suffix++;
     }
-    return tempFileForShare;
+    await dartFile.create(recursive: true);
+    return dartFile;
   }
 
-  Future<File> cacheFile(List<int> fileBytes, LocalFile file) async {
+  // such files are deleted periodically (e.g. share, non-image cache)
+  Future<File> createTempFile(LocalFile file, {bool useName = false}) async {
+    if (!Platform.isIOS) await getStoragePermissions();
+
     final Directory dir = await getTemporaryDirectory();
-    File cachedFile = new File("${dir.path}/files/${file.guid}");
-    if (!await cachedFile.exists()) {
-      await cachedFile.create(recursive: true);
-      await cachedFile.writeAsBytes(fileBytes);
+    final File dartFile = new File(
+        "${dir.path}/files_to_delete/${useName == true ? file.name : file.guid}");
+    if (await dartFile.exists()) {
+      return dartFile;
+    } else {
+      await dartFile.create(recursive: true);
+      return dartFile;
     }
-    return cachedFile;
   }
+
+  Future<File> createImageCacheFile(LocalFile file) async {
+    if (file.initVector != null) {
+      throw CustomException("Cannot cache encrypted image contents");
+    }
+    if (!Platform.isIOS) await getStoragePermissions();
+
+    final Directory dir = await getTemporaryDirectory();
+    final File dartFile = new File("${dir.path}/images/${file.guid}");
+    if (await dartFile.exists()) {
+      return dartFile;
+    } else {
+      await dartFile.create(recursive: true);
+      return dartFile;
+    }
+  }
+
+  Future<File> createFileForOffline(LocalFile file) async {
+    if (!Platform.isIOS) await getStoragePermissions();
+
+    final Directory dir = await getApplicationDocumentsDirectory();
+    final File dartFile = new File("${dir.path}/offline/${file.guid}_${file.name}");
+    if (await dartFile.exists()) {
+      return dartFile;
+    } else {
+      await dartFile.create(recursive: true);
+      return dartFile;
+    }
+  }
+
+//  Future<File> saveFileForShare(List<int> fileBytes, LocalFile file) async {
+//    final Directory dir = await getTemporaryDirectory();
+//    File tempFileForShare = new File("${dir.path}/share/${file.name}");
+//    if (!await tempFileForShare.exists()) {
+//      await tempFileForShare.create(recursive: true);
+//      await tempFileForShare.writeAsBytes(fileBytes);
+//    }
+//    return tempFileForShare;
+//  }
+
+//  Future<File> cacheFile(List<int> fileBytes, LocalFile file) async {
+//    final Directory dir = await getTemporaryDirectory();
+//    File cachedFile = new File("${dir.path}/files/${file.guid}");
+//    if (!await cachedFile.exists()) {
+//      await cachedFile.create(recursive: true);
+//      await cachedFile.writeAsBytes(fileBytes);
+//    }
+//    return cachedFile;
+//  }
 
   // if file not found returns null
-  Future<List<int>> getFileFromCache(LocalFile fileObj) async {
-    List<int> fileBytes;
-
-    final tempDir = await getTemporaryDirectory();
-    final tempFolder = Directory("${tempDir.path}/files");
-    final folderExists = await tempFolder.exists();
-    if (folderExists) {
-      final itemsInTemp = await tempFolder.list().toList();
-
-      itemsInTemp.forEach((file) async {
-        if (file.path.contains(fileObj.guid) && file is File) {
-          final fileContents = file.readAsBytesSync();
-          if (fileContents.lengthInBytes == fileObj.size) {
-            fileBytes = fileContents;
-          }
-        }
-      });
-    }
-    return fileBytes;
-  }
+//  Future<File> getFileFromCache(LocalFile fileObj) async {
+//    File storedFile;
+//
+//    final tempDir = await getTemporaryDirectory();
+//    final tempFolder = Directory("${tempDir.path}/files");
+//    final folderExists = await tempFolder.exists();
+//    if (folderExists) {
+//      final itemsInTemp = await tempFolder.list().toList();
+//
+//      itemsInTemp.forEach((file) async {
+//        if (file.path.contains(fileObj.guid) && file is File) {
+//          if (file.lengthSync() == fileObj.size) {
+//            storedFile = file;
+//          }
+//        }
+//      });
+//    }
+//    return storedFile;
+//  }
 
   Future<void> deleteFileFromCache([List<LocalFile> files]) async {
     final Directory dir = await getTemporaryDirectory();
@@ -212,35 +263,35 @@ class FilesLocalStorage {
 //    return [encryptedFile, iv.base16];
   }
 
-  // updateDecryptionProgress returns decrypted chunk index and total # of chunks
-  Future<void> decryptFile({
-    @required LocalFile file,
-    @required List<int> fileBytes,
-    @required Function(List<int>) getChunk,
-    Function(double) updateDecryptionProgress,
-  }) async {
-    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
-    IV iv = IV.fromBase16(file.initVector);
+// updateDecryptionProgress returns decrypted chunk index and total # of chunks
+//  Future<void> decryptFile({
+//    @required LocalFile file,
+//    @required List<int> fileBytes,
+//    @required Function(List<int>) getChunk,
+//    Function(double) updateDecryptionProgress,
+//  }) async {
+//    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+//    IV iv = IV.fromBase16(file.initVector);
+//
+//    try {
+//
+//      // TODO VO: broken
+////      cryptor.decrypt(
+////        fileBytes: fileBytes,
+////        keyBase64: key.base64,
+////        ivBase64: iv.base64,
+////        updateProgress: updateDecryptionProgress,
+////        getChunk: getChunk,
+////      );
+//    } on PlatformException catch (e) {
+//      print("PlatformException: $e");
+//      throw CustomException(
+//          "This device is unable to encrypt/decrypt the file");
+//    } catch (err) {
+//      throw CustomException(err.message ?? "Unknown error");
+//    }
 
-    try {
-
-      // TODO VO: broken
-//      cryptor.decrypt(
-//        fileBytes: fileBytes,
-//        keyBase64: key.base64,
-//        ivBase64: iv.base64,
-//        updateProgress: updateDecryptionProgress,
-//        getChunk: getChunk,
-//      );
-    } on PlatformException catch (e) {
-      print("PlatformException: $e");
-      throw CustomException(
-          "This device is unable to encrypt/decrypt the file");
-    } catch (err) {
-      throw CustomException(err.message ?? "Unknown error");
-    }
-
-    // OLD DART ENCRYPTION. VERY SLOW!
+// OLD DART ENCRYPTION. VERY SLOW!
 
 //    List<int> encryptedFileBytes = fileBytes;
 //    final List<int> decryptedFileBytes = new List();
@@ -279,7 +330,7 @@ class FilesLocalStorage {
 //        .forEach((result) => decryptedFileBytes.addAll(result.bytes));
 //
 //    return decryptedFileBytes;
-  }
+}
 
 //  List _chunk(list) => list.toList().isEmpty
 //      ? list.toList()
@@ -295,7 +346,7 @@ class FilesLocalStorage {
 //        args.encrypter.decryptBytes(args.encrypted, iv: args.iv);
 //    return new DecryptionResult(args.chunkIndex, decryptedBytes);
 //  }
-}
+//}
 
 //class DecryptionArgs {
 //  final Encrypter encrypter;

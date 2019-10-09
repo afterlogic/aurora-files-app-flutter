@@ -60,7 +60,7 @@ class _ImageViewerState extends State<ImageViewer> {
             ),
           ],
         );
-      } else if (_fileViewerState.fileBytes == null) {
+      } else if (_fileViewerState.fileWithContents == null) {
         return Center(
           child: Observer(
             builder: (_) => Row(
@@ -81,8 +81,8 @@ class _ImageViewerState extends State<ImageViewer> {
           ),
         );
       } else {
-        final image = Image.memory(
-          Uint8List.fromList(_fileViewerState.fileBytes),
+        final image = Image.file(
+          _fileViewerState.fileWithContents,
           fit: BoxFit.cover,
         );
         precacheImage(image.image, context, onError: (e, stackTrace) {
@@ -94,15 +94,15 @@ class _ImageViewerState extends State<ImageViewer> {
         );
       }
     } else {
-      if (_fileViewerState.fileBytes == null) {
+      if (_fileViewerState.fileWithContents == null) {
         return Positioned.fill(
           child: Center(
             child: ProgressLoader(_fileViewerState.downloadProgress),
           ),
         );
       } else {
-        final image = Image.memory(
-          Uint8List.fromList(_fileViewerState.fileBytes),
+        final image = Image.file(
+          _fileViewerState.fileWithContents,
           fit: BoxFit.cover,
         );
         precacheImage(image.image, context, onError: (e, stackTrace) {
@@ -132,9 +132,9 @@ class _ImageViewerState extends State<ImageViewer> {
           child: SizedBox(
             width: double.infinity,
             child: AppStore.filesState.isOfflineMode &&
-                    _fileViewerState.fileBytes != null
-                ? Image.memory(
-                    Uint8List.fromList(_fileViewerState.fileBytes),
+                    _fileViewerState.fileWithContents != null
+                ? Image.file(
+                    _fileViewerState.fileWithContents,
                     fit: BoxFit.cover,
                   )
                 : Stack(

@@ -10,8 +10,6 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:aurorafiles/utils/permissions.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/widgets.dart';
@@ -69,17 +67,31 @@ class FilesApi {
     }
   }
 
-  Future<void> downloadFile(String url, LocalFile file,
+  // download file contents and write it into a file for different purposes
+  // IMPORTANT! the function ends when it starts downloading
+  // to get the real ending when the download is finished, pass the onSuccess callback
+  Future<void> getFileContentsFromServer(
+      String url, LocalFile file, File fileToWriteInto, bool decryptFile,
       {Function(int) updateProgress,
-      @required Function(String) onSuccess,
-      isRedirect = false}) async {
-    if (!Platform.isIOS) await getStoragePermissions();
+      @required Function(File) onSuccess,
+      bool isRedirect = false}) async {
+    // getFileContentsFromServer function assumes that fileToWriteInto exists
+    final bool fileExists = await fileToWriteInto.exists();
+    if (!fileExists) {
+      throw CustomException("File to download data into doesn't exist");
+    }
+
+    final shouldDecrypt = decryptFile && file.initVector != null;
+
     final String hostName = AppStore.authState.hostName;
     HttpClient client = new HttpClient();
+
     try {
       final HttpClientRequest request =
           await client.getUrl(Uri.parse(isRedirect ? url : hostName + url));
+      // disable auto redirects because it automatically applies the same headers, but we want different headers
       request.followRedirects = false;
+      // token can only be applied to our api, in case of redirect we go to a different server, so we don't want to apply our token to such request
       if (!isRedirect) {
         request.headers
             .add("Authorization", "Bearer ${AppStore.authState.authToken}");
@@ -88,47 +100,72 @@ class FilesApi {
 
       if (response.isRedirect) {
         // redirect manually with different headers
-        return await downloadFile(response.headers.value("location"), file,
-            onSuccess: onSuccess, updateProgress: updateProgress, isRedirect: true);
+        return await getFileContentsFromServer(
+            response.headers.value("location"),
+            file,
+            fileToWriteInto,
+            shouldDecrypt,
+            onSuccess: onSuccess,
+            updateProgress: updateProgress,
+            isRedirect: true);
       } else {
-        List<int> fileBytes = new List();
-        Directory dir = await DownloadsPathProvider.downloadsDirectory;
-        final fileToDownload = new File("${dir.path}/${file.name}");
-        if (fileToDownload.existsSync()) {
-          fileToDownload.delete();
-        }
-        await fileToDownload.create(recursive: true);
+        // temporary buffer, which can hold not more than NativeFileCryptor.chunkMaxSize
+        List<int> fileBytesBuffer = new List();
 
-        if (file.initVector != null) {
+        // set initial vector that comes with the LocalFile object that we get from our api
+        if (shouldDecrypt) {
           IV iv = IV.fromBase16(file.initVector);
           NativeFileCryptor.ivBase64 = iv.base64;
         }
+
+        int progress = 0;
+
         StreamSubscription sub;
+        // average size of contents ~3000 bytes
         sub = response.listen((List<int> contents) async {
+          // the chunk must always be equal to NativeFileCryptor.chunkMaxSize
+          // so we have to split the last part for the chunk to make it be equal to NativeFileCryptor.chunkMaxSize
+          // this part goes to contentsForCurrent, the rest goes to contentsForNext, which than goes to the next chunk
           List<int> contentsForCurrent;
+          // by default all the contents received go to contentsForNext which then will be added to the buffer
+          // if current buffer + contentsForNext exceed NativeFileCryptor.chunkMaxSize, contentsForNext will be rewritten
           List<int> contentsForNext = contents;
+
+          // if this is the final part that forms a chunk
           if (NativeFileCryptor.chunkMaxSize <=
-              fileBytes.length + contents.length) {
-            contentsForCurrent = contents.sublist(0, NativeFileCryptor.chunkMaxSize - fileBytes.length);
-            contentsForNext = contents.sublist(NativeFileCryptor.chunkMaxSize - fileBytes.length, contents.length);
-            fileBytes.addAll(contentsForCurrent);
+              fileBytesBuffer.length + contents.length) {
+            contentsForCurrent = contents.sublist(
+                0, NativeFileCryptor.chunkMaxSize - fileBytesBuffer.length);
+
+            contentsForNext = contents.sublist(
+                NativeFileCryptor.chunkMaxSize - fileBytesBuffer.length,
+                contents.length);
+
+            fileBytesBuffer.addAll(contentsForCurrent);
+
             sub.pause();
-            await _writeChunkToFile(
-                fileBytes, file.initVector, fileToDownload, false);
-            fileBytes = new List();
+            await _writeChunkToFile(fileBytesBuffer,
+                shouldDecrypt ? file.initVector : null, fileToWriteInto, false);
+            // flush the buffer
+            fileBytesBuffer = new List();
             sub.resume();
           }
-          fileBytes.addAll(contentsForNext);
-          if (updateProgress != null) updateProgress(fileBytes.length);
+          fileBytesBuffer.addAll(contentsForNext);
+          // the callback to update the UI download progress
+          progress += contents.length;
+          if (updateProgress != null) updateProgress(progress);
         }, onDone: () async {
-          await _writeChunkToFile(
-              fileBytes, file.initVector, fileToDownload, true);
-          onSuccess(fileToDownload.path);
+          // when finished send all we have, if the file is decrypted, the rest will be filled with padding
+          // this is why we pass true for isLast
+          await _writeChunkToFile(fileBytesBuffer,
+              shouldDecrypt ? file.initVector : null, fileToWriteInto, true);
+          // resolve with the destination on where the downloaded file is
+          onSuccess(fileToWriteInto);
           sub.cancel();
         }, onError: (err) {
-          print("VO: err: ${err}");
-          final fileToDownload = new File("${dir.path}/${file.name}");
-          fileToDownload.delete(recursive: true);
+          // delete the file in case of an error
+          fileToWriteInto.delete(recursive: true);
+          throw CustomException(err.toString());
         }, cancelOnError: true);
       }
     } catch (err, stack) {
@@ -139,20 +176,21 @@ class FilesApi {
   }
 
   Future<void> _writeChunkToFile(List<int> fileBytes, String initVector,
-      File fileToDownload, bool isLast) async {
+      File fileToWriteInto, bool isLast) async {
     // if encrypted - decrypt
     if (initVector != null) {
       final key =
           prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
       final decrypted = await NativeFileCryptor.decrypt(
           fileBytes: fileBytes, keyBase64: key.base64, isLast: isLast);
-      await fileToDownload.writeAsBytes(decrypted, mode: FileMode.append);
-      // write data to file
+      await fileToWriteInto.writeAsBytes(decrypted, mode: FileMode.append);
+
+      // update vector with the last 16 bytes of the chunk
       final newVector =
           decrypted.sublist(decrypted.length - 16, decrypted.length);
       NativeFileCryptor.ivBase64 = IV(Uint8List.fromList(newVector)).base64;
     } else {
-      await fileToDownload.writeAsBytes(fileBytes, mode: FileMode.append);
+      await fileToWriteInto.writeAsBytes(fileBytes, mode: FileMode.append);
     }
   }
 

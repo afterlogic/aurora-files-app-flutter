@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
@@ -24,77 +23,84 @@ abstract class _FileViewerState with Store {
   @observable
   double decryptionProgress;
 
-  List<int> fileBytes;
+//  List<int> fileBytes;
+  File fileWithContents;
 
-  Future<void> _getPreviewFile() async {
-    List<int> fileContent;
-    final progressDivider = file.initVector == null ? 1 : 2;
+  Future<void> _getPreviewFile(File fileToView,
+      {Function(File) onDownloadEnd}) async {
     downloadProgress = 0.0;
 
     // get file contents
     if (AppStore.filesState.isOfflineMode) {
-      final localFile = new File(file.localPath);
-      fileContent = await localFile.readAsBytes();
-      downloadProgress = 1.0 / progressDivider;
+      fileWithContents = new File(file.localPath);
+      if (onDownloadEnd != null) onDownloadEnd(fileToView);
+      downloadProgress = 1.0;
     } else {
-
-      // TODO VO: broken
-//      fileContent = await _filesApi.downloadFile(
-//        file.viewUrl,
-//        updateProgress: (int bytesLoaded) {
-//          downloadProgress =
-//              100 / file.size * bytesLoaded / 100 / progressDivider;
-//        },
-//      );
+      if (await fileToView.length() > 0) {
+        fileWithContents = fileToView;
+        downloadProgress = null;
+        if (onDownloadEnd != null) onDownloadEnd(fileToView);
+      } else {
+        await _filesApi.getFileContentsFromServer(
+          file.viewUrl,
+          file,
+          fileToView,
+          false,
+          onSuccess: (_) {
+            fileWithContents = fileToView;
+            downloadProgress = null;
+            if (onDownloadEnd != null) onDownloadEnd(fileToView);
+          },
+          updateProgress: (int bytesLoaded) {
+            downloadProgress = 100 / file.size * bytesLoaded / 100;
+          },
+        );
+      }
     }
     // if encrypted - decrypt
-    if (file.initVector != null) {
-      downloadProgress = 0.5;
-      await _filesLocal.decryptFile(
-        file: file,
-        fileBytes: fileContent,
-        updateDecryptionProgress: (progress) =>
-            downloadProgress = progress / 2 + 0.5, getChunk: (List a) {},
-      );
-    } else {
-      fileBytes = fileContent;
-    }
-
-    downloadProgress = null;
+//    if (file.initVector != null) {
+//      downloadProgress = 0.5;
+//      await _filesLocal.decryptFile(
+//        file: file,
+//        fileBytes: fileContent,
+//        updateDecryptionProgress: (progress) =>
+//            downloadProgress = progress / 2 + 0.5, getChunk: (List a) {},
+//      );
+//    } else {
+//      fileBytes = fileContent;
+//    }
   }
 
   Future<void> getPreviewImage(Function(String) onError) async {
     downloadProgress = 0.0;
     // try to retrieve the file from cache
-    fileBytes = await _filesLocal.getFileFromCache(file);
     // if no cache, get file
-    if (fileBytes == null) {
+    if (fileWithContents == null) {
       try {
-        await _getPreviewFile();
+        final File imageToView = await _filesLocal.createImageCacheFile(file);
+        await _getPreviewFile(imageToView);
       } catch (err) {
         onError(err is PlatformException ? err.message : err.toString());
       }
     } else {
       downloadProgress = 1.0;
     }
-    if (!AppStore.filesState.isOfflineMode && file.initVector == null) {
-      _filesLocal.cacheFile(fileBytes, file);
-    }
   }
 
-  Future<String> getPreviewText() async {
-    await _getPreviewFile();
-
-    String previewText;
-    // to give some time for progress indicator to show filled state
-    await Future.delayed(Duration(milliseconds: 60),
-        () => previewText = Utf8Codec().decode(fileBytes));
-    return previewText;
+  Future<void> getPreviewText(Function(String) getText) async {
+    downloadProgress = 0.0;
+    final File textToView = await _filesLocal.createTempFile(file);
+    await _getPreviewFile(textToView, onDownloadEnd: (File storedFile) async {
+      String previewText = await fileWithContents.readAsString();
+      getText(previewText);
+    });
   }
 
   Future<void> onOpenPdf() async {
-    if (fileBytes == null) await _getPreviewFile();
-
-    _filesLocal.openFileWith(fileBytes, file);
+    final File pdfToView = await _filesLocal.createTempFile(file, useName: true);
+    await _getPreviewFile(pdfToView, onDownloadEnd: (File storedFile) {
+      fileWithContents = storedFile;
+      _filesLocal.openFileWith(fileWithContents);
+    });
   }
 }

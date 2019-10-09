@@ -83,9 +83,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _shareFile() {
-    if (_fileViewerState.fileBytes != null) {
+    if (_fileViewerState.fileWithContents != null) {
       widget.filesState
-          .onShareFile(_file, fileBytes: _fileViewerState.fileBytes);
+          .onShareFile(_file, storedFile: _fileViewerState.fileWithContents);
     } else if (_fileViewerState.downloadProgress != null) {
       showSnack(
         context: context,
@@ -172,7 +172,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   void _downloadFile() {
     widget.filesState.onDownloadFile(
-      url: _file.downloadUrl,
       file: _file,
       onStart: () => showSnack(
         context: context,
@@ -180,10 +179,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         msg: "Downloading ${_file.name}",
         isError: false,
       ),
-      onSuccess: (String path) => showSnack(
+      onSuccess: (File savedFile) => showSnack(
           context: context,
           scaffoldState: _fileViewerScaffoldKey.currentState,
-          msg: "${_file.name} downloaded successfully into: $path",
+          msg: "${_file.name} downloaded successfully into: ${savedFile.path}",
           isError: false,
           duration: Duration(minutes: 10),
           action: SnackBarAction(
@@ -200,9 +199,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   Future _setFileForOffline() async {
     if (widget.filesState.isOfflineMode) {
-      await widget.filesState.onSetFileOffline(_file);
-      await widget.filesPageState.onGetFiles();
-      Navigator.pop(context);
+      widget.filesState.onSetFileOffline(_file, onSuccess: () async {
+        await widget.filesPageState.onGetFiles();
+        Navigator.pop(context);
+      });
     } else {
       try {
         setState(() {
@@ -217,19 +217,19 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             isError: false,
           );
         }
-        await widget.filesState
-            .onSetFileOffline(_file, fileBytes: _fileViewerState.fileBytes);
-        await widget.filesPageState.onGetFiles();
-        if (_file.localId == null) {
-          showSnack(
-            context: context,
-            scaffoldState: _fileViewerScaffoldKey.currentState,
-            msg: "File synched successfully",
-            isError: false,
-          );
-        }
-        _updateFile(_file.id);
-        setState(() => _isSyncingForOffline = false);
+        await widget.filesState.onSetFileOffline(_file, onSuccess: () async {
+          if (_file.localId == null) {
+            showSnack(
+              context: context,
+              scaffoldState: _fileViewerScaffoldKey.currentState,
+              msg: "File synched successfully",
+              isError: false,
+            );
+          }
+          await widget.filesPageState.onGetFiles();
+          _updateFile(_file.id);
+          setState(() => _isSyncingForOffline = false);
+        });
       } catch (err) {
         setState(() {
           _isSyncingForOffline = false;
@@ -246,6 +246,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   Widget _getPreviewContent() {
     final previewIconSize = 120.0;
+    if (_file.initVector != null) {
+      return Icon(Icons.lock_outline,
+          size: previewIconSize, color: Theme.of(context).disabledColor);
+    }
     switch (_fileType) {
       case FileType.image:
         return ImageViewer(

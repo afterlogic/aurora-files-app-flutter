@@ -72,7 +72,6 @@ class _FileWidgetState extends State<FileWidget> {
     final filesState = Provider.of<FilesState>(context);
     final filesPageState = Provider.of<FilesPageState>(context);
     filesState.onDownloadFile(
-      url: widget.file.downloadUrl,
       file: widget.file,
       onStart: () => showSnack(
         context: context,
@@ -80,10 +79,10 @@ class _FileWidgetState extends State<FileWidget> {
         msg: "Downloading ${widget.file.name}",
         isError: false,
       ),
-      onSuccess: (String path) => showSnack(
+      onSuccess: (File savedFile) => showSnack(
           context: context,
           scaffoldState: filesPageState.scaffoldKey.currentState,
-          msg: "${widget.file.name} downloaded successfully into: $path",
+          msg: "${widget.file.name} downloaded successfully into: ${savedFile.path}",
           isError: false,
           duration: Duration(minutes: 10),
           action: SnackBarAction(
@@ -110,16 +109,17 @@ class _FileWidgetState extends State<FileWidget> {
           isError: false,
         );
       }
-      await filesState.onSetFileOffline(widget.file);
-      if (widget.file.localId == null) {
-        showSnack(
-          context: context,
-          scaffoldState: filesPageState.scaffoldKey.currentState,
-          msg: "File synched successfully",
-          isError: false,
-        );
-      }
-      await filesPageState.onGetFiles();
+      await filesState.onSetFileOffline(widget.file, onSuccess: () {
+        if (widget.file.localId == null) {
+          showSnack(
+            context: context,
+            scaffoldState: filesPageState.scaffoldKey.currentState,
+            msg: "File synched successfully",
+            isError: false,
+          );
+        }
+        filesPageState.onGetFiles();
+      });
     } catch (err) {
       showSnack(
         context: context,
@@ -163,7 +163,7 @@ class _FileWidgetState extends State<FileWidget> {
     if (widget.file.initVector != null) {
       return Icon(Icons.lock_outline,
           size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else if (widget.file.thumbnailUrl != null) {
+    } else if (widget.file.thumbnailUrl != null || filesState.isOfflineMode && getFileType(widget.file) == FileType.image) {
       return SizedBox(
         width: thumbnailSize,
         height: thumbnailSize,

@@ -56,7 +56,9 @@ class _ShareDialogState extends State<ShareDialog> {
         actions: <Widget>[
           CupertinoButton(
             child: Text("Cancel"),
-            onPressed: Navigator.of(context).pop,
+            onPressed: Navigator
+                .of(context)
+                .pop,
           )
         ],
       );
@@ -74,7 +76,10 @@ class _ShareDialogState extends State<ShareDialog> {
         actions: <Widget>[
           FlatButton(
             child: Text("CANCEL"),
-            onPressed: Navigator.of(context).pop,
+            onPressed: () {
+              widget.filesState.clearFilesToDeleteAndStopDownload();
+              Navigator.pop(context);
+            },
           )
         ],
       );

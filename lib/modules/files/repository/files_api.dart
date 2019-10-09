@@ -15,6 +15,12 @@ import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/widgets.dart';
 
 class FilesApi {
+  // to be able to cancel
+  static StreamSubscription downloadSubscription;
+
+  // to be able to delete the file in case downloading is canceled
+  static File fileBeingLoaded;
+  
   List<LocalFile> _sortFiles(List<LocalFile> unsortedFiles) {
     final List<LocalFile> folders = List();
     final List<LocalFile> files = List();
@@ -81,6 +87,8 @@ class FilesApi {
       throw CustomException("File to download data into doesn't exist");
     }
 
+    fileBeingLoaded = fileToWriteInto;
+
     final shouldDecrypt = decryptFile && file.initVector != null;
 
     final String hostName = AppStore.authState.hostName;
@@ -119,10 +127,9 @@ class FilesApi {
         }
 
         int progress = 0;
-
-        StreamSubscription sub;
+        
         // average size of contents ~3000 bytes
-        sub = response.listen((List<int> contents) async {
+        downloadSubscription = response.listen((List<int> contents) async {
           // the chunk must always be equal to NativeFileCryptor.chunkMaxSize
           // so we have to split the last part for the chunk to make it be equal to NativeFileCryptor.chunkMaxSize
           // this part goes to contentsForCurrent, the rest goes to contentsForNext, which than goes to the next chunk
@@ -143,12 +150,12 @@ class FilesApi {
 
             fileBytesBuffer.addAll(contentsForCurrent);
 
-            sub.pause();
+            downloadSubscription.pause();
             await _writeChunkToFile(fileBytesBuffer,
                 shouldDecrypt ? file.initVector : null, fileToWriteInto, false);
             // flush the buffer
             fileBytesBuffer = new List();
-            sub.resume();
+            downloadSubscription.resume();
           }
           fileBytesBuffer.addAll(contentsForNext);
           // the callback to update the UI download progress
@@ -161,16 +168,21 @@ class FilesApi {
               shouldDecrypt ? file.initVector : null, fileToWriteInto, true);
           // resolve with the destination on where the downloaded file is
           onSuccess(fileToWriteInto);
-          sub.cancel();
+          downloadSubscription.cancel();
+          downloadSubscription = null;
+          fileBeingLoaded = null;
         }, onError: (err) {
           // delete the file in case of an error
           fileToWriteInto.delete(recursive: true);
+          downloadSubscription.cancel();
+          downloadSubscription = null;
+          fileBeingLoaded = null;
           throw CustomException(err.toString());
         }, cancelOnError: true);
       }
     } catch (err, stack) {
-      print("VO: err: ${err}");
-      print("VO: stack: ${stack}");
+      print("VO: err: $err");
+      print("VO: stack: $stack");
       throw CustomException(err.toString());
     }
   }

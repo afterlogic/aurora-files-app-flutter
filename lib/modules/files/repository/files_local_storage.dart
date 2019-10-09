@@ -204,17 +204,17 @@ class FilesLocalStorage {
 //    return storedFile;
 //  }
 
-  Future<void> deleteFileFromCache([List<LocalFile> files]) async {
+  Future<void> deleteFilesFromCache([List<LocalFile> files]) async {
     final Directory dir = await getTemporaryDirectory();
     if (files != null) {
       for (final file in files) {
-        File cachedFile = new File("${dir.path}/files/${file.guid}");
+        File cachedFile = new File("${dir.path}/images/${file.guid}");
         if (cachedFile.existsSync()) {
           await cachedFile.delete(recursive: true);
         }
       }
     } else {
-      final cacheDir = new Directory("${dir.path}/files");
+      final cacheDir = new Directory("${dir.path}/files_to_delete");
       if (cacheDir.existsSync()) {
         await cacheDir.delete(recursive: true);
       }

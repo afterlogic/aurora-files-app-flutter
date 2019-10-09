@@ -172,7 +172,7 @@ abstract class _FilesPageState with Store {
     try {
       filesLoading = FilesLoadingType.filesVisible;
       await _filesApi.delete(storage.type, pagePath, mappedFilesToDelete);
-      await _filesLocal.deleteFileFromCache(filesToDeleteFromCache);
+      await _filesLocal.deleteFilesFromCache(filesToDeleteFromCache);
       await _filesDao.deleteFiles(filesToDeleteLocally);
       onSuccess();
     } catch (stack, err) {

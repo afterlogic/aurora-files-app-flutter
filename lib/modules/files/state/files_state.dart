@@ -340,4 +340,12 @@ abstract class _FilesState with Store {
       onSuccess();
     }
   }
+
+  Future<void> clearFilesToDeleteAndStopDownload() async {
+    final sub = FilesApi.downloadSubscription;
+    final file = FilesApi.fileBeingLoaded;
+    if (sub != null) await sub.cancel();
+    if (file != null && await file.exists()) await file.delete();
+    await _filesLocal.deleteFilesFromCache();
+  }
 }

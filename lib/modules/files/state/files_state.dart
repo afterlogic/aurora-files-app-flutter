@@ -248,12 +248,13 @@ abstract class _FilesState with Store {
     onUploadStart();
 
     try {
-      _filesApi.uploadFile(
+      await _filesApi.uploadFile(
         file,
         shouldEncrypt,
         storageType: selectedStorage.type,
         path: path,
         onSuccess: onSuccess,
+        onError: onError,
       );
     } catch(err) {
       onError(err.toString());

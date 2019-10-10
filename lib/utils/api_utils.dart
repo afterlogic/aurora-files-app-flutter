@@ -120,7 +120,7 @@ String _getErrMsgFromCode(int code) {
     case 811:
       return "Incorrect file extension";
     case 812:
-      return "Cannot upload file quota";
+      return "You have reached your cloud storage space limit. Can't upload file.";
     case 813:
       return "Such file already exists";
     case 814:

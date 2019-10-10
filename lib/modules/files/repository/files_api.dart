@@ -80,7 +80,8 @@ class FilesApi {
       @required String storageType,
       @required String path,
       Function(int) updateProgress,
-      @required Function() onSuccess}) async {
+      @required Function() onSuccess,
+      @required Function(String) onError}) async {
     final bool fileExists = await fileToUpload.exists();
     if (!fileExists) {
       throw CustomException("File to download data into doesn't exist");
@@ -110,13 +111,11 @@ class FilesApi {
             method: "UploadFile",
             parameters: jsonEncode(params))
         .toMap();
-    final stream =
-        new http.ByteStream(_openFileRead(fileToUpload, shouldEncrypt));
+    final stream = new http.ByteStream(
+        _openFileRead(fileToUpload, shouldEncrypt, onError));
     final length = await fileToUpload.length();
     final lengthWithPadding =
         ((length / vectorLength) + 1).toInt() * vectorLength;
-    print("VO: length: ${length}");
-    print("VO: lengthWithPadding: ${lengthWithPadding}");
 
     final uri = Uri.parse(url != null ? url : apiUrl);
 
@@ -140,13 +139,14 @@ class FilesApi {
           path: path,
           storageType: storageType,
           onSuccess: onSuccess,
+          onError: onError,
           updateProgress: updateProgress);
     } else {
       response.stream.transform(utf8.decoder).listen((result) {
         Map<String, dynamic> res = json.decode(result);
 
         if (res["Result"] == null || res["Result"] == false) {
-          throw CustomException(getErrMsg(res));
+          onError(getErrMsg(res));
         } else {
           onSuccess();
         }
@@ -154,18 +154,15 @@ class FilesApi {
     }
   }
 
-  Stream<List<int>> _openFileRead(File file, bool shouldEncrypt) {
+  Stream<List<int>> _openFileRead(
+      File file, bool shouldEncrypt, Function(String) onError) {
     StreamController<List<int>> controller;
     StreamSubscription<List<int>> fileReadSub;
     final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
 
-    final fileSize = file.lengthSync();
-    int totalLength = 0;
-
     List<int> fileBytesBuffer = new List();
     controller = StreamController<List<int>>(onListen: () {
       fileReadSub = file.openRead().listen((contents) async {
-        totalLength += contents.length;
         if (!shouldEncrypt) {
           controller.add(contents);
         } else {
@@ -203,10 +200,8 @@ class FilesApi {
             fileBytesBuffer = new List();
           }
           fileBytesBuffer.addAll(contentsForNext);
-          print("VO: fileBytesBuffer.length: ${fileBytesBuffer.length}");
         }
       }, onDone: () async {
-        print("VO: totalLength: ${totalLength}");
         if (shouldEncrypt) {
           final encrypted = await NativeFileCryptor.encrypt(
               fileBytes: fileBytesBuffer, keyBase64: key.base64, isLast: true);
@@ -214,7 +209,9 @@ class FilesApi {
         }
         fileReadSub.cancel();
         controller.close();
-      });
+      },
+          onError: () => onError("Error occured, could not upload file."),
+          cancelOnError: true);
     },
 //        onPause: fileReadSub.pause,
 //        onResume: fileReadSub.resume,

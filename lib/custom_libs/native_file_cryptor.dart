@@ -1,3 +1,4 @@
+import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:moor_flutter/moor_flutter.dart';
@@ -77,7 +78,7 @@ class NativeFileCryptor {
     } catch (err, stack) {
       print("encrypt err: $err");
       print("encrypt stack: $stack");
-      throw CustomExpression("Could not encrypt file");
+      throw CustomException("Could not encrypt file");
     }
   }
 }

@@ -8,7 +8,8 @@ class NativeFileCryptor {
 
   static int chunkMaxSize = 4000000;
 
-  static String ivBase64;
+  static String decryptIvBase64;
+  static String encryptIvBase64;
 
 //
 //  List<int> _getTestFileData() {
@@ -40,7 +41,6 @@ class NativeFileCryptor {
     @required List<int> fileBytes,
     @required String keyBase64,
     bool isLast = false,
-    Function(double) updateProgress,
   }) async {
     if (fileBytes.length > chunkMaxSize) {
       throw Exception(
@@ -49,13 +49,35 @@ class NativeFileCryptor {
     try {
       final List<dynamic> decrypted = await _platformEncryptionChannel
           .invokeMethod(
-              "decrypt", [Uint8List.fromList(fileBytes), keyBase64, ivBase64, isLast]);
+              "decrypt", [Uint8List.fromList(fileBytes), keyBase64, decryptIvBase64, isLast]);
 
       return new List<int>.from(decrypted);
     } catch (err, stack) {
-      print("VO: err: ${err}");
-      print("VO: stack: ${stack}");
+      print("decrypt err: $err");
+      print("decrypt stack: $stack");
       throw CustomExpression("Could not decrypt file");
+    }
+  }
+
+  static Future<List<int>> encrypt({
+    @required List<int> fileBytes,
+    @required String keyBase64,
+    bool isLast = false,
+  }) async {
+    if (fileBytes.length > chunkMaxSize) {
+      throw Exception(
+          "Passed chunk size for decryption (${fileBytes.length}) exceeds the max chunk size ($chunkMaxSize)");
+    }
+    try {
+      final List<dynamic> decrypted = await _platformEncryptionChannel
+          .invokeMethod(
+              "encrypt", [Uint8List.fromList(fileBytes), keyBase64, encryptIvBase64, isLast]);
+
+      return new List<int>.from(decrypted);
+    } catch (err, stack) {
+      print("encrypt err: $err");
+      print("encrypt stack: $stack");
+      throw CustomExpression("Could not encrypt file");
     }
   }
 }

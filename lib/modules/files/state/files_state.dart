@@ -220,7 +220,6 @@ abstract class _FilesState with Store {
 
   Future onUploadFile({
     @required String path,
-    @required Function onEncryptionStart,
     @required Function onUploadStart,
     @required Function onSuccess,
     @required Function(String) onError,
@@ -233,40 +232,46 @@ abstract class _FilesState with Store {
 
     final shouldEncrypt = selectedStorage.type == "encrypted";
 
-    if (shouldEncrypt) {
-      onEncryptionStart();
-      final encryptionData = await _filesLocal.encryptFile(file);
-      file = encryptionData[0];
-      vector = encryptionData[1];
-    }
+//    if (shouldEncrypt) {
+//      onEncryptionStart();
+//      final encryptionData = await _filesLocal.encryptFile(file);
+//      file = encryptionData[0];
+//      vector = encryptionData[1];
+//    }
     // Get name
-    final name = FileUtils.getFileNameFromPath(file.path);
+//    final name = FileUtils.getFileNameFromPath(file.path);
 
-    FileItem fileItem =
-        new FileItem(filename: name, savedDir: file.parent.path);
+//    FileItem fileItem =
+//        new FileItem(filename: name, savedDir: file.parent.path);
 
     // Start uploading
     onUploadStart();
-    final sub = _filesLocal.uploadFile(
-      fileItem: fileItem,
-      storageType: selectedStorage.type,
-      path: path,
-      vector: shouldEncrypt ? vector : null,
-    );
 
-    // Subscribe to result
-    sub.listen((result) {
-      Map<String, dynamic> res = json.decode(result.response);
-      if (res["Result"] == null || res["Result"] == false) {
-        onError(getErrMsg(res));
-      } else {
-        if (shouldEncrypt && file.existsSync()) file.delete();
-        onSuccess();
-      }
-    }, onError: (ex, stacktrace) {
-      if (shouldEncrypt && file.existsSync()) file.delete();
-      onError(ex.message);
-    });
+    try {
+      _filesApi.uploadFile(
+        file,
+        shouldEncrypt,
+        storageType: selectedStorage.type,
+        path: path,
+        onSuccess: onSuccess,
+      );
+    } catch(err) {
+      onError(err.toString());
+    }
+
+//    // Subscribe to result
+//    sub.listen((result) {
+//      Map<String, dynamic> res = json.decode(result.response);
+//      if (res["Result"] == null || res["Result"] == false) {
+//        onError(getErrMsg(res));
+//      } else {
+//        if (shouldEncrypt && file.existsSync()) file.delete();
+//        onSuccess();
+//      }
+//    }, onError: (ex, stacktrace) {
+//      if (shouldEncrypt && file.existsSync()) file.delete();
+//      onError(ex.message);
+//    });
   }
 
   void onDownloadFile({

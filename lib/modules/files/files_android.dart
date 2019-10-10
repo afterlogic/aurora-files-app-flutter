@@ -167,12 +167,6 @@ class _FilesAndroidState extends State<FilesAndroid>
     } else {
       _filesState.onUploadFile(
         path: widget.path,
-        onEncryptionStart: () => showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: "Encrypting file...",
-          isError: false,
-        ),
         onUploadStart: () => showSnack(
           context: context,
           scaffoldState: _filesPageState.scaffoldKey.currentState,

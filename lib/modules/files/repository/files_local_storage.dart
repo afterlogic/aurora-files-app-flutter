@@ -221,27 +221,27 @@ class FilesLocalStorage {
     }
   }
 
-  Future<List> encryptFile(File file) async {
-    final fileBytes = await file.readAsBytes();
-//    final chunkedList = _chunk(fileBytes);
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    final encryptedFile = new File(
-      '${appDocDir.path}/temp_encrypted_files/${FileUtils.getFileNameFromPath(file.path)}',
-    );
-    await encryptedFile.create(recursive: true);
-
-    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
-    final iv = IV.fromSecureRandom(16);
-    try {
-//      final List<dynamic> encryptedData = await _platformEncryptionChannel.invokeMethod('encrypt',
-//          [Base64Encoder().convert(fileBytes), key.base64, iv.base64]);
-//      // cast to List<int> (mostly for iOS)
-//      await encryptedFile.writeAsBytes(new List<int>.from(encryptedData));
-//      return [encryptedFile, iv.base16];
-    } on PlatformException catch (e) {
-      print("PlatformException: $e");
-      throw CustomException("This device is unable to encrypt/decrypt files");
-    }
+//  Future<List> encryptFile(File file) async {
+//    final fileBytes = await file.readAsBytes();
+////    final chunkedList = _chunk(fileBytes);
+//    Directory appDocDir = await getApplicationDocumentsDirectory();
+//    final encryptedFile = new File(
+//      '${appDocDir.path}/temp_encrypted_files/${FileUtils.getFileNameFromPath(file.path)}',
+//    );
+//    await encryptedFile.create(recursive: true);
+//
+//    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+//    final iv = IV.fromSecureRandom(16);
+//    try {
+////      final List<dynamic> encryptedData = await _platformEncryptionChannel.invokeMethod('encrypt',
+////          [Base64Encoder().convert(fileBytes), key.base64, iv.base64]);
+////      // cast to List<int> (mostly for iOS)
+////      await encryptedFile.writeAsBytes(new List<int>.from(encryptedData));
+////      return [encryptedFile, iv.base16];
+//    } on PlatformException catch (e) {
+//      print("PlatformException: $e");
+//      throw CustomException("This device is unable to encrypt/decrypt files");
+//    }
 //    IV nextVector = iv;
 //    for (final List<int> chunk in chunkedList) {
 //      final padding =
@@ -330,7 +330,7 @@ class FilesLocalStorage {
 //        .forEach((result) => decryptedFileBytes.addAll(result.bytes));
 //
 //    return decryptedFileBytes;
-}
+//}
 
 //  List _chunk(list) => list.toList().isEmpty
 //      ? list.toList()

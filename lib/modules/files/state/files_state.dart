@@ -96,10 +96,7 @@ abstract class _FilesState with Store {
     try {
       currentStorages = await _filesApi.getStorages();
       currentStorages.sort((a, b) => a.order.compareTo(b.order));
-      if (currentStorages.length > 0 &&
-          currentStorages
-                  .where((storage) => storage.type == selectedStorage.type) ==
-              null) {
+      if (currentStorages.length > 0) {
         selectedStorage = currentStorages[0];
       }
     } catch (err) {
@@ -258,7 +255,9 @@ abstract class _FilesState with Store {
         onSuccess: onSuccess,
         onError: onError,
       );
-    } catch (err) {
+    } catch (err, s) {
+      print("VO: err: ${err}");
+      print("VO: s: ${s}");
       onError(err.toString());
     }
 
@@ -304,7 +303,7 @@ abstract class _FilesState with Store {
             file.downloadUrl, file, fileToDownloadInto, true,
             onSuccess: onSuccess, updateProgress: onUpdateProgress);
       }
-    } catch (err, st) {
+    } catch (err) {
       onError(err.toString());
     }
   }

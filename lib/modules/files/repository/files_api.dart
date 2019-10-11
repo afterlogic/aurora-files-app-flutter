@@ -158,7 +158,9 @@ class FilesApi {
       File file, bool shouldEncrypt, Function(String) onError) {
     StreamController<List<int>> controller;
     StreamSubscription<List<int>> fileReadSub;
-    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+    final key = shouldEncrypt
+        ? prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey)
+        : null;
 
     List<int> fileBytesBuffer = new List();
     controller = StreamController<List<int>>(onListen: () {
@@ -192,7 +194,7 @@ class FilesApi {
                 keyBase64: key.base64,
                 isLast: false);
             NativeFileCryptor.encryptIvBase64 = IV(Uint8List.fromList(
-                    contents.sublist(contents.length - 16, contents.length)))
+                fileBytesBuffer.sublist(fileBytesBuffer.length - 16, fileBytesBuffer.length)))
                 .base64;
             controller.add(encrypted);
             fileReadSub.resume();
@@ -210,7 +212,7 @@ class FilesApi {
         fileReadSub.cancel();
         controller.close();
       },
-          onError: () => onError("Error occured, could not upload file."),
+          onError: (err) => onError("Error occured, could not upload file."),
           cancelOnError: true);
     },
 //        onPause: fileReadSub.pause,

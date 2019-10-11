@@ -32,16 +32,17 @@ import Foundation
   }
     
     private func performCryption(call: FlutterMethodCall, isDecrypt: Bool) -> [UInt8] {
-        // all arguments are in base64
-        let args = call.arguments as? [String]
-        let fileContent = args?[0]
-        let key = args?[1]
-        let iv = args?[2]
+        let args = call.arguments as? [Any]
+        let fileContent = args?[0] as! FlutterStandardTypedData
+        let key = args?[1] as! String
+        let iv = args?[2] as! String
+        let isLast = args?[3] as! Bool
     
         let encryptedData = crypt(
-            data: Data.init(base64Encoded: fileContent!)!,
-            keyData: Data.init(base64Encoded: key!)!,
-            ivData: Data.init(base64Encoded: iv!)!,
+            data: Data.init(fileContent.data),
+            keyData: Data.init(base64Encoded: key)!,
+            ivData: Data.init(base64Encoded: iv)!,
+            isLast: isLast,
             operation: isDecrypt ? kCCDecrypt : kCCEncrypt
         )
         
@@ -50,12 +51,12 @@ import Foundation
         }
     }
     
-    private func crypt(data:Data, keyData:Data, ivData:Data, operation:Int) -> Data {
+    private func crypt(data:Data, keyData:Data, ivData:Data, isLast:Bool, operation:Int) -> Data {
         let cryptLength  = size_t(data.count + kCCBlockSizeAES128)
         var cryptData = Data(count:cryptLength)
         
         let keyLength = size_t(kCCKeySizeAES256)
-        let options = CCOptions(kCCOptionPKCS7Padding)
+        let options = CCOptions(isLast ? kCCOptionPKCS7Padding : ccNoPadding)
         
         
         var numBytesEncrypted :size_t = 0

@@ -89,8 +89,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   void _shareFile() {
     if (_fileViewerState.fileWithContents != null) {
-      widget.filesState
-          .onShareFile(_file, storedFile: _fileViewerState.fileWithContents);
+      widget.filesState.onShareFile(_file,
+          storedFile: _fileViewerState.fileWithContents,
+          onSuccess: (File file) {});
     } else if (_fileViewerState.downloadProgress != null) {
       showSnack(
         context: context,

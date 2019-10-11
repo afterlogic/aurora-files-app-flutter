@@ -8,7 +8,6 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
@@ -21,6 +20,13 @@ import 'package:path_provider/path_provider.dart';
 part 'files_state.g.dart';
 
 class FilesState = _FilesState with _$FilesState;
+
+final dummyStorage = new Storage(
+    type: "",
+    displayName: "",
+    isExternal: false,
+    isDroppable: false,
+    order: 0);
 
 // Global files state
 abstract class _FilesState with Store {
@@ -38,12 +44,7 @@ abstract class _FilesState with Store {
   List<Storage> currentStorages = new List();
 
   @observable
-  Storage selectedStorage = new Storage(
-      type: "",
-      displayName: "",
-      isExternal: false,
-      isDroppable: false,
-      order: 0);
+  Storage selectedStorage = dummyStorage;
 
   @observable
   bool isMoveModeEnabled = false;
@@ -95,7 +96,10 @@ abstract class _FilesState with Store {
     try {
       currentStorages = await _filesApi.getStorages();
       currentStorages.sort((a, b) => a.order.compareTo(b.order));
-      if (currentStorages.length > 0) {
+      if (currentStorages.length > 0 &&
+          currentStorages
+                  .where((storage) => storage.type == selectedStorage.type) ==
+              null) {
         selectedStorage = currentStorages[0];
       }
     } catch (err) {
@@ -289,7 +293,8 @@ abstract class _FilesState with Store {
       onStart();
       // if file exists in cache, just copy it to downloads folder
       final Directory dir = await DownloadsPathProvider.downloadsDirectory;
-      final File copiedFile = await _filesLocal.copyFromCache(file, "${dir.path}/${file.name}");
+      final File copiedFile =
+          await _filesLocal.copyFromCache(file, "${dir.path}/${file.name}");
       if (copiedFile != null) {
         onSuccess(copiedFile);
       } else {
@@ -345,14 +350,13 @@ abstract class _FilesState with Store {
       if (fileForOffline != null) {
         onSuccess();
       } else {
-        fileForOffline =
-            await _filesLocal.createFileForOffline(file);
+        fileForOffline = await _filesLocal.createFileForOffline(file);
         await _filesApi.getFileContentsFromServer(
             file.downloadUrl, file, fileForOffline, false,
             onSuccess: (_) => onSuccess(), updateProgress: updateProgress);
       }
       final FilesCompanion filesCompanion =
-      getCompanionFromLocalFile(file, fileForOffline.path);
+          getCompanionFromLocalFile(file, fileForOffline.path);
       await _filesDao.addFile(filesCompanion);
     } else {
       await _filesDao.deleteFiles([file]);

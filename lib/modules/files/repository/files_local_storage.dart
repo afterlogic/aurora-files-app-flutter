@@ -1,71 +1,18 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/models/api_body.dart';
-import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
-import 'package:encrypt/encrypt.dart';
-import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_uploader/flutter_uploader.dart';
-import 'package:moor_flutter/moor_flutter.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
 class FilesLocalStorage {
-  final uploader = FlutterUploader();
-
   Future<File> pickFiles({FileType type, String extension}) {
     return FilePicker.getFile(type: type, fileExtension: extension);
-  }
-
-  Stream<UploadTaskResponse> uploadFile({
-    @required FileItem fileItem,
-    @required String storageType,
-    @required String path,
-    String vector,
-    bool firstChunk = true,
-  }) {
-    final String apiUrl = AppStore.authState.apiUrl;
-    final Map<String, dynamic> params = {
-      "Type": storageType,
-      "Path": path,
-      "SubPath": "",
-      "Overwrite": false,
-    };
-
-    if (vector is String) {
-      params["ExtendedProps"] = {};
-      params["ExtendedProps"]["InitializationVector"] = vector;
-      params["ExtendedProps"]["FirstChunk"] = firstChunk;
-    }
-
-    final body = new ApiBody(
-            module: "Files",
-            method: "UploadFile",
-            parameters: jsonEncode(params))
-        .toMap();
-    uploader.enqueue(
-      url: apiUrl,
-      files: [fileItem],
-      method: UploadMethod.POST,
-      headers: getHeader(),
-      data: body,
-      showNotification: true,
-      tag: fileItem.filename,
-    );
-
-    return uploader.result;
   }
 
   // is used to download files on iOS
@@ -154,7 +101,8 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getApplicationDocumentsDirectory();
-    final File dartFile = new File("${dir.path}/offline/${file.guid}_${file.name}");
+    final File dartFile =
+        new File("${dir.path}/offline/${file.guid}_${file.name}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {
@@ -261,7 +209,7 @@ class FilesLocalStorage {
 //    }
 //
 //    return [encryptedFile, iv.base16];
-  }
+}
 
 // updateDecryptionProgress returns decrypted chunk index and total # of chunks
 //  Future<void> decryptFile({

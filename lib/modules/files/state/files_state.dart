@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
@@ -8,15 +7,12 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
-import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_uploader/flutter_uploader.dart';
 import 'package:mobx/mobx.dart';
 
 part 'files_state.g.dart';
@@ -256,7 +252,7 @@ abstract class _FilesState with Store {
         onSuccess: onSuccess,
         onError: onError,
       );
-    } catch(err) {
+    } catch (err) {
       onError(err.toString());
     }
 
@@ -314,10 +310,10 @@ abstract class _FilesState with Store {
         await _filesApi.getFileContentsFromServer(
             file.downloadUrl, file, tempFileForShare, true,
             onSuccess: (File savedFile) {
-              fileWithContents = savedFile;
-              onSuccess(savedFile);
-              _filesLocal.shareFile(fileWithContents, file);
-            }, updateProgress: updateProgress);
+          fileWithContents = savedFile;
+          onSuccess(savedFile);
+          _filesLocal.shareFile(fileWithContents, file);
+        }, updateProgress: updateProgress);
       } else {
         fileWithContents = tempFileForShare;
         onSuccess(fileWithContents);

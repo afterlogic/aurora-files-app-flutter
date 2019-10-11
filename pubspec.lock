@@ -582,7 +582,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.7"
+    version: "1.1.7+1"
   sqlparser:
     dependency: transitive
     description:

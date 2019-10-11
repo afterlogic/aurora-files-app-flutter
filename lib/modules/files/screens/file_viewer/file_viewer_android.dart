@@ -26,12 +26,14 @@ import 'components/text_viewer.dart';
 
 class FileViewerAndroid extends StatefulWidget {
   final LocalFile immutableFile;
+  final File offlineFile;
   final FilesState filesState;
   final FilesPageState filesPageState;
 
   FileViewerAndroid({
     Key key,
     @required this.immutableFile,
+    @required this.offlineFile,
     @required this.filesState,
     @required this.filesPageState,
   }) : super(key: key);
@@ -58,6 +60,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     _file = widget.immutableFile;
     _isFileOffline = _file.localId != null;
     _fileViewerState.file = widget.immutableFile;
+    if (widget.offlineFile != null) {
+      _fileViewerState.fileWithContents = widget.offlineFile;
+    }
     _fileType = getFileType(_file);
   }
 

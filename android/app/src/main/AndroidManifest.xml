@@ -41,28 +41,28 @@
             android:enabled="false"
             android:exported="false" />
 
-        <provider
-            android:name="com.bluechilli.flutteruploader.FlutterUploaderInitializer"
-            android:authorities="${applicationId}.flutter-upload-init"
-            android:exported="false">
-            <!-- changes this number to configure the maximum number of concurrent tasks -->
-            <meta-data
-                android:name="com.bluechilli.flutterupload.MAX_CONCURRENT_TASKS"
-                android:value="3" />
+<!--        <provider-->
+<!--            android:name="com.bluechilli.flutteruploader.FlutterUploaderInitializer"-->
+<!--            android:authorities="${applicationId}.flutter-upload-init"-->
+<!--            android:exported="false">-->
+<!--            &lt;!&ndash; changes this number to configure the maximum number of concurrent tasks &ndash;&gt;-->
+<!--            <meta-data-->
+<!--                android:name="com.bluechilli.flutterupload.MAX_CONCURRENT_TASKS"-->
+<!--                android:value="3" />-->
 
-            <!-- changes this number to configure connection timeout for the upload http request -->
-            <meta-data
-                android:name="com.bluechilli.flutteruploader.UPLOAD_CONNECTION_TIMEOUT_IN_SECONDS"
-                android:value="3600" />
-        </provider>
-        <provider
-            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
-            android:authorities="${applicationId}.flutter_downloader.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
+<!--            &lt;!&ndash; changes this number to configure connection timeout for the upload http request &ndash;&gt;-->
+<!--            <meta-data-->
+<!--                android:name="com.bluechilli.flutteruploader.UPLOAD_CONNECTION_TIMEOUT_IN_SECONDS"-->
+<!--                android:value="3600" />-->
+<!--        </provider>-->
+<!--        <provider-->
+<!--            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"-->
+<!--            android:authorities="${applicationId}.flutter_downloader.provider"-->
+<!--            android:exported="false"-->
+<!--            android:grantUriPermissions="true">-->
+<!--            <meta-data-->
+<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+<!--                android:resource="@xml/provider_paths" />-->
+<!--        </provider>-->
     </application>
 </manifest>

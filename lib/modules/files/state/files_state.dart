@@ -8,12 +8,15 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'files_state.g.dart';
 
@@ -222,7 +225,6 @@ abstract class _FilesState with Store {
   }) async {
     // Pick 1 file since our back supports adding only 1 file at a time
     File file = await _filesLocal.pickFiles();
-    String vector;
 
     if (file == null) return;
 
@@ -275,8 +277,8 @@ abstract class _FilesState with Store {
     LocalFile file,
     Function onStart,
     Function onUpdateProgress,
-    Function onSuccess,
-    Function onError,
+    Function(File) onSuccess,
+    Function(String) onError,
   }) async {
     try {
       if (file.initVector != null &&
@@ -285,12 +287,19 @@ abstract class _FilesState with Store {
       }
       // else
       onStart();
-      final fileToDownloadInto =
-          await _filesLocal.createFileForDownloadAndroid(file);
-      await _filesApi.getFileContentsFromServer(
-          file.downloadUrl, file, fileToDownloadInto, true,
-          onSuccess: onSuccess, updateProgress: onUpdateProgress);
-    } catch (err) {
+      // if file exists in cache, just copy it to downloads folder
+      final Directory dir = await DownloadsPathProvider.downloadsDirectory;
+      final File copiedFile = await _filesLocal.copyFromCache(file, "${dir.path}/${file.name}");
+      if (copiedFile != null) {
+        onSuccess(copiedFile);
+      } else {
+        final fileToDownloadInto =
+            await _filesLocal.createFileForDownloadAndroid(file);
+        await _filesApi.getFileContentsFromServer(
+            file.downloadUrl, file, fileToDownloadInto, true,
+            onSuccess: onSuccess, updateProgress: onUpdateProgress);
+      }
+    } catch (err, st) {
       onError(err.toString());
     }
   }
@@ -329,13 +338,21 @@ abstract class _FilesState with Store {
   Future<void> onSetFileOffline(LocalFile file,
       {Function(int) updateProgress, Function() onSuccess}) async {
     if (file.localId == null) {
-      final createdFileForOffline =
-          await _filesLocal.createFileForOffline(file);
-      await _filesApi.getFileContentsFromServer(
-          file.downloadUrl, file, createdFileForOffline, false,
-          onSuccess: (_) => onSuccess(), updateProgress: updateProgress);
+      // if file exists in cache, just copy it to downloads folder
+      final Directory dir = await getApplicationDocumentsDirectory();
+      final offlineDir = "${dir.path}/offline/${file.guid}_${file.name}";
+      File fileForOffline = await _filesLocal.copyFromCache(file, offlineDir);
+      if (fileForOffline != null) {
+        onSuccess();
+      } else {
+        fileForOffline =
+            await _filesLocal.createFileForOffline(file);
+        await _filesApi.getFileContentsFromServer(
+            file.downloadUrl, file, fileForOffline, false,
+            onSuccess: (_) => onSuccess(), updateProgress: updateProgress);
+      }
       final FilesCompanion filesCompanion =
-          getCompanionFromLocalFile(file, createdFileForOffline.path);
+      getCompanionFromLocalFile(file, fileForOffline.path);
       await _filesDao.addFile(filesCompanion);
     } else {
       await _filesDao.deleteFiles([file]);

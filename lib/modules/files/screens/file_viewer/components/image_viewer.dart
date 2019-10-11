@@ -37,7 +37,7 @@ class _ImageViewerState extends State<ImageViewer> {
         _fileViewerState.file.initVector != null) {
       Future.delayed(Duration(milliseconds: 250),
           () => _fileViewerState.getPreviewImage((err) => showError(err)));
-    } else {
+    } else if (_fileViewerState.fileWithContents == null) {
       _fileViewerState.getPreviewImage((err) => showError(err));
     }
   }
@@ -72,16 +72,7 @@ class _ImageViewerState extends State<ImageViewer> {
             builder: (_) => Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-//                  CircularProgressIndicator(
-//                    value: _fileViewerState.downloadProgress ??
-//                        _fileViewerState.decryptionProgress,
-//                    backgroundColor: Colors.grey.withOpacity(0.3),
-//                  ),
                 ProgressLoader(_fileViewerState.downloadProgress),
-//                  SizedBox(width: 20.0),
-//                  Text(_fileViewerState.downloadProgress == null
-//                      ? "Decrypting file..."
-//                      : "Downloading file...")
               ],
             ),
           ),
@@ -92,7 +83,8 @@ class _ImageViewerState extends State<ImageViewer> {
           fit: BoxFit.cover,
         );
         precacheImage(image.image, context, onError: (e, stackTrace) {
-          setState(() => _isError = true);
+          Future.delayed(Duration(milliseconds: 100),
+              () => setState(() => _isError = true));
         });
         return ConstrainedBox(
           constraints: BoxConstraints(minHeight: 60.0),
@@ -100,7 +92,17 @@ class _ImageViewerState extends State<ImageViewer> {
         );
       }
     } else {
-      if (_fileViewerState.fileWithContents == null) {
+      if (_isError) {
+        return Row(
+          children: <Widget>[
+            Icon(Icons.error),
+            SizedBox(width: 16.0),
+            Flexible(
+              child: Text("Error happened. Perhaps this file is damaged."),
+            ),
+          ],
+        );
+      } else if (_fileViewerState.fileWithContents == null) {
         return Positioned.fill(
           child: Center(
             child: ProgressLoader(_fileViewerState.downloadProgress),
@@ -111,8 +113,9 @@ class _ImageViewerState extends State<ImageViewer> {
           _fileViewerState.fileWithContents,
           fit: BoxFit.cover,
         );
-        precacheImage(image.image, context, onError: (e, stackTrace) {
-          setState(() => _isError = true);
+        precacheImage(image.image, context, onError: (e, stack) {
+          Future.delayed(Duration(milliseconds: 100),
+              () => setState(() => _isError = true));
         });
         return ConstrainedBox(
           constraints: BoxConstraints(minHeight: 60.0),
@@ -125,12 +128,22 @@ class _ImageViewerState extends State<ImageViewer> {
   @override
   Widget build(BuildContext context) {
     double prevProgress = 999;
-    final placeholder = CachedNetworkImage(
-      imageUrl:
-          '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
-      fit: BoxFit.cover,
-      httpHeaders: getHeader(),
-    );
+    Widget placeholder;
+    if (AppStore.filesState.isOfflineMode) {
+      if (_fileViewerState.fileWithContents != null) {
+        placeholder = Image.file(
+          _fileViewerState.fileWithContents,
+          fit: BoxFit.cover,
+        );
+      }
+    } else {
+      placeholder = CachedNetworkImage(
+        imageUrl:
+            '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
+        fit: BoxFit.cover,
+        httpHeaders: getHeader(),
+      );
+    }
 
     if (_fileViewerState.file.viewUrl != null) {
       return Hero(
@@ -146,10 +159,11 @@ class _ImageViewerState extends State<ImageViewer> {
                 : Stack(
                     fit: StackFit.passthrough,
                     children: <Widget>[
-                      ConstrainedBox(
-                        constraints: BoxConstraints(minHeight: 60.0),
-                        child: placeholder,
-                      ),
+                      if (!_isError)
+                        ConstrainedBox(
+                          constraints: BoxConstraints(minHeight: 60.0),
+                          child: placeholder,
+                        ),
                       Positioned.fill(
                         child: ClipRect(
                           child: BackdropFilter(

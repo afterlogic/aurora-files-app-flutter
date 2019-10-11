@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -9,6 +11,7 @@ class FileViewerRoute {
 
 class FileViewerScreenArguments {
   final LocalFile file;
+  final File offlineFile;
   final FilesState filesState;
   final FilesPageState filesPageState;
 
@@ -16,5 +19,6 @@ class FileViewerScreenArguments {
     @required this.filesState,
     @required this.filesPageState,
     @required this.file,
+    this.offlineFile,
   });
 }

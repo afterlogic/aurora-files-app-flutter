@@ -66,8 +66,6 @@ class _FileWidgetState extends State<FileWidget> {
     }
   }
 
-
-
   void _downloadFile() {
     final filesState = Provider.of<FilesState>(context);
     final filesPageState = Provider.of<FilesPageState>(context);
@@ -82,12 +80,14 @@ class _FileWidgetState extends State<FileWidget> {
       onSuccess: (File savedFile) => showSnack(
           context: context,
           scaffoldState: filesPageState.scaffoldKey.currentState,
-          msg: "${widget.file.name} downloaded successfully into: ${savedFile.path}",
+          msg:
+              "${widget.file.name} downloaded successfully into: ${savedFile.path}",
           isError: false,
           duration: Duration(minutes: 10),
           action: SnackBarAction(
             label: "OK",
-            onPressed: filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
+            onPressed:
+                filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
           )),
       onError: (String err) => showSnack(
         context: context,
@@ -120,7 +120,9 @@ class _FileWidgetState extends State<FileWidget> {
         }
         filesPageState.onGetFiles();
       });
-    } catch (err) {
+    } catch (err, s) {
+      print("VO: err: ${err}");
+      print("VO: s: ${s}");
       showSnack(
         context: context,
         scaffoldState: filesPageState.scaffoldKey.currentState,
@@ -148,6 +150,9 @@ class _FileWidgetState extends State<FileWidget> {
         FileViewerRoute.name,
         arguments: FileViewerScreenArguments(
           file: widget.file,
+          offlineFile: widget.file.localPath != null
+              ? new File(widget.file.localPath)
+              : null,
           filesState: filesState,
           filesPageState: filesPageState,
         ),
@@ -163,7 +168,9 @@ class _FileWidgetState extends State<FileWidget> {
     if (widget.file.initVector != null) {
       return Icon(Icons.lock_outline,
           size: thumbnailSize, color: Theme.of(context).disabledColor);
-    } else if (widget.file.thumbnailUrl != null || filesState.isOfflineMode && getFileType(widget.file) == FileType.image) {
+    } else if (widget.file.thumbnailUrl != null ||
+        filesState.isOfflineMode &&
+            getFileType(widget.file) == FileType.image) {
       return SizedBox(
         width: thumbnailSize,
         height: thumbnailSize,

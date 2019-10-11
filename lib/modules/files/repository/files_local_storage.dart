@@ -88,7 +88,8 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getTemporaryDirectory();
-    final File dartFile = new File("${dir.path}/images/${file.guid}");
+    final File dartFile =
+        new File("${dir.path}/images/${file.guid}_${file.name}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {
@@ -101,14 +102,41 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getApplicationDocumentsDirectory();
-    final File dartFile =
-        new File("${dir.path}/offline/${file.guid}_${file.name}");
+    final dartFile = new File("${dir.path}/offline/${file.guid}_${file.name}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {
       await dartFile.create(recursive: true);
       return dartFile;
     }
+  }
+
+  // if file not found returns null
+  Future<File> copyFromCache(LocalFile file, String pathToCopyTo) async {
+    final Directory tempDir = await getTemporaryDirectory();
+    final splitDir = pathToCopyTo.split("/");
+    splitDir.removeLast();
+    final dir = Directory(splitDir.join("/"));
+    if(await dir.exists() != true) dir.create(recursive: true);
+    File cachedFile = new File("${tempDir.path}/files_to_delete/${file.guid}");
+    if (await cachedFile.exists()) {
+      final copiedFile = await cachedFile.copy(pathToCopyTo);
+      return copiedFile;
+    }
+
+    cachedFile = new File("${tempDir.path}/files_to_delete/${file.name}");
+    if (await cachedFile.exists()) {
+      final copiedFile = await cachedFile.copy(pathToCopyTo);
+      return copiedFile;
+    }
+
+    cachedFile = new File("${tempDir.path}/images/${file.guid}_${file.name}");
+    if (await cachedFile.exists()) {
+      final copiedFile = await cachedFile.copy(pathToCopyTo);
+      return copiedFile;
+    }
+    // else
+    return null;
   }
 
 //  Future<File> saveFileForShare(List<int> fileBytes, LocalFile file) async {
@@ -168,7 +196,7 @@ class FilesLocalStorage {
       }
     }
   }
-
+}
 //  Future<List> encryptFile(File file) async {
 //    final fileBytes = await file.readAsBytes();
 ////    final chunkedList = _chunk(fileBytes);
@@ -209,7 +237,6 @@ class FilesLocalStorage {
 //    }
 //
 //    return [encryptedFile, iv.base16];
-}
 
 // updateDecryptionProgress returns decrypted chunk index and total # of chunks
 //  Future<void> decryptFile({
@@ -223,7 +250,7 @@ class FilesLocalStorage {
 //
 //    try {
 //
-//      // TODO VO: broken
+//
 ////      cryptor.decrypt(
 ////        fileBytes: fileBytes,
 ////        keyBase64: key.base64,

@@ -66,6 +66,7 @@ class AppNavigation {
               ),
               builder: (context) => FileViewerAndroid(
                     immutableFile: args.file,
+                offlineFile: args.offlineFile,
                     filesState: args.filesState,
                     filesPageState: args.filesPageState,
                   ));
@@ -77,6 +78,7 @@ class AppNavigation {
               page: FileViewerAndroid(
                 immutableFile: args.file,
                 filesState: args.filesState,
+                offlineFile: args.offlineFile,
                 filesPageState: args.filesPageState,
               ));
         }

@@ -194,7 +194,7 @@ class FilesApi {
                 keyBase64: key.base64,
                 isLast: false);
             NativeFileCryptor.encryptIvBase64 = IV(Uint8List.fromList(
-                fileBytesBuffer.sublist(fileBytesBuffer.length - 16, fileBytesBuffer.length)))
+                encrypted.sublist(encrypted.length - 16, encrypted.length)))
                 .base64;
             controller.add(encrypted);
             fileReadSub.resume();
@@ -351,7 +351,7 @@ class FilesApi {
 
       // update vector with the last 16 bytes of the chunk
       final newVector =
-          decrypted.sublist(decrypted.length - 16, decrypted.length);
+          fileBytes.sublist(fileBytes.length - 16, fileBytes.length);
       NativeFileCryptor.decryptIvBase64 =
           IV(Uint8List.fromList(newVector)).base64;
     } else {

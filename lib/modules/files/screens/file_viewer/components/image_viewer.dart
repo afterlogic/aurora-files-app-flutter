@@ -45,7 +45,7 @@ class _ImageViewerState extends State<ImageViewer> {
   @override
   void dispose() {
     super.dispose();
-    AppStore.filesState.clearFilesToDeleteAndCancelDownload();
+    AppStore.filesState.clearCache();
   }
 
   void showError(String err) {

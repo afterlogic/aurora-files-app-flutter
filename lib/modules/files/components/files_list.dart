@@ -30,9 +30,9 @@ class _FilesListState extends State<FilesList> {
         if (item == null) {
           return SizedBox();
         } else if (item.isFolder) {
-          return FolderWidget(key: Key(item.id), folder: item);
+          return FolderWidget(key: Key(item.guid), folder: item);
         } else {
-          return FileWidget(key: Key(item.id), file: item);
+          return FileWidget(key: Key(item.guid), file: item);
         }
       },
       separatorBuilder: (BuildContext context, int index) => Padding(

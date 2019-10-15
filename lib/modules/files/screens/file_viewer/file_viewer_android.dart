@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
@@ -69,6 +70,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   @override
   void dispose() {
     super.dispose();
+    // delete files that did not finish their caching
+    if (_fileViewerState.processingFile != null) {
+      _fileViewerState.processingFile.subscription.cancel();
+      _fileViewerState.processingFile.fileOnDevice.delete();
+    }
     _fileViewerState.dispose();
   }
 
@@ -179,36 +185,55 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   void _downloadFile() {
     widget.filesState.onDownloadFile(
       file: _file,
-      onStart: () => showSnack(
-        context: context,
-        scaffoldState: _fileViewerScaffoldKey.currentState,
-        msg: "Downloading ${_file.name}",
-        isError: false,
-      ),
-      onSuccess: (File savedFile) => showSnack(
+      onStart: (ProcessingFile process) {
+        // TODO VO: update ui without refreshing files
+        widget.filesPageState
+            .onGetFiles(showLoading: FilesLoadingType.filesHidden);
+        showSnack(
           context: context,
           scaffoldState: _fileViewerScaffoldKey.currentState,
-          msg: "${_file.name} downloaded successfully into: ${savedFile.path}",
+          msg: "Downloading ${_file.name}",
           isError: false,
-          duration: Duration(minutes: 10),
-          action: SnackBarAction(
-            label: "OK",
-            onPressed: _fileViewerScaffoldKey.currentState.hideCurrentSnackBar,
-          )),
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: _fileViewerScaffoldKey.currentState,
-        msg: err,
-      ),
+        );
+      },
+      onSuccess: (File savedFile) {
+        showSnack(
+            context: context,
+            scaffoldState: _fileViewerScaffoldKey.currentState,
+            msg:
+                "${_file.name} downloaded successfully into: ${savedFile.path}",
+            isError: false,
+            duration: Duration(minutes: 10),
+            action: SnackBarAction(
+              label: "OK",
+              onPressed:
+                  _fileViewerScaffoldKey.currentState.hideCurrentSnackBar,
+            ));
+      },
+      onError: (String err) {
+        showSnack(
+          context: context,
+          scaffoldState: _fileViewerScaffoldKey.currentState,
+          msg: err,
+        );
+      },
     );
   }
 
   Future _setFileForOffline() async {
     if (widget.filesState.isOfflineMode) {
-      widget.filesState.onSetFileOffline(_file, onSuccess: () async {
-        await widget.filesPageState.onGetFiles();
-        Navigator.pop(context);
-      });
+      widget.filesState.onSetFileOffline(_file,
+          onStart: (process) {
+            _fileViewerState.processingFile = process;
+            widget.filesPageState
+                .onGetFiles(showLoading: FilesLoadingType.filesHidden);
+          },
+          onSuccess: () async {
+            _fileViewerState.processingFile = null;
+            await widget.filesPageState.onGetFiles();
+            Navigator.pop(context);
+          },
+          onError: (err) => _fileViewerState.processingFile = null);
     } else {
       try {
         setState(() {
@@ -223,19 +248,27 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             isError: false,
           );
         }
-        await widget.filesState.onSetFileOffline(_file, onSuccess: () async {
-          if (_file.localId == null) {
-            showSnack(
-              context: context,
-              scaffoldState: _fileViewerScaffoldKey.currentState,
-              msg: "File synched successfully",
-              isError: false,
-            );
-          }
-          await widget.filesPageState.onGetFiles();
-          _updateFile(_file.id);
-          setState(() => _isSyncingForOffline = false);
-        });
+        await widget.filesState.onSetFileOffline(_file,
+            onStart: (process) {
+              _fileViewerState.processingFile = process;
+              widget.filesPageState
+                  .onGetFiles(showLoading: FilesLoadingType.filesHidden);
+            },
+            onSuccess: () async {
+              _fileViewerState.processingFile = null;
+              if (_file.localId == null) {
+                showSnack(
+                  context: context,
+                  scaffoldState: _fileViewerScaffoldKey.currentState,
+                  msg: "File synched successfully",
+                  isError: false,
+                );
+              }
+              await widget.filesPageState.onGetFiles();
+              _updateFile(_file.id);
+              setState(() => _isSyncingForOffline = false);
+            },
+            onError: (err) => _fileViewerState.processingFile = null);
       } catch (err) {
         setState(() {
           _isSyncingForOffline = false;

@@ -117,7 +117,7 @@ class FilesLocalStorage {
     final splitDir = pathToCopyTo.split("/");
     splitDir.removeLast();
     final dir = Directory(splitDir.join("/"));
-    if(await dir.exists() != true) dir.create(recursive: true);
+    if (await dir.exists() != true) dir.create(recursive: true);
     File cachedFile = new File("${tempDir.path}/files_to_delete/${file.guid}");
     if (await cachedFile.exists()) {
       final copiedFile = await cachedFile.copy(pathToCopyTo);
@@ -180,7 +180,8 @@ class FilesLocalStorage {
 //    return storedFile;
 //  }
 
-  Future<void> deleteFilesFromCache([List<LocalFile> files]) async {
+  Future<void> deleteFilesFromCache(
+      {List<LocalFile> files, bool deleteCachedImages = false}) async {
     final Directory dir = await getTemporaryDirectory();
     if (files != null) {
       for (final file in files) {
@@ -190,6 +191,12 @@ class FilesLocalStorage {
         }
       }
     } else {
+      if (deleteCachedImages == true) {
+        final cacheDir = new Directory("${dir.path}/images");
+        if (cacheDir.existsSync()) {
+          await cacheDir.delete(recursive: true);
+        }
+      }
       final cacheDir = new Directory("${dir.path}/files_to_delete");
       if (cacheDir.existsSync()) {
         await cacheDir.delete(recursive: true);

@@ -2,8 +2,12 @@ import 'dart:convert';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
+
+import 'file_utils.dart';
 
 Map<String, String> getHeader() {
   return {'Authorization': 'Bearer ${AppStore.authState.authToken}'};
@@ -15,6 +19,41 @@ Future sendRequest(ApiBody body) async {
       headers: getHeader(), body: body.toMap());
 
   return json.decode(rawResponse.body);
+}
+
+LocalFile getFakeLocalFileForUploadProgress(
+    ProcessingFile processingFile, String path) {
+  final fileName =
+      FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path);
+  return new LocalFile(
+    localId: null,
+    id: fileName,
+    guid: processingFile.guid,
+    type: null,
+    path: path,
+    fullPath: path + fileName,
+    localPath: processingFile.fileOnDevice.path,
+    name: fileName,
+    size: processingFile.fileOnDevice.lengthSync(),
+    isFolder: false,
+    isOpenable: false,
+    isLink: false,
+    linkType: null,
+    linkUrl: null,
+    lastModified: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    contentType: "",
+    oEmbedHtml: null,
+    published: false,
+    owner: AppStore.authState.userEmail,
+    content: null,
+    viewUrl: null,
+    downloadUrl: null,
+    thumbnailUrl: null,
+    hash: null,
+    extendedProps: "fake",
+    isExternal: false,
+    initVector: null,
+  );
 }
 
 String getErrMsg(dynamic err) {
@@ -140,7 +179,9 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
   return LocalFile(
     localId: null,
     id: rawFile["Id"],
-    guid: rawFile["ExtendedProps"] is Map ? rawFile["ExtendedProps"]["GUID"] : null,
+    guid: rawFile["ExtendedProps"] is Map
+        ? rawFile["ExtendedProps"]["GUID"]
+        : null,
     type: rawFile["Type"],
     localPath: null,
     path: rawFile["Path"],

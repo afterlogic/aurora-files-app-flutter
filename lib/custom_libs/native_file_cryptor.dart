@@ -9,9 +9,6 @@ class NativeFileCryptor {
 
   static int chunkMaxSize = 4000000;
 
-  static String decryptIvBase64;
-  static String encryptIvBase64;
-
 //
 //  List<int> _getTestFileData() {
 //    print("VO: !!!!!!!!!!!!!!TEST@!!!!!!!!!!");
@@ -41,6 +38,7 @@ class NativeFileCryptor {
   static Future<List<int>> decrypt({
     @required List<int> fileBytes,
     @required String keyBase64,
+    @required String ivBase64,
     bool isLast = false,
   }) async {
     if (fileBytes.length > chunkMaxSize) {
@@ -50,7 +48,7 @@ class NativeFileCryptor {
     try {
       final List<dynamic> decrypted = await _platformEncryptionChannel
           .invokeMethod(
-              "decrypt", [Uint8List.fromList(fileBytes), keyBase64, decryptIvBase64, isLast]);
+              "decrypt", [Uint8List.fromList(fileBytes), keyBase64, ivBase64, isLast]);
 
       return new List<int>.from(decrypted);
     } catch (err, stack) {
@@ -63,6 +61,7 @@ class NativeFileCryptor {
   static Future<List<int>> encrypt({
     @required List<int> fileBytes,
     @required String keyBase64,
+    @required String ivBase64,
     bool isLast = false,
   }) async {
     if (fileBytes.length > chunkMaxSize) {
@@ -72,7 +71,7 @@ class NativeFileCryptor {
     try {
       final List<dynamic> decrypted = await _platformEncryptionChannel
           .invokeMethod(
-              "encrypt", [Uint8List.fromList(fileBytes), keyBase64, encryptIvBase64, isLast]);
+              "encrypt", [Uint8List.fromList(fileBytes), keyBase64, ivBase64, isLast]);
 
       return new List<int>.from(decrypted);
     } catch (err, stack) {

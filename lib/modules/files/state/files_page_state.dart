@@ -1,9 +1,11 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
+import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -79,14 +81,17 @@ abstract class _FilesPageState with Store {
   ) async {
     try {
       filesLoading = showLoading;
-      final filesFromServer = await _filesApi.getFiles(
+      List<LocalFile> filesFromServer = await _filesApi.getFiles(
         AppStore.filesState.selectedStorage.type,
         path != null ? path : pagePath,
         searchPattern,
       );
+      filesFromServer = _addFakeUploadFiles(filesFromServer);
+      filesFromServer = _sortFiles(filesFromServer);
       final offlineFiles = await _filesDao.getFilesAtPath(pagePath);
       if (offlineFiles.isNotEmpty) {
         currentFiles = [];
+        _sortFiles(filesFromServer);
         filesFromServer.forEach((apiFile) {
           try {
             final foundOfflineFile = offlineFiles.firstWhere((offlineFile) {
@@ -136,6 +141,37 @@ abstract class _FilesPageState with Store {
     }
   }
 
+  List<LocalFile> _sortFiles(List<LocalFile> list) {
+    List<LocalFile> filesToSort = new List.from(list);
+    filesToSort.sort((a, b) {
+      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+    });
+    List<LocalFile> folders = [];
+    List<LocalFile> files = [];
+    try {
+      folders = filesToSort.where((file) => file.isFolder).toList();
+    } catch(err) {}
+    try {
+      files = filesToSort.where((file) => !file.isFolder).toList();
+    } catch(err) {}
+    return [...folders, ...files];
+  }
+
+  List<LocalFile> _addFakeUploadFiles(List<LocalFile> list) {
+    List<LocalFile> filesFromServer = new List.from(list);
+    try {
+      final uploadingFiles = AppStore.filesState.processedFiles.where((
+          process) => process.processingType == ProcessingType.upload);
+      uploadingFiles.forEach((process) {
+        final localFile = getFakeLocalFileForUploadProgress(process, pagePath);
+        filesFromServer.add(localFile);
+      });
+      return filesFromServer;
+    } catch(err) {
+      return list;
+    }
+  }
+
   // supports both extracting files from selected ids and passing file(s) directly
   void onDeleteFiles({
     List<LocalFile> filesToDelete,
@@ -172,7 +208,7 @@ abstract class _FilesPageState with Store {
     try {
       filesLoading = FilesLoadingType.filesVisible;
       await _filesApi.delete(storage.type, pagePath, mappedFilesToDelete);
-      await _filesLocal.deleteFilesFromCache(filesToDeleteFromCache);
+      await _filesLocal.deleteFilesFromCache(files: filesToDeleteFromCache);
       await _filesDao.deleteFiles(filesToDeleteLocally);
       onSuccess();
     } catch (stack, err) {

@@ -29,7 +29,7 @@ class _PdfViewerState extends State<PdfViewer> {
   @override
   void dispose() {
     super.dispose();
-    AppStore.filesState.clearFilesToDeleteAndCancelDownload();
+    AppStore.filesState.clearCache();
   }
 
   @override

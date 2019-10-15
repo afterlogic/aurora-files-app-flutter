@@ -32,7 +32,7 @@ class _TextViewerState extends State<TextViewer> {
   @override
   void dispose() {
     super.dispose();
-    AppStore.filesState.clearFilesToDeleteAndCancelDownload();
+    AppStore.filesState.clearCache();
   }
 
   Future _initTextViewer() async {

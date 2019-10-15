@@ -26,23 +26,4 @@ mixin _$FileViewerState on _FileViewerState, Store {
       _$downloadProgressAtom.reportChanged();
     }, _$downloadProgressAtom, name: '${_$downloadProgressAtom.name}_set');
   }
-
-  final _$decryptionProgressAtom =
-      Atom(name: '_FileViewerState.decryptionProgress');
-
-  @override
-  double get decryptionProgress {
-    _$decryptionProgressAtom.context
-        .enforceReadPolicy(_$decryptionProgressAtom);
-    _$decryptionProgressAtom.reportObserved();
-    return super.decryptionProgress;
-  }
-
-  @override
-  set decryptionProgress(double value) {
-    _$decryptionProgressAtom.context.conditionallyRunInAction(() {
-      super.decryptionProgress = value;
-      _$decryptionProgressAtom.reportChanged();
-    }, _$decryptionProgressAtom, name: '${_$decryptionProgressAtom.name}_set');
-  }
 }

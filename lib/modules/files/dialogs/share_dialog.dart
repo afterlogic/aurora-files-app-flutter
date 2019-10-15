@@ -29,10 +29,8 @@ class _ShareDialogState extends State<ShareDialog> {
     await widget.filesState.onShareFile(
       widget.file,
       onSuccess: (_) => Navigator.pop(context),
-      updateProgress: (int bytesLoaded) {
-        final progress = 100 / widget.file.size * bytesLoaded / 100;
-        setState(() => _downloadProgress = progress);
-      },
+      updateProgress: (double progress) =>
+          setState(() => _downloadProgress = progress),
     );
   }
 
@@ -56,9 +54,7 @@ class _ShareDialogState extends State<ShareDialog> {
         actions: <Widget>[
           CupertinoButton(
             child: Text("Cancel"),
-            onPressed: Navigator
-                .of(context)
-                .pop,
+            onPressed: Navigator.of(context).pop,
           )
         ],
       );
@@ -77,7 +73,8 @@ class _ShareDialogState extends State<ShareDialog> {
           FlatButton(
             child: Text("CANCEL"),
             onPressed: () {
-              widget.filesState.clearFilesToDeleteAndCancelDownload();
+              widget.filesState
+                  .deleteFromProcessing(widget.file.guid, deleteLocally: true);
               Navigator.pop(context);
             },
           )

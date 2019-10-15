@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
+import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
@@ -167,12 +169,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     } else {
       _filesState.onUploadFile(
         path: widget.path,
-        onUploadStart: () => showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: "Uploading file...",
-          isError: false,
-        ),
+        onUploadStart: _addUploadingFileToFiles,
         onSuccess: () {
           showSnack(
             context: context,
@@ -182,13 +179,27 @@ class _FilesAndroidState extends State<FilesAndroid>
           );
           _getFiles(context);
         },
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: err,
-        ),
+        onError: (String err) {
+          _getFiles(context);
+          showSnack(
+            context: context,
+            scaffoldState: _filesPageState.scaffoldKey.currentState,
+            msg: err,
+          );
+        },
       );
     }
+  }
+
+  void _addUploadingFileToFiles(ProcessingFile process) {
+    _filesPageState.filesLoading = FilesLoadingType.filesVisible;
+    final fakeLocalFile =
+        getFakeLocalFileForUploadProgress(process, widget.path);
+    _filesPageState.currentFiles.add(fakeLocalFile);
+    _filesPageState.currentFiles.sort((a, b) {
+      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+    });
+    _filesPageState.filesLoading = FilesLoadingType.none;
   }
 
   Widget _buildFiles(BuildContext context) {

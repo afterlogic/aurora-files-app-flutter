@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -17,12 +18,6 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 class FilesApi {
-  // to be able to cancel
-  static StreamSubscription downloadSubscription;
-
-  // to be able to delete the file in case downloading is canceled
-  static File fileBeingLoaded;
-
   List<LocalFile> _sortFiles(List<LocalFile> unsortedFiles) {
     final List<LocalFile> folders = List();
     final List<LocalFile> files = List();
@@ -75,20 +70,20 @@ class FilesApi {
     }
   }
 
-  Future<void> uploadFile(File fileToUpload, bool shouldEncrypt,
+  Future<void> uploadFile(ProcessingFile processingFile, bool shouldEncrypt,
       {String url,
       @required String storageType,
       @required String path,
       Function(int) updateProgress,
       @required Function() onSuccess,
       @required Function(String) onError}) async {
-    final bool fileExists = await fileToUpload.exists();
+    final bool fileExists = await processingFile.fileOnDevice.exists();
     if (!fileExists) {
       throw CustomException("File to download data into doesn't exist");
     }
 
     final vectorLength = 16;
-    final String apiUrl = AppStore.authState.apiUrl;
+    final String url = AppStore.authState.apiUrl;
 
     final Map<String, dynamic> params = {
       "Type": storageType,
@@ -99,7 +94,7 @@ class FilesApi {
 
     if (shouldEncrypt == true) {
       final vector = IV.fromSecureRandom(vectorLength);
-      NativeFileCryptor.encryptIvBase64 = vector.base64;
+      processingFile.ivBase64 = vector.base64;
 
       params["ExtendedProps"] = {};
       params["ExtendedProps"]["InitializationVector"] = vector.base16;
@@ -112,59 +107,53 @@ class FilesApi {
             parameters: jsonEncode(params))
         .toMap();
     final stream = new http.ByteStream(
-        _openFileRead(fileToUpload, shouldEncrypt, onError));
-    final length = await fileToUpload.length();
+        _openFileRead(processingFile, shouldEncrypt, onError));
+    final length = await processingFile.fileOnDevice.length();
     final lengthWithPadding =
         ((length / vectorLength) + 1).toInt() * vectorLength;
 
-    final uri = Uri.parse(url != null ? url : apiUrl);
+    final uri = Uri.parse(url);
 
-    final request = new http.MultipartRequest("POST", uri);
+    final requestMultipart = new http.MultipartRequest("POST", uri);
     final multipartFile = new http.MultipartFile(
         'file', stream, shouldEncrypt ? lengthWithPadding : length,
-        filename: FileUtils.getFileNameFromPath(fileToUpload.path));
-    //contentType: new MediaType('image', 'png'));
-    if (url == null) {
-      request.headers.addAll(getHeader());
-    }
-    request.followRedirects = false;
-    request.fields.addAll(body);
-    request.files.add(multipartFile);
-    final response = await request.send();
+        filename:
+            FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path));
 
-    if (response.isRedirect) {
-      // redirect manually with different headers
-      return await uploadFile(fileToUpload, shouldEncrypt,
-          url: response.headers["location"],
-          path: path,
-          storageType: storageType,
-          onSuccess: onSuccess,
-          onError: onError,
-          updateProgress: updateProgress);
+    requestMultipart.headers.addAll(getHeader());
+
+    requestMultipart.fields.addAll(body);
+    requestMultipart.files.add(multipartFile);
+
+    final response = await requestMultipart.send();
+    final result = await response.stream.bytesToString();
+    Map<String, dynamic> res = json.decode(result);
+
+    if (res["Result"] == null || res["Result"] == false) {
+      onError(getErrMsg(res));
     } else {
-      response.stream.transform(utf8.decoder).listen((result) {
-        Map<String, dynamic> res = json.decode(result);
-
-        if (res["Result"] == null || res["Result"] == false) {
-          onError(getErrMsg(res));
-        } else {
-          onSuccess();
-        }
-      });
+      onSuccess();
     }
   }
 
-  Stream<List<int>> _openFileRead(
-      File file, bool shouldEncrypt, Function(String) onError) {
+  Stream<List<int>> _openFileRead(ProcessingFile processingFile,
+      bool shouldEncrypt, Function(String) onError) {
     StreamController<List<int>> controller;
     StreamSubscription<List<int>> fileReadSub;
     final key = shouldEncrypt
         ? prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey)
         : null;
 
+    int bytesUploaded = 0;
+
     List<int> fileBytesBuffer = new List();
     controller = StreamController<List<int>>(onListen: () {
-      fileReadSub = file.openRead().listen((contents) async {
+      fileReadSub =
+          processingFile.fileOnDevice.openRead().listen((contents) async {
+        bytesUploaded += contents.length;
+        final num = 100 / processingFile.size * bytesUploaded / 100;
+
+        processingFile.updateProgress(num);
         if (!shouldEncrypt) {
           controller.add(contents);
         } else {
@@ -192,9 +181,10 @@ class FilesApi {
             final encrypted = await NativeFileCryptor.encrypt(
                 fileBytes: fileBytesBuffer,
                 keyBase64: key.base64,
+                ivBase64: processingFile.ivBase64,
                 isLast: false);
-            NativeFileCryptor.encryptIvBase64 = IV(Uint8List.fromList(
-                encrypted.sublist(encrypted.length - 16, encrypted.length)))
+            processingFile.ivBase64 = IV(Uint8List.fromList(
+                    encrypted.sublist(encrypted.length - 16, encrypted.length)))
                 .base64;
             controller.add(encrypted);
             fileReadSub.resume();
@@ -206,14 +196,19 @@ class FilesApi {
       }, onDone: () async {
         if (shouldEncrypt) {
           final encrypted = await NativeFileCryptor.encrypt(
-              fileBytes: fileBytesBuffer, keyBase64: key.base64, isLast: true);
+              fileBytes: fileBytesBuffer,
+              keyBase64: key.base64,
+              ivBase64: processingFile.ivBase64,
+              isLast: true);
           controller.add(encrypted);
         }
         fileReadSub.cancel();
         controller.close();
-      },
-          onError: (err) => onError("Error occured, could not upload file."),
-          cancelOnError: true);
+      }, onError: (err, stack) {
+        print("_openFileRead err: $err");
+        print("_openFileRead stack: $stack");
+        onError("Error occured, could not upload file.");
+      }, cancelOnError: true);
     },
 //        onPause: fileReadSub.pause,
 //        onResume: fileReadSub.resume,
@@ -221,6 +216,7 @@ class FilesApi {
       fileReadSub.cancel();
       controller.close();
     });
+    processingFile.subscription = fileReadSub;
 
     return controller.stream;
   }
@@ -228,18 +224,16 @@ class FilesApi {
   // download file contents and write it into a file for different purposes
   // IMPORTANT! the function ends when it starts downloading
   // to get the real ending when the download is finished, pass the onSuccess callback
-  Future<void> getFileContentsFromServer(
-      String url, LocalFile file, File fileToWriteInto, bool decryptFile,
-      {Function(int) updateProgress,
+  Future<StreamSubscription> getFileContentsFromServer(String url,
+      LocalFile file, ProcessingFile processingFile, bool decryptFile,
+      {Function(String) onError,
       @required Function(File) onSuccess,
       bool isRedirect = false}) async {
     // getFileContentsFromServer function assumes that fileToWriteInto exists
-    final bool fileExists = await fileToWriteInto.exists();
+    final bool fileExists = await processingFile.fileOnDevice.exists();
     if (!fileExists) {
       throw CustomException("File to download data into doesn't exist");
     }
-
-    fileBeingLoaded = fileToWriteInto;
 
     final shouldDecrypt = decryptFile && file.initVector != null;
 
@@ -263,25 +257,27 @@ class FilesApi {
         return await getFileContentsFromServer(
             response.headers.value("location"),
             file,
-            fileToWriteInto,
+            processingFile,
             shouldDecrypt,
             onSuccess: onSuccess,
-            updateProgress: updateProgress,
+            onError: onError,
             isRedirect: true);
-      } else {
-        // temporary buffer, which can hold not more than NativeFileCryptor.chunkMaxSize
-        List<int> fileBytesBuffer = new List();
+      }
+      // temporary buffer, which can hold not more than NativeFileCryptor.chunkMaxSize
+      List<int> fileBytesBuffer = new List();
 
-        // set initial vector that comes with the LocalFile object that we get from our api
-        if (shouldDecrypt) {
-          IV iv = IV.fromBase16(file.initVector);
-          NativeFileCryptor.decryptIvBase64 = iv.base64;
-        }
+      // set initial vector that comes with the LocalFile object that we get from our api
+      if (shouldDecrypt) {
+        IV iv = IV.fromBase16(file.initVector);
+        processingFile.ivBase64 = iv.base64;
+      }
 
-        int progress = 0;
+      int progress = 0;
 
-        // average size of contents ~3000 bytes
-        downloadSubscription = response.listen((List<int> contents) async {
+      StreamSubscription downloadSubscription;
+      // average size of contents ~3000 bytes
+      downloadSubscription = response.listen(
+        (List<int> contents) async {
           // the chunk must always be equal to NativeFileCryptor.chunkMaxSize
           // so we have to split the last part for the chunk to make it be equal to NativeFileCryptor.chunkMaxSize
           // this part goes to contentsForCurrent, the rest goes to contentsForNext, which than goes to the next chunk
@@ -304,34 +300,34 @@ class FilesApi {
 
             downloadSubscription.pause();
             await _writeChunkToFile(fileBytesBuffer,
-                shouldDecrypt ? file.initVector : null, fileToWriteInto, false);
+                shouldDecrypt ? file.initVector : null, processingFile, false);
             // flush the buffer
             fileBytesBuffer = new List();
             downloadSubscription.resume();
           }
           fileBytesBuffer.addAll(contentsForNext);
           // the callback to update the UI download progress
+          // update progress
           progress += contents.length;
-          if (updateProgress != null) updateProgress(progress);
-        }, onDone: () async {
+          final num = 100 / file.size * progress / 100;
+          processingFile.updateProgress(num);
+        },
+        onDone: () async {
           // when finished send all we have, if the file is decrypted, the rest will be filled with padding
           // this is why we pass true for isLast
           await _writeChunkToFile(fileBytesBuffer,
-              shouldDecrypt ? file.initVector : null, fileToWriteInto, true);
+              shouldDecrypt ? file.initVector : null, processingFile, true);
           // resolve with the destination on where the downloaded file is
-          onSuccess(fileToWriteInto);
-          downloadSubscription.cancel();
-          downloadSubscription = null;
-          fileBeingLoaded = null;
-        }, onError: (err) {
+          onSuccess(processingFile.fileOnDevice);
+        },
+        onError: (err) {
           // delete the file in case of an error
-          fileToWriteInto.delete(recursive: true);
-          downloadSubscription.cancel();
-          downloadSubscription = null;
-          fileBeingLoaded = null;
-          throw CustomException(err.toString());
-        }, cancelOnError: true);
-      }
+          processingFile.fileOnDevice.delete(recursive: true);
+          onError(err.toString());
+        },
+        cancelOnError: true,
+      );
+      return downloadSubscription;
     } catch (err, stack) {
       print("VO: err: $err");
       print("VO: stack: $stack");
@@ -340,22 +336,26 @@ class FilesApi {
   }
 
   Future<void> _writeChunkToFile(List<int> fileBytes, String initVector,
-      File fileToWriteInto, bool isLast) async {
+      ProcessingFile processingFile, bool isLast) async {
     // if encrypted - decrypt
     if (initVector != null) {
       final key =
           prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
       final decrypted = await NativeFileCryptor.decrypt(
-          fileBytes: fileBytes, keyBase64: key.base64, isLast: isLast);
-      await fileToWriteInto.writeAsBytes(decrypted, mode: FileMode.append);
+          fileBytes: fileBytes,
+          keyBase64: key.base64,
+          ivBase64: processingFile.ivBase64,
+          isLast: isLast);
+      await processingFile.fileOnDevice
+          .writeAsBytes(decrypted, mode: FileMode.append);
 
       // update vector with the last 16 bytes of the chunk
       final newVector =
           fileBytes.sublist(fileBytes.length - 16, fileBytes.length);
-      NativeFileCryptor.decryptIvBase64 =
-          IV(Uint8List.fromList(newVector)).base64;
+      processingFile.ivBase64 = IV(Uint8List.fromList(newVector)).base64;
     } else {
-      await fileToWriteInto.writeAsBytes(fileBytes, mode: FileMode.append);
+      await processingFile.fileOnDevice
+          .writeAsBytes(fileBytes, mode: FileMode.append);
     }
   }
 

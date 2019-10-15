@@ -16,6 +16,7 @@ For help getting started with Flutter, view our
 samples, guidance on mobile development, and a full API reference.
 
 build_runner watch: flutter packages pub run build_runner watch --delete-conflicting-outputs
+build bundle: flutter build appbundle
 
 const InvalidToken = 101;
 const AuthError = 102;

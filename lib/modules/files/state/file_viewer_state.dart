@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
+import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 
@@ -20,11 +22,9 @@ abstract class _FileViewerState with Store {
   @observable
   double downloadProgress;
 
-  @observable
-  double decryptionProgress;
-
-//  List<int> fileBytes;
   File fileWithContents;
+
+  ProcessingFile processingFile;
 
   Future<void> _getPreviewFile(File fileToView,
       {Function(File) onDownloadEnd}) async {
@@ -41,20 +41,35 @@ abstract class _FileViewerState with Store {
         downloadProgress = null;
         if (onDownloadEnd != null) onDownloadEnd(fileToView);
       } else {
-        await _filesApi.getFileContentsFromServer(
+        // view file are not added to the processingFiles list as of now
+        processingFile = new ProcessingFile(
+          guid: file.guid,
+          name: file.name,
+          size: file.size,
+          fileOnDevice: fileToView,
+          processingType: getFileType(file) == FileType.image
+              ? ProcessingType.cacheImage
+              : ProcessingType.cacheToDelete,
+          updateProgressInViewer: (progress) => downloadProgress = progress,
+        );
+
+        // ignore: cancel_subscriptions
+        final sub = await _filesApi.getFileContentsFromServer(
           file.viewUrl,
           file,
-          fileToView,
+          processingFile,
           false,
           onSuccess: (_) {
             fileWithContents = fileToView;
             downloadProgress = null;
+            processingFile = null;
             if (onDownloadEnd != null) onDownloadEnd(fileToView);
           },
-          updateProgress: (int bytesLoaded) {
-            downloadProgress = 100 / file.size * bytesLoaded / 100;
-          },
+          onError: (err) {
+            processingFile = null;
+          }
         );
+        processingFile.subscription = sub;
       }
     }
     // if encrypted - decrypt
@@ -97,7 +112,8 @@ abstract class _FileViewerState with Store {
   }
 
   Future<void> onOpenPdf() async {
-    final File pdfToView = await _filesLocal.createTempFile(file, useName: true);
+    final File pdfToView =
+        await _filesLocal.createTempFile(file, useName: true);
     await _getPreviewFile(pdfToView, onDownloadEnd: (File storedFile) {
       fileWithContents = storedFile;
       _filesLocal.openFileWith(fileWithContents);

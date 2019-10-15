@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
@@ -32,6 +33,39 @@ class FileWidget extends StatefulWidget {
 }
 
 class _FileWidgetState extends State<FileWidget> {
+  FilesState _filesState;
+  FilesPageState _filesPageState;
+  double _progress;
+  ProcessingFile _processingFile;
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      _processingFile = AppStore.filesState.processedFiles
+          .firstWhere((process) => process.guid == widget.file.guid);
+      _processingFile.updateProgressInList = _updateProcess;
+      _processingFile.subscription.onDone(_filesPageState.onGetFiles);
+      setState(() => _progress = _processingFile.progress);
+    } catch (err) {}
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (_processingFile != null) _processingFile.updateProgressInList = null;
+  }
+
+  void _updateProcess(double num) {
+    if (mounted) {
+      if ((num == null || num >= 0.99) && widget.file.extendedProps != "fake") {
+        setState(() => _progress = null);
+      } else {
+        setState(() => _progress = num);
+      }
+    }
+  }
+
   Future _showModalBottomSheet(context) async {
     final result = await Navigator.push(
         context,
@@ -71,29 +105,40 @@ class _FileWidgetState extends State<FileWidget> {
     final filesPageState = Provider.of<FilesPageState>(context);
     filesState.onDownloadFile(
       file: widget.file,
-      onStart: () => showSnack(
-        context: context,
-        scaffoldState: filesPageState.scaffoldKey.currentState,
-        msg: "Downloading ${widget.file.name}",
-        isError: false,
-      ),
-      onSuccess: (File savedFile) => showSnack(
+      onStart: (ProcessingFile process) {
+        _processingFile = process;
+        _updateProcess(0.0);
+        showSnack(
           context: context,
           scaffoldState: filesPageState.scaffoldKey.currentState,
-          msg:
-              "${widget.file.name} downloaded successfully into: ${savedFile.path}",
+          msg: "Downloading ${widget.file.name}",
           isError: false,
-          duration: Duration(minutes: 10),
-          action: SnackBarAction(
-            label: "OK",
-            onPressed:
-                filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
-          )),
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: filesPageState.scaffoldKey.currentState,
-        msg: err,
-      ),
+        );
+      },
+      onUpdateProgressInList: _updateProcess,
+      onSuccess: (File savedFile) {
+        _processingFile = null;
+        showSnack(
+            context: context,
+            scaffoldState: filesPageState.scaffoldKey.currentState,
+            msg:
+                "${widget.file.name} downloaded successfully into: ${savedFile.path}",
+            isError: false,
+            duration: Duration(minutes: 10),
+            action: SnackBarAction(
+              label: "OK",
+              onPressed:
+                  filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
+            ));
+      },
+      onError: (String err) {
+        _processingFile = null;
+        showSnack(
+          context: context,
+          scaffoldState: filesPageState.scaffoldKey.currentState,
+          msg: err,
+        );
+      },
     );
   }
 
@@ -109,17 +154,24 @@ class _FileWidgetState extends State<FileWidget> {
           isError: false,
         );
       }
-      await filesState.onSetFileOffline(widget.file, onSuccess: () {
-        if (widget.file.localId == null) {
-          showSnack(
-            context: context,
-            scaffoldState: filesPageState.scaffoldKey.currentState,
-            msg: "File synched successfully",
-            isError: false,
-          );
-        }
-        filesPageState.onGetFiles();
-      });
+      await filesState.onSetFileOffline(
+        widget.file,
+        updateProgress: _updateProcess,
+        onStart: (process) => _processingFile = process,
+        onSuccess: () {
+          if (widget.file.localId == null) {
+            _processingFile = null;
+            showSnack(
+              context: context,
+              scaffoldState: filesPageState.scaffoldKey.currentState,
+              msg: "File synched successfully",
+              isError: false,
+            );
+          }
+          filesPageState.onGetFiles();
+        },
+        onError: (err) => _processingFile = null,
+      );
     } catch (err, s) {
       print("VO: err: ${err}");
       print("VO: s: ${s}");
@@ -226,25 +278,24 @@ class _FileWidgetState extends State<FileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final filesState = Provider.of<FilesState>(context);
-    final filesPageState = Provider.of<FilesPageState>(context);
+    _filesState = Provider.of<FilesState>(context);
+    _filesPageState = Provider.of<FilesPageState>(context);
     final margin = 5.0;
-
     return Observer(
       builder: (_) {
-        final isMenuVisible = !filesState.isMoveModeEnabled &&
-            !filesState.isOfflineMode &&
-            filesPageState.selectedFilesIds.length <= 0 &&
-            !filesPageState.isInsideZip;
+        final isMenuVisible = !_filesState.isMoveModeEnabled &&
+            !_filesState.isOfflineMode &&
+            _filesPageState.selectedFilesIds.length <= 0 &&
+            !_filesPageState.isInsideZip;
         return SelectableFilesItemTile(
           file: widget.file,
           onTap: () {
-            filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
+            _filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
             widget.file.initVector != null
                 ? _openEncryptedFile(context)
                 : _openFile(context);
           },
-          isSelected: filesPageState.selectedFilesIds.contains(widget.file.id),
+          isSelected: _filesPageState.selectedFilesIds.contains(widget.file.id),
           child: Stack(children: [
             ListTile(
               leading: _getThumbnail(context),
@@ -265,34 +316,44 @@ class _FileWidgetState extends State<FileWidget> {
                           size: 14.0,
                         ),
                       ),
-                      child: Row(
-                        children: <Widget>[
-                          if (widget.file.published)
-                            Icon(
-                              Icons.link,
-                              semanticLabel: "Has public link",
-                            ),
-                          if (widget.file.published) SizedBox(width: margin),
-                          if (widget.file.localId != null)
-                            Icon(
-                              Icons.airplanemode_active,
-                              semanticLabel: "Available offline",
-                            ),
-                          if (widget.file.localId != null)
-                            SizedBox(width: margin),
-                          Text(filesize(widget.file.size),
-                              style: Theme.of(context).textTheme.caption),
-                          SizedBox(width: margin),
-                          Text("|", style: Theme.of(context).textTheme.caption),
-                          SizedBox(width: margin),
-                          Text(
-                              DateFormatting.formatDateFromSeconds(
-                                timestamp: widget.file.lastModified,
+                      child: _progress != null
+                          ? SizedBox(
+                              height: 2.0,
+                              child: LinearProgressIndicator(
+                                value: _progress,
+                                backgroundColor: Colors.grey.withOpacity(0.3),
                               ),
-                              style: Theme.of(context).textTheme.caption),
-                          SizedBox(width: margin),
-                        ],
-                      ),
+                            )
+                          : Row(
+                              children: <Widget>[
+                                if (widget.file.published)
+                                  Icon(
+                                    Icons.link,
+                                    semanticLabel: "Has public link",
+                                  ),
+                                if (widget.file.published)
+                                  SizedBox(width: margin),
+                                if (widget.file.localId != null)
+                                  Icon(
+                                    Icons.airplanemode_active,
+                                    semanticLabel: "Available offline",
+                                  ),
+                                if (widget.file.localId != null)
+                                  SizedBox(width: margin),
+                                Text(filesize(widget.file.size),
+                                    style: Theme.of(context).textTheme.caption),
+                                SizedBox(width: margin),
+                                Text("|",
+                                    style: Theme.of(context).textTheme.caption),
+                                SizedBox(width: margin),
+                                Text(
+                                    DateFormatting.formatDateFromSeconds(
+                                      timestamp: widget.file.lastModified,
+                                    ),
+                                    style: Theme.of(context).textTheme.caption),
+                                SizedBox(width: margin),
+                              ],
+                            ),
                     )
                   ],
                 ),
@@ -303,13 +364,30 @@ class _FileWidgetState extends State<FileWidget> {
                 top: 0.0,
                 bottom: 0.0,
                 right: 4.0,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: Theme.of(context).disabledColor,
-                  ),
-                  onPressed: () => _showModalBottomSheet(context),
-                ),
+                child: _progress != null
+                    ? _processingFile?.processingType == ProcessingType.upload // TODO VO: Implement upload cancelling
+                        ? SizedBox()
+                        : IconButton(
+                            icon: Icon(Icons.cancel),
+                            color: Theme.of(context).disabledColor,
+                            iconSize: 22.0,
+                            onPressed: () {
+                              if (_processingFile != null) {
+                                _processingFile.subscription.cancel();
+                                _filesState.deleteFromProcessing(
+                                    _processingFile.guid,
+                                    deleteLocally: true);
+                              }
+                              _updateProcess(null);
+                            },
+                          )
+                    : IconButton(
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: Theme.of(context).disabledColor,
+                        ),
+                        onPressed: () => _showModalBottomSheet(context),
+                      ),
               ),
           ]),
         );

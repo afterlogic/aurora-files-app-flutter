@@ -20,9 +20,10 @@ class SelectableFilesItemTile extends StatelessWidget {
       : super(key: key);
 
   Function _getOnTapCb(FilesState filesState, FilesPageState filesPageState) {
-    if (file != null &&
-        file.isFolder &&
-        filesState.filesToMoveCopy.contains(file)) {
+    if ((file != null &&
+            file.isFolder &&
+            filesState.filesToMoveCopy.contains(file)) ||
+        file?.extendedProps == "fake") {
       return null;
     }
     if (filesPageState.filesLoading == FilesLoadingType.filesHidden ||
@@ -46,8 +47,7 @@ class SelectableFilesItemTile extends StatelessWidget {
             leading: SizedBox(
               width: thumbnailSize,
               height: thumbnailSize,
-              child:
-                  Icon(Icons.check_circle, color: Colors.white),
+              child: Icon(Icons.check_circle, color: Colors.white),
             ),
           ),
           SizedBox(height: 6.0),
@@ -63,8 +63,10 @@ class SelectableFilesItemTile extends StatelessWidget {
 
     return InkWell(
       onTap: _getOnTapCb(filesState, filesPageState),
-      onLongPress: filesState.isOfflineMode || filesState.isMoveModeEnabled ||
+      onLongPress: filesState.isOfflineMode ||
+              filesState.isMoveModeEnabled ||
               file == null ||
+              file.extendedProps == "fake" ||
               filesPageState.selectedFilesIds.length > 0
           ? null
           : () => filesPageState.selectFile(file.id),

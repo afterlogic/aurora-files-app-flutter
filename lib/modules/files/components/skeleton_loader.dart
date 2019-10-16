@@ -27,13 +27,27 @@ class SkeletonLoader extends StatelessWidget {
         title: Shimmer.fromColors(
           baseColor: Theme.of(context).iconTheme.color.withOpacity(0.15),
           highlightColor: Theme.of(context).iconTheme.color.withOpacity(0.1),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(50.0),
-            child: Container(
-              width: double.infinity,
-              height: 20,
-              color: Colors.grey,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(50.0),
+                child: Container(
+                  width: double.infinity,
+                  height: 14.0,
+                  color: Colors.grey,
+                ),
+              ),
+              SizedBox(height: 11.0),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(50.0),
+                child: Container(
+                  width: 150.0,
+                  height: 14.0,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
           ),
         ),
       ),

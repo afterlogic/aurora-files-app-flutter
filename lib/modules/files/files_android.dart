@@ -202,7 +202,7 @@ class _FilesAndroidState extends State<FilesAndroid>
         itemBuilder: (_, index) => SkeletonLoader(),
         itemCount: 6,
         separatorBuilder: (BuildContext context, int index) => Padding(
-          padding: const EdgeInsets.only(left: 80.0),
+          padding: const EdgeInsets.only(left: 80.0, right: 16.0),
           child: Divider(height: 0.0),
         ),
       );

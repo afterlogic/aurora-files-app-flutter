@@ -77,11 +77,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             padding: EdgeInsets.only(
                 top: 0.0, bottom: MediaQuery.of(context).padding.bottom),
             children: <Widget>[
-              PublicLinkSwitch(
-                file: widget.file,
-                filesState: widget.filesState,
-                filesPageState: widget.filesPageState,
-              ),
+              if (widget.file.initVector == null)
+                PublicLinkSwitch(
+                  file: widget.file,
+                  filesState: widget.filesState,
+                  filesPageState: widget.filesPageState,
+                ),
               if (!widget.file.isFolder) Divider(height: 0),
               if (!widget.file.isFolder)
                 ListTile(

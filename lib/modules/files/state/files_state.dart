@@ -413,17 +413,17 @@ abstract class _FilesState with Store {
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
             file.downloadUrl, file, processingFile, false,
-            onSuccess: (_) {
+            onSuccess: (_) async {
               deleteFromProcessing(file.guid);
+              final FilesCompanion filesCompanion =
+              getCompanionFromLocalFile(file, fileForOffline.path);
+              await _filesDao.addFile(filesCompanion);
               onSuccess();
             },
             onError: (err) => deleteFromProcessing(file.guid));
         processingFile.subscription = sub;
         onStart(processingFile);
       }
-      final FilesCompanion filesCompanion =
-          getCompanionFromLocalFile(file, fileForOffline.path);
-      await _filesDao.addFile(filesCompanion);
     } else {
       await _filesDao.deleteFiles([file]);
       onSuccess();

@@ -54,7 +54,8 @@ class _FileWidgetState extends State<FileWidget> {
       _updateProcess,
       onDone: () {
         _updateProcess(null);
-        if (_processingFile.processingType == ProcessingType.upload) {
+        final type = _processingFile.processingType;
+        if (type == ProcessingType.upload || type == ProcessingType.offline) {
           _filesPageState.onGetFiles();
         }
         _filesState.deleteFromProcessing(_processingFile.guid,
@@ -344,7 +345,7 @@ class _FileWidgetState extends State<FileWidget> {
                                 child: SizedBox(
                                   height: 2.0,
                                   child: LinearProgressIndicator(
-                                    value: true || _processingFile?.processingType ==
+                                    value: _processingFile?.processingType ==
                                             ProcessingType.upload
                                         ? null
                                         : _progress,

@@ -196,8 +196,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           isError: false,
         );
       },
-      onSuccess: (File savedFile) {
-        showSnack(
+      onSuccess: (File savedFile) => showSnack(
             context: context,
             scaffoldState: _fileViewerScaffoldKey.currentState,
             msg:
@@ -208,15 +207,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               label: "OK",
               onPressed:
                   _fileViewerScaffoldKey.currentState.hideCurrentSnackBar,
-            ));
-      },
-      onError: (String err) {
-        showSnack(
+            )),
+      onError: (String err) => showSnack(
           context: context,
           scaffoldState: _fileViewerScaffoldKey.currentState,
           msg: err,
-        );
-      },
+        ),
     );
   }
 

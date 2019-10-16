@@ -170,23 +170,17 @@ class _FilesAndroidState extends State<FilesAndroid>
       _filesState.onUploadFile(
         path: widget.path,
         onUploadStart: _addUploadingFileToFiles,
-        onSuccess: () {
-          showSnack(
-            context: context,
-            scaffoldState: _filesPageState.scaffoldKey.currentState,
-            msg: "File successfully uploaded",
-            isError: false,
-          );
-          _getFiles(context);
-        },
-        onError: (String err) {
-          _getFiles(context);
-          showSnack(
-            context: context,
-            scaffoldState: _filesPageState.scaffoldKey.currentState,
-            msg: err,
-          );
-        },
+        onSuccess: () => showSnack(
+          context: context,
+          scaffoldState: _filesPageState.scaffoldKey.currentState,
+          msg: "File successfully uploaded",
+          isError: false,
+        ),
+        onError: (String err) => showSnack(
+          context: context,
+          scaffoldState: _filesPageState.scaffoldKey.currentState,
+          msg: err,
+        ),
       );
     }
   }

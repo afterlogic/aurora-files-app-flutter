@@ -288,8 +288,6 @@ abstract class _FilesState with Store {
         },
       );
     } catch (err, s) {
-      print("VO: err: ${err}");
-      print("VO: s: ${s}");
       deleteFromProcessing(processingFile.guid);
       onError(err.toString());
     }
@@ -298,8 +296,6 @@ abstract class _FilesState with Store {
   void onDownloadFile({
     LocalFile file,
     Function(ProcessingFile) onStart,
-    Function onUpdateProgressViewer,
-    Function onUpdateProgressInList,
     Function(File) onSuccess,
     Function(String) onError,
   }) async {
@@ -307,6 +303,9 @@ abstract class _FilesState with Store {
       if (file.initVector != null &&
           AppStore.settingsState.currentKey == null) {
         throw CustomException("You need an encryption key to download files.");
+      }
+      if (_isFileIsBeingProcessed(file.guid)) {
+        throw CustomException("This file is occupied with another operation.");
       }
 
       // if file exists in cache, just copy it to downloads folder
@@ -324,8 +323,6 @@ abstract class _FilesState with Store {
           fileToDownloadInto,
           ProcessingType.download,
           file.initVector,
-          updateProgressInList: onUpdateProgressInList,
-          updateProgressInViewer: onUpdateProgressViewer,
         );
 
         onStart(processingFile);
@@ -348,8 +345,6 @@ abstract class _FilesState with Store {
         processingFile.subscription = sub;
       }
     } catch (err, s) {
-      print("VO: err: ${err}");
-      print("VO: s: ${s}");
       onError(err.toString());
     }
   }
@@ -357,18 +352,22 @@ abstract class _FilesState with Store {
   Future<void> onShareFile(
     LocalFile file, {
     File storedFile,
+    Function(ProcessingFile) onStart,
     Function(File) onSuccess,
-    Function(double) updateProgress,
   }) async {
+    if (_isFileIsBeingProcessed(file.guid)) {
+      throw CustomException("This file is occupied with another operation.");
+    }
+
     File fileWithContents;
     if (storedFile == null) {
       final File tempFileForShare =
           await _filesLocal.createTempFile(file, useName: true);
 
       final processingFile = addFileToProcessing(
-          file, tempFileForShare, ProcessingType.share, file.initVector,
-          updateProgressInViewer: updateProgress);
+          file, tempFileForShare, ProcessingType.share, file.initVector);
       if (await tempFileForShare.length() <= 0) {
+        onStart(processingFile);
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
             file.downloadUrl, file, processingFile, true,
@@ -393,10 +392,13 @@ abstract class _FilesState with Store {
   }
 
   Future<void> onSetFileOffline(LocalFile file,
-      {Function(double) updateProgress,
-      @required Function() onSuccess,
+      {@required Function() onSuccess,
       @required Function(ProcessingFile) onStart,
       @required Function(String) onError}) async {
+    if (_isFileIsBeingProcessed(file.guid)) {
+      throw CustomException("This file is occupied with another operation.");
+    }
+
     if (file.localId == null) {
       // if file exists in cache, just copy it to downloads folder
       final Directory dir = await getApplicationDocumentsDirectory();
@@ -407,8 +409,7 @@ abstract class _FilesState with Store {
       } else {
         fileForOffline = await _filesLocal.createFileForOffline(file);
         final processingFile = addFileToProcessing(
-            file, fileForOffline, ProcessingType.offline, file.initVector,
-            updateProgressInList: updateProgress);
+            file, fileForOffline, ProcessingType.offline, file.initVector);
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
             file.downloadUrl, file, processingFile, false,
@@ -429,26 +430,24 @@ abstract class _FilesState with Store {
     }
   }
 
+  bool _isFileIsBeingProcessed(String guid) {
+    try {
+      return processedFiles.firstWhere((file) => file.guid == guid) != null;
+    } catch(err) {
+      return false;
+    }
+  }
+
   ProcessingFile addFileToProcessing(
     LocalFile file,
     File deviceLocation,
     ProcessingType type,
-    String iv, {
-    Function(double) updateProgressInList,
-    Function(double) updateProgressInViewer,
-  }) {
+    String iv) {
     ProcessingFile processingFile;
     // if exists
     try {
       processingFile =
           processedFiles.firstWhere((process) => process.guid == file.guid);
-
-      if (processingFile.updateProgressInList == null) {
-        processingFile.updateProgressInList = updateProgressInList;
-      }
-      if (processingFile.updateProgressInViewer == null) {
-        processingFile.updateProgressInViewer = updateProgressInViewer;
-      }
       return processingFile;
     } catch (err) {}
 
@@ -459,22 +458,22 @@ abstract class _FilesState with Store {
       size: file.size,
       fileOnDevice: deviceLocation,
       processingType: type,
-      updateProgressInList: updateProgressInList,
-      updateProgressInViewer: updateProgressInViewer,
     );
 
     processedFiles.add(processingFile);
-    print("VO: processedFiles: ${processedFiles.length}");
+    print("process added: ${processedFiles.length}");
     return processingFile;
   }
 
   void deleteFromProcessing(String guid, {bool deleteLocally = false}) {
-    final fileToDelete = processedFiles.firstWhere((file) => file.guid == guid);
-    fileToDelete.subscription?.cancel();
-    if (deleteLocally) fileToDelete.fileOnDevice.delete(recursive: true);
-    processedFiles.removeWhere((file) => file.guid == guid);
-    processedFiles = processedFiles;
-    print("VO: processedFiles: ${processedFiles.length}");
+    try {
+      final fileToDelete = processedFiles.firstWhere((file) =>
+      file.guid == guid);
+      fileToDelete.endProcess();
+      if (deleteLocally) fileToDelete.fileOnDevice.delete(recursive: true);
+      processedFiles.removeWhere((file) => file.guid == guid);
+      print("process removed: ${processedFiles.length}");
+    } catch(err) {}
   }
 
   Future<void> clearCache({deleteCachedImages = false}) async {

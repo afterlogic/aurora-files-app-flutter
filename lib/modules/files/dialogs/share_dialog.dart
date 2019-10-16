@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +30,11 @@ class _ShareDialogState extends State<ShareDialog> {
     await widget.filesState.onShareFile(
       widget.file,
       onSuccess: (_) => Navigator.pop(context),
-      updateProgress: (double progress) =>
-          setState(() => _downloadProgress = progress),
+      onStart: (ProcessingFile process) {
+        process.progressStream.listen((progress) {
+          setState(() => _downloadProgress = progress);
+        });
+      },
     );
   }
 

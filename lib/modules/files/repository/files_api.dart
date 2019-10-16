@@ -132,6 +132,7 @@ class FilesApi {
     if (res["Result"] == null || res["Result"] == false) {
       onError(getErrMsg(res));
     } else {
+      processingFile.endProcess();
       onSuccess();
     }
   }
@@ -329,8 +330,6 @@ class FilesApi {
       );
       return downloadSubscription;
     } catch (err, stack) {
-      print("VO: err: $err");
-      print("VO: stack: $stack");
       throw CustomException(err.toString());
     }
   }

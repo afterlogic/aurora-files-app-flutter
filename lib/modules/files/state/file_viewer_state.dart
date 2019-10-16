@@ -50,25 +50,18 @@ abstract class _FileViewerState with Store {
           processingType: getFileType(file) == FileType.image
               ? ProcessingType.cacheImage
               : ProcessingType.cacheToDelete,
-          updateProgressInViewer: (progress) => downloadProgress = progress,
         );
 
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
-          file.viewUrl,
-          file,
-          processingFile,
-          false,
-          onSuccess: (_) {
-            fileWithContents = fileToView;
-            downloadProgress = null;
-            processingFile = null;
-            if (onDownloadEnd != null) onDownloadEnd(fileToView);
-          },
-          onError: (err) {
-            processingFile = null;
-          }
-        );
+            file.viewUrl, file, processingFile, false, onSuccess: (_) {
+          fileWithContents = fileToView;
+          downloadProgress = null;
+          processingFile = null;
+          if (onDownloadEnd != null) onDownloadEnd(fileToView);
+        }, onError: (err) {
+          processingFile = null;
+        });
         processingFile.subscription = sub;
       }
     }

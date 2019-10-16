@@ -42,28 +42,37 @@ class _FileWidgetState extends State<FileWidget> {
   void initState() {
     super.initState();
     try {
-      _processingFile = AppStore.filesState.processedFiles
+      final processingFile = AppStore.filesState.processedFiles
           .firstWhere((process) => process.guid == widget.file.guid);
-      _processingFile.updateProgressInList = _updateProcess;
-      _processingFile.subscription.onDone(_filesPageState.onGetFiles);
-      setState(() => _progress = _processingFile.progress);
+      _subscribeToProgress(processingFile);
     } catch (err) {}
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    if (_processingFile != null) _processingFile.updateProgressInList = null;
+  void _subscribeToProgress(ProcessingFile processingFile) {
+    _processingFile = processingFile;
+    processingFile.progressStream.listen(
+      _updateProcess,
+      onDone: () {
+        _updateProcess(null);
+        if (_processingFile.processingType == ProcessingType.upload) {
+          _filesPageState.onGetFiles();
+        }
+        _filesState.deleteFromProcessing(_processingFile.guid,
+            deleteLocally: true);
+        _processingFile = null;
+      },
+      onError: (err, s) {
+        _filesState.deleteFromProcessing(_processingFile.guid,
+            deleteLocally: true);
+        _processingFile = null;
+      },
+      cancelOnError: true,
+    );
+    _updateProcess(processingFile.currentProgress);
   }
 
   void _updateProcess(double num) {
-    if (mounted) {
-      if ((num == null || num >= 0.99) && widget.file.extendedProps != "fake") {
-        setState(() => _progress = null);
-      } else {
-        setState(() => _progress = num);
-      }
-    }
+    if (mounted) setState(() => _progress = num);
   }
 
   Future _showModalBottomSheet(context) async {
@@ -106,8 +115,7 @@ class _FileWidgetState extends State<FileWidget> {
     filesState.onDownloadFile(
       file: widget.file,
       onStart: (ProcessingFile process) {
-        _processingFile = process;
-        _updateProcess(0.0);
+        _subscribeToProgress(process);
         showSnack(
           context: context,
           scaffoldState: filesPageState.scaffoldKey.currentState,
@@ -115,30 +123,23 @@ class _FileWidgetState extends State<FileWidget> {
           isError: false,
         );
       },
-      onUpdateProgressInList: _updateProcess,
-      onSuccess: (File savedFile) {
-        _processingFile = null;
-        showSnack(
-            context: context,
-            scaffoldState: filesPageState.scaffoldKey.currentState,
-            msg:
-                "${widget.file.name} downloaded successfully into: ${savedFile.path}",
-            isError: false,
-            duration: Duration(minutes: 10),
-            action: SnackBarAction(
-              label: "OK",
-              onPressed:
-                  filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
-            ));
-      },
-      onError: (String err) {
-        _processingFile = null;
-        showSnack(
+      onSuccess: (File savedFile) => showSnack(
           context: context,
           scaffoldState: filesPageState.scaffoldKey.currentState,
-          msg: err,
-        );
-      },
+          msg:
+              "${widget.file.name} downloaded successfully into: ${savedFile.path}",
+          isError: false,
+          duration: Duration(minutes: 10),
+          action: SnackBarAction(
+            label: "OK",
+            onPressed:
+                filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
+          )),
+      onError: (String err) => showSnack(
+        context: context,
+        scaffoldState: filesPageState.scaffoldKey.currentState,
+        msg: err,
+      ),
     );
   }
 
@@ -156,11 +157,9 @@ class _FileWidgetState extends State<FileWidget> {
       }
       await filesState.onSetFileOffline(
         widget.file,
-        updateProgress: _updateProcess,
-        onStart: (process) => _processingFile = process,
+        onStart: _subscribeToProgress,
         onSuccess: () {
           if (widget.file.localId == null) {
-            _processingFile = null;
             showSnack(
               context: context,
               scaffoldState: filesPageState.scaffoldKey.currentState,
@@ -170,11 +169,12 @@ class _FileWidgetState extends State<FileWidget> {
           }
           filesPageState.onGetFiles();
         },
-        onError: (err) => _processingFile = null,
+        onError: (err) => showSnack(
+            context: context,
+            scaffoldState: filesPageState.scaffoldKey.currentState,
+            msg: err.toString()),
       );
     } catch (err, s) {
-      print("VO: err: ${err}");
-      print("VO: s: ${s}");
       showSnack(
         context: context,
         scaffoldState: filesPageState.scaffoldKey.currentState,
@@ -276,6 +276,23 @@ class _FileWidgetState extends State<FileWidget> {
     }
   }
 
+  IconData _getProcessIcon() {
+    switch (_processingFile.processingType) {
+      case ProcessingType.upload:
+        return Icons.file_upload;
+      case ProcessingType.download:
+      case ProcessingType.cacheImage:
+      case ProcessingType.cacheToDelete:
+        return Icons.file_download;
+      case ProcessingType.share:
+        return Icons.share;
+      case ProcessingType.offline:
+        return Icons.airplanemode_active;
+      default:
+        return Icons.close;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _filesState = Provider.of<FilesState>(context);
@@ -316,14 +333,27 @@ class _FileWidgetState extends State<FileWidget> {
                           size: 14.0,
                         ),
                       ),
-                      child: _progress != null
-                          ? SizedBox(
-                              height: 2.0,
-                              child: LinearProgressIndicator(
-                                value: _progress,
-                                backgroundColor: Colors.grey.withOpacity(0.3),
+                      child: _progress != null ||
+                              _processingFile?.processingType ==
+                                  ProcessingType.upload
+                          ? Row(children: <Widget>[
+                              Expanded(flex: 1, child: Icon(_getProcessIcon())),
+                              SizedBox(width: 8.0),
+                              Expanded(
+                                flex: 18,
+                                child: SizedBox(
+                                  height: 2.0,
+                                  child: LinearProgressIndicator(
+                                    value: true || _processingFile?.processingType ==
+                                            ProcessingType.upload
+                                        ? null
+                                        : _progress,
+                                    backgroundColor:
+                                        Colors.grey.withOpacity(0.3),
+                                  ),
+                                ),
                               ),
-                            )
+                            ])
                           : Row(
                               children: <Widget>[
                                 if (widget.file.published)
@@ -365,20 +395,18 @@ class _FileWidgetState extends State<FileWidget> {
                 bottom: 0.0,
                 right: 4.0,
                 child: _progress != null
-                    ? _processingFile?.processingType == ProcessingType.upload // TODO VO: Implement upload cancelling
+                    ? _processingFile?.processingType ==
+                            ProcessingType
+                                .upload // TODO VO: Implement upload cancelling
                         ? SizedBox()
                         : IconButton(
                             icon: Icon(Icons.cancel),
                             color: Theme.of(context).disabledColor,
                             iconSize: 22.0,
                             onPressed: () {
-                              if (_processingFile != null) {
-                                _processingFile.subscription.cancel();
-                                _filesState.deleteFromProcessing(
-                                    _processingFile.guid,
-                                    deleteLocally: true);
-                              }
-                              _updateProcess(null);
+                              _filesState.deleteFromProcessing(
+                                  _processingFile.guid,
+                                  deleteLocally: true);
                             },
                           )
                     : IconButton(

@@ -95,9 +95,16 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   void _shareFile() {
     if (_fileViewerState.fileWithContents != null) {
-      widget.filesState.onShareFile(_file,
-          storedFile: _fileViewerState.fileWithContents,
-          onSuccess: (File file) {});
+      widget.filesState.onShareFile(
+        _file,
+        storedFile: _fileViewerState.fileWithContents,
+        onSuccess: () {},
+        onError: (String err) => showSnack(
+          context: context,
+          scaffoldState: _fileViewerScaffoldKey.currentState,
+          msg: err,
+        ),
+      );
     } else if (_fileViewerState.downloadProgress != null) {
       showSnack(
         context: context,
@@ -197,22 +204,20 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         );
       },
       onSuccess: (File savedFile) => showSnack(
-            context: context,
-            scaffoldState: _fileViewerScaffoldKey.currentState,
-            msg:
-                "${_file.name} downloaded successfully into: ${savedFile.path}",
-            isError: false,
-            duration: Duration(minutes: 10),
-            action: SnackBarAction(
-              label: "OK",
-              onPressed:
-                  _fileViewerScaffoldKey.currentState.hideCurrentSnackBar,
-            )),
-      onError: (String err) => showSnack(
           context: context,
           scaffoldState: _fileViewerScaffoldKey.currentState,
-          msg: err,
-        ),
+          msg: "${_file.name} downloaded successfully into: ${savedFile.path}",
+          isError: false,
+          duration: Duration(minutes: 10),
+          action: SnackBarAction(
+            label: "OK",
+            onPressed: _fileViewerScaffoldKey.currentState.hideCurrentSnackBar,
+          )),
+      onError: (String err) => showSnack(
+        context: context,
+        scaffoldState: _fileViewerScaffoldKey.currentState,
+        msg: err,
+      ),
     );
   }
 
@@ -334,6 +339,18 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         appBar: AppBar(
           actions: widget.filesState.isOfflineMode
               ? [
+                  IconButton(
+                    icon: Icon(
+                        Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+                    tooltip: "Share",
+                    onPressed: _shareFile,
+                  ),
+                  if (!Platform.isIOS)
+                    IconButton(
+                      icon: Icon(Icons.file_download),
+                      tooltip: "Download",
+                      onPressed: _downloadFile,
+                    ),
                   IconButton(
                     icon: Icon(Icons.airplanemode_inactive),
                     tooltip: "Delete file from offline",

@@ -49,6 +49,7 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _subscribeToProgress(ProcessingFile processingFile) {
+    print("VO: ${processingFile.name}");
     _processingFile = processingFile;
     processingFile.progressStream.listen(
       _updateProcess,
@@ -302,7 +303,6 @@ class _FileWidgetState extends State<FileWidget> {
     return Observer(
       builder: (_) {
         final isMenuVisible = !_filesState.isMoveModeEnabled &&
-            !_filesState.isOfflineMode &&
             _filesPageState.selectedFilesIds.length <= 0 &&
             !_filesPageState.isInsideZip;
         return SelectableFilesItemTile(

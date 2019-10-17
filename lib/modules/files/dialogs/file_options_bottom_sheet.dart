@@ -59,6 +59,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
 
   @override
   Widget build(BuildContext context) {
+    final offline = widget.filesState.isOfflineMode;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,18 +73,18 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         ),
         Divider(height: 0),
         LimitedBox(
-          maxHeight: 260.0,
+          maxHeight: offline ? 180.0 : 260.0,
           child: ListView(
             padding: EdgeInsets.only(
                 top: 0.0, bottom: MediaQuery.of(context).padding.bottom),
             children: <Widget>[
-              if (widget.file.initVector == null)
+              if (widget.file.initVector == null && !offline)
                 PublicLinkSwitch(
                   file: widget.file,
                   filesState: widget.filesState,
                   filesPageState: widget.filesPageState,
                 ),
-              if (!widget.file.isFolder) Divider(height: 0),
+              if (!widget.file.isFolder && !offline) Divider(height: 0),
               if (!widget.file.isFolder)
                 ListTile(
                   onTap: () => onItemSelected(
@@ -98,18 +99,20 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   ),
                 ),
               Divider(height: 0),
-              ListTile(
-                leading: Icon(widget.file.isFolder
-                    ? MdiIcons.folderMove
-                    : MdiIcons.fileMove),
-                title: Text("Copy/Move"),
-                onTap: () {
-                  widget.filesState.updateFilesCb =
-                      widget.filesPageState.onGetFiles;
-                  widget.filesState.enableMoveMode(filesToMove: [widget.file]);
-                  Navigator.pop(context);
-                },
-              ),
+              if (!offline)
+                ListTile(
+                  leading: Icon(widget.file.isFolder
+                      ? MdiIcons.folderMove
+                      : MdiIcons.fileMove),
+                  title: Text("Copy/Move"),
+                  onTap: () {
+                    widget.filesState.updateFilesCb =
+                        widget.filesPageState.onGetFiles;
+                    widget.filesState
+                        .enableMoveMode(filesToMove: [widget.file]);
+                    Navigator.pop(context);
+                  },
+                ),
               if (!widget.file.isFolder)
                 ListTile(
                   leading: Icon(
@@ -124,65 +127,67 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   onTap: () =>
                       onItemSelected(FileOptionsBottomSheetResult.download),
                 ),
-              ListTile(
-                leading: Icon(Icons.edit),
-                title: Text("Rename"),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final result = Platform.isIOS
-                      ? await showCupertinoDialog(
+              if (!offline)
+                ListTile(
+                  leading: Icon(Icons.edit),
+                  title: Text("Rename"),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    final result = Platform.isIOS
+                        ? await showCupertinoDialog(
+                            context: context,
+                            builder: (_) => RenameDialog(
+                                  file: widget.file,
+                                  filesState: widget.filesState,
+                                  filesPageState: widget.filesPageState,
+                                ))
+                        : await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => RenameDialog(
+                              file: widget.file,
+                              filesState: widget.filesState,
+                              filesPageState: widget.filesPageState,
+                            ),
+                          );
+                    if (result is String) {
+                      widget.filesPageState.onGetFiles();
+                    }
+                  },
+                ),
+              if (!offline)
+                ListTile(
+                  leading: Icon(Icons.delete_outline),
+                  title: Text("Delete"),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    bool shouldDelete;
+                    if (Platform.isIOS) {
+                      shouldDelete = await showCupertinoDialog(
                           context: context,
-                          builder: (_) => RenameDialog(
-                                file: widget.file,
-                                filesState: widget.filesState,
-                                filesPageState: widget.filesPageState,
-                              ))
-                      : await showDialog(
+                          builder: (_) =>
+                              DeleteConfirmationDialog(itemsNumber: 1));
+                    } else {
+                      shouldDelete = await showDialog(
                           context: context,
-                          barrierDismissible: false,
-                          builder: (_) => RenameDialog(
-                            file: widget.file,
-                            filesState: widget.filesState,
-                            filesPageState: widget.filesPageState,
-                          ),
-                        );
-                  if (result is String) {
-                    widget.filesPageState.onGetFiles();
-                  }
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.delete_outline),
-                title: Text("Delete"),
-                onTap: () async {
-                  Navigator.pop(context);
-                  bool shouldDelete;
-                  if (Platform.isIOS) {
-                    shouldDelete = await showCupertinoDialog(
-                        context: context,
-                        builder: (_) =>
-                            DeleteConfirmationDialog(itemsNumber: 1));
-                  } else {
-                    shouldDelete = await showDialog(
-                        context: context,
-                        builder: (_) =>
-                            DeleteConfirmationDialog(itemsNumber: 1));
-                  }
-                  if (shouldDelete == true) {
-                    widget.filesPageState.onDeleteFiles(
-                      storage: widget.filesState.selectedStorage,
-                      filesToDelete: [widget.file],
-                      onSuccess: () => widget.filesPageState.onGetFiles(),
-                      onError: (String err) => showSnack(
-                        context: context,
-                        scaffoldState:
-                            widget.filesPageState.scaffoldKey.currentState,
-                        msg: err,
-                      ),
-                    );
-                  }
-                },
-              ),
+                          builder: (_) =>
+                              DeleteConfirmationDialog(itemsNumber: 1));
+                    }
+                    if (shouldDelete == true) {
+                      widget.filesPageState.onDeleteFiles(
+                        storage: widget.filesState.selectedStorage,
+                        filesToDelete: [widget.file],
+                        onSuccess: () => widget.filesPageState.onGetFiles(),
+                        onError: (String err) => showSnack(
+                          context: context,
+                          scaffoldState:
+                              widget.filesPageState.scaffoldKey.currentState,
+                          msg: err,
+                        ),
+                      );
+                    }
+                  },
+                ),
             ],
           ),
         ),

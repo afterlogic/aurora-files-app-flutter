@@ -14,6 +14,7 @@ import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -308,6 +309,30 @@ abstract class _FilesState with Store {
         throw CustomException("This file is occupied with another operation.");
       }
 
+      if (isOfflineMode) {
+        try {
+          final fileForDownload =
+              await _filesLocal.createFileForDownloadAndroid(file);
+          final processingFile = addFileToProcessing(
+            file,
+            fileForDownload,
+            ProcessingType.download,
+            file.initVector != null
+                ? IV.fromBase16(file.initVector).base64
+                : null,
+          );
+          onStart(processingFile);
+          final downloadedFile =
+              await _filesLocal.downloadOffline(file, processingFile);
+          onSuccess(downloadedFile);
+          deleteFromProcessing(file.guid);
+        } catch (err) {
+          deleteFromProcessing(file.guid);
+          throw CustomException(err.toString());
+        }
+        return;
+      }
+
       // if file exists in cache, just copy it to downloads folder
       final Directory dir = await DownloadsPathProvider.downloadsDirectory;
       final File copiedFile =
@@ -344,7 +369,7 @@ abstract class _FilesState with Store {
         );
         processingFile.subscription = sub;
       }
-    } catch (err, s) {
+    } catch (err) {
       onError(err.toString());
     }
   }
@@ -353,10 +378,34 @@ abstract class _FilesState with Store {
     LocalFile file, {
     File storedFile,
     Function(ProcessingFile) onStart,
-    Function(File) onSuccess,
+    Function() onSuccess,
+    Function(String) onError,
   }) async {
     if (_isFileIsBeingProcessed(file.guid)) {
-      throw CustomException("This file is occupied with another operation.");
+      onError("This file is occupied with another operation.");
+    }
+
+    if (isOfflineMode) {
+      try {
+        final tempFile = await _filesLocal.createTempFile(file);
+        final processingFile = addFileToProcessing(
+          file,
+          tempFile,
+          ProcessingType.download,
+          file.initVector != null
+              ? IV.fromBase16(file.initVector).base64
+              : null,
+        );
+        onStart(processingFile);
+        await _filesLocal.shareOffline(file, processingFile);
+        deleteFromProcessing(file.guid);
+        onSuccess();
+      } catch (err) {
+        deleteFromProcessing(file.guid);
+        onSuccess();
+        throw CustomException(err.toString());
+      }
+      return;
     }
 
     File fileWithContents;
@@ -374,19 +423,19 @@ abstract class _FilesState with Store {
             onSuccess: (File savedFile) {
               fileWithContents = savedFile;
               deleteFromProcessing(file.guid);
-              onSuccess(savedFile);
+              onSuccess();
               _filesLocal.shareFile(fileWithContents, file);
             },
             onError: (err) => deleteFromProcessing(file.guid));
         processingFile.subscription = sub;
       } else {
         fileWithContents = tempFileForShare;
-        onSuccess(fileWithContents);
+        onSuccess();
         _filesLocal.shareFile(fileWithContents, file);
       }
     } else {
       fileWithContents = storedFile;
-      onSuccess(fileWithContents);
+      onSuccess();
       _filesLocal.shareFile(fileWithContents, file);
     }
   }
@@ -416,7 +465,7 @@ abstract class _FilesState with Store {
             onSuccess: (_) async {
               deleteFromProcessing(file.guid);
               final FilesCompanion filesCompanion =
-              getCompanionFromLocalFile(file, fileForOffline.path);
+                  getCompanionFromLocalFile(file, fileForOffline.path);
               await _filesDao.addFile(filesCompanion);
               onSuccess();
             },
@@ -433,16 +482,13 @@ abstract class _FilesState with Store {
   bool _isFileIsBeingProcessed(String guid) {
     try {
       return processedFiles.firstWhere((file) => file.guid == guid) != null;
-    } catch(err) {
+    } catch (err) {
       return false;
     }
   }
 
-  ProcessingFile addFileToProcessing(
-    LocalFile file,
-    File deviceLocation,
-    ProcessingType type,
-    String iv) {
+  ProcessingFile addFileToProcessing(LocalFile file, File deviceLocation,
+      ProcessingType type, String ivBase64) {
     ProcessingFile processingFile;
     // if exists
     try {
@@ -458,6 +504,7 @@ abstract class _FilesState with Store {
       size: file.size,
       fileOnDevice: deviceLocation,
       processingType: type,
+      ivBase64: ivBase64,
     );
 
     processedFiles.add(processingFile);
@@ -467,13 +514,13 @@ abstract class _FilesState with Store {
 
   void deleteFromProcessing(String guid, {bool deleteLocally = false}) {
     try {
-      final fileToDelete = processedFiles.firstWhere((file) =>
-      file.guid == guid);
+      final fileToDelete =
+          processedFiles.firstWhere((file) => file.guid == guid);
       fileToDelete.endProcess();
       if (deleteLocally) fileToDelete.fileOnDevice.delete(recursive: true);
       processedFiles.removeWhere((file) => file.guid == guid);
       print("process removed: ${processedFiles.length}");
-    } catch(err) {}
+    } catch (err) {}
   }
 
   Future<void> clearCache({deleteCachedImages = false}) async {

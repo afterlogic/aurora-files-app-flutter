@@ -1,10 +1,17 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -139,47 +146,6 @@ class FilesLocalStorage {
     return null;
   }
 
-//  Future<File> saveFileForShare(List<int> fileBytes, LocalFile file) async {
-//    final Directory dir = await getTemporaryDirectory();
-//    File tempFileForShare = new File("${dir.path}/share/${file.name}");
-//    if (!await tempFileForShare.exists()) {
-//      await tempFileForShare.create(recursive: true);
-//      await tempFileForShare.writeAsBytes(fileBytes);
-//    }
-//    return tempFileForShare;
-//  }
-
-//  Future<File> cacheFile(List<int> fileBytes, LocalFile file) async {
-//    final Directory dir = await getTemporaryDirectory();
-//    File cachedFile = new File("${dir.path}/files/${file.guid}");
-//    if (!await cachedFile.exists()) {
-//      await cachedFile.create(recursive: true);
-//      await cachedFile.writeAsBytes(fileBytes);
-//    }
-//    return cachedFile;
-//  }
-
-  // if file not found returns null
-//  Future<File> getFileFromCache(LocalFile fileObj) async {
-//    File storedFile;
-//
-//    final tempDir = await getTemporaryDirectory();
-//    final tempFolder = Directory("${tempDir.path}/files");
-//    final folderExists = await tempFolder.exists();
-//    if (folderExists) {
-//      final itemsInTemp = await tempFolder.list().toList();
-//
-//      itemsInTemp.forEach((file) async {
-//        if (file.path.contains(fileObj.guid) && file is File) {
-//          if (file.lengthSync() == fileObj.size) {
-//            storedFile = file;
-//          }
-//        }
-//      });
-//    }
-//    return storedFile;
-//  }
-
   Future<void> deleteFilesFromCache(
       {List<LocalFile> files, bool deleteCachedImages = false}) async {
     final Directory dir = await getTemporaryDirectory();
@@ -203,6 +169,106 @@ class FilesLocalStorage {
         }
       }
     }
+  }
+
+  Future<File> downloadOffline(
+      LocalFile file, ProcessingFile processingFile) async {
+    final offlineFile = new File(file.localPath);
+    if (!await offlineFile.exists()) {
+      throw CustomException(
+          "The file does not exist, please remove it and set offline when you are online again.");
+    }
+    await processingFile.fileOnDevice.create(recursive: true);
+
+    if (file.initVector == null) {
+      await offlineFile.copy(processingFile.fileOnDevice.path);
+      return processingFile.fileOnDevice;
+    } else {
+      final decryptedFile = await _decryptFile(processingFile, offlineFile);
+      return decryptedFile;
+    }
+  }
+
+  Future<void> shareOffline(
+      LocalFile file, ProcessingFile processingFile) async {
+    File offlineFile = new File(file.localPath);
+    if (!await offlineFile.exists()) {
+      throw CustomException(
+          "The file does not exist, please remove it and set offline when you are online again.");
+    }
+    if (file.initVector != null) {
+      offlineFile = await _decryptFile(processingFile, offlineFile);
+    }
+
+    final newName =
+        "${offlineFile.parent.path}/${file.name}";
+    offlineFile = await offlineFile.rename(newName);
+
+    shareFile(offlineFile, file);
+  }
+
+  Future<File> _decryptFile(
+      ProcessingFile processingFile, File encryptedFile) async {
+    assert(processingFile.ivBase64 != null);
+
+    await processingFile.fileOnDevice.create(recursive: true);
+
+    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+
+    List<int> fileBytesBuffer = new List();
+    int progress = 0;
+
+    await for (final contents in encryptedFile.openRead()) {
+      List<int> contentsForCurrent;
+      // by default all the contents received go to contentsForNext which then will be added to the buffer
+      // if current buffer + contentsForNext exceed NativeFileCryptor.chunkMaxSize, contentsForNext will be rewritten
+      List<int> contentsForNext = contents;
+
+      // if this is the final part that forms a chunk
+      if (NativeFileCryptor.chunkMaxSize <=
+          fileBytesBuffer.length + contents.length) {
+        contentsForCurrent = contents.sublist(
+            0, NativeFileCryptor.chunkMaxSize - fileBytesBuffer.length);
+
+        contentsForNext = contents.sublist(
+            NativeFileCryptor.chunkMaxSize - fileBytesBuffer.length,
+            contents.length);
+
+        fileBytesBuffer.addAll(contentsForCurrent);
+
+        final decrypted = await NativeFileCryptor.decrypt(
+            fileBytes: fileBytesBuffer,
+            keyBase64: key.base64,
+            ivBase64: processingFile.ivBase64,
+            isLast: false);
+        await processingFile.fileOnDevice
+            .writeAsBytes(decrypted, mode: FileMode.append);
+        // update vector with the last 16 bytes of the chunk
+        final newVector = fileBytesBuffer.sublist(
+            fileBytesBuffer.length - 16, fileBytesBuffer.length);
+        processingFile.ivBase64 = IV(Uint8List.fromList(newVector)).base64;
+
+        // flush the buffer
+        fileBytesBuffer = new List();
+      }
+      fileBytesBuffer.addAll(contentsForNext);
+      // the callback to update the UI download progress
+      // update progress
+      progress += contents.length;
+      final num = 100 / processingFile.size * progress / 100;
+      processingFile.updateProgress(num);
+    }
+    if (fileBytesBuffer.isNotEmpty) {
+      final decrypted = await NativeFileCryptor.decrypt(
+          fileBytes: fileBytesBuffer,
+          keyBase64: key.base64,
+          ivBase64: processingFile.ivBase64,
+          isLast: true);
+      await processingFile.fileOnDevice
+          .writeAsBytes(decrypted, mode: FileMode.append);
+    }
+
+    return processingFile.fileOnDevice;
   }
 }
 //  Future<List> encryptFile(File file) async {

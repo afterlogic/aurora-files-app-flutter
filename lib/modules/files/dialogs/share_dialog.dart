@@ -29,7 +29,7 @@ class _ShareDialogState extends State<ShareDialog> {
   Future _shareFile() async {
     await widget.filesState.onShareFile(
       widget.file,
-      onSuccess: (_) => Navigator.pop(context),
+      onSuccess: () => Navigator.pop(context),
       onStart: (ProcessingFile process) {
         process.progressStream.listen((progress) {
           setState(() => _downloadProgress = progress);

@@ -1,4 +1,5 @@
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
@@ -33,6 +34,11 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               title: Text("Encryption"),
               leading: Icon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
+            ),
+            ListTile(
+              title: Text("About"),
+              leading: Icon(Icons.info_outline),
+              onTap: () => Navigator.pushNamed(context, AboutRoute.name),
             ),
           ],
         ),

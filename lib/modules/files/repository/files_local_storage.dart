@@ -192,14 +192,15 @@ class FilesLocalStorage {
       }
     } else {
       if (deleteCachedImages == true) {
-        final cacheDir = new Directory("${dir.path}/images");
+        final cacheDir = new Directory(dir.path);
         if (cacheDir.existsSync()) {
           await cacheDir.delete(recursive: true);
         }
-      }
-      final cacheDir = new Directory("${dir.path}/files_to_delete");
-      if (cacheDir.existsSync()) {
-        await cacheDir.delete(recursive: true);
+      } else {
+        final cacheDir = new Directory("${dir.path}/files_to_delete");
+        if (cacheDir.existsSync()) {
+          await cacheDir.delete(recursive: true);
+        }
       }
     }
   }

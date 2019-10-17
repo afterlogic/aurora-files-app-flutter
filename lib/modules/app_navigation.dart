@@ -6,6 +6,9 @@ import 'package:aurorafiles/modules/files/files_android.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_android.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
+import 'package:aurorafiles/modules/settings/screens/about/about_android.dart';
+import 'package:aurorafiles/modules/settings/screens/about/about_android.dart';
+import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_android.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_android.dart';
@@ -131,6 +134,23 @@ class AppNavigation {
                 name: settings.name,
               ),
               page: CommonSettingsAndroid(),
+              duration: 150);
+        }
+        break;
+
+      case AboutRoute.name:
+        if (Platform.isIOS) {
+          return CupertinoPageRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              builder: (context) => AboutAndroid());
+        } else {
+          return FadeRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              page: AboutAndroid(),
               duration: 150);
         }
         break;

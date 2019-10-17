@@ -49,12 +49,13 @@ dependencies:
 #  fluttertoast: 3.0.5
 
   # misc
-#  url_launcher: ^5.1.2
+  url_launcher: ^5.2.1
   filesize: ^1.0.4
   intl: ^0.15.8
   permission_handler: ^3.2.2
   connectivity: ^0.4.4
   uuid: ^2.0.2
+  package_info: ^0.4.0+7
 
 dev_dependencies:
   flutter_test:

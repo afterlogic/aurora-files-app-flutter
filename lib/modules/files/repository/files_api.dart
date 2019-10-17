@@ -7,6 +7,7 @@ import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -46,7 +47,7 @@ class FilesApi {
     }
   }
 
-  Future<List<LocalFile>> getFiles(
+  Future<GetFilesResponse> getFiles(
       String type, String path, String pattern) async {
     final parameters = json.encode({
       "Type": type,
@@ -62,9 +63,11 @@ class FilesApi {
 
     if (res['Result'] != null && res['Result']['Items'] is List) {
       final List<LocalFile> unsortedList = [];
+      final quota = Quota.getQuotaFromResponse(res['Result']['Quota']);
       res['Result']['Items']
           .forEach((file) => unsortedList.add(getFileObjFromResponse(file)));
-      return _sortFiles(unsortedList);
+
+      return new GetFilesResponse(_sortFiles(unsortedList), quota);
     } else {
       throw CustomException(getErrMsg(res));
     }
@@ -496,4 +499,11 @@ class FilesApi {
       throw CustomException(getErrMsg(res));
     }
   }
+}
+
+class GetFilesResponse {
+  final List<LocalFile> items;
+  final Quota quota;
+
+  GetFilesResponse(this.items, this.quota);
 }

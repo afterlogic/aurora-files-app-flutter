@@ -5,6 +5,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
@@ -43,6 +44,9 @@ abstract class _FilesState with Store {
 
   @observable
   List<Storage> currentStorages = new List();
+
+  @observable
+  Quota quota;
 
   @observable
   Storage selectedStorage = dummyStorage;

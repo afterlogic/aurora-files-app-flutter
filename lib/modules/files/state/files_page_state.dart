@@ -81,11 +81,14 @@ abstract class _FilesPageState with Store {
   ) async {
     try {
       filesLoading = showLoading;
-      List<LocalFile> filesFromServer = await _filesApi.getFiles(
+      final response = await _filesApi.getFiles(
         AppStore.filesState.selectedStorage.type,
         path != null ? path : pagePath,
         searchPattern,
       );
+      List<LocalFile> filesFromServer = response.items;
+      AppStore.filesState.quota = response.quota;
+
       filesFromServer = _addFakeUploadFiles(filesFromServer);
       filesFromServer = _sortFiles(filesFromServer);
       final offlineFiles = await _filesDao.getFilesAtPath(pagePath);
@@ -127,6 +130,7 @@ abstract class _FilesPageState with Store {
     String searchPattern,
     Function(String) onError,
   ) async {
+    AppStore.filesState.quota = null;
     try {
       filesLoading = showLoading;
       if (searchPattern != null && searchPattern.isNotEmpty) {

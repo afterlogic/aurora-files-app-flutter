@@ -26,6 +26,23 @@ mixin _$FilesState on _FilesState, Store {
     }, _$currentStoragesAtom, name: '${_$currentStoragesAtom.name}_set');
   }
 
+  final _$quotaAtom = Atom(name: '_FilesState.quota');
+
+  @override
+  Quota get quota {
+    _$quotaAtom.context.enforceReadPolicy(_$quotaAtom);
+    _$quotaAtom.reportObserved();
+    return super.quota;
+  }
+
+  @override
+  set quota(Quota value) {
+    _$quotaAtom.context.conditionallyRunInAction(() {
+      super.quota = value;
+      _$quotaAtom.reportChanged();
+    }, _$quotaAtom, name: '${_$quotaAtom.name}_set');
+  }
+
   final _$selectedStorageAtom = Atom(name: '_FilesState.selectedStorage');
 
   @override

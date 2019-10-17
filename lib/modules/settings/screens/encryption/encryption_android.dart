@@ -26,11 +26,17 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
     if (Platform.isIOS) {
       await showCupertinoDialog(
           context: context,
-          builder: (_) => ExportKeyDialog(settingsState: _settingsState, scaffoldState: _scaffoldKey.currentState,));
+          builder: (_) => ExportKeyDialog(
+                settingsState: _settingsState,
+                scaffoldState: _scaffoldKey.currentState,
+              ));
     } else {
       exportedDir = await showDialog(
           context: context,
-          builder: (_) => ExportKeyDialog(settingsState: _settingsState, scaffoldState: _scaffoldKey.currentState,));
+          builder: (_) => ExportKeyDialog(
+                settingsState: _settingsState,
+                scaffoldState: _scaffoldKey.currentState,
+              ));
     }
     if (exportedDir is String) {
       showSnack(
@@ -85,10 +91,15 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           child: AppButton(
             text: "Import key from file",
             onPressed: () => _settingsState.onImportKeyFromFile(
+                onSuccess: () => showSnack(
+                    context: context,
+                    scaffoldState: _scaffoldKey.currentState,
+                    isError: false,
+                    msg: "The encryption key was successfully imported."),
                 onError: (err) => showSnack(
                       context: context,
                       scaffoldState: _scaffoldKey.currentState,
-                      msg: "Could not find a key in this file",
+                      msg: "Could not find a key in this file.",
                     )),
           ),
         ),
@@ -153,7 +164,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
                 showSnack(
                   context: context,
                   scaffoldState: _scaffoldKey.currentState,
-                  msg: "The encryption key was successfully deleted",
+                  msg: "The encryption key was successfully deleted.",
                   isError: false,
                 );
               } else if (result == DeleteKeyConfirmationDialogResult.export) {

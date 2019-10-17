@@ -94,7 +94,7 @@ abstract class _SettingsState with Store {
     }
   }
 
-  Future<void> onImportKeyFromFile({Function(String) onError}) async {
+  Future<void> onImportKeyFromFile({Function() onSuccess, Function(String) onError}) async {
     try {
       final Map<String, String> encryptionKeyFromFile =
           await _settingsLocal.importKeyFromFile();
@@ -108,6 +108,7 @@ abstract class _SettingsState with Store {
 
       await _settingsLocal.addKey(keyName, keyValue);
       getUserEncryptionKeys();
+      onSuccess();
     } catch (err) {
       print("onImportKeyFromFile error: $err");
       onError(err.toString());

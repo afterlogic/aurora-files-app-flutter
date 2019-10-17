@@ -78,7 +78,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                   child: Text(
                     "Licences",
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: Theme.of(context).accentColor,
                       decoration: TextDecoration.underline,
                       fontSize: 18.0,
                     ),
@@ -92,7 +92,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                   child: Text(
                     "Privacy policy",
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: Theme.of(context).accentColor,
                       decoration: TextDecoration.underline,
                       fontSize: 18.0,
                     ),

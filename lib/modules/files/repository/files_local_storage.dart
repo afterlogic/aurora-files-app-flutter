@@ -200,10 +200,6 @@ class FilesLocalStorage {
       offlineFile = await _decryptFile(processingFile, offlineFile);
     }
 
-    final newName =
-        "${offlineFile.parent.path}/${file.name}";
-    offlineFile = await offlineFile.rename(newName);
-
     shareFile(offlineFile, file);
   }
 

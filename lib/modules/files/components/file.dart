@@ -49,7 +49,6 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _subscribeToProgress(ProcessingFile processingFile) {
-    print("VO: ${processingFile.name}");
     _processingFile = processingFile;
     processingFile.progressStream.listen(
       _updateProcess,

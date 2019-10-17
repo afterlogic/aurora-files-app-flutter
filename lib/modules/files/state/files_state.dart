@@ -384,10 +384,11 @@ abstract class _FilesState with Store {
     if (_isFileIsBeingProcessed(file.guid)) {
       onError("This file is occupied with another operation.");
     }
+    await clearCache();
 
     if (isOfflineMode) {
       try {
-        final tempFile = await _filesLocal.createTempFile(file);
+        final tempFile = await _filesLocal.createTempFile(file, useName: true);
         final processingFile = addFileToProcessing(
           file,
           tempFile,

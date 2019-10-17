@@ -228,6 +228,7 @@ class FilesApi {
   Future<StreamSubscription> getFileContentsFromServer(String url,
       LocalFile file, ProcessingFile processingFile, bool decryptFile,
       {Function(String) onError,
+      Function(double) updateViewerProgress,
       @required Function(File) onSuccess,
       bool isRedirect = false}) async {
     // getFileContentsFromServer function assumes that fileToWriteInto exists
@@ -260,6 +261,7 @@ class FilesApi {
             file,
             processingFile,
             shouldDecrypt,
+            updateViewerProgress: updateViewerProgress,
             onSuccess: onSuccess,
             onError: onError,
             isRedirect: true);
@@ -312,6 +314,7 @@ class FilesApi {
           progress += contents.length;
           final num = 100 / file.size * progress / 100;
           processingFile.updateProgress(num);
+          if (updateViewerProgress != null) updateViewerProgress(num);
         },
         onDone: () async {
           // when finished send all we have, if the file is decrypted, the rest will be filled with padding
@@ -329,7 +332,7 @@ class FilesApi {
         cancelOnError: true,
       );
       return downloadSubscription;
-    } catch (err, stack) {
+    } catch (err) {
       throw CustomException(err.toString());
     }
   }

@@ -54,14 +54,17 @@ abstract class _FileViewerState with Store {
 
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
-            file.viewUrl, file, processingFile, false, onSuccess: (_) {
-          fileWithContents = fileToView;
-          downloadProgress = null;
-          processingFile = null;
-          if (onDownloadEnd != null) onDownloadEnd(fileToView);
-        }, onError: (err) {
-          processingFile = null;
-        });
+            file.viewUrl, file, processingFile, false,
+            onSuccess: (_) {
+              fileWithContents = fileToView;
+              downloadProgress = null;
+              processingFile = null;
+              if (onDownloadEnd != null) onDownloadEnd(fileToView);
+            },
+            updateViewerProgress: (progress) => downloadProgress = progress,
+            onError: (err) {
+              processingFile = null;
+            });
         processingFile.subscription = sub;
       }
     }

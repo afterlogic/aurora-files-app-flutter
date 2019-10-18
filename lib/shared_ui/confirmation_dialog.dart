@@ -31,7 +31,7 @@ class ConfirmationDialog extends StatelessWidget {
                 actionText: actionText,
               ));
     } else {
-      showDialog(
+      return showDialog(
           context: context,
           builder: (_) =>
               ConfirmationDialog(

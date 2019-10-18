@@ -1,5 +1,3 @@
-import 'package:aurorafiles/database/app_database.dart';
-
 enum ValidationTypes {
   empty,
   email,

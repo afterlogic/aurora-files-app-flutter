@@ -21,13 +21,25 @@ class ConfirmationDialog extends StatelessWidget {
     String description,
     String actionText,
   ) {
-    return showDialog(
-        context: context,
-        builder: (_) => ConfirmationDialog(
-              title: title,
-              description: description,
-              actionText: actionText,
-            ));
+    if (Platform.isIOS) {
+      return showCupertinoDialog(
+          context: context,
+          builder: (_) =>
+              ConfirmationDialog(
+                title: title,
+                description: description,
+                actionText: actionText,
+              ));
+    } else {
+      showDialog(
+          context: context,
+          builder: (_) =>
+              ConfirmationDialog(
+                title: title,
+                description: description,
+                actionText: actionText,
+              ));
+    }
   }
 
   @override

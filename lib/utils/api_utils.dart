@@ -181,7 +181,7 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
     id: rawFile["Id"],
     guid: rawFile["ExtendedProps"] is Map
         ? rawFile["ExtendedProps"]["GUID"]
-        : null,
+        : Uuid().v4(),
     type: rawFile["Type"],
     localPath: null,
     path: rawFile["Path"],

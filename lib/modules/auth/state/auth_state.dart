@@ -65,7 +65,8 @@ abstract class _AuthState with Store {
     userId = id;
   }
 
-  Future<void> onLogin(
+  // returns true the host field needs to be revealed because auto discover was unsuccessful
+  Future<bool> onLogin(
       {bool isFormValid, Function onSuccess, Function onError}) async {
     if (isFormValid) {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
@@ -75,8 +76,21 @@ abstract class _AuthState with Store {
           ? hostCtrl.text
           : "https://${hostCtrl.text}";
 
+      isLoggingIn = true;
+      // auto discover domain
+      if (hostCtrl.text.isEmpty) {
+        final splitEmail = email.split("@");
+        final domain = splitEmail.last.trim();
+        final autoDiscoveredHost = await _authApi.autoDiscoverHostname(domain);
+        if (autoDiscoveredHost == null || autoDiscoveredHost.isEmpty) {
+          isLoggingIn = false;
+          return true;
+        } else {
+          hostName = autoDiscoveredHost;
+        }
+      }
+
       try {
-        isLoggingIn = true;
         final Map<String, dynamic> res = await _authApi.login(email, password);
         final String token = res['Result']['AuthToken'];
         final int id = res['AuthenticatedUserId'];
@@ -92,6 +106,8 @@ abstract class _AuthState with Store {
         }
       }
     }
+
+    return false;
   }
 
   void onLogout() {

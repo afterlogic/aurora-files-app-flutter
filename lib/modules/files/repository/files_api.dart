@@ -67,7 +67,7 @@ class FilesApi {
       res['Result']['Items']
           .forEach((file) => unsortedList.add(getFileObjFromResponse(file)));
 
-      return new GetFilesResponse(_sortFiles(unsortedList), quota);
+      return new GetFilesResponse(_sortFiles(unsortedList), quota?.limit == 0 ? null : quota);
     } else {
       throw CustomException(getErrMsg(res));
     }

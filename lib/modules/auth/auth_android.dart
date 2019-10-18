@@ -24,6 +24,7 @@ class AuthAndroid extends StatefulWidget {
 
 class _AuthAndroidState extends State<AuthAndroid> {
   AuthState _authState = AppStore.authState;
+  bool _showHostField = false;
   bool _obscureText = true;
 
   @override
@@ -34,12 +35,11 @@ class _AuthAndroidState extends State<AuthAndroid> {
       DeviceOrientation.portraitDown,
     ]);
     _authState.isLoggingIn = false;
-    _authState.hostCtrl.text = _authState.hostName;
     _authState.emailCtrl.text = _authState.userEmail;
     _authState.passwordCtrl.text = "";
-    _authState.hostCtrl.text = "https://mail.privatemail.com";
-    _authState.emailCtrl.text = "test@privatemail.tv";
-    _authState.passwordCtrl.text = "am9mW583yH?o";
+//    _authState.hostCtrl.text = "https://mail.privatemail.com";
+//    _authState.emailCtrl.text = "test@privatemail.tv";
+//    _authState.passwordCtrl.text = "am9mW583yH?o";
   }
 
   @override
@@ -53,10 +53,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
     ]);
   }
 
-  void _login(BuildContext context) {
+  Future _login(BuildContext context) async {
     String errMsg = "";
     if (Platform.isIOS) {
-      if (_authState.hostCtrl.text.isEmpty) {
+      if (_showHostField && _authState.hostCtrl.text.isEmpty) {
         errMsg = "Please enter hostname";
       } else if (_authState.emailCtrl.text.isEmpty) {
         errMsg = "Please enter email";
@@ -65,7 +65,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
       }
     }
     if (errMsg.isEmpty) {
-      _authState.onLogin(
+      final showHost = await _authState.onLogin(
         isFormValid: AuthAndroid._authFormKey.currentState.validate(),
         onSuccess: () async {
           await AppStore.settingsState.getUserEncryptionKeys();
@@ -78,6 +78,16 @@ class _AuthAndroidState extends State<AuthAndroid> {
           msg: err,
         ),
       );
+      if (showHost) {
+        _authState.hostCtrl.text = _authState.hostName;
+        setState(() => _showHostField = true);
+        showSnack(
+          context: context,
+          scaffoldState: Scaffold.of(context),
+          duration: Duration(seconds: 6),
+          msg: "Could not detect domain from this email, please specify your server url manually.",
+        );
+      }
     } else {
       showSnack(
         context: context,
@@ -90,22 +100,23 @@ class _AuthAndroidState extends State<AuthAndroid> {
   List<Widget> _buildTextFields() {
     if (Platform.isIOS) {
       return [
-        CupertinoTextField(
-          cursorColor: Theme.of(context).accentColor,
-          controller: _authState.hostCtrl,
-          keyboardType: TextInputType.url,
-          decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.white38))),
-          placeholder: "Host",
-          autocorrect: false,
-          prefix: Opacity(
-            opacity: 0.6,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-              child: Icon(MdiIcons.web),
+        if (_showHostField)
+          CupertinoTextField(
+            cursorColor: Theme.of(context).accentColor,
+            controller: _authState.hostCtrl,
+            keyboardType: TextInputType.url,
+            decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.white38))),
+            placeholder: "Host",
+            autocorrect: false,
+            prefix: Opacity(
+              opacity: 0.6,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
+                child: Icon(MdiIcons.web),
+              ),
             ),
           ),
-        ),
         SizedBox(height: 20),
         CupertinoTextField(
           cursorColor: Theme.of(context).accentColor,
@@ -152,16 +163,19 @@ class _AuthAndroidState extends State<AuthAndroid> {
       ];
     } else {
       return [
-        TextFormField(
-          cursorColor: Theme.of(context).accentColor,
-          controller: _authState.hostCtrl,
-          keyboardType: TextInputType.url,
-          validator: (value) => validateInput(value, [ValidationTypes.empty]),
-          decoration: InputDecoration(
-            alignLabelWithHint: true,
-            labelText: "Host",
+        if (_showHostField)
+          TextFormField(
+            cursorColor: Theme.of(context).accentColor,
+            controller: _authState.hostCtrl,
+            keyboardType: TextInputType.url,
+            validator: (value) => _showHostField
+                ? validateInput(value, [ValidationTypes.empty])
+                : "",
+            decoration: InputDecoration(
+              alignLabelWithHint: true,
+              labelText: "Host",
+            ),
           ),
-        ),
         SizedBox(height: 10),
         TextFormField(
           cursorColor: Theme.of(context).accentColor,

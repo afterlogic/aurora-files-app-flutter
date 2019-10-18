@@ -26,7 +26,7 @@ class StorageInfoDialog extends StatelessWidget {
                       child: Text(
                           AppStore.filesState.isOfflineMode
                               ? "This information is not available when you're offline."
-                              : "This information is not available yet.",
+                              : "This information is not available at the moment.",
                           style: theme.textTheme.subhead)),
                 ],
               ),

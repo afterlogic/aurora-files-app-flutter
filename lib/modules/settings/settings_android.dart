@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
+import 'dialogs/storage_info_dialog.dart';
+
 class SettingsAndroid extends StatefulWidget {
   @override
   _SettingsAndroidState createState() => _SettingsAndroidState();
@@ -34,6 +36,14 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               title: Text("Encryption"),
               leading: Icon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
+            ),
+            ListTile(
+              title: Text("Storage info"),
+              leading: Icon(Icons.storage),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      fullscreenDialog: true, builder: (_) => StorageInfoDialog())),
             ),
             ListTile(
               title: Text("About"),

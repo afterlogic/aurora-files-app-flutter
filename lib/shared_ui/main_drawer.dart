@@ -1,57 +1,20 @@
-import 'dart:io';
-
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
+import 'package:aurorafiles/modules/settings/dialogs/storage_info_dialog.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MainDrawer extends StatelessWidget {
   void _showAvailableSpaceInfo(BuildContext context, Quota quota) {
-    showDialog(
-        context: context,
-        builder: (_) {
-          if (Platform.isIOS) {
-            return CupertinoAlertDialog(
-              title: Text("Available space"),
-              content: Text(
-                  "You are using ${(quota.progress * 100).round()}% of your ${quota.limitFormatted}"),
-              actions: <Widget>[
-                CupertinoButton(
-                    child: Text("Upgrade"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      launch(
-                          "https://privatemail.com/members/supporttickets.php");
-                    }),
-                CupertinoButton(
-                    child: Text("Ok"), onPressed: Navigator.of(context).pop),
-              ],
-            );
-          } else {
-            return AlertDialog(
-              title: Text("Available space"),
-              content: Text(
-                  "You are using ${(quota.progress * 100).round()}% of your ${quota.limitFormatted}"),
-              actions: <Widget>[
-                FlatButton(
-                    child: Text("OK"), onPressed: Navigator.of(context).pop),
-                FlatButton(
-                    child: Text("UPGRADE"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      launch(
-                          "https://privatemail.com/members/supporttickets.php");
-                    }),
-              ],
-            );
-          }
-        });
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            fullscreenDialog: true, builder: (_) => StorageInfoDialog()));
   }
 
   @override
@@ -107,6 +70,7 @@ class MainDrawer extends StatelessWidget {
                 return GestureDetector(
                   onTap: () => _showAvailableSpaceInfo(context, quota),
                   child: Tooltip(
+                    showDuration: Duration(seconds: 2),
                     message:
                         "You are using ${(quota.progress * 100).round()}% of your ${quota.limitFormatted}",
                     child: LinearProgressIndicator(value: quota.progress),

@@ -1,1 +1,1 @@
-const AUTO_DISCOVER_URL = "https://test.afterlogic.com/autodiscover.php";
+const AUTO_DISCOVER_URL = "https://torguard.tv/pm/autodiscover.php";

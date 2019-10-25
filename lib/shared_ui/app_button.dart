@@ -65,7 +65,7 @@ class AppButton extends StatelessWidget {
                     ? child
                     : Text(text.toUpperCase()),
           ),
-          onPressed: isLoading != null && isLoading ? null : onPressed);
+          onPressed: isLoading == true ? null : onPressed);
     }
   }
 }

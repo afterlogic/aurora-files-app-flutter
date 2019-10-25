@@ -219,7 +219,7 @@ class _FileWidgetState extends State<FileWidget> {
     final hostName = Provider.of<AuthState>(context).hostName;
 
     if (widget.file.initVector != null) {
-      return Icon(Icons.lock_outline,
+      return Icon(MdiIcons.fileLockOutline,
           size: thumbnailSize, color: Theme.of(context).disabledColor);
     } else if (widget.file.thumbnailUrl != null ||
         filesState.isOfflineMode &&

@@ -76,7 +76,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                 SizedBox(height: 42.0),
                 GestureDetector(
                   child: Text(
-                    "Licences",
+                    "Terms of Service",
                     style: TextStyle(
                       color: Theme.of(context).accentColor,
                       decoration: TextDecoration.underline,
@@ -84,8 +84,8 @@ class _AboutAndroidState extends State<AboutAndroid> {
                     ),
                   ),
                   onTap: () => launch(Platform.isIOS
-                      ? "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
-                      : ""),
+                      ? "https://privatemail.com/terms.php"
+                      : "https://privatemail.com/terms.php"),
                 ),
                 SizedBox(height: 22.0),
                 GestureDetector(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
@@ -72,6 +73,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           Navigator.pushReplacementNamed(context, FilesRoute.name,
               arguments: FilesScreenArguments(path: ""));
         },
+        onShowUpgrade: () => Navigator.pushNamed(context, UpgradeRoute.name),
         onError: (String err) => showSnack(
           context: context,
           scaffoldState: Scaffold.of(context),
@@ -232,10 +234,13 @@ class _AuthAndroidState extends State<AuthAndroid> {
                     key: AuthAndroid._authFormKey,
                     child: Column(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                          child: Image.asset(
-                              "lib/assets/images/private-mail-logo.png"),
+                        Hero(
+                          tag: "logo",
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                            child: Image.asset(
+                                "lib/assets/images/private-mail-logo.png"),
+                          ),
                         ),
                         SizedBox(height: 70.0),
                         ..._buildTextFields(),

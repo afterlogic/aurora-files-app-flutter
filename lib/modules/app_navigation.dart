@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:aurorafiles/modules/auth/auth_android.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
+import 'package:aurorafiles/modules/auth/screens/upgrade_android.dart';
 import 'package:aurorafiles/modules/files/files_android.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_android.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
-import 'package:aurorafiles/modules/settings/screens/about/about_android.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_android.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_android.dart';
@@ -19,6 +19,8 @@ import 'package:aurorafiles/shared_ui/fade_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import 'auth/screens/upgrade_route.dart';
 
 class AppNavigation {
   static String currentRoute = "/";
@@ -69,7 +71,7 @@ class AppNavigation {
               ),
               builder: (context) => FileViewerAndroid(
                     immutableFile: args.file,
-                offlineFile: args.offlineFile,
+                    offlineFile: args.offlineFile,
                     filesState: args.filesState,
                     filesPageState: args.filesPageState,
                   ));
@@ -85,6 +87,14 @@ class AppNavigation {
                 filesPageState: args.filesPageState,
               ));
         }
+        break;
+
+      case UpgradeRoute.name:
+        return FadeRoute(
+            settings: RouteSettings(
+              name: settings.name,
+            ),
+            page: UpgradeAndroid());
         break;
 
       case SettingsRoute.name:

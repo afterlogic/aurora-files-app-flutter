@@ -32,6 +32,9 @@ class AuthApi {
     final resBody = json.decode(res.body);
     if (resBody['Result'] != null && resBody['Result']['AuthToken'] is String) {
       return resBody;
+    } if (resBody["ErrorCode"] == 108) {
+      // the app is unavailable for this account, upgrade
+      throw 108;
     } else {
       throw CustomException(getErrMsg(resBody));
     }

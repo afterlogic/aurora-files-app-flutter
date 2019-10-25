@@ -67,7 +67,10 @@ abstract class _AuthState with Store {
 
   // returns true the host field needs to be revealed because auto discover was unsuccessful
   Future<bool> onLogin(
-      {bool isFormValid, Function onSuccess, Function onError}) async {
+      {bool isFormValid,
+      Function() onSuccess,
+      Function() onShowUpgrade,
+      Function(String) onError}) async {
     if (isFormValid) {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
       String email = emailCtrl.text;
@@ -101,6 +104,8 @@ abstract class _AuthState with Store {
         isLoggingIn = false;
         if (err is SocketException && err.osError.errorCode == 7) {
           onError("\"$hostName\" is not a valid hostname");
+        } else if (err == 108) {
+          onShowUpgrade();
         } else {
           onError(err.toString());
         }

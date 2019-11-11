@@ -14,6 +14,7 @@ class AppMaterialTheme {
     selectedRowColor: Color(0x11660041),
     highlightColor: Platform.isIOS ? Colors.transparent : null,
     splashColor: Platform.isIOS ? Colors.transparent : null,
+    splashFactory: InkRipple.splashFactory,
     inputDecorationTheme: _inputTheme,
     buttonTheme: _buttonTheme,
   );
@@ -29,6 +30,7 @@ class AppMaterialTheme {
     selectedRowColor: Color(0x11660041),
     highlightColor: Platform.isIOS ? Colors.transparent : null,
     splashColor: Platform.isIOS ? Colors.transparent : null,
+    splashFactory: InkRipple.splashFactory,
     inputDecorationTheme: _inputTheme,
     buttonTheme: _buttonTheme,
   );

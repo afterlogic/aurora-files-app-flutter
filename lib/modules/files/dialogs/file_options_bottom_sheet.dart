@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -16,6 +17,7 @@ import 'share_dialog.dart';
 enum FileOptionsBottomSheetResult {
   toggleOffline,
   download,
+  cantShare,
 }
 
 class FileOptionsBottomSheet extends StatefulWidget {
@@ -37,20 +39,27 @@ class FileOptionsBottomSheet extends StatefulWidget {
 class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
   void _shareFile() {
-    Navigator.pop(context);
-    Platform.isIOS
-        ? showCupertinoDialog(
-            context: context,
-            builder: (_) => ShareDialog(
-                  filesState: widget.filesState,
-                  file: widget.file,
-                ))
-        : showDialog(
-            context: context,
-            builder: (_) => ShareDialog(
-                  filesState: widget.filesState,
-                  file: widget.file,
-                ));
+    final hasDecryptKey = AppStore.settingsState.currentKey != null;
+    final hasVector = widget.file.initVector != null;
+    final canDownload = !(hasVector && !hasDecryptKey);
+    if (canDownload) {
+      Navigator.pop(context);
+      Platform.isIOS
+          ? showCupertinoDialog(
+              context: context,
+              builder: (_) => ShareDialog(
+                    filesState: widget.filesState,
+                    file: widget.file,
+                  ))
+          : showDialog(
+              context: context,
+              builder: (_) => ShareDialog(
+                    filesState: widget.filesState,
+                    file: widget.file,
+                  ));
+    } else {
+      onItemSelected(FileOptionsBottomSheetResult.cantShare);
+    }
   }
 
   void onItemSelected(FileOptionsBottomSheetResult result) {

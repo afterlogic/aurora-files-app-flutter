@@ -94,7 +94,19 @@ class _FileWidgetState extends State<FileWidget> {
       case FileOptionsBottomSheetResult.download:
         _downloadFile();
         break;
+      case FileOptionsBottomSheetResult.cantShare:
+        _cantShareMessage();
+        break;
     }
+  }
+
+  void _cantShareMessage() {
+    final filesPageState = Provider.of<FilesPageState>(context);
+    showSnack(
+      context: context,
+      scaffoldState: filesPageState.scaffoldKey.currentState,
+      msg: "You need an encryption key to share files.",
+    );
   }
 
   void _openEncryptedFile(BuildContext context) {

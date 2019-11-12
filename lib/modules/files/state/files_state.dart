@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
@@ -388,6 +389,7 @@ abstract class _FilesState with Store {
     if (_isFileIsBeingProcessed(file.guid)) {
       onError("This file is occupied with another operation.");
     }
+    if (file.initVector != null && AppStore.settingsState.currentKey == null) {}
     await clearCache();
 
     if (isOfflineMode) {
@@ -402,7 +404,9 @@ abstract class _FilesState with Store {
               : null,
         );
         onStart(processingFile);
-        await _filesLocal.shareOffline(file, processingFile);
+        await _filesLocal
+            .shareOffline(file, processingFile)
+            .catchError(onError);
         deleteFromProcessing(file.guid);
         onSuccess();
       } catch (err) {
@@ -417,7 +421,6 @@ abstract class _FilesState with Store {
     if (storedFile == null) {
       final File tempFileForShare =
           await _filesLocal.createTempFile(file, useName: true);
-
       final processingFile = addFileToProcessing(
           file, tempFileForShare, ProcessingType.share, file.initVector);
       if (await tempFileForShare.length() <= 0) {
@@ -426,22 +429,24 @@ abstract class _FilesState with Store {
         final sub = await _filesApi.getFileContentsFromServer(
             file.downloadUrl, file, processingFile, true,
             onSuccess: (File savedFile) {
-              fileWithContents = savedFile;
-              deleteFromProcessing(file.guid);
-              onSuccess();
-              _filesLocal.shareFile(fileWithContents, file);
-            },
-            onError: (err) => deleteFromProcessing(file.guid));
+          fileWithContents = savedFile;
+          deleteFromProcessing(file.guid);
+          onSuccess();
+          _filesLocal.shareFile(fileWithContents, file).catchError(onError);
+        }, onError: (err) {
+          deleteFromProcessing(file.guid);
+          onError(err);
+        });
         processingFile.subscription = sub;
       } else {
         fileWithContents = tempFileForShare;
         onSuccess();
-        _filesLocal.shareFile(fileWithContents, file);
+        _filesLocal.shareFile(fileWithContents, file).catchError(onError);
       }
     } else {
       fileWithContents = storedFile;
       onSuccess();
-      _filesLocal.shareFile(fileWithContents, file);
+      _filesLocal.shareFile(fileWithContents, file).catchError(onError);
     }
   }
 

@@ -100,6 +100,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                 children: <Widget>[
                   CircularProgressIndicator(),
                   SizedBox(width: 20.0),
+                  //todo overflowed on the right
                   Text("Adding ${_folderNameCtrl.text} folder")
                 ],
               )

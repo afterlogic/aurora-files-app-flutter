@@ -13,6 +13,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
+import 'package:aurorafiles/utils/stream_util.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/widgets.dart';
@@ -67,7 +68,8 @@ class FilesApi {
       res['Result']['Items']
           .forEach((file) => unsortedList.add(getFileObjFromResponse(file)));
 
-      return new GetFilesResponse(_sortFiles(unsortedList), quota?.limit == 0 ? null : quota);
+      return new GetFilesResponse(
+          _sortFiles(unsortedList), quota?.limit == 0 ? null : quota);
     } else {
       throw CustomException(getErrMsg(res));
     }
@@ -282,7 +284,8 @@ class FilesApi {
 
       StreamSubscription downloadSubscription;
       // average size of contents ~3000 bytes
-      downloadSubscription = response.listen(
+      downloadSubscription = listener<List<int>>(
+        response,
         (List<int> contents) async {
           // the chunk must always be equal to NativeFileCryptor.chunkMaxSize
           // so we have to split the last part for the chunk to make it be equal to NativeFileCryptor.chunkMaxSize

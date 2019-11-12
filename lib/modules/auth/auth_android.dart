@@ -10,6 +10,7 @@ import 'package:aurorafiles/themimg/material_theme.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -38,9 +39,11 @@ class _AuthAndroidState extends State<AuthAndroid> {
     _authState.isLoggingIn = false;
     _authState.emailCtrl.text = _authState.userEmail;
     _authState.passwordCtrl.text = "";
-//    _authState.hostCtrl.text = "https://mail.privatemail.com";
-//    _authState.emailCtrl.text = "test@privatemail.tv";
-//    _authState.passwordCtrl.text = "am9mW583yH?o";
+    if (kDebugMode) {
+      _authState.hostCtrl.text = "https://mail.privatemail.com";
+      _authState.emailCtrl.text = "test@privatemail.tv";
+      _authState.passwordCtrl.text = "am9mW583yH?o";
+    }
   }
 
   @override
@@ -87,7 +90,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
           context: context,
           scaffoldState: Scaffold.of(context),
           duration: Duration(seconds: 6),
-          msg: "Could not detect domain from this email, please specify your server url manually.",
+          msg:
+              "Could not detect domain from this email, please specify your server url manually.",
         );
       }
     } else {

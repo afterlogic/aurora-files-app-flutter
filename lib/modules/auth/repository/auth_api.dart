@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aurorafiles/config.dart';
+import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -32,9 +33,9 @@ class AuthApi {
     final resBody = json.decode(res.body);
     if (resBody['Result'] != null && resBody['Result']['AuthToken'] is String) {
       return resBody;
-    } if (resBody["ErrorCode"] == 108) {
+    } if (resBody["ErrorCode"] == accessDenied) {
       // the app is unavailable for this account, upgrade
-      throw 108;
+      throw accessDenied;
     } else {
       throw CustomException(getErrMsg(resBody));
     }

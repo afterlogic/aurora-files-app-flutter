@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -68,107 +69,107 @@ String getErrMsg(dynamic err) {
 
 String _getErrMsgFromCode(int code) {
   switch (code) {
-    case 101:
+    case invalidToken:
       return "Invalid token";
-    case 102:
+    case invalidEmailPassword:
       return "Invalid email/password";
-    case 103:
+    case invalidInputParameter:
       return "Invalid input parameter";
-    case 104:
+    case dataBaseError:
       return "DataBase error";
-    case 105:
+    case licenseProblem:
       return "License problem";
-    case 106:
+    case demoAccount:
       return "Demo account";
-    case 107:
+    case captchaError:
       return "Captcha error";
-    case 108:
+    case accessDenied:
       return "Access denied";
-    case 109:
+    case unknownError:
       return "Unknown email";
-    case 110:
+    case userisNotAllowed:
       return "User is not allowed";
-    case 111:
+    case suchUserAlreadyExists:
       return "Such user already exists";
-    case 112:
+    case systemIsNotConfigured:
       return "System is not configured";
-    case 113:
+    case moduleNotFound:
       return "Module not found";
-    case 114:
+    case methodNotFound:
       return "Method not found";
-    case 115:
+    case licenseLimit:
       return "License limit";
-    case 501:
+    case cannotSaveSettings:
       return "Cannot save settings";
-    case 502:
+    case cannotChangePassword:
       return "Cannot change password";
-    case 503:
+    case accountOldPasswordIsNotCorrect:
       return "Account's old password is not correct";
-    case 601:
+    case cannotCreateContact:
       return "Cannot create contact";
-    case 602:
+    case cannotCreateGroup:
       return "Cannot create group";
-    case 603:
+    case cannotUpdateContact:
       return "Cannot update contact";
-    case 604:
+    case cannotUpdateGroup:
       return "Cannot update group";
-    case 605:
+    case dataHasBeenModified:
       return "Contact data has been modified by another application";
-    case 607:
+    case cannotGetContact:
       return "Cannot get contact";
-    case 701:
+    case cannotCreateAccount:
       return "Cannot create account";
-    case 704:
+    case suchAccountAlreadyExists:
       return "Such account already exists";
-    case 710:
+    case restOtherError:
       return "Rest other error";
-    case 711:
+    case restApiDisabled:
       return "Rest api disabled";
-    case 712:
+    case restUnknownMethod:
       return "Rest unknown method";
-    case 713:
+    case restInvalidParameters:
       return "Rest invalid parameters";
-    case 714:
+    case restInvalidCredentials:
       return "Rest invalid credentials";
-    case 715:
+    case restInvalidToken:
       return "Rest invalid token";
-    case 716:
+    case restTokenExpired:
       return "Rest token expired";
-    case 717:
+    case restAccountFindFailed:
       return "Rest account find failed";
-    case 719:
+    case restTenantFindFailed:
       return "Rest tenant find failed";
-    case 801:
+    case calendarsNotAllowed:
       return "Calendars not allowed";
-    case 802:
+    case filesNotAllowed:
       return "Files not allowed";
-    case 803:
+    case contactsNotAllowed:
       return "Contacts not allowed";
-    case 804:
+    case helpdeskUserAlreadyExists:
       return "Helpdesk user already exists";
-    case 805:
+    case helpdeskSystemUserAlreadyExists:
       return "Helpdesk system user already exists";
-    case 806:
+    case cannotCreateJHelpdeskUser:
       return "Cannot create helpdesk user";
-    case 807:
+    case helpdeskUnknownUser:
       return "Helpdesk unknown user";
-    case 808:
+    case helpdeskUnactivatedUser:
       return "Helpdesk unactivated user";
-    case 810:
+    case voiceNotAllowed:
       return "Voice not allowed";
-    case 811:
+    case incorrectFileExtension:
       return "Incorrect file extension";
-    case 812:
+    case spaceLimit:
       return "You have reached your cloud storage space limit. Can't upload file.";
-    case 813:
+    case fileAlreadyExists:
       return "Such file already exists";
-    case 814:
+    case fileNotFound:
       return "File not found";
-    case 815:
+    case cannotUploadFileLimit:
       return "Cannot upload file limit";
-    case 901:
+    case mailServerError:
       return "Mail server error";
-    case 999:
+    case unknownError:
       return "Unknown error";
     default:
       return code.toString();

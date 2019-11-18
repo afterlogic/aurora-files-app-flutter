@@ -8,6 +8,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
+import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -498,6 +499,32 @@ class FilesApi {
     final res = await sendRequest(body);
     if (res['Result']) {
       return;
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<List<Recipient>> getRecipient() async {
+    final parameters = {
+      "Search": "",
+      "Storage": "all",
+      "SortField": 3,
+      "SortOrder": 1,
+      "WithGroups": false,
+      "WithoutTeamContactsDuplicates": true
+    };
+    final body = new ApiBody(
+      module: "Contacts",
+      method: "GetContacts",
+      parameters: json.encode(parameters),
+    );
+
+    final res = (await sendRequest(body)) as Map;
+
+    if (res.containsKey("Result")) {
+      return (res["Result"]["List"] as List)
+          .map((item) => Recipient.fromJson(item))
+          .toList();
     } else {
       throw CustomException(getErrMsg(res));
     }

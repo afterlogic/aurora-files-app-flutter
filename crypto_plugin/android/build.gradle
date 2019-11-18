@@ -32,7 +32,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 18
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     lintOptions {
         disable 'InvalidPackage'

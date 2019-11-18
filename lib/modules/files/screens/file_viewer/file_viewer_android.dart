@@ -7,6 +7,7 @@ import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
+import 'package:aurorafiles/modules/files/dialogs/select_recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
@@ -18,6 +19,7 @@ import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -44,8 +46,7 @@ class FileViewerAndroid extends StatefulWidget {
 }
 
 class _FileViewerAndroidState extends State<FileViewerAndroid> {
-  final GlobalKey<ScaffoldState> _fileViewerScaffoldKey =
-      GlobalKey<ScaffoldState>();
+  final _fileViewerScaffoldKey = GlobalKey<ScaffoldState>();
 
   final _fileViewerState = FileViewerState();
 
@@ -284,6 +285,18 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
   }
 
+  _secureSharing() {
+    Platform.isIOS
+        ? showCupertinoDialog(
+            context: context,
+            builder: (context) => SelectRecipient(_file, _fileViewerState),
+          )
+        : showDialog(
+            context: context,
+            builder: (context) => SelectRecipient(_file, _fileViewerState),
+          );
+  }
+
   Widget _getPreviewContent() {
     final previewIconSize = 120.0;
     if (_file.initVector != null) {
@@ -322,6 +335,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return MultiProvider(
       providers: [
         Provider<FilesState>(
@@ -358,6 +372,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ),
                 ]
               : [
+                  IconButton(
+                    icon: SvgPicture.asset("lib/assets/svg/insert_link.svg",
+                        width: theme.iconTheme.size,
+                        height: theme.iconTheme.size,
+                        color: theme.iconTheme.color),
+                    tooltip: "Secure sharing",
+                    onPressed: _secureSharing,
+                  ),
                   IconButton(
                     icon: Icon(MdiIcons.fileMove),
                     tooltip: "Move/Copy",

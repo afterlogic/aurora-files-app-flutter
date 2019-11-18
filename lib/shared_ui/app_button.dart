@@ -10,21 +10,24 @@ class AppButton extends StatelessWidget {
   final String text;
   final Color buttonColor;
   final Color textColor;
+  final double width;
 
-  const AppButton({
-    Key key,
-    this.isLoading,
-    @required this.onPressed,
-    this.child,
-    this.buttonColor,
-    this.text,
-    this.textColor,
-  }) : super(key: key);
+  const AppButton(
+      {Key key,
+      this.isLoading,
+      @required this.onPressed,
+      this.child,
+      this.buttonColor,
+      this.text,
+      this.textColor,
+      this.width})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (Platform.isIOS) {
       return Container(
+        width: width,
         height: 55.0,
         child: CupertinoButton(
             color: buttonColor,
@@ -48,24 +51,25 @@ class AppButton extends StatelessWidget {
             onPressed: isLoading != null && isLoading ? null : onPressed),
       );
     } else {
-      return RaisedButton(
-          color: buttonColor,
-          child: AnimatedSwitcher(
-            duration: Duration(milliseconds: 100),
-            child: isLoading != null && isLoading
-                ? SizedBox(
-                    height: 24.0,
-                    width: 24.0,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 3.0,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Colors.white)),
-                  )
-                : child is Widget
-                    ? child
-                    : Text(text.toUpperCase()),
-          ),
-          onPressed: isLoading == true ? null : onPressed);
+      return Container(
+        width: width,
+        child: RaisedButton(
+            color: buttonColor,
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 100),
+              child: isLoading != null && isLoading
+                  ? SizedBox(
+                      height: 24.0,
+                      width: 24.0,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 3.0,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white)),
+                    )
+                  : child is Widget ? child : Text(text.toUpperCase()),
+            ),
+            onPressed: isLoading == true ? null : onPressed),
+      );
     }
   }
 }

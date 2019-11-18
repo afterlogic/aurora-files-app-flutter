@@ -41,7 +41,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
   }
 
   Future<List<LocalFile>> getFilesAtPath(String nullablePath) async {
-    final path = nullablePath == null ? "" : nullablePath;
+    final path = nullablePath ?? "";
     final offlineFiles = await (select(files)
           ..where((file) => file.owner.equals(userEmail))
           ..where((file) => file.type.equals(storageType)))

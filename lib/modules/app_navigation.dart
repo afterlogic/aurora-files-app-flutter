@@ -13,6 +13,8 @@ import 'package:aurorafiles/modules/settings/screens/common/common_android.dart'
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_android.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/pgp_settings_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_android.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:aurorafiles/shared_ui/fade_route.dart';
@@ -130,7 +132,22 @@ class AppNavigation {
               duration: 150);
         }
         break;
-
+      case PgpSettingsRoute.name:
+        if (Platform.isIOS) {
+          return CupertinoPageRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              builder: (context) => PgpSettingWidget());
+        } else {
+          return FadeRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              page: PgpSettingWidget(),
+              duration: 150);
+        }
+        break;
       case CommonSettingsRoute.name:
         if (Platform.isIOS) {
           return CupertinoPageRoute(

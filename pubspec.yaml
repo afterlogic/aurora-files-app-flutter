@@ -57,6 +57,9 @@ dependencies:
   uuid: ^2.0.2
   package_info: ^0.4.0+7
 
+  crypto_plugin:
+    path: crypto_plugin
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

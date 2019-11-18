@@ -18,13 +18,12 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 
 class AuthAndroid extends StatefulWidget {
-  static final _authFormKey = GlobalKey<FormState>();
-
   @override
   _AuthAndroidState createState() => _AuthAndroidState();
 }
 
 class _AuthAndroidState extends State<AuthAndroid> {
+  final _authFormKey = GlobalKey<FormState>();
   AuthState _authState = AppStore.authState;
   bool _showHostField = false;
   bool _obscureText = true;
@@ -70,7 +69,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     }
     if (errMsg.isEmpty) {
       final showHost = await _authState.onLogin(
-        isFormValid: AuthAndroid._authFormKey.currentState.validate(),
+        isFormValid: _authFormKey.currentState.validate(),
         onSuccess: () async {
           await AppStore.settingsState.getUserEncryptionKeys();
           Navigator.pushReplacementNamed(context, FilesRoute.name,
@@ -129,7 +128,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           controller: _authState.emailCtrl,
           keyboardType: TextInputType.emailAddress,
           decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.white38))),
+              border: Border(bottom: const BorderSide(color: Colors.white38))),
           placeholder: "Email",
           autocorrect: false,
           prefix: Opacity(
@@ -235,13 +234,14 @@ class _AuthAndroidState extends State<AuthAndroid> {
                 child: SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: 22.0),
                   child: Form(
-                    key: AuthAndroid._authFormKey,
+                    key: _authFormKey,
                     child: Column(
                       children: <Widget>[
                         Hero(
                           tag: "logo",
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 32.0),
                             child: Image.asset(
                                 "lib/assets/images/private-mail-logo.png"),
                           ),

@@ -168,8 +168,11 @@ class Pgp {
 
             if (message is PGPCompressedData) {
                 val pgpFact = PGPObjectFactory(message.dataStream, calculator)
-
+                
                 message = pgpFact.nextObject()
+                if (message is PGPOnePassSignatureList) {
+                    message = pgpFact.nextObject()
+                }
             }
 
             if (message is PGPLiteralData) {
@@ -233,7 +236,7 @@ class Pgp {
             val fileInput = FileInputStream(prepareEncrypt)
 
             progress.total = prepareEncrypt.length()
-            val byffer = ByteArray(4000)
+            val byffer = ByteArray(4096)
             var length: Int
             while (true) {
                 length = fileInput.read(byffer)

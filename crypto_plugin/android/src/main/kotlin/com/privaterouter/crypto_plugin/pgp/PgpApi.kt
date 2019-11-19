@@ -9,6 +9,10 @@ open class PgpApi {
     private var privateKey: ByteArray? = null
     private var tempFile: File? = null
 
+    fun getEmailFromKey(key: String): List<String> {
+        return pgp.getEmailFromKey(ByteArrayInputStream(key.toByteArray()))
+    }
+    
     fun setPrivateKey(key: String?) {
         privateKey = key?.toByteArray()
     }

@@ -283,4 +283,12 @@ class Pgp {
         inputStream.close()
     }
 
+
+    fun getEmailFromKey(inputStream: InputStream): List<String> {
+        val userIDs = readPublicKey(inputStream).userIDs
+        val users = ArrayList<String>()
+        while (userIDs.hasNext())
+            users.add(userIDs.next())
+        return users
+    }
 }

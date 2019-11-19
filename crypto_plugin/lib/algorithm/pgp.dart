@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import '../crypto_plugin.dart';
+import 'crypt.dart';
 
 class Pgp extends Crypt {
   clear() async {
@@ -29,6 +29,18 @@ class Pgp extends Crypt {
       "$algorithm.setTempFile",
       [temp?.path],
     );
+  }
+
+  Future<List<String>> getEmailFromKey(String key) async {
+    final result = await invokeMethod(
+      "$algorithm.getEmailFromKey",
+      [key],
+    );
+    if (result is List) {
+      return result;
+    } else {
+      return null;
+    }
   }
 
   setPrivateKey(

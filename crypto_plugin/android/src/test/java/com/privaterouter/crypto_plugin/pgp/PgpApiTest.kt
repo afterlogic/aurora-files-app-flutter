@@ -4,7 +4,14 @@ import org.junit.Test
 import java.io.File
 
 class PgpApiTest {
-
+    
+    @Test
+    fun testGetUserUid() {
+        val pgpHelper = PgpApi()
+        val result = pgpHelper.getEmailFromKey(publicKey)
+        assert(result.size == 1 && result[0] == "sample@mail.ru")
+    }
+    
     @Test
     fun testPgpHelper() {
         val pgpHelper = PgpApi()

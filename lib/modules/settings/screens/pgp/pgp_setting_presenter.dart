@@ -1,12 +1,11 @@
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
-import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
 
 class PgpSettingPresenter {
   final PgpSettingView _view;
-  final _filesDao = PgpKeyDao(AppStore.appDb);
+  final PgpKeyDao _filesDao;
 
-  PgpSettingPresenter(this._view);
+  PgpSettingPresenter(this._view, this._filesDao);
 
   setKey(String email, String key) {}
 

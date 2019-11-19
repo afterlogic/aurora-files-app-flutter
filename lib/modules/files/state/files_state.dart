@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
@@ -35,7 +36,7 @@ final dummyStorage = new Storage(
 abstract class _FilesState with Store {
   final _filesApi = FilesApi();
   final _filesLocal = FilesLocalStorage();
-  final _filesDao = FilesDao(AppStore.appDb);
+  final _filesDao = DI.get();
 
   final filesTileLeadingSize = 48.0;
 

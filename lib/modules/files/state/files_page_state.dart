@@ -1,5 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/storage.dart';
@@ -26,7 +27,7 @@ class FilesPageState = _FilesPageState with _$FilesPageState;
 // State instance per each files location
 abstract class _FilesPageState with Store {
   final _filesApi = FilesApi();
-  final _filesDao = FilesDao(AppStore.appDb);
+  final _filesDao = DI.get();
   final _filesLocal = FilesLocalStorage();
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -154,24 +155,24 @@ abstract class _FilesPageState with Store {
     List<LocalFile> files = [];
     try {
       folders = filesToSort.where((file) => file.isFolder).toList();
-    } catch(err) {}
+    } catch (err) {}
     try {
       files = filesToSort.where((file) => !file.isFolder).toList();
-    } catch(err) {}
+    } catch (err) {}
     return [...folders, ...files];
   }
 
   List<LocalFile> _addFakeUploadFiles(List<LocalFile> list) {
     List<LocalFile> filesFromServer = new List.from(list);
     try {
-      final uploadingFiles = AppStore.filesState.processedFiles.where((
-          process) => process.processingType == ProcessingType.upload);
+      final uploadingFiles = AppStore.filesState.processedFiles
+          .where((process) => process.processingType == ProcessingType.upload);
       uploadingFiles.forEach((process) {
         final localFile = getFakeLocalFileForUploadProgress(process, pagePath);
         filesFromServer.add(localFile);
       });
       return filesFromServer;
-    } catch(err) {
+    } catch (err) {
       return list;
     }
   }

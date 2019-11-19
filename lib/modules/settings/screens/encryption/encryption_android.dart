@@ -24,7 +24,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   void _exportKey() async {
     var exportedDir;
     if (Platform.isIOS) {
-      await showCupertinoDialog(
+      exportedDir =  await showCupertinoDialog(
           context: context,
           builder: (_) => ExportKeyDialog(
                 settingsState: _settingsState,

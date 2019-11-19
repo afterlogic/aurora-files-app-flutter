@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/key_from_text_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
@@ -18,7 +19,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
   @override
   void initState() {
-    _presenter = PgpSettingPresenter(this);
+    _presenter = PgpSettingPresenter(this, DI.get());
     _presenter.getPublicKey();
     super.initState();
   }

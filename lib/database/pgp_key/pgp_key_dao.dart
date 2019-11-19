@@ -12,5 +12,11 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
     return (select(pgpKey)..where((key) => key.isPrivate.equals(false))).get();
   }
 
+  Future addKeys(List<LocalPgpKey> keys) async {
+    return into(pgpKey).insertAll(keys);
+  }
 
+  Future addKey(LocalPgpKey key) async {
+    return into(pgpKey).insert(key);
+  }
 }

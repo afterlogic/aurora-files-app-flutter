@@ -17,5 +17,7 @@ A new flutter plugin project.
   s.dependency 'Flutter'
 
   s.ios.deployment_target = '8.0'
+  use_frameworks!
+  pod 'ObjectivePGP'
 end
 

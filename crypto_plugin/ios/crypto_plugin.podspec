@@ -4,9 +4,9 @@
 Pod::Spec.new do |s|
   s.name             = 'crypto_plugin'
   s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
+  s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
-A new flutter plugin project.
+A new Flutter project.
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
@@ -17,7 +17,7 @@ A new flutter plugin project.
   s.dependency 'Flutter'
 
   s.ios.deployment_target = '8.0'
-  use_frameworks!
-  pod 'ObjectivePGP'
+  s.dependency 'ObjectivePGP', '0.15.0'
+  s.dependency 'RxSwift', '4'
 end
 

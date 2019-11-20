@@ -2,9 +2,9 @@ import Foundation
 import CommonCrypto
 
 
-open class Aes:XCTestCase{
+open class Aes{
     
-     static func performCryption(_ data:Data,_ keyData:Data,_ ivData:Data,_ isLast:Bool,_ isDecrypt:Bool) -> Data {
+    static func performCryption(_ data:Data,_ keyData:Data,_ ivData:Data,_ isLast:Bool,_ isDecrypt:Bool) -> Data {
         let cryptLength  = size_t(data.count + kCCBlockSizeAES128)
         var cryptData = Data(count:cryptLength)
         

@@ -2,6 +2,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -36,6 +37,11 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               title: Text("Encryption"),
               leading: Icon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
+            ),
+            ListTile(
+              title: Text("OpenPGP"),
+              leading: Icon(MdiIcons.key),
+              onTap: () => Navigator.pushNamed(context, PgpSettingsRoute.name),
             ),
             ListTile(
               title: Text("Storage info"),

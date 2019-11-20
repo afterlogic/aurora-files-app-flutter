@@ -1188,10 +1188,209 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   }
 }
 
+class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
+  final String email;
+  final String key;
+  final bool isPrivate;
+  LocalPgpKey(
+      {@required this.email, @required this.key, @required this.isPrivate});
+  factory LocalPgpKey.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final stringType = db.typeSystem.forDartType<String>();
+    final boolType = db.typeSystem.forDartType<bool>();
+    return LocalPgpKey(
+      email:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
+      key: stringType.mapFromDatabaseResponse(data['${effectivePrefix}key']),
+      isPrivate: boolType
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_private']),
+    );
+  }
+  factory LocalPgpKey.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return LocalPgpKey(
+      email: serializer.fromJson<String>(json['email']),
+      key: serializer.fromJson<String>(json['key']),
+      isPrivate: serializer.fromJson<bool>(json['isPrivate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson(
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return {
+      'email': serializer.toJson<String>(email),
+      'key': serializer.toJson<String>(key),
+      'isPrivate': serializer.toJson<bool>(isPrivate),
+    };
+  }
+
+  @override
+  T createCompanion<T extends UpdateCompanion<LocalPgpKey>>(bool nullToAbsent) {
+    return PgpKeyCompanion(
+      email:
+          email == null && nullToAbsent ? const Value.absent() : Value(email),
+      key: key == null && nullToAbsent ? const Value.absent() : Value(key),
+      isPrivate: isPrivate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isPrivate),
+    ) as T;
+  }
+
+  LocalPgpKey copyWith({String email, String key, bool isPrivate}) =>
+      LocalPgpKey(
+        email: email ?? this.email,
+        key: key ?? this.key,
+        isPrivate: isPrivate ?? this.isPrivate,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('LocalPgpKey(')
+          ..write('email: $email, ')
+          ..write('key: $key, ')
+          ..write('isPrivate: $isPrivate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      $mrjf($mrjc(email.hashCode, $mrjc(key.hashCode, isPrivate.hashCode)));
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is LocalPgpKey &&
+          other.email == email &&
+          other.key == key &&
+          other.isPrivate == isPrivate);
+}
+
+class PgpKeyCompanion extends UpdateCompanion<LocalPgpKey> {
+  final Value<String> email;
+  final Value<String> key;
+  final Value<bool> isPrivate;
+  const PgpKeyCompanion({
+    this.email = const Value.absent(),
+    this.key = const Value.absent(),
+    this.isPrivate = const Value.absent(),
+  });
+  PgpKeyCompanion copyWith(
+      {Value<String> email, Value<String> key, Value<bool> isPrivate}) {
+    return PgpKeyCompanion(
+      email: email ?? this.email,
+      key: key ?? this.key,
+      isPrivate: isPrivate ?? this.isPrivate,
+    );
+  }
+}
+
+class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $PgpKeyTable(this._db, [this._alias]);
+  final VerificationMeta _emailMeta = const VerificationMeta('email');
+  GeneratedTextColumn _email;
+  @override
+  GeneratedTextColumn get email => _email ??= _constructEmail();
+  GeneratedTextColumn _constructEmail() {
+    return GeneratedTextColumn(
+      'email',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _keyMeta = const VerificationMeta('key');
+  GeneratedTextColumn _key;
+  @override
+  GeneratedTextColumn get key => _key ??= _constructKey();
+  GeneratedTextColumn _constructKey() {
+    return GeneratedTextColumn(
+      'key',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _isPrivateMeta = const VerificationMeta('isPrivate');
+  GeneratedBoolColumn _isPrivate;
+  @override
+  GeneratedBoolColumn get isPrivate => _isPrivate ??= _constructIsPrivate();
+  GeneratedBoolColumn _constructIsPrivate() {
+    return GeneratedBoolColumn(
+      'is_private',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [email, key, isPrivate];
+  @override
+  $PgpKeyTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'pgp_key';
+  @override
+  final String actualTableName = 'pgp_key';
+  @override
+  VerificationContext validateIntegrity(PgpKeyCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.email.present) {
+      context.handle(
+          _emailMeta, email.isAcceptableValue(d.email.value, _emailMeta));
+    } else if (email.isRequired && isInserting) {
+      context.missing(_emailMeta);
+    }
+    if (d.key.present) {
+      context.handle(_keyMeta, key.isAcceptableValue(d.key.value, _keyMeta));
+    } else if (key.isRequired && isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (d.isPrivate.present) {
+      context.handle(_isPrivateMeta,
+          isPrivate.isAcceptableValue(d.isPrivate.value, _isPrivateMeta));
+    } else if (isPrivate.isRequired && isInserting) {
+      context.missing(_isPrivateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  @override
+  LocalPgpKey map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return LocalPgpKey.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(PgpKeyCompanion d) {
+    final map = <String, Variable>{};
+    if (d.email.present) {
+      map['email'] = Variable<String, StringType>(d.email.value);
+    }
+    if (d.key.present) {
+      map['key'] = Variable<String, StringType>(d.key.value);
+    }
+    if (d.isPrivate.present) {
+      map['is_private'] = Variable<bool, BoolType>(d.isPrivate.value);
+    }
+    return map;
+  }
+
+  @override
+  $PgpKeyTable createAlias(String alias) {
+    return $PgpKeyTable(_db, alias);
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(const SqlTypeSystem.withDefaults(), e);
   $FilesTable _files;
   $FilesTable get files => _files ??= $FilesTable(this);
+  $PgpKeyTable _pgpKey;
+  $PgpKeyTable get pgpKey => _pgpKey ??= $PgpKeyTable(this);
   @override
-  List<TableInfo> get allTables => [files];
+  List<TableInfo> get allTables => [files, pgpKey];
 }

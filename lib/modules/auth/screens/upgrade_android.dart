@@ -14,7 +14,7 @@ class UpgradeAndroid extends StatelessWidget {
           width: mq.size.width,
           child: Center(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 22.0),
+              padding: const EdgeInsets.symmetric(horizontal: 22.0),
               child: Column(
                 children: <Widget>[
                   Hero(

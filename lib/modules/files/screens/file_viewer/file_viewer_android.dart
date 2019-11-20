@@ -1,23 +1,30 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
+import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_encrypt_method.dart';
+import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
+import 'package:aurorafiles/modules/files/dialogs/secure_sharing/share_progress.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
+import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
+import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -44,8 +51,7 @@ class FileViewerAndroid extends StatefulWidget {
 }
 
 class _FileViewerAndroidState extends State<FileViewerAndroid> {
-  final GlobalKey<ScaffoldState> _fileViewerScaffoldKey =
-      GlobalKey<ScaffoldState>();
+  final _fileViewerScaffoldKey = GlobalKey<ScaffoldState>();
 
   final _fileViewerState = FileViewerState();
 
@@ -93,12 +99,16 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     Navigator.pop(context);
   }
 
-  void _shareFile() {
+  void _shareFile(PreparedForShare preparedForShare) {
+    widget.filesState.share(preparedForShare);
+  }
+
+  void _prepareShareFile(Function(PreparedForShare) complete) async {
     if (_fileViewerState.fileWithContents != null) {
-      widget.filesState.onShareFile(
+      widget.filesState.prepareForShare(
         _file,
         storedFile: _fileViewerState.fileWithContents,
-        onSuccess: () {},
+        onSuccess: complete,
         onError: (String err) => showSnack(
           context: context,
           scaffoldState: _fileViewerScaffoldKey.currentState,
@@ -113,7 +123,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         isError: false,
       );
     } else {
-      Platform.isIOS
+      final result = await (Platform.isIOS
           ? showCupertinoDialog(
               context: context,
               builder: (_) => ShareDialog(
@@ -125,7 +135,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               builder: (_) => ShareDialog(
                     filesState: widget.filesState,
                     file: _file,
-                  ));
+                  )));
+
+      if (result is PreparedForShare) {
+        complete(result);
+      }
     }
   }
 
@@ -148,7 +162,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               filesPageState: widget.filesPageState,
             ),
           );
-    if (result is String) _updateFile(result);
+    if (result is String) {
+      _updateFile(result);
+    }
   }
 
   void _deleteFile() async {
@@ -284,6 +300,34 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
   }
 
+
+  _secureSharing(PreparedForShare prepareForShare) async {
+    final selectRecipientResult = await openDialog(
+      context,
+      (context) => SelectRecipient(_file, _fileViewerState),
+    );
+
+    if (selectRecipientResult is SelectRecipientResult) {
+      final selectEncryptMethodResult = await openDialog(
+        context,
+        (context) => SelectEncryptMethod(
+            selectRecipientResult.recipient, selectRecipientResult.pgpKey),
+      );
+      if (selectEncryptMethodResult is SelectEncryptMethodResult) {
+        openDialog(
+          context,
+          (context) => ShareProgress(
+            prepareForShare,
+            selectRecipientResult.recipient,
+            selectRecipientResult.pgpKey,
+            selectEncryptMethodResult.useKey,
+            DI.get(),
+          ),
+        );
+      }
+    }
+  }
+
   Widget _getPreviewContent() {
     final previewIconSize = 120.0;
     if (_file.initVector != null) {
@@ -322,6 +366,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return MultiProvider(
       providers: [
         Provider<FilesState>(
@@ -343,7 +388,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     icon: Icon(
                         Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
                     tooltip: "Share",
-                    onPressed: _shareFile,
+                    onPressed: () => _prepareShareFile(_shareFile),
                   ),
                   if (!Platform.isIOS)
                     IconButton(
@@ -359,6 +404,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 ]
               : [
                   IconButton(
+                    icon: SvgPicture.asset("lib/assets/svg/insert_link.svg",
+                        width: theme.iconTheme.size,
+                        height: theme.iconTheme.size,
+                        color: theme.iconTheme.color),
+                    tooltip: "Secure sharing",
+                    onPressed: () => _prepareShareFile(_secureSharing),
+                  ),
+                  IconButton(
                     icon: Icon(MdiIcons.fileMove),
                     tooltip: "Move/Copy",
                     onPressed: _moveFile,
@@ -367,7 +420,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     icon: Icon(
                         Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
                     tooltip: "Share",
-                    onPressed: _shareFile,
+                    onPressed: () => _prepareShareFile(_shareFile),
                   ),
                   if (_file.downloadUrl != null && !Platform.isIOS)
                     IconButton(

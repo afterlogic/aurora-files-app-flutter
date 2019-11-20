@@ -13,6 +13,10 @@ import 'package:aurorafiles/modules/settings/screens/common/common_android.dart'
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_android.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_model_widget.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_model_route.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/pgp_settings_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_android.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:aurorafiles/shared_ui/fade_route.dart';
@@ -33,19 +37,20 @@ class AppNavigation {
             settings: RouteSettings(
               name: FilesRoute.name + (args == null ? "" : args.path),
             ),
-            builder: (context) => args != null
+            builder: (context) =>
+            args != null
                 ? FilesAndroid(
-                    path: args.path,
-                    isZip: args.isZip,
-                  )
+              path: args.path,
+              isZip: args.isZip,
+            )
                 : FilesAndroid());
       } else {
         return FadeRoute(
           page: args != null
               ? FilesAndroid(
-                  path: args.path,
-                  isZip: args.isZip,
-                )
+            path: args.path,
+            isZip: args.isZip,
+          )
               : FilesAndroid(),
           settings: RouteSettings(
             name: FilesRoute.name + (args == null ? "" : args.path),
@@ -69,7 +74,8 @@ class AppNavigation {
               settings: RouteSettings(
                 name: settings.name,
               ),
-              builder: (context) => FileViewerAndroid(
+              builder: (context) =>
+                  FileViewerAndroid(
                     immutableFile: args.file,
                     offlineFile: args.offlineFile,
                     filesState: args.filesState,
@@ -130,7 +136,40 @@ class AppNavigation {
               duration: 150);
         }
         break;
-
+      case PgpSettingsRoute.name:
+        if (Platform.isIOS) {
+          return CupertinoPageRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              builder: (context) => PgpSettingWidget());
+        } else {
+          return FadeRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              page: PgpSettingWidget(),
+              duration: 150);
+        }
+        break;
+      case PgpKeyModelRoute.name:
+        final arguments = settings.arguments as List;
+        if (Platform.isIOS) {
+          return CupertinoPageRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              builder: (context) =>
+                  PgpKeyModelWidget(arguments.first, arguments.last));
+        } else {
+          return FadeRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              page: PgpKeyModelWidget(arguments.first, arguments.last),
+              duration: 150);
+        }
+        break;
       case CommonSettingsRoute.name:
         if (Platform.isIOS) {
           return CupertinoPageRoute(
@@ -170,7 +209,8 @@ class AppNavigation {
             settings: RouteSettings(
               name: settings.name,
             ),
-            builder: (_) => Scaffold(
+            builder: (_) =>
+                Scaffold(
                   body: Center(
                       child: Text('No route defined for ${settings.name}')),
                 ));

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
@@ -114,5 +115,9 @@ abstract class _FileViewerState with Store {
       fileWithContents = storedFile;
       _filesLocal.openFileWith(fileWithContents);
     });
+  }
+
+    Future<List<Recipient>> getRecipient() async {
+    return _filesApi.getRecipient();
   }
 }

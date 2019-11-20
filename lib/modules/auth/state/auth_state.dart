@@ -32,16 +32,10 @@ abstract class _AuthState with Store {
   final passwordCtrl = TextEditingController();
 
   Future<bool> getAuthSharedPrefs() async {
-    final List results = await Future.wait([
-      _authLocal.getTokenFromStorage(), // 0 - token
-      _authLocal.getUserEmailFromStorage(), // 1 - email
-      _authLocal.getUserIdFromStorage(), // 2 - id
-      _authLocal.getHostFromStorage(), // 3 - host
-    ]);
-    userEmail = results[1];
-    authToken = results[0];
-    userId = results[2];
-    hostName = results[3];
+    userEmail = await _authLocal.getUserEmailFromStorage();
+    authToken = await _authLocal.getTokenFromStorage();
+    userId = await _authLocal.getUserIdFromStorage();
+    hostName = await _authLocal.getHostFromStorage();
     return hostName is String &&
         authToken is String &&
         userEmail is String &&

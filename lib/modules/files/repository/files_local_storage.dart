@@ -189,7 +189,7 @@ class FilesLocalStorage {
     }
   }
 
-  Future<void> shareOffline(
+  Future<PreparedForShare> shareOffline(
       LocalFile file, ProcessingFile processingFile) async {
     File offlineFile = new File(file.localPath);
     if (!await offlineFile.exists()) {
@@ -200,7 +200,7 @@ class FilesLocalStorage {
       offlineFile = await _decryptFile(processingFile, offlineFile);
     }
 
-    shareFile(offlineFile, file);
+    return PreparedForShare(offlineFile, file);
   }
 
   Future<File> _decryptFile(
@@ -266,6 +266,13 @@ class FilesLocalStorage {
 
     return processingFile.fileOnDevice;
   }
+}
+
+class PreparedForShare {
+  final File file;
+  final LocalFile localFile;
+
+  PreparedForShare(this.file, this.localFile);
 }
 //  Future<List> encryptFile(File file) async {
 //    final fileBytes = await file.readAsBytes();

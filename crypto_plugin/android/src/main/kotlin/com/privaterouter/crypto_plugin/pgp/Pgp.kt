@@ -123,6 +123,7 @@ class Pgp {
      */
     @Throws(Exception::class)
     fun decrypt(inputStream: InputStream, out: OutputStream, keyIn: InputStream, passwd: CharArray, length: Long) {
+        this.progress?.stop=true
         val progress = Progress()
         this.progress = progress
         try {
@@ -170,6 +171,9 @@ class Pgp {
                 val pgpFact = PGPObjectFactory(message.dataStream, calculator)
 
                 message = pgpFact.nextObject()
+                if (message is PGPOnePassSignatureList) {
+                    message = pgpFact.nextObject()
+                }
             }
 
             if (message is PGPLiteralData) {
@@ -180,7 +184,7 @@ class Pgp {
                     if (ch < 0) {
                         break
                     }
-                    progress.current += 1
+                    progress.update( 1)
                     out.write(ch)
                 }
             } else if (message is PGPOnePassSignatureList) {
@@ -204,6 +208,7 @@ class Pgp {
     @Throws(IOException::class, NoSuchProviderException::class, PGPException::class)
     fun encrypt(output: OutputStream, prepareEncrypt: File, input: InputStream,
                 encKey: PGPPublicKey, fileLength: Long) {
+        this.progress?.stop=true
         val progress = Progress()
         this.progress = progress
         try {
@@ -233,14 +238,14 @@ class Pgp {
             val fileInput = FileInputStream(prepareEncrypt)
 
             progress.total = prepareEncrypt.length()
-            val byffer = ByteArray(4000)
+            val byffer = ByteArray(4096)
             var length: Int
             while (true) {
                 length = fileInput.read(byffer)
                 if (length <= 0) {
                     break
                 }
-                progress.current += length
+                progress.update(length)
                 cOut.write(byffer, 0, length)
             }
 
@@ -280,4 +285,12 @@ class Pgp {
         inputStream.close()
     }
 
+
+    fun getEmailFromKey(inputStream: InputStream): List<String> {
+        val userIDs = readPublicKey(inputStream).userIDs
+        val users = ArrayList<String>()
+        while (userIDs.hasNext())
+            users.add(userIDs.next())
+        return users
+    }
 }

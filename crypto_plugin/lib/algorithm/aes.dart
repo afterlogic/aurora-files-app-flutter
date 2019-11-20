@@ -1,5 +1,6 @@
 import 'dart:typed_data';
-import '../crypto_plugin.dart';
+import 'crypt.dart';
+
 
 class Aes extends Crypt {
   Future<List<dynamic>> decrypt(

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
+import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -38,13 +39,13 @@ class FileOptionsBottomSheet extends StatefulWidget {
 
 class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
-  void _shareFile() {
+  void _shareFile() async {
     final hasDecryptKey = AppStore.settingsState.currentKey != null;
     final hasVector = widget.file.initVector != null;
     final canDownload = !(hasVector && !hasDecryptKey);
     if (canDownload) {
       Navigator.pop(context);
-      Platform.isIOS
+      final result = await (Platform.isIOS
           ? showCupertinoDialog(
               context: context,
               builder: (_) => ShareDialog(
@@ -56,7 +57,10 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               builder: (_) => ShareDialog(
                     filesState: widget.filesState,
                     file: widget.file,
-                  ));
+                  )));
+      if (result is PreparedForShare) {
+        widget.filesState.share(result);
+      }
     } else {
       onItemSelected(FileOptionsBottomSheetResult.cantShare);
     }

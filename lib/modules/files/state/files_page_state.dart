@@ -27,7 +27,7 @@ class FilesPageState = _FilesPageState with _$FilesPageState;
 // State instance per each files location
 abstract class _FilesPageState with Store {
   final _filesApi = FilesApi();
-  final _filesDao = DI.get();
+  final FilesDao _filesDao = DI.get();
   final _filesLocal = FilesLocalStorage();
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();

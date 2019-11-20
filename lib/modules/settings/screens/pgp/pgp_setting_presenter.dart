@@ -1,16 +1,20 @@
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
+import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
+import 'package:crypto_plugin/algorithm/pgp.dart';
 
 class PgpSettingPresenter {
   final PgpSettingView _view;
-  final PgpKeyDao _filesDao;
+  final PgpKeyDao _pgpKeyDao;
+  final PgpKeyUtil pgpKeyUtil;
 
-  PgpSettingPresenter(this._view, this._filesDao);
-
-  setKey(String email, String key) {}
+  PgpSettingPresenter(this._view, this._pgpKeyDao, Pgp pgp)
+      : pgpKeyUtil = PgpKeyUtil(pgp, _pgpKeyDao);
 
   getPublicKey() {
-    _filesDao.getPublicKey().then(
+    _pgpKeyDao.getPublicKey().then(
       (keys) {
         _view.keysState.add(KeysState(keys));
       },
@@ -18,5 +22,26 @@ class PgpSettingPresenter {
         _view.keysState.add(KeysState([]));
       },
     );
+  }
+
+  getKeysFromFile() async {
+    final result = await pgpKeyUtil.importKeyFromFile();
+    if (result != null && result.isNotEmpty) {
+      getPublicKey();
+    }
+  }
+
+  getKeysFromText(String text) async {
+    final result = await pgpKeyUtil.validateText(text);
+    if (result.isNotEmpty) {
+      getPublicKey();
+    }
+  }
+
+  Future<String> exportAll(List<LocalPgpKey> keys) async {
+    for (LocalPgpKey key in keys) {
+      await pgpKeyUtil.downloadKey(key);
+    }
+    return await pgpKeyUtil.keysFolder();
   }
 }

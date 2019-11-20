@@ -1,3 +1,3 @@
 class PgpSettingsRoute {
-  static const name = "pgp_settings";
+  static const name = "settings/pgp";
 }

@@ -36,7 +36,7 @@ final dummyStorage = new Storage(
 abstract class _FilesState with Store {
   final _filesApi = FilesApi();
   final _filesLocal = FilesLocalStorage();
-  final _filesDao = DI.get();
+  final FilesDao _filesDao = DI.get();
 
   final filesTileLeadingSize = 48.0;
 
@@ -380,11 +380,15 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future<void> onShareFile(
+  share(PreparedForShare preparedForShare) {
+    _filesLocal.shareFile(preparedForShare.file, preparedForShare.localFile);
+  }
+
+  Future<void> prepareForShare(
     LocalFile file, {
     File storedFile,
     Function(ProcessingFile) onStart,
-    Function() onSuccess,
+    Function(PreparedForShare) onSuccess,
     Function(String) onError,
   }) async {
     if (_isFileIsBeingProcessed(file.guid)) {
@@ -405,14 +409,14 @@ abstract class _FilesState with Store {
               : null,
         );
         onStart(processingFile);
-        await _filesLocal
+        final prepareForShare = await _filesLocal
             .shareOffline(file, processingFile)
             .catchError(onError);
+        onSuccess(prepareForShare);
         deleteFromProcessing(file.guid);
-        onSuccess();
       } catch (err) {
         deleteFromProcessing(file.guid);
-        onSuccess();
+        onError(err.toString());
         throw CustomException(err.toString());
       }
       return;
@@ -431,9 +435,8 @@ abstract class _FilesState with Store {
             file.downloadUrl, file, processingFile, true,
             onSuccess: (File savedFile) {
           fileWithContents = savedFile;
+          onSuccess(PreparedForShare(fileWithContents, file));
           deleteFromProcessing(file.guid);
-          onSuccess();
-          _filesLocal.shareFile(fileWithContents, file).catchError(onError);
         }, onError: (err) {
           deleteFromProcessing(file.guid);
           onError(err);
@@ -441,13 +444,11 @@ abstract class _FilesState with Store {
         processingFile.subscription = sub;
       } else {
         fileWithContents = tempFileForShare;
-        onSuccess();
-        _filesLocal.shareFile(fileWithContents, file).catchError(onError);
+        onSuccess(PreparedForShare(fileWithContents, file));
       }
     } else {
       fileWithContents = storedFile;
-      onSuccess();
-      _filesLocal.shareFile(fileWithContents, file).catchError(onError);
+      onSuccess(PreparedForShare(fileWithContents, file));
     }
   }
 

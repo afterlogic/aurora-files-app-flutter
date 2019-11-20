@@ -13,10 +13,12 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
   }
 
   Future addKeys(List<LocalPgpKey> keys) async {
+    final emails = keys.map((item) => item.email);
+    await (delete(pgpKey)..where((item) => isIn(item.email, emails))).go();
     return into(pgpKey).insertAll(keys);
   }
 
-  Future addKey(LocalPgpKey key) async {
-    return into(pgpKey).insert(key);
+  Future deleteKey(LocalPgpKey key) async {
+    return (delete(pgpKey)..where((item) => item.email.equals(key.email))).go();
   }
 }

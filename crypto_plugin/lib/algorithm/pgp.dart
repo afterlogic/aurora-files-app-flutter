@@ -4,9 +4,15 @@ import 'dart:typed_data';
 import 'crypt.dart';
 
 class Pgp extends Crypt {
-  clear() async {
+  Future clear() async {
     await invokeMethod(
       "$algorithm.clear",
+      [],
+    );
+  }
+  Future stop() async {
+    await invokeMethod(
+      "$algorithm.stop",
       [],
     );
   }
@@ -24,7 +30,7 @@ class Pgp extends Crypt {
     }
   }
 
-  setTempFile(File temp) async {
+  Future setTempFile(File temp) async {
     await invokeMethod(
       "$algorithm.setTempFile",
       [temp?.path],
@@ -37,13 +43,13 @@ class Pgp extends Crypt {
       [key],
     );
     if (result is List) {
-      return result;
+      return List<String>.from(result);
     } else {
       return null;
     }
   }
 
-  setPrivateKey(
+  Future setPrivateKey(
     String key,
   ) async {
     await invokeMethod(
@@ -52,7 +58,7 @@ class Pgp extends Crypt {
     );
   }
 
-  setPublicKey(String key) async {
+  Future  setPublicKey(String key) async {
     await invokeMethod(
       "$algorithm.setPublicKey",
       [key],
@@ -68,7 +74,7 @@ class Pgp extends Crypt {
     return List<int>.from(result);
   }
 
-  decryptFile(File inputFile, File outputFile, String password) async {
+  Future decryptFile(File inputFile, File outputFile, String password) async {
     await invokeMethod(
       "$algorithm.decryptFile",
       [inputFile.path, outputFile.path, password],
@@ -83,7 +89,7 @@ class Pgp extends Crypt {
     return List<int>.from(result);
   }
 
-  encryptFile(File inputFile, File outputFile) async {
+  Future encryptFile(File inputFile, File outputFile) async {
     await invokeMethod(
       "$algorithm.encryptFile",
       [inputFile.path, outputFile.path],

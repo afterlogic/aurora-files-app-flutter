@@ -13,14 +13,14 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(onCreate: (Migrator m) {
         return m.createAllTables();
       }, onUpgrade: (Migrator m, int from, int to) async {
-        for (int current = from; current <= to; current++) {
-          switch (from) {
-            case 1:
+        for (int current = from; current < to; current++) {
+          switch (current) {
+            case 0:
               {
                 await m.addColumn(files, files.guid);
                 break;
               }
-            case 2:
+            case 1:
               {
                 await m.createTable(pgpKey);
                 break;

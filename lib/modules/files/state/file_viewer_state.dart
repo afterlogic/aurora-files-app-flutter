@@ -117,7 +117,7 @@ abstract class _FileViewerState with Store {
     });
   }
 
-  Future<List<Recipient>> getRecipient() async {
+    Future<List<Recipient>> getRecipient() async {
     return _filesApi.getRecipient();
   }
 }

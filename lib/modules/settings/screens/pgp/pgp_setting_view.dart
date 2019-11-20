@@ -5,6 +5,8 @@ import 'package:rxdart/rxdart.dart';
 mixin PgpSettingView<W extends StatefulWidget> on State<W> {
   final keysState = BehaviorSubject<KeysState>();
 
+  importKeyDialog(String text);
+
   close() {
     keysState.close();
   }

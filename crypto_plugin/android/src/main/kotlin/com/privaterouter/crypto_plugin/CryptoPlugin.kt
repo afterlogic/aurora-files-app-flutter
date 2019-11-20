@@ -77,6 +77,11 @@ class CryptoPlugin : MethodCallHandler {
                         disposable.clear()
                         return ""
                     }
+                    "stop" -> {
+                        val progress = pgp.getProgress()
+                        progress?.stop = true
+                        return ""
+                    }
                     "getProgress" -> {
                         val progress = pgp.getProgress()
                         return if (progress == null) {

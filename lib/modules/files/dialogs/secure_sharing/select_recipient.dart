@@ -27,12 +27,12 @@ class _SelectRecipientState extends State<SelectRecipient> {
   loadRecipients() {
     hasError = false;
     widget.fileViewerState.getRecipient().then(
-          (v) async {
+      (v) async {
         recipients = v;
         final localKeys = await _pgpKeyDao.getPublicKey();
         keys = Map.fromEntries(
           localKeys.map(
-                (item) => MapEntry(item.email, item),
+            (item) => MapEntry(item.email, item),
           ),
         );
 
@@ -54,64 +54,74 @@ class _SelectRecipientState extends State<SelectRecipient> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final content = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 10,
+    final size = MediaQuery.of(context).size;
+    final content = SizedBox(
+      height: size.height - 40,
+      width: size.width - 40,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 10,
+            ),
+            child: Text("Secure sharing", style: theme.textTheme.title),
           ),
-          child: Text("Secure sharing", style: theme.textTheme.title),
-        ),
-        SizedBox(height: 24,),
-        ...body(theme),
-      ],
+          SizedBox(
+            height: 20,
+          ),
+          ...body(theme),
+        ],
+      ),
     );
-    return AlertDialog(
-        content:content
-    );
+    return Platform.isIOS
+        ? CupertinoAlertDialog(content: content)
+        : AlertDialog(content: content);
   }
 
   List<Widget> body(ThemeData theme) {
     return recipients != null
         ? [
-      Text(
-        "Select recipient:",
-        style: theme.textTheme.subtitle,
-      ),
-      Expanded(
-        child: ListView.builder(
-          itemBuilder: (_, i) {
-            final recipient = recipients[i];
-            return RecipientWidget(
-              recipient,
-              keys[recipient.email],
-            );
-          },
-          itemCount: recipients.length,
-        ),
-      )
-    ]
+            Text(
+              "Select recipient:",
+              style: theme.textTheme.subtitle,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (_, i) {
+                  final recipient = recipients[i];
+                  return RecipientWidget(
+                    recipient,
+                    keys[recipient.email],
+                  );
+                },
+                itemCount: recipients.length,
+              ),
+            )
+          ]
         : hasError
-        ? [
-      Text(
-        "Cant load recipients:",
-        style: theme.textTheme.title,
-      ),
-      Expanded(
-        child: Center(
-          child: FlatButton(
-            child: Text("Try again"),
-            onPressed: loadRecipients,
-          ),
-        ),
-      ),
-    ]
-        : [
-      Center(
-        child: CircularProgressIndicator(),
-      ),
-    ];
+            ? [
+                Text(
+                  "Cant load recipients:",
+                  style: theme.textTheme.title,
+                ),
+                Expanded(
+                  child: Center(
+                    child: FlatButton(
+                      child: Text("Try again"),
+                      onPressed: loadRecipients,
+                    ),
+                  ),
+                ),
+              ]
+            : [
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ];
   }
 }
 

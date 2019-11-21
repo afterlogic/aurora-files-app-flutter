@@ -5,6 +5,7 @@ import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShareProgress extends StatefulWidget {
@@ -69,8 +70,11 @@ class _ShareProgressState extends State<ShareProgress> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return AlertDialog(
-      content: ListView(
+    final size = MediaQuery.of(context).size;
+    final content = SizedBox(
+      height: size.height - 40,
+      width: size.width - 40,
+      child: ListView(
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(
@@ -98,5 +102,12 @@ class _ShareProgressState extends State<ShareProgress> {
         ],
       ),
     );
+    return Platform.isIOS
+        ? CupertinoAlertDialog(
+            content: content,
+          )
+        : AlertDialog(
+            content: content,
+          );
   }
 }

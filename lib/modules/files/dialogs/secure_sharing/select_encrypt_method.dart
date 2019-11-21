@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SelectEncryptMethod extends StatefulWidget {
@@ -25,8 +28,11 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return AlertDialog(
-      content: ListView(
+    final size = MediaQuery.of(context).size;
+    final content = SizedBox(
+      height: size.height - 40,
+      width: size.width - 40,
+      child: ListView(
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(
@@ -69,21 +75,42 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
           ),
         ],
       ),
-      actions: <Widget>[
-        FlatButton(
-          child: Text("Encrypt"),
-          onPressed: () {
-            Navigator.pop(context, SelectEncryptMethodResult(useKey));
-          },
-        ),
-        FlatButton(
-          child: Text("Cancel"),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        )
-      ],
     );
+    return Platform.isIOS
+        ? CupertinoAlertDialog(
+            content: content,
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Encrypt"),
+                onPressed: () {
+                  Navigator.pop(context, SelectEncryptMethodResult(useKey));
+                },
+              ),
+              FlatButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          )
+        : AlertDialog(
+            content: content,
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Encrypt"),
+                onPressed: () {
+                  Navigator.pop(context, SelectEncryptMethodResult(useKey));
+                },
+              ),
+              FlatButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
   }
 }
 
@@ -102,38 +129,65 @@ class RadioEncryptMethod extends StatelessWidget {
         Divider(
           color: Colors.transparent,
         ),
-        Row(children: <Widget>[
-          Radio(
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            value: true,
-            groupValue: value,
-            onChanged: onChanged,
-          ),
-          Text(
-            "Key based",
-            style: theme.textTheme.body1,
-          ),
-        ]),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: value
+              ? null
+              : () {
+                  onChanged(true);
+                },
+          child: Row(children: <Widget>[
+            RadioAnalog(value),
+            Text(
+              "Key based",
+              style: theme.textTheme.body1,
+            ),
+          ]),
+        ),
         Divider(
           color: Colors.grey,
         ),
-        Row(children: <Widget>[
-          Radio(
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            value: false,
-            groupValue: value,
-            onChanged: onChanged,
-          ),
-          Text(
-            "Password based",
-            style: theme.textTheme.body1,
-          ),
-        ]),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: !value
+              ? null
+              : () {
+                  onChanged(false);
+                },
+          child: Row(children: <Widget>[
+            RadioAnalog(!value),
+            Text(
+              "Password based",
+              style: theme.textTheme.body1,
+            ),
+          ]),
+        ),
         Divider(
           color: Colors.grey,
         ),
       ],
     );
+  }
+}
+
+class RadioAnalog extends StatelessWidget {
+  final bool isCheck;
+
+  const RadioAnalog(this.isCheck);
+
+  @override
+  Widget build(BuildContext context) {
+    return Platform.isIOS
+        ? Padding(
+            padding: EdgeInsets.all(10),
+            child: Icon(isCheck
+                ? Icons.radio_button_checked
+                : Icons.radio_button_unchecked),
+          )
+        : Radio(
+            value: false,
+            groupValue: !isCheck,
+          );
   }
 }
 

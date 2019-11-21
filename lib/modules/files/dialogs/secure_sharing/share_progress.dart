@@ -105,6 +105,14 @@ class _ShareProgressState extends State<ShareProgress> {
     return Platform.isIOS
         ? CupertinoAlertDialog(
             content: content,
+            actions: <Widget>[
+              CupertinoButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
           )
         : AlertDialog(
             content: content,

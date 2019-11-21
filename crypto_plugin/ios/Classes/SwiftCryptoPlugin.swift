@@ -76,8 +76,8 @@ public class SwiftCryptoPlugin: NSObject, FlutterPlugin {
                 self.composite.dispose()
                 return ""
             case "getEmailFromKey":
-                let data = arguments[0] as! FlutterStandardTypedData
-                return try self.pgp.getEmailFromKey(  Data.init(data.data))
+                let data = arguments[0] as! String
+                return try self.pgp.getEmailFromKey(  data.data(using: String.Encoding.utf8)!)
             case "setPrivateKey":
                 let data = arguments[0] as! String
                 try self.pgp.setPrivateKey( data.data(using: String.Encoding.utf8)!)

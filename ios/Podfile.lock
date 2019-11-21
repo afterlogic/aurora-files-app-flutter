@@ -2,6 +2,10 @@ PODS:
   - connectivity (0.0.1):
     - Flutter
     - Reachability
+  - crypto_plugin (0.0.1):
+    - Flutter
+    - ObjectivePGP (= 0.15.0)
+    - RxSwift (= 4)
   - downloads_path_provider (0.0.1):
     - Flutter
   - file_picker (0.0.1):
@@ -12,6 +16,7 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - ObjectivePGP (0.15.0)
   - open_file (0.0.1):
     - Flutter
   - package_info (0.0.1):
@@ -21,6 +26,7 @@ PODS:
   - permission_handler (3.3.0):
     - Flutter
   - Reachability (3.2)
+  - RxSwift (4.0.0)
   - share_extend (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
@@ -33,6 +39,7 @@ PODS:
 
 DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
+  - crypto_plugin (from `.symlinks/plugins/crypto_plugin/ios`)
   - downloads_path_provider (from `.symlinks/plugins/downloads_path_provider/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
@@ -49,11 +56,15 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - FMDB
+    - ObjectivePGP
     - Reachability
+    - RxSwift
 
 EXTERNAL SOURCES:
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
+  crypto_plugin:
+    :path: ".symlinks/plugins/crypto_plugin/ios"
   downloads_path_provider:
     :path: ".symlinks/plugins/downloads_path_provider/ios"
   file_picker:
@@ -81,16 +92,19 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   connectivity: 6e94255659cc86dcbef1d452ad3e0491bb1b3e75
+  crypto_plugin: d276732ffadd73265f8f98e4a1dd525f0533704a
   downloads_path_provider: fe0d06888d4b8c055a59edbc2f51f03e63cb0e28
   file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  ObjectivePGP: 35a73ed3253e7e2982184ea86b1ff6c5773d1299
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   permission_handler: 67637977b227d62d46bfbf524f335f8568de5a73
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  RxSwift: fd680d75283beb5e2559486f3c0ff852f0d35334
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a

@@ -57,7 +57,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
     final size = MediaQuery.of(context).size;
     final content = SizedBox(
       height: size.height - 40,
-      width: size.width - 40,
+      width: size.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -75,7 +75,17 @@ class _SelectRecipientState extends State<SelectRecipient> {
       ),
     );
     return Platform.isIOS
-        ? CupertinoAlertDialog(content: content)
+        ? CupertinoAlertDialog(
+            content: content,
+            actions: <Widget>[
+              CupertinoButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          )
         : AlertDialog(content: content);
   }
 

@@ -17,6 +17,7 @@ import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_vie
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/shared_ui/asset_icon.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
@@ -300,7 +301,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
   }
 
-
   _secureSharing(PreparedForShare prepareForShare) async {
     final selectRecipientResult = await openDialog(
       context,
@@ -404,10 +404,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 ]
               : [
                   IconButton(
-                    icon: SvgPicture.asset("lib/assets/svg/insert_link.svg",
-                        width: theme.iconTheme.size,
-                        height: theme.iconTheme.size,
-                        color: theme.iconTheme.color),
+                    icon: AssetIcon(
+                      "lib/assets/svg/insert_link.svg",
+                      addedSize: 14,
+                    ),
                     tooltip: "Secure sharing",
                     onPressed: () => _prepareShareFile(_secureSharing),
                   ),

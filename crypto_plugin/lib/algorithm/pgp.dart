@@ -10,6 +10,7 @@ class Pgp extends Crypt {
       [],
     );
   }
+
   Future stop() async {
     await invokeMethod(
       "$algorithm.stop",
@@ -18,6 +19,8 @@ class Pgp extends Crypt {
   }
 
   Future<Progress> getProgress() async {
+    if (Platform.isIOS) return Progress(1, -1);
+
     final result = await invokeMethod(
       "$algorithm.getProgress",
       [],
@@ -31,6 +34,8 @@ class Pgp extends Crypt {
   }
 
   Future setTempFile(File temp) async {
+    if (Platform.isIOS) return;
+
     await invokeMethod(
       "$algorithm.setTempFile",
       [temp?.path],
@@ -58,7 +63,7 @@ class Pgp extends Crypt {
     );
   }
 
-  Future  setPublicKey(String key) async {
+  Future setPublicKey(String key) async {
     await invokeMethod(
       "$algorithm.setPublicKey",
       [key],
@@ -66,30 +71,49 @@ class Pgp extends Crypt {
   }
 
   Future<List<int>> decryptBytes(
-      List<int> encryptedBytes, String password) async {
+      Uint8List encryptedBytes, String password) async {
     final result = await invokeMethod(
       "$algorithm.decryptBytes",
-      [Uint8List.fromList(encryptedBytes), password],
+      [encryptedBytes, password],
     );
     return List<int>.from(result);
   }
 
   Future decryptFile(File inputFile, File outputFile, String password) async {
+    if (Platform.isIOS) {
+      await outputFile.writeAsBytes(
+          await decryptBytes(
+            await inputFile.readAsBytes(),
+            password,
+        ),
+      );
+      return;
+    }
     await invokeMethod(
       "$algorithm.decryptFile",
       [inputFile.path, outputFile.path, password],
     );
   }
 
-  Future<List<int>> encryptBytes(List<int> messageBytes) async {
+  Future<List<int>> encryptBytes(Uint8List messageBytes) async {
     final result = await invokeMethod(
       "$algorithm.encryptBytes",
-      [Uint8List.fromList(messageBytes)],
+      [messageBytes],
     );
     return List<int>.from(result);
   }
 
   Future encryptFile(File inputFile, File outputFile) async {
+    if (Platform.isIOS) {
+      await outputFile.writeAsBytes(
+        List<int>.from(
+          await encryptBytes(
+            await inputFile.readAsBytes(),
+          ),
+        ),
+      );
+      return;
+    }
     await invokeMethod(
       "$algorithm.encryptFile",
       [inputFile.path, outputFile.path],

@@ -78,8 +78,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     super.dispose();
     // delete files that did not finish their caching
     if (_fileViewerState.processingFile != null) {
-      _fileViewerState.processingFile.subscription.cancel();
-      _fileViewerState.processingFile.fileOnDevice.delete();
+      _fileViewerState.processingFile.subscription?.cancel();
+      _fileViewerState.processingFile.fileOnDevice?.delete();
     }
     _fileViewerState.dispose();
   }

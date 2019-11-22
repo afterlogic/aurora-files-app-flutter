@@ -1,13 +1,11 @@
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:crypto_plugin/algorithm/aes.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 class NativeFileCryptor {
-  static const _platformEncryptionChannel =
-      const MethodChannel("PrivateMailFiles.PrivateRouter.com/encryption");
-
   static int chunkMaxSize = 4000000;
+  static final aes = Aes();
 
 //
 //  List<int> _getTestFileData() {
@@ -46,11 +44,7 @@ class NativeFileCryptor {
           "Passed chunk size for decryption (${fileBytes.length}) exceeds the max chunk size ($chunkMaxSize)");
     }
     try {
-      final List<dynamic> decrypted = await _platformEncryptionChannel
-          .invokeMethod(
-              "decrypt", [Uint8List.fromList(fileBytes), keyBase64, ivBase64, isLast]);
-
-      return new List<int>.from(decrypted);
+      return aes.decrypt(fileBytes, keyBase64, ivBase64);
     } catch (err, stack) {
       print("decrypt err: $err");
       print("decrypt stack: $stack");
@@ -69,11 +63,7 @@ class NativeFileCryptor {
           "Passed chunk size for decryption (${fileBytes.length}) exceeds the max chunk size ($chunkMaxSize)");
     }
     try {
-      final List<dynamic> decrypted = await _platformEncryptionChannel
-          .invokeMethod(
-              "encrypt", [Uint8List.fromList(fileBytes), keyBase64, ivBase64, isLast]);
-
-      return new List<int>.from(decrypted);
+      return aes.encrypt(fileBytes, keyBase64, ivBase64);
     } catch (err, stack) {
       print("encrypt err: $err");
       print("encrypt stack: $stack");

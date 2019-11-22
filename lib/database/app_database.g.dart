@@ -1357,7 +1357,7 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {email};
   @override
   LocalPgpKey map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;

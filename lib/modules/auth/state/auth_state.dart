@@ -32,10 +32,10 @@ abstract class _AuthState with Store {
   final passwordCtrl = TextEditingController();
 
   Future<bool> getAuthSharedPrefs() async {
-    userEmail = await _authLocal.getUserEmailFromStorage();
-    authToken = await _authLocal.getTokenFromStorage();
-    userId = await _authLocal.getUserIdFromStorage();
-    hostName = await _authLocal.getHostFromStorage();
+    userEmail = await _authLocal.getUserEmail();
+    authToken = await _authLocal.getToken();
+    userId = await _authLocal.getUserId();
+    hostName = await _authLocal.getHost();
     return hostName is String &&
         authToken is String &&
         userEmail is String &&
@@ -49,10 +49,10 @@ abstract class _AuthState with Store {
     @required int id,
   }) async {
     await Future.wait([
-      _authLocal.setHostToStorage(host),
-      _authLocal.setTokenToStorage(token),
-      _authLocal.setUserEmailToStorage(email),
-      _authLocal.setUserIdToStorage(id),
+      _authLocal.setHost(host),
+      _authLocal.setToken(token),
+      _authLocal.setUserEmail(email),
+      _authLocal.setUserId(id),
     ]);
     hostName = host;
     authToken = token;
@@ -112,8 +112,8 @@ abstract class _AuthState with Store {
 
   void onLogout() {
     AppStore.filesState.currentStorages = new List();
-    _authLocal.deleteTokenFromStorage();
-    _authLocal.deleteUserIdFromStorage();
+    _authLocal.setToken(null);
+    _authLocal.setUserId(null);
     authToken = null;
     userId = null;
   }

@@ -32,7 +32,7 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
       selected[key.email] = key;
     }
     for (LocalPgpKey key in keys) {
-      selected.remove(key);
+      selected.remove(key.email);
     }
     if (keys.isNotEmpty) {
       isHaveKey = true;

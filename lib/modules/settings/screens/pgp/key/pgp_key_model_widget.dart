@@ -1,6 +1,8 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
@@ -98,7 +100,11 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
   }
 
   delete() async {
-    await widget._pgpKeyUtil.deleteKey(widget._pgpKey);
-    Navigator.pop(context, true);
+    final result = await openDialog(
+        context, (_) => ConfirmDeleteKeyWidget(widget._pgpKey));
+    if (result == true) {
+      await widget._pgpKeyUtil.deleteKey(widget._pgpKey);
+      Navigator.pop(context, true);
+    }
   }
 }

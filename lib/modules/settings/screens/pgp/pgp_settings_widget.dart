@@ -1,5 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/key_from_text_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
@@ -120,11 +121,18 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   @override
-  importKeyDialog([String text]) {
-    openDialog(context, (_) => KeyFromTextWidget(text)).then((result) {
-      if (result is String) {
-        _presenter.getKeysFromText(result);
-      }
-    });
+  importKeyDialog() async {
+    final result = await openDialog(context, (_) => KeyFromTextWidget());
+    if (result is String) {
+      _presenter.getKeysFromText(result);
+    }
+  }
+
+  showImportDialog(List<LocalPgpKey> keys) async {
+    final result = await openDialog(
+        context, (_) => ImportPgpKeyWidget(keys, _presenter.pgpKeyUtil));
+    if (result is List<LocalPgpKey>) {
+      _presenter.saveKeys(result);
+    }
   }
 }

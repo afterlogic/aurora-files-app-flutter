@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/database/pgp_key/pgp_key.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/recipient.dart';
@@ -21,20 +22,24 @@ class SelectRecipient extends StatefulWidget {
 class _SelectRecipientState extends State<SelectRecipient> {
   final PgpKeyDao _pgpKeyDao = DI.get();
   bool hasError = false;
-  List<Recipient> recipients;
+  List<RecipientWithKey> recipients = [];
   Map<String, LocalPgpKey> keys;
 
   loadRecipients() {
+    if (mounted) setState(() {});
     hasError = false;
+    recipients = null;
     widget.fileViewerState.getRecipient().then(
       (v) async {
-        recipients = v;
-        final localKeys = await _pgpKeyDao.getPublicKey();
-        keys = Map.fromEntries(
-          localKeys.map(
-            (item) => MapEntry(item.email, item),
-          ),
-        );
+        recipients = [];
+        await loadKeys();
+        for (Recipient recipient in v) {
+          final key = keys.remove(recipient.email);
+          recipients.add(RecipientWithKey(recipient, key));
+        }
+        keys.forEach((key, value) {
+          recipients.add(RecipientWithKey(null, value));
+        });
 
         setState(() {});
       },
@@ -45,116 +50,143 @@ class _SelectRecipientState extends State<SelectRecipient> {
     );
   }
 
+  loadKeys() async {
+    final localKeys = await _pgpKeyDao.getPublicKey();
+    keys = Map.fromEntries(
+      localKeys.map(
+        (item) => MapEntry(item.email, item),
+      ),
+    );
+  }
+
   @override
   void initState() {
-    loadRecipients();
     super.initState();
+    loadRecipients();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
+    final title = Text("Secure sharing");
     final content = SizedBox(
       height: size.height - 40,
-      width: size.width,
+      width: size.width - 40,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
-            child: Text("Secure sharing", style: theme.textTheme.title),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          ...body(theme),
-        ],
+        children: body(theme),
       ),
     );
+    final actions = <Widget>[
+      FlatButton(
+        child: Text("Cancel"),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      )
+    ];
+
     return Platform.isIOS
         ? CupertinoAlertDialog(
+            title: title,
             content: content,
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Cancel"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
+            actions: actions,
           )
-        : AlertDialog(content: content);
+        : AlertDialog(
+            title: title,
+            content: content,
+            actions: actions,
+          );
   }
 
   List<Widget> body(ThemeData theme) {
-    return recipients != null
-        ? [
-            Text(
-              "Select recipient:",
-              style: theme.textTheme.subtitle,
+    if (recipients != null) {
+      if (recipients.isEmpty) {
+        return [
+          Expanded(
+            child: Center(
+              child: Text("Not have recipiens"),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemBuilder: (_, i) {
-                  final recipient = recipients[i];
-                  return RecipientWidget(
-                    recipient,
-                    keys[recipient.email],
-                  );
-                },
-                itemCount: recipients.length,
-              ),
-            )
-          ]
-        : hasError
-            ? [
+          )
+        ];
+      }
+
+      return [
+        Text(
+          "Select recipient:",
+          style: theme.textTheme.subtitle,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemBuilder: (_, i) {
+              final recipient = recipients[i];
+              return RecipientWidget(
+                recipient,
+              );
+            },
+            itemCount: recipients.length,
+          ),
+        )
+      ];
+    }
+    if (hasError) {
+      return [
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
                 Text(
                   "Cant load recipients:",
                   style: theme.textTheme.title,
                 ),
-                Expanded(
-                  child: Center(
-                    child: FlatButton(
-                      child: Text("Try again"),
-                      onPressed: loadRecipients,
-                    ),
-                  ),
+                FlatButton(
+                  child: Text("Try again"),
+                  onPressed: loadRecipients,
                 ),
-              ]
-            : [
-                Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ];
+              ],
+            ),
+          ),
+        ),
+      ];
+    }
+    return [
+      Expanded(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    ];
   }
 }
 
-class SelectRecipientResult {
+class RecipientWithKey {
   final Recipient recipient;
   final LocalPgpKey pgpKey;
 
-  SelectRecipientResult(this.recipient, this.pgpKey);
+  RecipientWithKey(this.recipient, this.pgpKey);
 }
 
 class RecipientWidget extends StatelessWidget {
-  final Recipient recipient;
-  final LocalPgpKey pgpKey;
+  final RecipientWithKey recipient;
 
-  RecipientWidget(this.recipient, this.pgpKey);
+  RecipientWidget(this.recipient);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    var name = recipient.recipient?.fullName;
+    if (name?.isNotEmpty != true) {
+      name = "No name";
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        Navigator.pop(context, SelectRecipientResult(recipient, pgpKey));
+        Navigator.pop(context, recipient);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,19 +204,19 @@ class RecipientWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      recipient.fullName,
+                      name,
                       maxLines: 1,
                       style: theme.textTheme.body2,
                     ),
                     Text(
-                      recipient.email,
+                      recipient.recipient?.email ?? recipient.pgpKey.email,
                       maxLines: 1,
                       style: theme.textTheme.caption,
                     ),
                   ],
                 ),
               ),
-              if (pgpKey != null) Icon(Icons.vpn_key)
+              if (recipient.pgpKey != null) Icon(Icons.vpn_key)
             ],
           ),
           Divider(

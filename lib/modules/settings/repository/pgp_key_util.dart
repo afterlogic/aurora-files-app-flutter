@@ -40,11 +40,15 @@ class PgpKeyUtil {
       }
     }
 
-    if (localKeys.isNotEmpty) {
-      await pgpKeyDao.addKeys(localKeys);
-    }
-
     return localKeys;
+  }
+
+  saveKeys(List<LocalPgpKey> keys) async {
+    await pgpKeyDao.addKeys(keys);
+  }
+
+  Future<List<LocalPgpKey>> checkHasKeys(List<LocalPgpKey> keys) {
+    return pgpKeyDao.checkHasKeys(keys);
   }
 
   Future<List<LocalPgpKey>> importKeyFromFile() async {

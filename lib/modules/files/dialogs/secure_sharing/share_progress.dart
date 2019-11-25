@@ -85,7 +85,7 @@ class _ShareProgressState extends State<ShareProgress> {
           SizedBox(
             height: 10,
           ),
-          RecipientWidget(widget.recipient, widget.pgpKey),
+          RecipientWidget(RecipientWithKey(widget.recipient, widget.pgpKey)),
           SizedBox(
             height: 10,
           ),

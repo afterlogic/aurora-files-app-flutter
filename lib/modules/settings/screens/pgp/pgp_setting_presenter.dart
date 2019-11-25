@@ -27,14 +27,14 @@ class PgpSettingPresenter {
   getKeysFromFile() async {
     final result = await pgpKeyUtil.importKeyFromFile();
     if (result != null && result.isNotEmpty) {
-      getPublicKey();
+      _view.showImportDialog(result);
     }
   }
 
   getKeysFromText(String text) async {
     final result = await pgpKeyUtil.validateText(text);
-    if (result.isNotEmpty) {
-      getPublicKey();
+    if (result != null && result.isNotEmpty) {
+      _view.showImportDialog(result);
     }
   }
 
@@ -43,5 +43,10 @@ class PgpSettingPresenter {
       await pgpKeyUtil.downloadKey(key);
     }
     return await pgpKeyUtil.keysFolder();
+  }
+
+  saveKeys(List<LocalPgpKey> result) async {
+    await pgpKeyUtil.saveKeys(result);
+    getPublicKey();
   }
 }

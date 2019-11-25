@@ -307,7 +307,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       (context) => SelectRecipient(_file, _fileViewerState),
     );
 
-    if (selectRecipientResult is SelectRecipientResult) {
+    if (selectRecipientResult is RecipientWithKey) {
       final selectEncryptMethodResult = await openDialog(
         context,
         (context) => SelectEncryptMethod(

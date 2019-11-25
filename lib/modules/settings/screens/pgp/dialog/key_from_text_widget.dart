@@ -1,15 +1,13 @@
 import 'dart:io';
 
 import 'package:aurorafiles/shared_ui/app_button.dart';
-import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class KeyFromTextWidget extends StatefulWidget {
-  final String _text;
 
-  KeyFromTextWidget(this._text);
+  KeyFromTextWidget();
 
   @override
   _KeyFromTextWidgetState createState() => _KeyFromTextWidgetState();
@@ -21,7 +19,7 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
 
   @override
   void initState() {
-    _textController = TextEditingController(text: widget._text ?? "");
+    _textController = TextEditingController();
     super.initState();
   }
 
@@ -40,13 +38,15 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
                     "Import keys",
                     style: theme.textTheme.title,
                   ),
-                  Form(
-                    key: formKey,
-                    child: CupertinoTextField(
-                      maxLines: 10,
-                      minLines: 1,
-                      autofocus: true,
-                      controller: _textController,
+                  Expanded(
+                    child: Form(
+                      key: formKey,
+                      child: CupertinoTextField(
+                       maxLines: 3000,
+                        minLines: 3000,
+                        autofocus: true,
+                        controller: _textController,
+                      ),
                     ),
                   ),
                   AppButton(
@@ -75,15 +75,17 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
                   "Import keys",
                   style: theme.textTheme.title,
                 ),
-                Form(
-                  key: formKey,
-                  child: TextFormField(
-                    validator: (v) => validateInput(v, [
-                      ValidationTypes.empty,
-                    ]),
-                    controller: _textController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
+                Expanded(
+                  child: Form(
+                    key: formKey,
+                    child: TextFormField(
+                      validator: (v) => validateInput(v, [
+                        ValidationTypes.empty,
+                      ]),
+                      controller: _textController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                    ),
                   ),
                 ),
                 AppButton(

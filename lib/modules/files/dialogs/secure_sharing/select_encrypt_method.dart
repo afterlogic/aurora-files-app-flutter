@@ -29,21 +29,18 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
+    final title = Text(
+      "Secure sharing",
+    );
     final content = SizedBox(
       height: size.height - 40,
       width: size.width - 40,
       child: ListView(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
-            child: Text("Secure sharing", style: theme.textTheme.title),
-          ),
           SizedBox(
             height: 10,
           ),
-          RecipientWidget(widget.recipient, widget.pgpKey),
+          RecipientWidget(RecipientWithKey(widget.recipient, widget.pgpKey)),
           SizedBox(
             height: 10,
           ),
@@ -76,40 +73,31 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
         ],
       ),
     );
+
+    final actions = <Widget>[
+      FlatButton(
+        child: Text("Encrypt"),
+        onPressed: () {
+          Navigator.pop(context, SelectEncryptMethodResult(useKey));
+        },
+      ),
+      FlatButton(
+        child: Text("Cancel"),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      )
+    ];
     return Platform.isIOS
         ? CupertinoAlertDialog(
+            title: title,
             content: content,
-            actions: <Widget>[
-              FlatButton(
-                child: Text("Encrypt"),
-                onPressed: () {
-                  Navigator.pop(context, SelectEncryptMethodResult(useKey));
-                },
-              ),
-              FlatButton(
-                child: Text("Cancel"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
+            actions: actions,
           )
         : AlertDialog(
+            title: title,
             content: content,
-            actions: <Widget>[
-              FlatButton(
-                child: Text("Encrypt"),
-                onPressed: () {
-                  Navigator.pop(context, SelectEncryptMethodResult(useKey));
-                },
-              ),
-              FlatButton(
-                child: Text("Cancel"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
+            actions: actions,
           );
   }
 }

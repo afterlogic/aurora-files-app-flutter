@@ -1,4 +1,4 @@
-import 'package:domain/model/pgp_key.dart';
+import 'package:domain/model/bd/pgp_key.dart';
 
 abstract class PgpKeyCacheApi {
   Future<List<PgpKey>> getPublicKeys();

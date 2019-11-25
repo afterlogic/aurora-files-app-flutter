@@ -15,6 +15,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  dio: ^3.0.4
   json_serializable: ^3.2.3
   build_runner: ^1.6.9
 # For information on the generic Dart part of this file, see the

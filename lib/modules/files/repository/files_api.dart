@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
@@ -15,12 +16,15 @@ import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/stream_util.dart';
+import 'package:domain/api/cache/storage/user_storage_api.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 class FilesApi {
+  final UserStorageApi userStorage = DI.get();
+
   List<LocalFile> _sortFiles(List<LocalFile> unsortedFiles) {
     final List<LocalFile> folders = List();
     final List<LocalFile> files = List();
@@ -256,7 +260,7 @@ class FilesApi {
       // token can only be applied to our api, in case of redirect we go to a different server, so we don't want to apply our token to such request
       if (!isRedirect) {
         request.headers
-            .add("Authorization", "Bearer ${AppStore.authState.authToken}");
+            .add("Authorization", "Bearer ${userStorage.token.get()}");
       }
       final HttpClientResponse response = await request.close();
 
@@ -432,7 +436,7 @@ class FilesApi {
 
   Future<String> createPublicLink(
       String type, String path, String name, int size, bool isFolder) async {
-    final int userId = AppStore.authState.userId;
+    final int userId = await userStorage.userId.get();
     final String hostName = AppStore.authState.hostName;
     final parameters = json.encode({
       "UserId": userId,

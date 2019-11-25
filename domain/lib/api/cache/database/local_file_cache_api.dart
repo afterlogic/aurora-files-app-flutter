@@ -1,5 +1,5 @@
-import 'package:domain/model/local_file.dart';
-import 'package:domain/model/storage.dart';
+import 'package:domain/model/bd/local_file.dart';
+import 'package:domain/model/bd/storage.dart';
 
 abstract class LocalFileCacheApi  {
   Future<List<LocalFile>> getAll();

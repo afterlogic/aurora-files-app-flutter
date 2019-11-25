@@ -11,7 +11,9 @@ import 'package:uuid/uuid.dart';
 import 'file_utils.dart';
 
 Map<String, String> getHeader() {
-  return {'Authorization': 'Bearer ${AppStore.authState.authToken}'};
+  //JOPA
+  throw "use interceptor";
+//  return {'Authorization': 'Bearer ${AppStore.authState.authToken}'};
 }
 
 Future sendRequest(ApiBody body) async {

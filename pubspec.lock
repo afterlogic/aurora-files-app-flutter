@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.3.0"
+  async_injector:
+    dependency: "direct main"
+    description:
+      name: async_injector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -211,6 +218,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.3"
+  dio:
+    dependency: "direct main"
+    description:
+      name: dio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.6"
+  domain:
+    dependency: "direct main"
+    description:
+      path: domain
+      relative: true
+    source: path
+    version: "0.0.1"
+  domain_impl:
+    dependency: "direct main"
+    description:
+      path: domain_impl
+      relative: true
+    source: path
+    version: "0.0.1"
   downloads_path_provider:
     dependency: "direct main"
     description:
@@ -333,13 +361,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.3"
-  injector:
-    dependency: "direct main"
-    description:
-      name: injector
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.8"
   intl:
     dependency: "direct main"
     description:

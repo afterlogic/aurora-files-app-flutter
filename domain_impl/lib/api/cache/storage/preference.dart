@@ -6,6 +6,16 @@ abstract class _Preference<T> extends Delegate<T> {
   final String _key;
 
   _Preference(this._preferences, this._key);
+
+  @override
+  Future clear() {
+    return _preferences.remove(_key);
+  }
+
+  @override
+  String toString() {
+    return _preferences.get(_key);
+  }
 }
 
 class PreferenceString extends _Preference<String> {

@@ -51,4 +51,15 @@ class  Pgp {
             }
         }
     }
+    
+    func createKeys(_ length:Int32,_ email:String,_ password:String)throws ->[Data]{
+        let generator = KeyGenerator()
+        generator.keyBitsLength = length
+
+        let key = generator.generate(for: email, passphrase: password)
+        let publicKey = try key.export(keyType: .public)
+        let secretKey = try key.export(keyType: .secret)
+
+        return [publicKey,secretKey]
+    }
 }

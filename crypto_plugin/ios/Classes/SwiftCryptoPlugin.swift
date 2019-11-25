@@ -96,9 +96,18 @@ public class SwiftCryptoPlugin: NSObject, FlutterPlugin {
             case "encryptBytes":
                 let data = arguments[0] as! FlutterStandardTypedData
                 let result = try self.pgp.encrypt(Data.init(data.data))
-                return   result.withUnsafeBytes {
+                return  result.withUnsafeBytes {
                     [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
                 }
+            case "createKeys":
+                let length = arguments[0] as! NSNumber
+                let email = arguments[1] as! String
+                let password = arguments[0] as! String
+                return try self.pgp.createKeys(Int32(truncating: length), email, password).map({ (result) -> [UInt8] in
+                    return result.withUnsafeBytes {
+                        [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
+                    }
+                })
             default:
                 break
             }

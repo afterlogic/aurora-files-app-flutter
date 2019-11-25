@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
+import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class ImportPgpKeyWidget extends StatefulWidget {
 
 class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
   Map<String, LocalPgpKey> selected = {};
+  bool isHaveKey = false;
 
   @override
   void initState() {
@@ -26,8 +28,23 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
 
   checkKeys() async {
     final keys = await widget.pgpKeyUtil.checkHasKeys(widget.keys);
-    for (LocalPgpKey key in keys) {
+    for (LocalPgpKey key in widget.keys) {
       selected[key.email] = key;
+    }
+    for (LocalPgpKey key in keys) {
+      selected.remove(key.email);
+    }
+    if (keys.isNotEmpty) {
+      isHaveKey = true;
+    }
+    setState(() {});
+  }
+
+  changeSelected(bool isSelected, LocalPgpKey key) {
+    if (isSelected) {
+      selected[key.email] = key;
+    } else {
+      selected.remove(key.email);
     }
     setState(() {});
   }
@@ -36,8 +53,11 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final title = Text("Import keys");
-    final content = Column(
-    children: <Widget>[
+    final content = Flex(
+      direction: Axis.vertical,
+      children: <Widget>[
+        if (isHaveKey)
+          Text("Keys which are already in the system are greyed out."),
         Expanded(
           child: ListView.builder(
             itemBuilder: (_, i) {
@@ -54,20 +74,31 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
             },
             itemCount: widget.keys.length,
           ),
-        )
+        ),
+        AppButton(
+            width: double.infinity,
+            text: "Import selected keys".toUpperCase(),
+            onPressed: () {
+              Navigator.pop(context, selected.values.toList());
+            }),
+        AppButton(
+            width: double.infinity,
+            text: "CANCEL".toUpperCase(),
+            onPressed: () => Navigator.pop(context)),
       ],
     );
 
     return Platform.isIOS
         ? CupertinoAlertDialog(
-            title:  title,
+            title: title,
             content: SizedBox(
-              height: size.height/2,
-              child: content,),
+              height: size.height / 2,
+              child: content,
+            ),
           )
         : AlertDialog(
             title: title,
-            content: Expanded(child: content),
+            content: content,
           );
   }
 }

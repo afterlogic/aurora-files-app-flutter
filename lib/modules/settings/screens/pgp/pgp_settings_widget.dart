@@ -12,6 +12,7 @@ import 'package:aurorafiles/utils/stream_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
+import 'key/export_pgp_key_route.dart';
 import 'key/pgp_key_model_route.dart';
 
 class PgpSettingWidget extends StatefulWidget {
@@ -111,13 +112,8 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   exportAll(List<LocalPgpKey> keys) async {
-    final path = await _presenter.exportAll(keys);
-    showSnack(
-      context: context,
-      scaffoldState: _scaffoldKey.currentState,
-      msg: "Downloading $path",
-      isError: false,
-    );
+    Navigator.pushNamed(context, PgpKeyExportRoute.name,
+        arguments: [keys, _presenter.pgpKeyUtil]);
   }
 
   @override

@@ -78,6 +78,20 @@ class PgpKeyUtil {
     return file;
   }
 
+  Future<File> downloadKeys(List<LocalPgpKey> keys,
+      [String addedPath = ""]) async {
+    if (!Platform.isIOS) await getStoragePermissions();
+    final file = File(await keysFolder() + addedPath + "export_keys" + ".asc");
+    if (await file.exists()) {
+      await file.delete();
+    }
+    await file.create(recursive: true);
+    for (LocalPgpKey key in keys) {
+      await file.writeAsString(key.key, mode: FileMode.append);
+    }
+    return file;
+  }
+
   Future deleteKey(LocalPgpKey key) async {
     await pgpKeyDao.deleteKey(key);
   }

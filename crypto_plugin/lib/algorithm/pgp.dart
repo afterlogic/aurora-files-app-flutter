@@ -116,7 +116,7 @@ class Pgp extends Crypt {
       [key],
     );
     if (result is List) {
-      return KeyDescription(result[0], result[1]);
+      return KeyDescription( List<String>.from(result[0]), result[1]);
     } else {
       return null;
     }

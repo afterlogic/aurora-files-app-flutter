@@ -39,14 +39,16 @@ class  Pgp {
         return try ObjectivePGP.encrypt(message, addSignature: false, using: [self.publicKey!])
     }
     
-    func getEmailFromKey(_ key:Data) throws->[String] {
+    func getKeyDescription(_ key:Data) throws->[String] {
         let key = try ObjectivePGP.readKeys(from: key)[0]
         if(key.isPublic){
             return key.publicKey!.users.map { (user:User) -> String in
                 return user.userID
             }
         }else{
-            throw CryptionError("is not a public key")
+            return key.secretKey!.users.map { (user:User) -> String in
+                return user.userID
+            }
         }
     }
 }

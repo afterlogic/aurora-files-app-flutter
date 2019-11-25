@@ -10,4 +10,6 @@ class PgpKey extends Table {
   TextColumn get key => text()();
 
   BoolColumn get isPrivate => boolean()();
+
+  IntColumn get length => integer()();
 }

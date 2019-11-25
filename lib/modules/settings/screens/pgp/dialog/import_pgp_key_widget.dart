@@ -34,9 +34,10 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final title = Text("Import keys");
     final content = Column(
-      children: <Widget>[
+    children: <Widget>[
         Expanded(
           child: ListView.builder(
             itemBuilder: (_, i) {
@@ -59,12 +60,14 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
 
     return Platform.isIOS
         ? CupertinoAlertDialog(
-            title: title,
-            content: content,
+            title:  title,
+            content: SizedBox(
+              height: size.height/2,
+              child: content,),
           )
         : AlertDialog(
             title: title,
-            content: content,
+            content: Expanded(child: content),
           );
   }
 }
@@ -83,8 +86,9 @@ class KeyItem extends StatefulWidget {
 class _KeyItemState extends State<KeyItem> {
   @override
   Widget build(BuildContext context) {
-    final description =
-        "(${widget.pgpKey.key.length}-bit, ${widget.pgpKey.isPrivate ? "private" : "public"})";
+    final description = widget.pgpKey.key.length != null
+        ? "(${widget.pgpKey.key.length}-bit, ${widget.pgpKey.isPrivate ? "private" : "public"})"
+        : "( ${widget.pgpKey.isPrivate ? "private" : "public"})";
 
     var textTheme = Theme.of(context).textTheme;
     if (!widget.selected) {

@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class KeyFromTextWidget extends StatefulWidget {
-
   KeyFromTextWidget();
 
   @override
@@ -26,12 +25,13 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final size = MediaQuery.of(context).size;
     return Platform.isIOS
         ? CupertinoAlertDialog(
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
+            content: SizedBox(
+              height: size.height /2,
+              child: Flex(
+                direction: Axis.vertical,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
@@ -39,23 +39,17 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
                     style: theme.textTheme.title,
                   ),
                   Expanded(
-                    child: Form(
-                      key: formKey,
-                      child: CupertinoTextField(
-                       maxLines: 3000,
-                        minLines: 3000,
-                        autofocus: true,
-                        controller: _textController,
-                      ),
+                    child: CupertinoTextField(
+                      maxLines: null,
+                      autofocus: true,
+                      controller: _textController,
                     ),
                   ),
                   AppButton(
                       width: double.infinity,
                       text: "Check keys".toUpperCase(),
                       onPressed: () {
-                        if (formKey.currentState.validate()) {
-                          Navigator.pop(context, _textController.text);
-                        }
+                        Navigator.pop(context, _textController.text);
                       }),
                   AppButton(
                     width: double.infinity,
@@ -68,7 +62,6 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
           )
         : AlertDialog(
             content: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(

@@ -29,7 +29,7 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
     return Platform.isIOS
         ? CupertinoAlertDialog(
             content: SizedBox(
-              height: size.height /2,
+              height: size.height / 2,
               child: Flex(
                 direction: Axis.vertical,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,6 +76,7 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
                         ValidationTypes.empty,
                       ]),
                       controller: _textController,
+                      expands: true,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                     ),

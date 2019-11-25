@@ -23,9 +23,9 @@ class PgpKeyUtil {
     final localKeys = <LocalPgpKey>[];
 
     for (String key in keys) {
-      final emails = await pgp.getEmailFromKey(key);
+      final description = await pgp.getKeyDescription(key);
 
-      for (String email in emails) {
+      for (String email in description.email) {
         final groups = RegExp("(?:\\D|\\d)*<((?:\\D|\\d)*)>").firstMatch(email);
         String validEmail;
         if (groups.groupCount == 1) {

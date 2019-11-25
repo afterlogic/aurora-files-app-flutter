@@ -1,6 +1,5 @@
 package com.privaterouter.crypto_plugin
 
-import android.annotation.SuppressLint
 import com.privaterouter.crypto_plugin.aes.Aes
 import com.privaterouter.crypto_plugin.pgp.PgpApi
 import io.flutter.plugin.common.MethodCall
@@ -91,9 +90,10 @@ class CryptoPlugin : MethodCallHandler {
                         }
 
                     }
-                    "getEmailFromKey" -> {
+                    "getKeyDescription" -> {
                         val key = arguments[0] as String
-                        return pgp.getEmailFromKey(key)
+                        val description = pgp.getKeyDescription(key)
+                        return arrayListOf(description.emails, description.length)
                     }
                     "setTempFile" -> {
                         val tempFile = arguments[0] as String?

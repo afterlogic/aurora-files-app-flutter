@@ -42,18 +42,6 @@ class Pgp extends Crypt {
     );
   }
 
-  Future<List<String>> getEmailFromKey(String key) async {
-    final result = await invokeMethod(
-      "$algorithm.getEmailFromKey",
-      [key],
-    );
-    if (result is List) {
-      return List<String>.from(result);
-    } else {
-      return null;
-    }
-  }
-
   Future setPrivateKey(
     String key,
   ) async {
@@ -82,9 +70,9 @@ class Pgp extends Crypt {
   Future decryptFile(File inputFile, File outputFile, String password) async {
     if (Platform.isIOS) {
       await outputFile.writeAsBytes(
-          await decryptBytes(
-            await inputFile.readAsBytes(),
-            password,
+        await decryptBytes(
+          await inputFile.readAsBytes(),
+          password,
         ),
       );
       return;
@@ -121,6 +109,18 @@ class Pgp extends Crypt {
   }
 
   static const algorithm = "pgp";
+
+  Future<KeyDescription> getKeyDescription(String key) async {
+    final result = await invokeMethod(
+      "$algorithm.getKeyDescription",
+      [key],
+    );
+    if (result is List) {
+      return KeyDescription(result[0], result[1]);
+    } else {
+      return null;
+    }
+  }
 }
 
 class Progress {
@@ -136,4 +136,11 @@ class Progress {
     }
     return super.toString();
   }
+}
+
+class KeyDescription {
+  final List<String> email;
+  final int length;
+
+  KeyDescription(this.email, this.length);
 }

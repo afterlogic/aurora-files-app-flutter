@@ -1,5 +1,6 @@
 package com.privaterouter.crypto_plugin.pgp
 
+import KeyDescription
 import org.bouncycastle.openpgp.PGPPublicKey
 import java.io.*
 
@@ -9,10 +10,10 @@ open class PgpApi {
     private var privateKey: ByteArray? = null
     private var tempFile: File? = null
 
-    fun getEmailFromKey(key: String): List<String> {
+    fun getKeyDescription(key: String): KeyDescription {
         return pgp.getEmailFromKey(ByteArrayInputStream(key.toByteArray()))
     }
-    
+
     fun setPrivateKey(key: String?) {
         privateKey = key?.toByteArray()
     }
@@ -96,5 +97,5 @@ open class PgpApi {
         encript(outStream, ByteArrayInputStream(array), array.size.toLong())
         return outStream.toByteArray()
     }
-    
+
 }

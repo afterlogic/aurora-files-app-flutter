@@ -1,0 +1,1 @@
+class KeyDescription(val emails: List<String>, val length: Int)

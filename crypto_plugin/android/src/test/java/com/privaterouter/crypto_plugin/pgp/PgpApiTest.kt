@@ -8,8 +8,8 @@ class PgpApiTest {
     @Test
     fun testGetUserUid() {
         val pgpHelper = PgpApi()
-        val result = pgpHelper.getEmailFromKey(publicKey)
-        assert(result.size == 1 && result[0] == "sample@mail.ru")
+        val result = pgpHelper.getKeyDescription(publicKey)
+        assert(result.emails.size == 1 && result.emails[0] == "Test <test@afterlogic.com>")
     }
     
     @Test

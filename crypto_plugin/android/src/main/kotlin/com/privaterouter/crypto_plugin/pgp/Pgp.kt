@@ -1,6 +1,7 @@
 package com.privaterouter.crypto_plugin.pgp
 
 
+import KeyDescription
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -123,7 +124,7 @@ class Pgp {
      */
     @Throws(Exception::class)
     fun decrypt(inputStream: InputStream, out: OutputStream, keyIn: InputStream, passwd: CharArray, length: Long) {
-        this.progress?.stop=true
+        this.progress?.stop = true
         val progress = Progress()
         this.progress = progress
         try {
@@ -184,7 +185,7 @@ class Pgp {
                     if (ch < 0) {
                         break
                     }
-                    progress.update( 1)
+                    progress.update(1)
                     out.write(ch)
                 }
             } else if (message is PGPOnePassSignatureList) {
@@ -208,7 +209,7 @@ class Pgp {
     @Throws(IOException::class, NoSuchProviderException::class, PGPException::class)
     fun encrypt(output: OutputStream, prepareEncrypt: File, input: InputStream,
                 encKey: PGPPublicKey, fileLength: Long) {
-        this.progress?.stop=true
+        this.progress?.stop = true
         val progress = Progress()
         this.progress = progress
         try {
@@ -286,11 +287,12 @@ class Pgp {
     }
 
 
-    fun getEmailFromKey(inputStream: InputStream): List<String> {
-        val userIDs = readPublicKey(inputStream).userIDs
+    fun getEmailFromKey(inputStream: InputStream): KeyDescription {
+        val key = readPublicKey(inputStream)
+        val userIDs = key.userIDs
         val users = ArrayList<String>()
         while (userIDs.hasNext())
             users.add(userIDs.next())
-        return users
+        return KeyDescription(users, key.bitStrength)
     }
 }

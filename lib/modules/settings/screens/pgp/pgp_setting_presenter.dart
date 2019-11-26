@@ -62,6 +62,10 @@ class PgpSettingPresenter {
   }
 
   addPrivateKey(CreateKeyResult result) async {
+    if (result.needUpdate) {
+      refreshKeys();
+    }
+
     final keys = await result.keyBuilder;
     final privateKey = LocalPgpKey(
         email: result.email,

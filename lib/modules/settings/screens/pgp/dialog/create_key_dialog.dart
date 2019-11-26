@@ -26,8 +26,8 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   final _passwordController = TextEditingController();
   final _lengthController = TextEditingController(text: "2048");
   final _formKey = GlobalKey<FormState>();
-  String error;
-  bool obscure = false;
+  String _error;
+  bool _obscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,15 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                   SizedBox(height: 10),
                   CupertinoTextField(
                     prefix: Text(" Password:"),
-                    obscureText: obscure,
+                    suffix: GestureDetector(
+                      child: Icon(
+                          _obscure ? Icons.visibility : Icons.visibility_off),
+                      onTap: () {
+                        _obscure = !_obscure;
+                        setState(() {});
+                      },
+                    ),
+                    obscureText: _obscure,
                     controller: _passwordController,
                     keyboardType: TextInputType.visiblePassword,
                     inputFormatters: [
@@ -64,7 +72,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    error ?? "",
+                    _error ?? "",
                     style: TextStyle(color: Colors.red),
                   ),
                   AppButton(
@@ -98,25 +106,39 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
+                          decoration: const InputDecoration(labelText: "Email"),
                           validator: (v) =>
                               validateInput(v, [ValidationTypes.email]),
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                         ),
                         TextFormField(
+                          decoration:  InputDecoration(
+                            labelText: "Password",
+                            suffix: GestureDetector(
+                              child: Icon(_obscure
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,),
+                              onTap: () {
+                                _obscure = !_obscure;
+                                setState(() {});
+                              },
+                            ),
+                          ),
                           validator: (v) =>
                               validateInput(v, [ValidationTypes.empty]),
                           controller: _passwordController,
-                          obscureText: obscure,
-                          inputFormatters: [
-                            WhitelistingTextInputFormatter.digitsOnly
-                          ],
-                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: _obscure,
                         ),
                         TextFormField(
+                          decoration:
+                              const InputDecoration(labelText: "Length"),
                           validator: (value) {
                             return _validateLength(value);
                           },
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
                           controller: _lengthController,
                           keyboardType: TextInputType.numberWithOptions(
                               signed: true, decimal: false),
@@ -148,13 +170,13 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   }
 
   String _validateInput() {
-    error = null;
-    error = validateInput(_emailController.text, [ValidationTypes.email]);
-    if (error != null) return error;
-    error = _validatePassword(_passwordController.text);
-    if (error != null) return error;
-    error = _validateLength(_lengthController.text);
-    return error;
+    _error = null;
+    _error = validateInput(_emailController.text, [ValidationTypes.email]);
+    if (_error != null) return _error;
+    _error = _validatePassword(_passwordController.text);
+    if (_error != null) return _error;
+    _error = _validateLength(_lengthController.text);
+    return _error;
   }
 
   String _validatePassword(String text) {
@@ -179,18 +201,20 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     final length = int.tryParse(_lengthController.text);
     final email = _emailController.text;
     final password = _passwordController.text;
-    if (await widget.pgpKeyUtil.checkHasKey(_emailController.text)) {
+    final hasKey = await widget.pgpKeyUtil.checkHasKey(_emailController.text);
+    if (hasKey) {
       final result = await openDialog(
-          context,
-          (_) => ConfirmDeleteKeyWidget(
-              "You already have the key(s) for this email"));
+        context,
+        (_) => ConfirmDeleteKeyWidget(
+            "You already have the key(s) for this email"),
+      );
       if (result != true) {
         return;
       }
     }
 
     final future = widget.pgpKeyUtil.createKeys(length, email, password);
-    Navigator.pop(context, CreateKeyResult(email, length, future));
+    Navigator.pop(context, CreateKeyResult(email, length, future, hasKey));
   }
 
   _pop() {
@@ -202,6 +226,7 @@ class CreateKeyResult {
   final String email;
   final int length;
   final Future<KeyPair> keyBuilder;
+  final bool needUpdate;
 
-  CreateKeyResult(this.email, this.length, this.keyBuilder);
+  CreateKeyResult(this.email, this.length, this.keyBuilder, this.needUpdate);
 }

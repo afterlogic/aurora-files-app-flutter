@@ -47,9 +47,8 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
                     SizedBox(
                       height: 20,
                     ),
-                    Text(
+                    SelectableText(
                       widget._pgpKey.key,
-                      maxLines: null,
                     ),
                   ],
                 ),

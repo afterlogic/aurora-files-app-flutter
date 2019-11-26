@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/recipient.dart';
@@ -69,18 +70,23 @@ class _ShareProgressState extends State<ShareProgress> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
+    final actions = <Widget>[
+      FlatButton(
+        child: Text("Cancel"),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      )
+    ];
+    final title = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Text("Secure sharing"),
+    );
     final content = SizedBox(
-      height: 300,
+      height: min(size.height / 2, 350),
       child: ListView(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
-            child: Text("Secure sharing", style: theme.textTheme.title),
-          ),
           SizedBox(
             height: 10,
           ),
@@ -103,18 +109,14 @@ class _ShareProgressState extends State<ShareProgress> {
     );
     return Platform.isIOS
         ? CupertinoAlertDialog(
+            title: title,
             content: content,
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text("Cancel"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
+            actions: actions,
           )
         : AlertDialog(
+            title: title,
             content: content,
+            actions: actions,
           );
   }
 }

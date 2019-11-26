@@ -70,9 +70,12 @@ class _SelectRecipientState extends State<SelectRecipient> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final title = Text("Secure sharing");
+    final title = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Text("Secure sharing"),
+    );
     final content = SizedBox(
-      height: min(size.height/2,350),
+      height: min(size.height / 2, 350),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,12 +117,16 @@ class _SelectRecipientState extends State<SelectRecipient> {
       }
 
       return [
-        SizedBox(
-          height: 10,
-        ),
+        if (Platform.isIOS)
+          SizedBox(
+            height: 10,
+          ),
         Text(
           "Select recipient:",
           style: theme.textTheme.subtitle,
+        ),
+        SizedBox(
+          height: 10,
         ),
         Expanded(
           child: ListView.separated(

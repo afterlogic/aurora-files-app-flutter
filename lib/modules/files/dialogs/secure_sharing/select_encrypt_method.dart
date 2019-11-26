@@ -30,8 +30,9 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final title = Text(
-      "Secure sharing",
+    final title = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Text("Secure sharing"),
     );
     final content = SizedBox(
       height: min(size.height/2,350),

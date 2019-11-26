@@ -52,14 +52,16 @@ class  Pgp {
         }
     }
     
-    func createKeys(_ length:Int32,_ email:String,_ password:String)throws ->[Data]{
+    func createKeys(_ length:Int32,_ email:String,_ password:String)throws ->[String]{
         let generator = KeyGenerator()
         generator.keyBitsLength = length
 
         let key = generator.generate(for: email, passphrase: password)
-        let publicKey = try key.export(keyType: .public)
-        let secretKey = try key.export(keyType: .secret)
-
+     
+        
+       let publicKey = try Armor.armored(key.export(), as: .publicKey)
+       let secretKey = try Armor.armored(key.export(), as: .publicKey)
+        
         return [publicKey,secretKey]
     }
 }

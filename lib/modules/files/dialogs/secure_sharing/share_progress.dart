@@ -72,8 +72,7 @@ class _ShareProgressState extends State<ShareProgress> {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final content = SizedBox(
-      height: size.height - 40,
-      width: size.width - 40,
+      height: 300,
       child: ListView(
         children: <Widget>[
           Padding(

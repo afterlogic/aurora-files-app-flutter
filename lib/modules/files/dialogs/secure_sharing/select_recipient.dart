@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key.dart';
@@ -71,9 +72,9 @@ class _SelectRecipientState extends State<SelectRecipient> {
     final size = MediaQuery.of(context).size;
     final title = Text("Secure sharing");
     final content = SizedBox(
-      height: size.height - 40,
-      width: size.width - 40,
+      height: min(size.height/2,350),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: body(theme),
       ),
@@ -113,21 +114,22 @@ class _SelectRecipientState extends State<SelectRecipient> {
       }
 
       return [
+        SizedBox(
+          height: 10,
+        ),
         Text(
           "Select recipient:",
           style: theme.textTheme.subtitle,
         ),
-        SizedBox(
-          height: 10,
-        ),
         Expanded(
-          child: ListView.builder(
+          child: ListView.separated(
             itemBuilder: (_, i) {
               final recipient = recipients[i];
               return RecipientWidget(
                 recipient,
               );
             },
+            separatorBuilder: (_, __) => Divider(color: Colors.grey),
             itemCount: recipients.length,
           ),
         )
@@ -189,42 +191,31 @@ class RecipientWidget extends StatelessWidget {
       onTap: () {
         Navigator.pop(context, recipient);
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Flex(
+        direction: Axis.horizontal,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Divider(
-            color: Colors.transparent,
-          ),
-          Flex(
-            direction: Axis.horizontal,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      name,
-                      maxLines: 1,
-                      style: hasName
-                          ? theme.textTheme.body2
-                          : theme.textTheme.body2.apply(color: Colors.grey),
-                    ),
-                    Text(
-                      recipient.recipient?.email ?? recipient.pgpKey.email,
-                      maxLines: 1,
-                      style: theme.textTheme.caption,
-                    ),
-                  ],
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  name,
+                  maxLines: 1,
+                  style: hasName
+                      ? theme.textTheme.body2
+                      : theme.textTheme.body2.apply(color: Colors.grey),
                 ),
-              ),
-              if (recipient.pgpKey != null) Icon(Icons.vpn_key)
-            ],
+                Text(
+                  recipient.recipient?.email ?? recipient.pgpKey.email,
+                  maxLines: 1,
+                  style: theme.textTheme.caption,
+                ),
+              ],
+            ),
           ),
-          Divider(
-            color: Colors.grey,
-          )
+          if (recipient.pgpKey != null) Icon(Icons.vpn_key)
         ],
       ),
     );

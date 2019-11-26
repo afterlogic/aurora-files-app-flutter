@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/recipient.dart';
@@ -33,13 +34,9 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
       "Secure sharing",
     );
     final content = SizedBox(
-      height: size.height - 40,
-      width: size.width - 40,
+      height: min(size.height/2,350),
       child: ListView(
         children: <Widget>[
-          SizedBox(
-            height: 10,
-          ),
           RecipientWidget(RecipientWithKey(widget.recipient, widget.pgpKey)),
           SizedBox(
             height: 10,

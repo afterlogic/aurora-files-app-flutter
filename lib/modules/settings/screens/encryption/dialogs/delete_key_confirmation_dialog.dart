@@ -18,11 +18,13 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final title = Text("Delete key");
+    final content = Text(
+        "Attention! You'll no longer be able to decrypt encrypted files on this device unless you import this key again.");
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
-        title: Text("Delete key"),
-        content: Text(
-            "Attention! You'll no longer be able to decrypt encrypted files on this device unless you import this key again."),
+        title: title,
+        content: content,
         actions: <Widget>[
           CupertinoButton(
             child: Text("Cancel"),
@@ -50,9 +52,8 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
       );
     } else {
       return AlertDialog(
-        title: Text("Delete key"),
-        content: Text(
-            "Attention! You'll no longer be able to decrypt encrypted files on this device unless you import this key again."),
+        title: title,
+        content: content,
         actions: <Widget>[
           FlatButton(
             child: Text("CANCEL"),

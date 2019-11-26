@@ -1,42 +1,24 @@
 package com.privaterouter.crypto_plugin.pgp
 
 
+
 import KeyDescription
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.security.NoSuchProviderException
-import java.security.Provider
-import java.security.SecureRandom
-import java.security.Security
+import org.bouncycastle.bcpg.ArmoredOutputStream
 import java.util.Date
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider
-import org.bouncycastle.openpgp.PGPCompressedData
-import org.bouncycastle.openpgp.PGPCompressedDataGenerator
-import org.bouncycastle.openpgp.PGPEncryptedData
-import org.bouncycastle.openpgp.PGPEncryptedDataGenerator
-import org.bouncycastle.openpgp.PGPEncryptedDataList
-import org.bouncycastle.openpgp.PGPException
-import org.bouncycastle.openpgp.PGPLiteralData
-import org.bouncycastle.openpgp.PGPLiteralDataGenerator
-import org.bouncycastle.openpgp.PGPObjectFactory
-import org.bouncycastle.openpgp.PGPOnePassSignatureList
-import org.bouncycastle.openpgp.PGPPrivateKey
-import org.bouncycastle.openpgp.PGPPublicKey
-import org.bouncycastle.openpgp.PGPPublicKeyEncryptedData
-import org.bouncycastle.openpgp.PGPPublicKeyRingCollection
-import org.bouncycastle.openpgp.PGPSecretKeyRingCollection
+import org.bouncycastle.openpgp.*
 import org.bouncycastle.openpgp.operator.KeyFingerPrintCalculator
-import org.bouncycastle.openpgp.operator.jcajce.JcaPGPDigestCalculatorProviderBuilder
-import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder
-import org.bouncycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder
-import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyDataDecryptorFactoryBuilder
-import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyKeyEncryptionMethodGenerator
 import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator
+import java.security.*
+import org.bouncycastle.bcpg.HashAlgorithmTags
+import org.bouncycastle.openpgp.operator.jcajce.*
+import java.io.*
+import org.bouncycastle.openpgp.PGPPublicKey
+
+
+
+
 
 /**
  * Taken from org.bouncycastle.openpgp.examples
@@ -52,17 +34,16 @@ class Pgp {
         private set
 
     init {
-        Security.addProvider(BouncyCastleProvider())
-        calculator = BcKeyFingerprintCalculator()
         provider = BouncyCastleProvider()
+        Security.addProvider(provider)
+        calculator = BcKeyFingerprintCalculator()
     }
 
     @Throws(IOException::class, PGPException::class)
     fun readPublicKey(inputStream: InputStream): PGPPublicKey {
         var inputStream1 = inputStream
-        inputStream1 = org.bouncycastle.openpgp.PGPUtil.getDecoderStream(inputStream1)
+        inputStream1 = PGPUtil.getDecoderStream(inputStream1)
         val pgpPub = PGPPublicKeyRingCollection(inputStream1, calculator)
-
         //
         // we just loop through the collection till we find a key suitable for encryption, inputStream the real
         // world you would probably want to be a bit smarter about this.
@@ -106,7 +87,7 @@ class Pgp {
     @Throws(IOException::class, PGPException::class, NoSuchProviderException::class)
     fun findSecretKey(keyIn: InputStream, keyID: Long, pass: CharArray): PGPPrivateKey? {
         val pgpSec = PGPSecretKeyRingCollection(
-                org.bouncycastle.openpgp.PGPUtil.getDecoderStream(keyIn), calculator)
+                PGPUtil.getDecoderStream(keyIn), calculator)
 
         val pgpSecKey = pgpSec.getSecretKey(keyID) ?: return null
 
@@ -294,5 +275,42 @@ class Pgp {
         while (userIDs.hasNext())
             users.add(userIDs.next())
         return KeyDescription(users, key.bitStrength)
+    }
+
+    fun createKeys(length: Int, email: String, password: String): List<ByteArray> {
+
+        val kpg = KeyPairGenerator.getInstance("RSA", provider)
+        kpg.initialize(length)
+        val kp = kpg.generateKeyPair()
+
+        val private = ByteArrayOutputStream()
+        val public = ByteArrayOutputStream()
+        exportKeyPair(private, public, kp, email, password.toCharArray())
+
+        return arrayListOf<ByteArray>(public.toByteArray(), private.toByteArray())
+    }
+
+    private fun exportKeyPair(
+            secretOut: OutputStream,
+            publicOut: OutputStream,
+            pair: KeyPair,
+            identity: String,
+            passPhrase: CharArray) {
+        val armoredSecretOut = ArmoredOutputStream(secretOut)
+        val armoredPublicOut = ArmoredOutputStream(publicOut)
+
+        val sha1Calc = JcaPGPDigestCalculatorProviderBuilder().build().get(HashAlgorithmTags.SHA1)
+        val keyPair = JcaPGPKeyPair(PGPPublicKey.RSA_GENERAL, pair, Date())
+        val secretKey = PGPSecretKey(PGPSignature.DEFAULT_CERTIFICATION, keyPair, identity, sha1Calc, null, null, JcaPGPContentSignerBuilder(keyPair.publicKey.algorithm, HashAlgorithmTags.SHA1), JcePBESecretKeyEncryptorBuilder(PGPEncryptedData.CAST5, sha1Calc).setProvider(provider).build(passPhrase))
+        secretKey.encode(armoredSecretOut)
+
+        armoredSecretOut.close()
+
+
+        val key = secretKey.publicKey
+
+        key.encode(armoredPublicOut)
+
+        armoredPublicOut.close()
     }
 }

@@ -1189,22 +1189,25 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
 }
 
 class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
+  final int id;
   final String email;
   final String key;
   final bool isPrivate;
   final int length;
   LocalPgpKey(
-      {@required this.email,
+      {@required this.id,
+      @required this.email,
       @required this.key,
       @required this.isPrivate,
-      @required this.length});
+      this.length});
   factory LocalPgpKey.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
     final boolType = db.typeSystem.forDartType<bool>();
-    final intType = db.typeSystem.forDartType<int>();
     return LocalPgpKey(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       email:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
       key: stringType.mapFromDatabaseResponse(data['${effectivePrefix}key']),
@@ -1216,6 +1219,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   factory LocalPgpKey.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return LocalPgpKey(
+      id: serializer.fromJson<int>(json['id']),
       email: serializer.fromJson<String>(json['email']),
       key: serializer.fromJson<String>(json['key']),
       isPrivate: serializer.fromJson<bool>(json['isPrivate']),
@@ -1226,6 +1230,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   Map<String, dynamic> toJson(
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return {
+      'id': serializer.toJson<int>(id),
       'email': serializer.toJson<String>(email),
       'key': serializer.toJson<String>(key),
       'isPrivate': serializer.toJson<bool>(isPrivate),
@@ -1236,6 +1241,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   @override
   T createCompanion<T extends UpdateCompanion<LocalPgpKey>>(bool nullToAbsent) {
     return PgpKeyCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       email:
           email == null && nullToAbsent ? const Value.absent() : Value(email),
       key: key == null && nullToAbsent ? const Value.absent() : Value(key),
@@ -1248,8 +1254,9 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   }
 
   LocalPgpKey copyWith(
-          {String email, String key, bool isPrivate, int length}) =>
+          {int id, String email, String key, bool isPrivate, int length}) =>
       LocalPgpKey(
+        id: id ?? this.id,
         email: email ?? this.email,
         key: key ?? this.key,
         isPrivate: isPrivate ?? this.isPrivate,
@@ -1258,6 +1265,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   @override
   String toString() {
     return (StringBuffer('LocalPgpKey(')
+          ..write('id: $id, ')
           ..write('email: $email, ')
           ..write('key: $key, ')
           ..write('isPrivate: $isPrivate, ')
@@ -1267,12 +1275,15 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(email.hashCode,
-      $mrjc(key.hashCode, $mrjc(isPrivate.hashCode, length.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(email.hashCode,
+          $mrjc(key.hashCode, $mrjc(isPrivate.hashCode, length.hashCode)))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
       (other is LocalPgpKey &&
+          other.id == id &&
           other.email == email &&
           other.key == key &&
           other.isPrivate == isPrivate &&
@@ -1280,22 +1291,26 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
 }
 
 class PgpKeyCompanion extends UpdateCompanion<LocalPgpKey> {
+  final Value<int> id;
   final Value<String> email;
   final Value<String> key;
   final Value<bool> isPrivate;
   final Value<int> length;
   const PgpKeyCompanion({
+    this.id = const Value.absent(),
     this.email = const Value.absent(),
     this.key = const Value.absent(),
     this.isPrivate = const Value.absent(),
     this.length = const Value.absent(),
   });
   PgpKeyCompanion copyWith(
-      {Value<String> email,
+      {Value<int> id,
+      Value<String> email,
       Value<String> key,
       Value<bool> isPrivate,
       Value<int> length}) {
     return PgpKeyCompanion(
+      id: id ?? this.id,
       email: email ?? this.email,
       key: key ?? this.key,
       isPrivate: isPrivate ?? this.isPrivate,
@@ -1308,6 +1323,15 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
   final GeneratedDatabase _db;
   final String _alias;
   $PgpKeyTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
   final VerificationMeta _emailMeta = const VerificationMeta('email');
   GeneratedTextColumn _email;
   @override
@@ -1352,12 +1376,12 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
     return GeneratedIntColumn(
       'length',
       $tableName,
-      false,
+      true,
     );
   }
 
   @override
-  List<GeneratedColumn> get $columns => [email, key, isPrivate, length];
+  List<GeneratedColumn> get $columns => [id, email, key, isPrivate, length];
   @override
   $PgpKeyTable get asDslTable => this;
   @override
@@ -1368,6 +1392,11 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
   VerificationContext validateIntegrity(PgpKeyCompanion d,
       {bool isInserting = false}) {
     final context = VerificationContext();
+    if (d.id.present) {
+      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
+    } else if (id.isRequired && isInserting) {
+      context.missing(_idMeta);
+    }
     if (d.email.present) {
       context.handle(
           _emailMeta, email.isAcceptableValue(d.email.value, _emailMeta));
@@ -1395,7 +1424,7 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {email};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   LocalPgpKey map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
@@ -1405,6 +1434,9 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
   @override
   Map<String, Variable> entityToSql(PgpKeyCompanion d) {
     final map = <String, Variable>{};
+    if (d.id.present) {
+      map['id'] = Variable<int, IntType>(d.id.value);
+    }
     if (d.email.present) {
       map['email'] = Variable<String, StringType>(d.email.value);
     }

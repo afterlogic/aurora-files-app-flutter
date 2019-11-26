@@ -33,8 +33,11 @@ class PgpKeyUtil {
         } else {
           validEmail = email;
         }
-        final localPgpKey =
-            LocalPgpKey(email: validEmail, key: key, isPrivate: false);
+        final localPgpKey = LocalPgpKey(
+            email: validEmail,
+            key: key,
+            isPrivate: false,
+            length: description.length);
 
         localKeys.add(localPgpKey);
       }
@@ -49,6 +52,10 @@ class PgpKeyUtil {
 
   Future<List<LocalPgpKey>> checkHasKeys(List<LocalPgpKey> keys) {
     return pgpKeyDao.checkHasKeys(keys);
+  }
+
+  Future<bool> checkHasKey(String email) {
+    return pgpKeyDao.checkHasKey(email);
   }
 
   Future<List<LocalPgpKey>> importKeyFromFile() async {
@@ -94,6 +101,10 @@ class PgpKeyUtil {
 
   Future deleteKey(LocalPgpKey key) async {
     await pgpKeyDao.deleteKey(key);
+  }
+
+  Future createKeys(int length, String email, String password) {
+    return pgp.createKeys(length, email, password);
   }
 
   static const pgpKeyPath = "/pgp_keys/";

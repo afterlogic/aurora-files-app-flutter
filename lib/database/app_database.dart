@@ -25,6 +25,12 @@ class AppDatabase extends _$AppDatabase {
                 await m.createTable(pgpKey);
                 break;
               }
+            case 2:
+              {
+                await m.deleteTable(pgpKey.tableName);
+                await m.createTable(pgpKey);
+                break;
+              }
           }
         }
       });
@@ -32,5 +38,5 @@ class AppDatabase extends _$AppDatabase {
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 }

@@ -111,6 +111,9 @@ class _HomePageState extends State<HomePage> {
       await Future.delayed(Duration(seconds: 1));
     }
   }
+  generateKey()async{
+    pgp.createKeys(2000, "pass@gmail.com", "111");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +132,10 @@ class _HomePageState extends State<HomePage> {
             FlatButton(
               child: Text("decrypt"),
               onPressed: decrypt,
+            ),
+            FlatButton(
+              child: Text("generateKey"),
+              onPressed: generateKey,
             ),
             provider != null
                 ? Image(

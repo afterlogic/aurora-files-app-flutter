@@ -101,7 +101,9 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
 
   delete() async {
     final result = await openDialog(
-        context, (_) => ConfirmDeleteKeyWidget(widget._pgpKey));
+        context,
+        (_) => ConfirmDeleteKeyWidget(
+            "Are you sure you want to delete OpenPGP key for ${widget._pgpKey.email}?"));
     if (result == true) {
       await widget._pgpKeyUtil.deleteKey(widget._pgpKey);
       Navigator.pop(context, true);

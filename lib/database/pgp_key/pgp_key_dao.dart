@@ -8,22 +8,32 @@ part 'pgp_key_dao.g.dart';
 class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
   PgpKeyDao(AppDatabase db) : super(db);
 
-  Future<List<LocalPgpKey>> getPublicKey() {
-    return (select(pgpKey)..where((key) => key.isPrivate.equals(false))).get();
+  Future<List<LocalPgpKey>> getKeys() {
+    return select(pgpKey).get();
   }
 
   Future<List<LocalPgpKey>> checkHasKeys(List<LocalPgpKey> keys) {
     final emails = keys.map((item) => item.email);
-    return (select(pgpKey)..where((item) => isIn(item.email, emails))).get();
+    return (select(pgpKey)
+      ..where((item) => isIn(item.email, emails))).get();
   }
 
   Future addKeys(List<LocalPgpKey> keys) async {
     final emails = keys.map((item) => item.email);
-    await (delete(pgpKey)..where((item) => isIn(item.email, emails))).go();
+    await (delete(pgpKey)
+      ..where((item) => isIn(item.email, emails))).go();
     return into(pgpKey).insertAll(keys);
   }
 
   Future deleteKey(LocalPgpKey key) async {
-    return (delete(pgpKey)..where((item) => item.email.equals(key.email))).go();
+    return (delete(pgpKey)
+      ..where((item) => item.id.equals(key.id))).go();
   }
+
+  Future<bool> checkHasKey(String email) {
+    return (select(pgpKey)
+      ..where((item) => item.email.equals(email)))
+        .get()
+        .then((i) => i.isNotEmpty);
+    }
 }

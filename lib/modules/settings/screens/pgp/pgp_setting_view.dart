@@ -21,8 +21,9 @@ mixin PgpSettingView<W extends StatefulWidget> on State<W> {
 }
 
 class KeysState {
-  final List<LocalPgpKey> keys;
+  final List<LocalPgpKey> public;
+  final List<LocalPgpKey> private;
   final bool isProgress;
 
-  KeysState(this.keys, [this.isProgress = false]);
+  KeysState(this.public, this.private, [this.isProgress = false]);
 }

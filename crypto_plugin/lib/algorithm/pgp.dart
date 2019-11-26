@@ -116,7 +116,19 @@ class Pgp extends Crypt {
       [key],
     );
     if (result is List) {
-      return KeyDescription( List<String>.from(result[0]), result[1]);
+      return KeyDescription(List<String>.from(result[0]), result[1]);
+    } else {
+      return null;
+    }
+  }
+
+  Future<KeyPair> createKeys(int length, String email, String password) async {
+    final result = await invokeMethod(
+      "$algorithm.createKeys",
+      [length, email, password],
+    );
+    if (result is List) {
+      return KeyPair(result[0], result[1]);
     } else {
       return null;
     }
@@ -143,4 +155,11 @@ class KeyDescription {
   final int length;
 
   KeyDescription(this.email, this.length);
+}
+
+class KeyPair {
+  final String public;
+  final String secret;
+
+  KeyPair(this.public, this.secret);
 }

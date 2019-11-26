@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmDeleteKeyWidget extends StatefulWidget {
-  final LocalPgpKey _pgpKey;
+  final String _message;
 
-  const ConfirmDeleteKeyWidget(this._pgpKey);
+  const ConfirmDeleteKeyWidget(this._message);
 
   @override
   _ConfirmDeleteKeyWidgetState createState() => _ConfirmDeleteKeyWidgetState();
@@ -16,8 +15,7 @@ class ConfirmDeleteKeyWidget extends StatefulWidget {
 class _ConfirmDeleteKeyWidgetState extends State<ConfirmDeleteKeyWidget> {
   @override
   Widget build(BuildContext context) {
-    final content = Text(
-        "Are you sure you want to delete OpenPGP key for ${widget._pgpKey.email}?");
+    final content = Text(widget._message);
     final actions = <Widget>[
       FlatButton(
         child: Text("Cancel"),

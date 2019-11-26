@@ -134,6 +134,12 @@ class CryptoPlugin : MethodCallHandler {
                         return pgp.encriptBytes(text)
 
                     }
+                    "createKeys" -> {
+                        val length = arguments[0] as Int
+                        val email = arguments[1] as String
+                        val password = arguments[2] as String
+                        return pgp.createKeys(length, email, password)
+                    }
                 }
             }
         }

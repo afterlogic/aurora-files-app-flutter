@@ -118,7 +118,7 @@ class _KeyItemState extends State<KeyItem> {
   @override
   Widget build(BuildContext context) {
     final description = widget.pgpKey.key.length != null
-        ? "(${widget.pgpKey.key.length}-bit, ${widget.pgpKey.isPrivate ? "private" : "public"})"
+        ? "(${widget.pgpKey.length}-bit, ${widget.pgpKey.isPrivate ? "private" : "public"})"
         : "( ${widget.pgpKey.isPrivate ? "private" : "public"})";
 
     var textTheme = Theme.of(context).textTheme;

@@ -93,9 +93,24 @@ open class PgpApi {
     }
 
     fun encriptBytes(array: ByteArray): ByteArray {
-        val outStream = ByteArrayOutputStream(4000)
+        val outStream = ByteArrayOutputStream()
         encript(outStream, ByteArrayInputStream(array), array.size.toLong())
         return outStream.toByteArray()
     }
 
+    fun createKeys(length: Int, email: String, password: String): List<String> {
+//        assert(length in 512..4096)
+        return pgp.createKeys(length, email, password).mapIndexed { i, it ->
+            it.toString(Charsets.UTF_8)
+        }
+    }
+
+    companion object {
+        const val privateKeyStart = "-----BEGIN PGP PRIVATE KEY BLOCK-----\n" +
+                "Version: OpenPGP.js v4.5.5\n\n"
+        const val privateKeyEnd = "\n\n-----END PGP PRIVATE KEY BLOCK-----"
+        const val publicKeyStart = "-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
+                "Version: OpenPGP.js v4.5.5\n\n"
+        const val publicKeyEnd = "\n\n-----END PGP PUBLIC KEY BLOCK-----"
+    }
 }

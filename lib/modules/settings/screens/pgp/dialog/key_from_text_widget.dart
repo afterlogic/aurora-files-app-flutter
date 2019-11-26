@@ -28,16 +28,16 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
     final size = MediaQuery.of(context).size;
     return Platform.isIOS
         ? CupertinoAlertDialog(
+            title: Text(
+              "Import keys",
+              style: theme.textTheme.title,
+            ),
             content: SizedBox(
               height: size.height / 2,
               child: Flex(
                 direction: Axis.vertical,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    "Import keys",
-                    style: theme.textTheme.title,
-                  ),
                   Expanded(
                     child: CupertinoTextField(
                       maxLines: null,
@@ -61,13 +61,13 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
             ),
           )
         : AlertDialog(
+            title: Text(
+              "Import keys",
+              style: theme.textTheme.title,
+            ),
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  "Import keys",
-                  style: theme.textTheme.title,
-                ),
                 Expanded(
                   child: Form(
                     key: formKey,

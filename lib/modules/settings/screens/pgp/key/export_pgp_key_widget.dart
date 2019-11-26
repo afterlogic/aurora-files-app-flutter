@@ -44,9 +44,8 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
                     SizedBox(
                       height: 20,
                     ),
-                    Text(
+                    SelectableText(
                       keysText,
-                      maxLines: null,
                     ),
                   ],
                 ),

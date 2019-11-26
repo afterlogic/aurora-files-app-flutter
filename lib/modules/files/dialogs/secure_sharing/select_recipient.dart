@@ -180,7 +180,8 @@ class RecipientWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     var name = recipient.recipient?.fullName;
-    if (name?.isNotEmpty != true) {
+    final hasName = !(name?.isNotEmpty != true);
+    if (!hasName) {
       name = "No name";
     }
     return GestureDetector(
@@ -206,7 +207,9 @@ class RecipientWidget extends StatelessWidget {
                     Text(
                       name,
                       maxLines: 1,
-                      style: theme.textTheme.body2,
+                      style: hasName
+                          ? theme.textTheme.body2
+                          : theme.textTheme.body2.apply(color: Colors.grey),
                     ),
                     Text(
                       recipient.recipient?.email ?? recipient.pgpKey.email,

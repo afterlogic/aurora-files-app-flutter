@@ -323,7 +323,7 @@ class FilesApi {
           // the callback to update the UI download progress
           // update progress
           progress += contents.length;
-          final num = 100 / file.size * progress / 100;
+          final num = progress / file.size;
           processingFile.updateProgress(num);
           if (updateViewerProgress != null) updateViewerProgress(num);
         },

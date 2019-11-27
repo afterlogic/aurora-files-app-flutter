@@ -7,12 +7,12 @@ part of 'upload_file_request.dart';
 // **************************************************************************
 
 UploadFileRequest _$UploadFileRequestFromJson(Map<String, dynamic> json) {
-  return UploadFileRequest()
-    ..storageType = json['Type'] as String
-    ..path = json['Path'] as String
-    ..extendedProps = json['ExtendedProps'] == null
-        ? null
-        : ExtendedProps.fromJson(json['ExtendedProps'] as Map<String, dynamic>);
+  return UploadFileRequest(
+    json['Type'] as String,
+    json['Path'] as String,
+  )..extendedProps = json['ExtendedProps'] == null
+      ? null
+      : ExtendedProps.fromJson(json['ExtendedProps'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$UploadFileRequestToJson(UploadFileRequest instance) =>
@@ -23,7 +23,9 @@ Map<String, dynamic> _$UploadFileRequestToJson(UploadFileRequest instance) =>
     };
 
 ExtendedProps _$ExtendedPropsFromJson(Map<String, dynamic> json) {
-  return ExtendedProps()..iv = json['InitializationVector'] as String;
+  return ExtendedProps(
+    json['InitializationVector'] as String,
+  );
 }
 
 Map<String, dynamic> _$ExtendedPropsToJson(ExtendedProps instance) =>

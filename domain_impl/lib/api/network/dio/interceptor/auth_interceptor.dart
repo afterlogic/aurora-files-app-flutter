@@ -10,7 +10,7 @@ class AuthInterceptor extends Interceptor {
 
   @override
   Future onRequest(RequestOptions options) {
-    addToken(options.headers, _userStorageApi);
+    options.headers[authorizationHeader] = token(_userStorageApi);
     return super.onRequest(options);
   }
 
@@ -30,10 +30,14 @@ class AuthInterceptor extends Interceptor {
     return super.onError(err);
   }
 
-  static addToken(Map<String, dynamic> headers, UserStorageApi userStorageApi) {
+  static token(UserStorageApi userStorageApi) {
     final token = userStorageApi.token.get();
     if (token != null) {
-      headers["Authorization"] = "Bearer $token";
+      return "Bearer $token";
+    } else {
+      return null;
     }
   }
+
+  static const authorizationHeader = "Authorization";
 }

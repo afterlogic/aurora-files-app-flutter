@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:domain/api/cache/storage/user_storage_api.dart';
@@ -22,15 +23,15 @@ class FilesNetwork implements FilesNetworkApi {
 
   Future<FilesResponse> getFiles(String type, String path, String pattern) {}
 
-  upload(UploadFileRequest request, Stream<List<int>> stream, int length,
+  Future upload(UploadFileRequest request, Stream<List<int>> stream, int length,
       String filename) async {
     final uri = Uri.parse(_dio.options.baseUrl);
 
     final route =
-    ModuleFiles(CoreMethod.UploadFile, parameters: request.toJson());
+        ModuleFiles(CoreMethod.UploadFile, parameters: request.toJson());
 
     final headers = _dio.options.headers;
-    AuthInterceptor.addToken(headers, _userStorageApi);
+    headers["Authorization"] = AuthInterceptor.token(_userStorageApi);
 
     final multipartRequest = http.MultipartRequest("POST", uri);
     final file = http.MultipartFile("file", stream, length, filename: filename);
@@ -39,11 +40,26 @@ class FilesNetwork implements FilesNetworkApi {
     multipartRequest.fields.addAll(route.toJson());
     multipartRequest.files.add(file);
 
-    final response = await multipartRequest.send();
-    final result = json.decode(await response.stream.bytesToString());
+    return multipartRequest.send();
+  }
 
-    if (result["Result"] == null || result["Result"] == false) {
-      throw NetworkError(NetworkErrorCase.Undefined);
+  Future<Stream<List<int>>> download(String url,
+      [bool isRedirect = false]) async {
+    final client = HttpClient();
+    final host = _dio.options.baseUrl;
+    final HttpClientRequest request =
+        await client.getUrl(Uri.parse(isRedirect ? url : host + url));
+
+    request.followRedirects = false;
+    if (!isRedirect) {
+      request.headers
+          .add("Authorization", AuthInterceptor.token(_userStorageApi));
     }
+    final HttpClientResponse response = await request.close();
+    if (response.isRedirect) {
+      return download(response.headers.value("location"), true);
+    }
+
+    return response;
   }
 }

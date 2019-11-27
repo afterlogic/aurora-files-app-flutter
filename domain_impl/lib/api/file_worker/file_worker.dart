@@ -1,68 +1,120 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:domain/api/crypto/aes_crypto_api.dart';
 import 'package:domain/api/file_worker/file_worker_api.dart';
+import 'package:domain/api/network/files_network_api.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:domain/model/network/file/processing_file.dart';
 import 'package:domain/api/file_worker/error/file_error.dart';
 import 'package:domain/model/network/file/upload_file_request.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:http/http.dart';
 
 class FileWorker extends FileWorkerApi {
-  Stream<int> uploadFile(
-    ProcessingFile processingFile,
-    bool shouldEncrypt, {
+  final FilesNetworkApi _filesNetworkApi;
+  final AesCryptoApi _aesCrypto;
+
+  FileWorker(this._filesNetworkApi, this._aesCrypto);
+
+  Future<Stream<double>> uploadFile(
+    ProcessingFile processingFile, {
     String url,
     String storageType,
     String path,
-  }) async* {
-    final bool fileExists = await processingFile.fileOnDevice.exists();
-
-    if (!fileExists) {
-      throw FileError(
-        FileErrorCase.NotExist,
-        "File to download data into doesn't exist",
-      );
+    String encryptKey,
+  }) async {
+    if (!await processingFile.fileOnDevice.exists()) {
+      throw FileError(FileErrorCase.NotExist, "File doesn't exist");
     }
 
     final uploadRequest = UploadFileRequest(storageType, path);
-    if (shouldEncrypt == true) {
+
+    final shouldEncrypt = encryptKey != null;
+
+    var fileLength = await processingFile.fileOnDevice.length();
+    if (shouldEncrypt) {
+      fileLength = ((fileLength / _vectorLength) + 1).toInt() * _vectorLength;
+    }
+
+    var currentBytes = 0;
+    var currentProgress = 0.0;
+    final fileStream = processingFile.fileOnDevice.openRead().map((bytes) {
+      currentBytes += bytes.length;
+
+      currentProgress = currentBytes / fileLength;
+      return bytes;
+    });
+
+    var outStream = fileStream;
+    if (shouldEncrypt) {
       final vector = IV.fromSecureRandom(_vectorLength);
-      processingFile.ivBase64 = vector.base64;
       uploadRequest.extendedProps = ExtendedProps(vector.base16);
+
+      outStream = _aesCrypto.encryptStream(
+        outStream,
+        encryptKey,
+        vector.base64,
+        _vectorLength,
+        (v) {},
+      );
     }
 
-    final body = new ApiBody(
-            module: "Files",
-            method: "UploadFile",
-            parameters: jsonEncode(params))
-        .toMap();
+    final fileName = _getFileName(processingFile.fileOnDevice.path);
 
-    final stream = new http.ByteStream(
-        _openFileRead(processingFile, shouldEncrypt, onError));
-    final length = await processingFile.fileOnDevice.length();
-    final lengthWithPadding =
-        ((length / vectorLength) + 1).toInt() * vectorLength;
+    _filesNetworkApi.upload(uploadRequest, outStream, fileLength, fileName);
 
-    final uri = Uri.parse(url);
+    return outStream.map((_) {
+      return currentProgress;
+    });
+  }
 
-    final requestMultipart = new http.MultipartRequest("POST", uri);
-    final multipartFile = new http.MultipartFile(
-        'file', stream, shouldEncrypt ? lengthWithPadding : length,
-        filename:
-            FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path));
-
-    requestMultipart.headers.addAll(getHeader());
-
-    requestMultipart.fields.addAll(body);
-    requestMultipart.files.add(multipartFile);
-
-    final response = await requestMultipart.send();
-    final result = await response.stream.bytesToString();
-    Map<String, dynamic> res = json.decode(result);
-
-    if (res["Result"] == null || res["Result"] == false) {
-      onError(getErrMsg(res));
-    } else {
-      processingFile.endProcess();
-      onSuccess();
+  Future<Stream<double>> downloadFile(
+    String url,
+    LocalFile file,
+    String encryptKey,
+    ProcessingFile processingFile, {
+    Function(File) onSuccess,
+  }) async {
+    if (!await processingFile.fileOnDevice.exists()) {
+      throw FileError(FileErrorCase.NotExist, "File doesn't exist");
     }
+
+    final shouldDecrypt = file.initVector != null;
+
+    final networkStream = await _filesNetworkApi.download(url);
+
+    var outStream = networkStream;
+    if (shouldDecrypt) {
+      IV iv = IV.fromBase16(file.initVector);
+      outStream = _aesCrypto.decryptStream(
+        outStream,
+        encryptKey,
+        iv.base64,
+        _vectorLength,
+        (v) {},
+      );
+    }
+
+    var currentBytes = 0;
+    return writeToFile(outStream, processingFile.fileOnDevice).map((bytes) {
+      currentBytes += bytes.length;
+      return currentBytes / file.size;
+    }).handleError((_, __) {
+      processingFile.fileOnDevice.delete(recursive: true);
+    });
+  }
+
+  Stream<List<int>> writeToFile(Stream<List<int>> stream, File file) {
+    return stream.asyncMap((bytes) async {
+      file.writeAsBytes(bytes, mode: FileMode.append);
+      return bytes;
+    });
+  }
+
+  String _getFileName(String path) {
+    final index = path.lastIndexOf("/");
+    return path.substring(index + 1);
   }
 
   static const _vectorLength = 16;

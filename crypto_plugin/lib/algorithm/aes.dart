@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'crypt.dart';
 
-
 class Aes extends Crypt {
   Future<List<dynamic>> decrypt(
     List<int> fileBytes,
@@ -32,4 +31,5 @@ class Aes extends Crypt {
   }
 
   static const algorithm = "aes";
+  static const chunkMaxSize = 4000000;
 }

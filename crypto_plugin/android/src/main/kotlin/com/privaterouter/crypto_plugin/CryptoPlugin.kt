@@ -47,6 +47,7 @@ class CryptoPlugin : MethodCallHandler {
                 .subscribe({
                     result.success(it)
                 }, {
+                    it.printStackTrace()
                     if (it is NotImplemented) {
                         result.notImplemented()
                     } else {

@@ -24,149 +24,183 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   final _emailController =
       TextEditingController(text: AppStore.authState.userEmail);
   final _passwordController = TextEditingController();
-  final _lengthController = TextEditingController(text: "2048");
   final _formKey = GlobalKey<FormState>();
   String _error;
   bool _obscure = true;
+  static const lengths = [1024, 2048, 3072, 4096, 8192];
+  var length = lengths[1];
 
   @override
   Widget build(BuildContext context) {
     final title = Text("Generate keys");
-    return Platform.isIOS
-        ? CupertinoAlertDialog(
-            title: title,
-            content: SizedBox(
-              child: Flex(
-                direction: Axis.vertical,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(height: 10),
-                  CupertinoTextField(
-                    prefix: Text(" Email:"),
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  SizedBox(height: 10),
-                  CupertinoTextField(
-                    prefix: Text(" Password:"),
-                    suffix: GestureDetector(
-                      child: Icon(
-                          _obscure ? Icons.visibility : Icons.visibility_off),
-                      onTap: () {
-                        _obscure = !_obscure;
-                        setState(() {});
+    if (!Platform.isIOS) {
+      final theme = CupertinoTheme.of(context);
+      return CupertinoAlertDialog(
+        title: title,
+        content: SizedBox(
+          child: Flex(
+            direction: Axis.vertical,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(height: 10),
+              CupertinoTextField(
+                prefix: Text(" Email:"),
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              SizedBox(height: 10),
+              CupertinoTextField(
+                prefix: Text(" Password:"),
+                suffix: GestureDetector(
+                  child:
+                      Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                  onTap: () {
+                    _obscure = !_obscure;
+                    setState(() {});
+                  },
+                ),
+                obscureText: _obscure,
+                controller: _passwordController,
+                keyboardType: TextInputType.visiblePassword,
+                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+              ),
+              SizedBox(height: 20),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  showCupertinoModalPopup(
+                      context: context,
+                      builder: (_) {
+                        return CupertinoActionSheet(
+                            title: Text("Select length"),
+                            actions: lengths
+                                .map((length) => CupertinoActionSheetAction(
+                                      onPressed: () =>
+                                          Navigator.pop(context, length),
+                                      child: Text(length.toString()),
+                                    ))
+                                .toList());
+                      }).then((result) {
+                    if (result is int) {
+                      length = result;
+                      setState(() {});
+                    }
+                  });
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(" Length: "),
+                    Text(
+                       length.toString(),
+                      style: theme.textTheme.textStyle,
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                _error ?? "",
+                style: TextStyle(color: Colors.red),
+              ),
+              AppButton(
+                width: double.infinity,
+                text: "Generate".toUpperCase(),
+                onPressed: () {
+                  if (_validateInput() == null) {
+                    _generate();
+                  }
+                  setState(() {});
+                },
+              ),
+              AppButton(
+                width: double.infinity,
+                text: "Close".toUpperCase(),
+                onPressed: _pop,
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return AlertDialog(
+        title: title,
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      decoration: const InputDecoration(labelText: "Email"),
+                      validator: (v) =>
+                          validateInput(v, [ValidationTypes.email]),
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Password",
+                        suffix: GestureDetector(
+                          child: Icon(
+                            _obscure ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          onTap: () {
+                            _obscure = !_obscure;
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      validator: (v) =>
+                          validateInput(v, [ValidationTypes.empty]),
+                      controller: _passwordController,
+                      obscureText: _obscure,
+                    ),
+                    DropdownButtonFormField(
+                      hint: Text(length.toString()),
+                      decoration: const InputDecoration(labelText: "Email"),
+                      value: length,
+                      items: lengths.map((value) {
+                        return DropdownMenuItem<int>(
+                          value: value,
+                          child: Text(
+                            value.toString(),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (v) {
+                        length = v;
                       },
                     ),
-                    obscureText: _obscure,
-                    controller: _passwordController,
-                    keyboardType: TextInputType.visiblePassword,
-                    inputFormatters: [
-                      WhitelistingTextInputFormatter.digitsOnly
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  CupertinoTextField(
-                    prefix: Text(" Length:"),
-                    controller: _lengthController,
-                    keyboardType: TextInputType.number,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    _error ?? "",
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  AppButton(
-                    width: double.infinity,
-                    text: "Generate".toUpperCase(),
-                    onPressed: () {
-                      if (_validateInput() == null) {
-                        _generate();
-                      }
-                      setState(() {});
-                    },
-                  ),
-                  AppButton(
-                    width: double.infinity,
-                    text: "Close".toUpperCase(),
-                    onPressed: _pop,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          )
-        : AlertDialog(
-            title: title,
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          decoration: const InputDecoration(labelText: "Email"),
-                          validator: (v) =>
-                              validateInput(v, [ValidationTypes.email]),
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        TextFormField(
-                          decoration:  InputDecoration(
-                            labelText: "Password",
-                            suffix: GestureDetector(
-                              child: Icon(_obscure
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,),
-                              onTap: () {
-                                _obscure = !_obscure;
-                                setState(() {});
-                              },
-                            ),
-                          ),
-                          validator: (v) =>
-                              validateInput(v, [ValidationTypes.empty]),
-                          controller: _passwordController,
-                          obscureText: _obscure,
-                        ),
-                        TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: "Length"),
-                          validator: (value) {
-                            return _validateLength(value);
-                          },
-                          inputFormatters: [
-                            WhitelistingTextInputFormatter.digitsOnly
-                          ],
-                          controller: _lengthController,
-                          keyboardType: TextInputType.numberWithOptions(
-                              signed: true, decimal: false),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  AppButton(
-                    width: double.infinity,
-                    text: "Generate".toUpperCase(),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        _generate();
-                      }
-                    },
-                  ),
-                  AppButton(
-                    width: double.infinity,
-                    text: "Close".toUpperCase(),
-                    onPressed: _pop,
-                  ),
-                ],
+              SizedBox(
+                height: 20,
               ),
-            ),
-          );
+              AppButton(
+                width: double.infinity,
+                text: "Generate".toUpperCase(),
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    _generate();
+                  }
+                },
+              ),
+              AppButton(
+                width: double.infinity,
+                text: "Close".toUpperCase(),
+                onPressed: _pop,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   String _validateInput() {
@@ -174,8 +208,6 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     _error = validateInput(_emailController.text, [ValidationTypes.email]);
     if (_error != null) return _error;
     _error = _validatePassword(_passwordController.text);
-    if (_error != null) return _error;
-    _error = _validateLength(_lengthController.text);
     return _error;
   }
 
@@ -198,7 +230,6 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   }
 
   _generate() async {
-    final length = int.tryParse(_lengthController.text);
     final email = _emailController.text;
     final password = _passwordController.text;
     final hasKey = await widget.pgpKeyUtil.checkHasKey(_emailController.text);

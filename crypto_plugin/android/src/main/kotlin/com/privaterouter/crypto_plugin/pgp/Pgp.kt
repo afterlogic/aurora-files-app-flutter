@@ -1,8 +1,10 @@
 package com.privaterouter.crypto_plugin.pgp
 
 
-
 import KeyDescription
+import android.os.Build
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import org.bouncycastle.bcpg.ArmoredOutputStream
 import java.util.Date
 
@@ -15,9 +17,21 @@ import org.bouncycastle.bcpg.HashAlgorithmTags
 import org.bouncycastle.openpgp.operator.jcajce.*
 import java.io.*
 import org.bouncycastle.openpgp.PGPPublicKey
-
-
-
+import java.security.interfaces.RSAPrivateCrtKey
+import java.security.interfaces.RSAPrivateKey
+import java.security.spec.RSAPrivateCrtKeySpec
+import java.math.BigInteger
+import java.security.interfaces.RSAPublicKey
+import org.bouncycastle.openpgp.PGPSignature
+import org.bouncycastle.openpgp.PGPKeyPair
+import org.bouncycastle.crypto.KeyGenerationParameters
+import org.bouncycastle.crypto.generators.RSAKeyPairGenerator
+import org.bouncycastle.crypto.params.RSAKeyGenerationParameters
+import org.pgpainless.PGPainless
+import org.pgpainless.key.generation.type.RSA_GENERAL
+import org.pgpainless.key.generation.type.length.RsaLength
+import org.pgpainless.util.Passphrase
+import java.security.spec.KeySpec
 
 
 /**
@@ -278,39 +292,32 @@ class Pgp {
     }
 
     fun createKeys(length: Int, email: String, password: String): List<ByteArray> {
+        val rsaLength = when {
+            length <= 1024 -> RsaLength._1024
+            length <= 2048 -> RsaLength._2048
+            length <= 3072 -> RsaLength._3072
+            length <= 4096 -> RsaLength._4096
+            else -> RsaLength._8192
+        }
 
-        val kpg = KeyPairGenerator.getInstance("RSA", provider)
-        kpg.initialize(length)
-        val kp = kpg.generateKeyPair()
-
-        val private = ByteArrayOutputStream()
-        val public = ByteArrayOutputStream()
-        exportKeyPair(private, public, kp, email, password.toCharArray())
-
-        return arrayListOf<ByteArray>(public.toByteArray(), private.toByteArray())
-    }
-
-    private fun exportKeyPair(
-            secretOut: OutputStream,
-            publicOut: OutputStream,
-            pair: KeyPair,
-            identity: String,
-            passPhrase: CharArray) {
+        val keyRing = PGPainless.generateKeyRing().withMasterKey(
+                org.pgpainless.key.generation.KeySpec.getBuilder(RSA_GENERAL.withLength(rsaLength))
+                        .withDefaultKeyFlags()
+                        .withDefaultAlgorithms())
+                .withPrimaryUserId(email)
+                .withPassphrase(Passphrase(password.toCharArray()))
+                .build()
+        val secretOut = ByteArrayOutputStream()
+        val publicOut = ByteArrayOutputStream()
         val armoredSecretOut = ArmoredOutputStream(secretOut)
         val armoredPublicOut = ArmoredOutputStream(publicOut)
-
-        val sha1Calc = JcaPGPDigestCalculatorProviderBuilder().build().get(HashAlgorithmTags.SHA1)
-        val keyPair = JcaPGPKeyPair(PGPPublicKey.RSA_GENERAL, pair, Date())
-        val secretKey = PGPSecretKey(PGPSignature.DEFAULT_CERTIFICATION, keyPair, identity, sha1Calc, null, null, JcaPGPContentSignerBuilder(keyPair.publicKey.algorithm, HashAlgorithmTags.SHA1), JcePBESecretKeyEncryptorBuilder(PGPEncryptedData.CAST5, sha1Calc).setProvider(provider).build(passPhrase))
-        secretKey.encode(armoredSecretOut)
-
+        armoredSecretOut.write(keyRing.secretKeys!!.encoded)
         armoredSecretOut.close()
-
-
-        val key = secretKey.publicKey
-
-        key.encode(armoredPublicOut)
-
+        armoredPublicOut.write(keyRing.publicKeys!!.encoded)
         armoredPublicOut.close()
+
+        return arrayListOf<ByteArray>(publicOut.toByteArray(), secretOut.toByteArray())
     }
+
+
 }

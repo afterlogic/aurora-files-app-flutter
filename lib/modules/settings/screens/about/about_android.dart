@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:package_info/package_info.dart';
-//import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutAndroid extends StatefulWidget {
   @override
@@ -38,9 +38,9 @@ class _AboutAndroidState extends State<AboutAndroid> {
 
   Future _initAppInfo() async {
     setState(() => loading = true);
-//    final packageInfo = await PackageInfo.fromPlatform();
-//    _appName = packageInfo.appName;
-//    _version = packageInfo.version;
+    final packageInfo = await PackageInfo.fromPlatform();
+    _appName = packageInfo.appName;
+    _version = packageInfo.version;
     setState(() => loading = false);
   }
 
@@ -83,9 +83,9 @@ class _AboutAndroidState extends State<AboutAndroid> {
                       fontSize: 18.0,
                     ),
                   ),
-//                  onTap: () => launch(Platform.isIOS
-//                      ? "https://privatemail.com/terms.php"
-//                      : "https://privatemail.com/terms.php"),
+                  onTap: () => launch(Platform.isIOS
+                      ? "https://privatemail.com/terms.php"
+                      : "https://privatemail.com/terms.php"),
                 ),
                 SizedBox(height: 22.0),
                 GestureDetector(
@@ -97,7 +97,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                       fontSize: 18.0,
                     ),
                   ),
-//                  onTap: () => launch("https://privatemail.com/privacy.php"),
+                  onTap: () => launch("https://privatemail.com/privacy.php"),
                 ),
                 SizedBox(height: 42.0),
               ],

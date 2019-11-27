@@ -57,6 +57,9 @@ class PgpKeyUtil {
   Future<bool> checkHasKey(String email) {
     return pgpKeyDao.checkHasKey(email);
   }
+  Future deleteByEmail(List<String> emails) {
+    return pgpKeyDao.deleteByEmail(emails);
+  }
 
   Future<List<LocalPgpKey>> importKeyFromFile() async {
     final File fileWithKey = await FilePicker.getFile();
@@ -110,4 +113,8 @@ class PgpKeyUtil {
   static const pgpKeyPath = "/pgp_keys/";
   static const keyStart = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
   static const keyEnd = "-----END PGP PUBLIC KEY BLOCK-----";
+
+  close() {
+    pgp.stop();
+  }
 }

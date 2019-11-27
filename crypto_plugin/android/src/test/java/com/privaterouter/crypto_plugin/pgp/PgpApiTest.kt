@@ -16,7 +16,7 @@ class PgpApiTest {
     @Test
     fun testGenerateKey() {
         val pgpHelper = PgpApi()
-        val keys = pgpHelper.createKeys(2000, "test@afterlogic.com", "111")
+        val keys = pgpHelper.createKeys(8000, "test@afterlogic.com", "111")
         pgpHelper.setPrivateKey(keys[1])
         pgpHelper.setPublicKey(keys[0])
         pgpHelper.setTempFile("/home/dikiy/test_pgp")

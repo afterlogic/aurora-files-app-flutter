@@ -35,7 +35,12 @@ class KeyWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: Icon(Icons.arrow_forward_ios),
+                  child: pgpKey.key == null
+                      ? SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator())
+                      : Icon(Icons.arrow_forward_ios),
                 ),
               ],
             ),

@@ -37,6 +37,12 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   @override
+  void dispose() {
+    _presenter.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(

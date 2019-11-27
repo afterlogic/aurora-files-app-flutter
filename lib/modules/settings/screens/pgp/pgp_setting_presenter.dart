@@ -15,11 +15,12 @@ class PgpSettingPresenter {
   PgpSettingPresenter(this._view, this._pgpKeyDao, Pgp pgp)
       : pgpKeyUtil = PgpKeyUtil(pgp, _pgpKeyDao);
 
-  refreshKeys() {
-    _pgpKeyDao.getKeys().then(
+  Future refreshKeys(
+      [List<LocalPgpKey> addedPublic, List<LocalPgpKey> addedPrivate]) {
+    return _pgpKeyDao.getKeys().then(
       (keys) {
-        final public = <LocalPgpKey>[];
-        final private = <LocalPgpKey>[];
+        final public = addedPublic ?? <LocalPgpKey>[];
+        final private = addedPrivate ?? <LocalPgpKey>[];
         keys.forEach((item) {
           if (item.isPrivate) {
             private.add(item);
@@ -62,22 +63,22 @@ class PgpSettingPresenter {
   }
 
   addPrivateKey(CreateKeyResult result) async {
-    if (result.needUpdate) {
-      refreshKeys();
-    }
+    var privateKey = LocalPgpKey(
+        email: result.email, isPrivate: true, length: result.length);
+    var publicKey = LocalPgpKey(
+        email: result.email, isPrivate: false, length: result.length);
 
+    await refreshKeys([publicKey], [privateKey]);
     final keys = await result.keyBuilder;
-    final privateKey = LocalPgpKey(
-        email: result.email,
-        key: keys.secret,
-        isPrivate: true,
-        length: result.length);
-    final publicKey = LocalPgpKey(
-        email: result.email,
-        key: keys.public,
-        isPrivate: false,
-        length: result.length);
+
+    privateKey = privateKey.copyWith(key: keys.secret);
+    publicKey = publicKey.copyWith(key: keys.public);
+
     await pgpKeyUtil.saveKeys([publicKey, privateKey]);
     refreshKeys();
+  }
+
+  close(){
+    pgpKeyUtil.close();
   }
 }

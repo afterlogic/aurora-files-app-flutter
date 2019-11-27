@@ -14,26 +14,26 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
 
   Future<List<LocalPgpKey>> checkHasKeys(List<LocalPgpKey> keys) {
     final emails = keys.map((item) => item.email);
-    return (select(pgpKey)
-      ..where((item) => isIn(item.email, emails))).get();
+    return (select(pgpKey)..where((item) => isIn(item.email, emails))).get();
   }
 
   Future addKeys(List<LocalPgpKey> keys) async {
     final emails = keys.map((item) => item.email);
-    await (delete(pgpKey)
-      ..where((item) => isIn(item.email, emails))).go();
+    await (delete(pgpKey)..where((item) => isIn(item.email, emails))).go();
     return into(pgpKey).insertAll(keys);
   }
 
   Future deleteKey(LocalPgpKey key) async {
-    return (delete(pgpKey)
-      ..where((item) => item.id.equals(key.id))).go();
+    return (delete(pgpKey)..where((item) => item.id.equals(key.id))).go();
   }
 
   Future<bool> checkHasKey(String email) {
-    return (select(pgpKey)
-      ..where((item) => item.email.equals(email)))
+    return (select(pgpKey)..where((item) => item.email.equals(email)))
         .get()
         .then((i) => i.isNotEmpty);
-    }
+  }
+
+  Future deleteByEmail(List<String> emails) {
+    return (delete(pgpKey)..where((item) => isIn(item.email, emails))).go();
+  }
 }

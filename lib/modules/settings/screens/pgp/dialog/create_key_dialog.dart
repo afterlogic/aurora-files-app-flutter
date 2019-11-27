@@ -93,7 +93,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                   children: <Widget>[
                     Text(" Length: "),
                     Text(
-                       length.toString(),
+                      length.toString(),
                       style: theme.textTheme.textStyle,
                     )
                   ],
@@ -242,6 +242,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
       if (result != true) {
         return;
       }
+      await widget.pgpKeyUtil.deleteByEmail([email]);
     }
 
     final future = widget.pgpKeyUtil.createKeys(length, email, password);

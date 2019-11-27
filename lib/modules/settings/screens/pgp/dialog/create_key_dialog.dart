@@ -33,7 +33,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   @override
   Widget build(BuildContext context) {
     final title = Text("Generate keys");
-    if (!Platform.isIOS) {
+    if (Platform.isIOS) {
       final theme = CupertinoTheme.of(context);
       return CupertinoAlertDialog(
         title: title,

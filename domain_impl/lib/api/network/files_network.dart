@@ -29,7 +29,7 @@ class FilesNetwork implements FilesNetworkApi {
     final route = ModuleFiles(
       FilesMethod.GetStorages,
     );
-    final result = await _dio.post("", data: route.toJson());
+    final result = await _dio.post("/?Api/", data: route.toJson());
     return (result.data as List).map((json) => Storage.fromJson(json)).toList();
   }
 
@@ -40,7 +40,7 @@ class FilesNetwork implements FilesNetworkApi {
       toUpperCase: true,
     );
 
-    final result = await _dio.post("", data: route.toJson());
+    final result = await _dio.post("/?Api/", data: route.toJson());
 
     return FilesResponse.fromJson(result.data);
   }
@@ -51,7 +51,7 @@ class FilesNetwork implements FilesNetworkApi {
       parameters: request.toJson(),
       toUpperCase: true,
     );
-    await _dio.post("", data: route.toJson());
+    await _dio.post("/?Api/", data: route.toJson());
     return request.newName;
   }
 
@@ -111,7 +111,7 @@ class FilesNetwork implements FilesNetworkApi {
       toUpperCase: true,
     );
 
-    await _dio.post("", data: route.toJson());
+    await _dio.post("/?Api/", data: route.toJson());
   }
 
   Future delete(DeleteRequest request) async {
@@ -121,7 +121,7 @@ class FilesNetwork implements FilesNetworkApi {
       toUpperCase: true,
     );
 
-    await _dio.post("", data: route.toJson());
+    await _dio.post("/?Api/", data: route.toJson());
   }
 
   Future<String> createPublicLink(
@@ -133,7 +133,7 @@ class FilesNetwork implements FilesNetworkApi {
       toUpperCase: true,
     );
 
-    final response = await _dio.post("", data: route.toJson());
+    final response = await _dio.post("/?Api/", data: route.toJson());
 
     return "${_dio.options.baseUrl}/$response";
   }
@@ -145,7 +145,7 @@ class FilesNetwork implements FilesNetworkApi {
       toUpperCase: true,
     );
 
-    final response = await _dio.post("", data: route.toJson());
+    final response = await _dio.post("/?Api/", data: route.toJson());
 
     return "${_dio.options.baseUrl}/$response";
   }
@@ -157,7 +157,7 @@ class FilesNetwork implements FilesNetworkApi {
       toUpperCase: true,
     );
 
-    await _dio.post("", data: route.toJson());
+    await _dio.post("/?Api/", data: route.toJson());
   }
 
   Future<List<Recipient>> getRecipient() async {
@@ -177,7 +177,7 @@ class FilesNetwork implements FilesNetworkApi {
       toUpperCase: true,
     );
 
-    final response = await _dio.post("", data: route.toJson());
+    final response = await _dio.post("/?Api/", data: route.toJson());
 
     return (response.data["List"] as List)
         .map((item) => Recipient.fromJson(item))

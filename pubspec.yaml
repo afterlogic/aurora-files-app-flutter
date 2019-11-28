@@ -59,7 +59,7 @@ dependencies:
   uuid: ^2.0.2
 
   # di
-  async_injector: ^0.1.2
+  async_injector: ^0.1.2+2
 
   # async util
   rxdart: ^0.22.6

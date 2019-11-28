@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:dio/dio.dart';
 import 'package:domain/api/cache/storage/user_storage_api.dart';
 import 'package:domain/api/network/auth_network_api.dart';
 import 'package:domain/model/network/auth/auth_request.dart';
@@ -17,13 +18,13 @@ class AuthState = _AuthState with _$AuthState;
 abstract class _AuthState with Store {
   final AuthNetworkApi _authApi = DI.get();
   final UserStorageApi _authLocal = DI.get();
+  final Dio _dio = DI.get();
 
-  String hostName;
+  String get hostName => _authLocal.host.toString();
 
   String get apiUrl => '$hostName/?Api/';
 
-
-  String userEmail;
+  String get userEmail=> _authLocal.userEmail.toString();
 
   @observable
   bool isLoggingIn = false;
@@ -47,8 +48,6 @@ abstract class _AuthState with Store {
       _authLocal.token.set(token),
       _authLocal.userEmail.set(email),
     ]);
-    hostName = host;
-    userEmail = email;
   }
 
   // returns true the host field needs to be revealed because auto discover was unsuccessful
@@ -61,7 +60,7 @@ abstract class _AuthState with Store {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
       String email = emailCtrl.text;
       String password = passwordCtrl.text;
-      hostName = hostCtrl.text.startsWith("http")
+      var hostName = hostCtrl.text.startsWith("http")
           ? hostCtrl.text
           : "https://${hostCtrl.text}";
 
@@ -80,6 +79,8 @@ abstract class _AuthState with Store {
       }
 
       try {
+        _dio.options.baseUrl = hostName;
+        _authLocal.host.set(hostName);
         final authResponse = await _authApi.login(AuthRequest(email, password));
         await _setAuthSharedPrefs(
             host: hostName, token: authResponse.authToken, email: email);

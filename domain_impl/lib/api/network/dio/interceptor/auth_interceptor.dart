@@ -15,11 +15,6 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  Future onResponse(Response response) {
-    return super.onResponse(response);
-  }
-
-  @override
   Future onError(DioError err) {
     if (err.error is NetworkError &&
         err.error.errorCase == NetworkErrorCase.Unauthorized) {
@@ -31,7 +26,7 @@ class AuthInterceptor extends Interceptor {
   }
 
   static token(UserStorageApi userStorageApi) {
-    final token = userStorageApi.token.get();
+    final token = userStorageApi.token.toString();
     if (token != null) {
       return "Bearer $token";
     } else {

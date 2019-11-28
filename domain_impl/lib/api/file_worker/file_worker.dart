@@ -5,11 +5,10 @@ import 'package:domain/api/crypto/aes_crypto_api.dart';
 import 'package:domain/api/file_worker/file_worker_api.dart';
 import 'package:domain/api/network/files_network_api.dart';
 import 'package:domain/model/bd/local_file.dart';
-import 'package:domain/model/network/file/processing_file.dart';
+import 'package:domain/model/data/processing_file.dart';
 import 'package:domain/api/file_worker/error/file_error.dart';
 import 'package:domain/model/network/file/upload_file_request.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:http/http.dart';
 
 class FileWorker extends FileWorkerApi {
   final FilesNetworkApi _filesNetworkApi;
@@ -18,10 +17,10 @@ class FileWorker extends FileWorkerApi {
   FileWorker(this._filesNetworkApi, this._aesCrypto);
 
   Future<Stream<double>> uploadFile(
-    ProcessingFile processingFile, {
+    ProcessingFile processingFile,
     String url,
     String storageType,
-    String path,
+    String path, {
     String encryptKey,
   }) async {
     if (!await processingFile.fileOnDevice.exists()) {
@@ -97,7 +96,7 @@ class FileWorker extends FileWorkerApi {
     }
 
     var currentBytes = 0;
-    return writeToFile(outStream, processingFile.fileOnDevice).map((bytes) {
+    return _writeToFile(outStream, processingFile.fileOnDevice).map((bytes) {
       currentBytes += bytes.length;
       return currentBytes / file.size;
     }).handleError((_, __) {
@@ -105,7 +104,7 @@ class FileWorker extends FileWorkerApi {
     });
   }
 
-  Stream<List<int>> writeToFile(Stream<List<int>> stream, File file) {
+  Stream<List<int>> _writeToFile(Stream<List<int>> stream, File file) {
     return stream.asyncMap((bytes) async {
       file.writeAsBytes(bytes, mode: FileMode.append);
       return bytes;

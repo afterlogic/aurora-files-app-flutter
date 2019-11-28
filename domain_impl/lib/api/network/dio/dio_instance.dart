@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:domain/api/cache/storage/user_storage_api.dart';
 
 import 'interceptor/auth_interceptor.dart';
 import 'interceptor/convert_response_interceptor.dart';
@@ -6,9 +7,11 @@ import 'interceptor/convert_response_interceptor.dart';
 class DioInstance {
   static Dio create(
     AuthInterceptor authInterceptor,
+    UserStorageApi userStorage,
   ) {
     final dio = Dio(
       BaseOptions(
+        baseUrl: userStorage.host.toString() ?? "",
         contentType: contentType,
       ),
     );

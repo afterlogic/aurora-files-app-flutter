@@ -21,7 +21,7 @@ class AuthNetwork implements AuthNetworkApi {
       parameters: request.toJson(),
       toUpperCase: true,
     );
-    final result = await _dio.post("", data: route.toJson());
+    final result = await _dio.post("/?Api/", data: route.toJson());
     return AuthResponse.fromJson(result.data);
   }
 

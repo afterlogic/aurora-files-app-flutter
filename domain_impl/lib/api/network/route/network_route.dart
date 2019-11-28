@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:domain_impl/api/network/util.dart';
+import 'package:domain_impl/api/network/util/map_util.dart';
 
 abstract class NetworkRoute {
   String get module;

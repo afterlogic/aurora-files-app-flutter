@@ -6,27 +6,27 @@ String firstCharToLowerCase(String string) {
 }
 
 Map<String, dynamic> keysToLowerCase(Map<String, dynamic> map) {
+  var outMap = <String,dynamic>{};
   map.forEach((key, value) {
     if (value is Map) {
-      map[firstCharToLowerCase(key)] = keysToLowerCase(value);
+      outMap[firstCharToLowerCase(key)] = keysToLowerCase(value);
     } else {
-      map[firstCharToLowerCase(key)] = value;
+      outMap[firstCharToLowerCase(key)] = value;
     }
-    map.remove(key);
   });
-  return map;
+  return outMap;
 }
 
 Map<String, dynamic> keysToUpperCase(Map<String, dynamic> map) {
+  var outMap = <String,dynamic>{};
   map.forEach((key, value) {
     if (value is Map) {
-      map[firstCharToUpperCase(key)] = keysToUpperCase(value);
+      outMap[firstCharToUpperCase(key)] = keysToUpperCase(value);
     } else {
-      map[firstCharToUpperCase(key)] = value;
+      outMap[firstCharToUpperCase(key)] = value;
     }
-    map.remove(key);
   });
-  return map;
+  return outMap;
 }
 
 String firstCharToUpperCase(String string) {

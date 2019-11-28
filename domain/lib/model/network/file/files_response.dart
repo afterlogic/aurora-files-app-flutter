@@ -1,5 +1,5 @@
 import 'package:domain/model/bd/local_file.dart';
-import 'package:domain/model/network/file/quota.dart';
+import 'package:domain/model/data/quota.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'files_response.g.dart';

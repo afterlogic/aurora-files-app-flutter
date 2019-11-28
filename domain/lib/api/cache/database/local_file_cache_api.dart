@@ -1,16 +1,23 @@
 import 'package:domain/model/bd/local_file.dart';
 import 'package:domain/model/bd/storage.dart';
 
-abstract class LocalFileCacheApi  {
+abstract class LocalFileCacheApi {
   Future<List<LocalFile>> getAll();
 
-  Future<int> add(LocalFile file);
+  Future set(LocalFile file);
 
-  Future<int> deleteFiles(List<LocalFile> files);
+  Future deleteAll(List<int> ids);
 
   Future<List<Storage>> getStorages();
 
-  Future<List<LocalFile>> getFilesAtPath(String path);
+  Future<List<LocalFile>> getFilesAtPath(
+    String storage,
+    String path,
+  );
 
-  Future<List<LocalFile>> searchFiles(String path, String searchPattern);
+  Future<List<LocalFile>> searchFiles(
+    String storage,
+    String path,
+    String searchPattern,
+  );
 }

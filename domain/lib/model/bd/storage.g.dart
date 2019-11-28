@@ -8,17 +8,17 @@ part of 'storage.dart';
 
 Storage _$StorageFromJson(Map<String, dynamic> json) {
   return Storage()
-    ..type = json['Type'] as String
-    ..displayName = json['DisplayName'] as String
-    ..isExternal = json['IsExternal'] as bool
-    ..order = json['Order'] as int
-    ..isDroppable = json['IsDroppable'] as bool;
+    ..type = json['type'] as String
+    ..displayName = json['displayName'] as String
+    ..isExternal = json['isExternal'] as bool
+    ..order = json['order'] as int
+    ..isDroppable = json['isDroppable'] as bool;
 }
 
 Map<String, dynamic> _$StorageToJson(Storage instance) => <String, dynamic>{
-      'Type': instance.type,
-      'DisplayName': instance.displayName,
-      'IsExternal': instance.isExternal,
-      'Order': instance.order,
-      'IsDroppable': instance.isDroppable,
+      'type': instance.type,
+      'displayName': instance.displayName,
+      'isExternal': instance.isExternal,
+      'order': instance.order,
+      'isDroppable': instance.isDroppable,
     };

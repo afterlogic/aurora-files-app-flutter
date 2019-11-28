@@ -4,6 +4,7 @@ part 'pgp_key.g.dart';
 
 @JsonSerializable()
 class PgpKey {
+  int id;
   String email;
   String key;
   bool isPrivate;

@@ -12,8 +12,14 @@ dependencies:
     sdk: flutter
   domain:
     path: ../domain
+
   # storage
-  shared_preferences: ^0.5.4+5
+  shared_preferences: ^0.5.4+6
+
+  #sql
+  sqflite: ^1.1.7+3
+  dao_wrapped: ^0.1.1
+
   # http
   http: ^0.12.0+2
   dio: ^3.0.6

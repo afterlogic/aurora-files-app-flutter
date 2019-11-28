@@ -34,7 +34,7 @@ abstract class _AuthState with Store {
   final passwordCtrl = TextEditingController();
 
   Future<bool> getAuthSharedPrefs() async {
-    final authToken = await _authLocal.token.get();
+    final authToken =  _authLocal.token.get();
     return authToken != null;
   }
 

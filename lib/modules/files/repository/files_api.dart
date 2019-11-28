@@ -436,7 +436,7 @@ class FilesApi {
 
   Future<String> createPublicLink(
       String type, String path, String name, int size, bool isFolder) async {
-    final int userId = await userStorage.userId.get();
+    final int userId =  userStorage.userId.get();
     final String hostName = AppStore.authState.hostName;
     final parameters = json.encode({
       "UserId": userId,

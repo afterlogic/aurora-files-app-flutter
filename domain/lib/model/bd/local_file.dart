@@ -67,4 +67,39 @@ class LocalFile {
       _$LocalFileFromJson(json);
 
   Map<String, dynamic> toJson() => _$LocalFileToJson(this);
+
+  factory LocalFile.getFolderFromName(
+    String name,
+    String path,
+    String storageType,
+    String userEmail,
+  ) {
+    return new LocalFile.fill(
+      localId: null,
+      id: name,
+      guid: null,
+      type: storageType,
+      path: path,
+      fullPath: path.isEmpty ? "/" + name : "$path/$name",
+      localPath: null,
+      name: name,
+      size: 0,
+      isFolder: true,
+      isOpenable: true,
+      isLink: false,
+      linkType: "",
+      linkUrl: "",
+      lastModified: 0,
+      contentType: "",
+      oEmbedHtml: "",
+      published: false,
+      owner: userEmail,
+      content: "",
+      viewUrl: null,
+      downloadUrl: null,
+      hash: null,
+      extendedProps: "[]",
+      isExternal: false,
+    );
+  }
 }

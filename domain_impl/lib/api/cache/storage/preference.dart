@@ -23,7 +23,7 @@ class PreferenceString extends _Preference<String> {
       : super(preferences, key);
 
   @override
-  Future<String> get() async {
+  String get() {
     return _preferences.getString(_key);
   }
 
@@ -38,7 +38,7 @@ class PreferenceInt extends _Preference<int> {
       : super(preferences, key);
 
   @override
-  Future<int> get() async {
+  int get() {
     return _preferences.getInt(_key);
   }
 

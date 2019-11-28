@@ -4,15 +4,10 @@ part 'storage.g.dart';
 
 @JsonSerializable()
 class Storage {
-  @JsonKey(name: "Type")
   String type;
-  @JsonKey(name: "DisplayName")
   String displayName;
-  @JsonKey(name: "IsExternal")
   bool isExternal;
-  @JsonKey(name: "Order")
   int order;
-  @JsonKey(name: "IsDroppable")
   bool isDroppable;
 
   Storage();
@@ -29,4 +24,14 @@ class Storage {
       _$StorageFromJson(json);
 
   Map<String, dynamic> toJson() => _$StorageToJson(this);
+
+  factory Storage.fromName(String name) {
+    return new Storage.fill(
+      type: name,
+      displayName: name[0].toUpperCase() + name.substring(1),
+      isExternal: false,
+      isDroppable: false,
+      order: 0,
+    );
+  }
 }

@@ -154,7 +154,7 @@ abstract class _FilesState with Store {
     });
 
     try {
-      await _filesApi.copyMoveFiles(
+      await _filesApi.copyFilesTo(
         copy: copy,
         files: mappedFiles,
         fromType: filesToMoveCopy[0].type,

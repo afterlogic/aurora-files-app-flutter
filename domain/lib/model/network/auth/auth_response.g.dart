@@ -8,11 +8,11 @@ part of 'auth_response.dart';
 
 AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) {
   return AuthResponse(
-    json['AuthToken'] as String,
+    json['authToken'] as String,
   );
 }
 
 Map<String, dynamic> _$AuthResponseToJson(AuthResponse instance) =>
     <String, dynamic>{
-      'AuthToken': instance.authToken,
+      'authToken': instance.authToken,
     };

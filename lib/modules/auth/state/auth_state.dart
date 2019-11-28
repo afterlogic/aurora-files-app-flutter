@@ -5,7 +5,7 @@ import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:domain/api/cache/storage/user_storage_api.dart';
 import 'package:domain/api/network/auth_network_api.dart';
-import 'package:domain/model/network/auth_request.dart';
+import 'package:domain/model/network/auth/auth_request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';

@@ -6,9 +6,7 @@ part 'files_response.g.dart';
 
 @JsonSerializable()
 class FilesResponse {
-  @JsonKey(name: "Items")
   final List<LocalFile> items;
-  @JsonKey(name: "Quota")
   final Quota quota;
 
   FilesResponse(this.items, this.quota);

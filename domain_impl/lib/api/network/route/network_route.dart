@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:domain_impl/api/network/util.dart';
+
 abstract class NetworkRoute {
   String get module;
 
-  String method;
+  final String method;
+  final bool toUpperCase;
 
   Map<String, dynamic> get parameters;
 
@@ -12,7 +15,9 @@ abstract class NetworkRoute {
       return {
         'Module': module,
         'Method': method,
-        'Parameters': json.encode(parameters),
+        'Parameters': json.encode(
+          toUpperCase == true ? keysToUpperCase(parameters) : parameters,
+        ),
       };
     } else {
       return {
@@ -22,13 +27,13 @@ abstract class NetworkRoute {
     }
   }
 
-  NetworkRoute(Object method) : method = _describeEnum(method);
-}
+  NetworkRoute(Object method, this.toUpperCase)
+      : method = _describeEnum(method);
 
-//method from flutter/foundation.dart
-String _describeEnum(Object enumEntry) {
-  final String description = enumEntry.toString();
-  final int indexOfDot = description.indexOf('.');
-  assert(indexOfDot != -1 && indexOfDot < description.length - 1);
-  return description.substring(indexOfDot + 1);
+  static String _describeEnum(Object enumEntry) {
+    final String description = enumEntry.toString();
+    final int indexOfDot = description.indexOf('.');
+    assert(indexOfDot != -1 && indexOfDot < description.length - 1);
+    return description.substring(indexOfDot + 1);
+  }
 }

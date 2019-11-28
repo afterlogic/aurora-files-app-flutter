@@ -31,7 +31,7 @@ class DI {
       (provider) => DioInstance.create(provider.get()),
     );
     builder.moduleImpl<AuthNetworkApi>(
-      (provider) => AuthGateway(provider.get()),
+      (provider) => AuthNetwork(provider.get()),
     );
 
     //database

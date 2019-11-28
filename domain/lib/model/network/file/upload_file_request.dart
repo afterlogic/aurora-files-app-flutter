@@ -4,18 +4,14 @@ part 'upload_file_request.g.dart';
 
 @JsonSerializable()
 class UploadFileRequest {
-  @JsonKey(name: "Type")
-  final String storageType;
-  @JsonKey(name: "Path")
+  final String type;
   final String path;
-  @JsonKey(name: "SubPath")
   final String subPath = "";
-  @JsonKey(name: "Overwrite")
   final bool overwrite = false;
-  @JsonKey(name: "ExtendedProps")
+
   ExtendedProps extendedProps;
 
-  UploadFileRequest(this.storageType, this.path);
+  UploadFileRequest(this.type, this.path);
 
   factory UploadFileRequest.fromJson(Map<String, dynamic> json) =>
       _$UploadFileRequestFromJson(json);
@@ -25,12 +21,10 @@ class UploadFileRequest {
 
 @JsonSerializable()
 class ExtendedProps {
-  @JsonKey(name: "InitializationVector")
-  final String iv;
-  @JsonKey(name: "FirstChunk")
+  final String initializationVector;
   final bool firstChunk = true;
 
-  ExtendedProps(this.iv);
+  ExtendedProps(this.initializationVector);
 
   factory ExtendedProps.fromJson(Map<String, dynamic> json) =>
       _$ExtendedPropsFromJson(json);

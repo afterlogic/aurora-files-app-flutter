@@ -6,7 +6,8 @@ class ModuleCore extends NetworkRoute {
   @override
   final Map<String, dynamic> parameters;
 
-  ModuleCore(CoreMethod method, {this.parameters}) : super(method);
+  ModuleCore(CoreMethod method, {this.parameters, bool toUpperCase})
+      : super(method, toUpperCase);
 }
 
 enum CoreMethod { Login }

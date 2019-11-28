@@ -6,7 +6,19 @@ class ModuleFiles extends NetworkRoute {
   @override
   final Map<String, dynamic> parameters;
 
-  ModuleFiles(CoreMethod method, {this.parameters}) : super(method);
+  ModuleFiles(FilesMethod method, {this.parameters, bool toUpperCase})
+      : super(method, toUpperCase);
 }
 
-enum CoreMethod { UploadFile }
+enum FilesMethod {
+  UploadFile,
+  Rename,
+  CreateFolder,
+  Delete,
+  CreatePublicLink,
+  DeletePublicLink,
+  GetStorages,
+  GetFiles,
+  Copy,
+  Move,
+}

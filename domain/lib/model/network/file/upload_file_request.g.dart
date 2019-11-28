@@ -8,27 +8,27 @@ part of 'upload_file_request.dart';
 
 UploadFileRequest _$UploadFileRequestFromJson(Map<String, dynamic> json) {
   return UploadFileRequest(
-    json['Type'] as String,
-    json['Path'] as String,
-  )..extendedProps = json['ExtendedProps'] == null
+    json['type'] as String,
+    json['path'] as String,
+  )..extendedProps = json['extendedProps'] == null
       ? null
-      : ExtendedProps.fromJson(json['ExtendedProps'] as Map<String, dynamic>);
+      : ExtendedProps.fromJson(json['extendedProps'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$UploadFileRequestToJson(UploadFileRequest instance) =>
     <String, dynamic>{
-      'Type': instance.storageType,
-      'Path': instance.path,
-      'ExtendedProps': instance.extendedProps,
+      'type': instance.type,
+      'path': instance.path,
+      'extendedProps': instance.extendedProps,
     };
 
 ExtendedProps _$ExtendedPropsFromJson(Map<String, dynamic> json) {
   return ExtendedProps(
-    json['InitializationVector'] as String,
+    json['initializationVector'] as String,
   );
 }
 
 Map<String, dynamic> _$ExtendedPropsToJson(ExtendedProps instance) =>
     <String, dynamic>{
-      'InitializationVector': instance.iv,
+      'initializationVector': instance.initializationVector,
     };

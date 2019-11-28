@@ -478,7 +478,7 @@ class FilesApi {
     }
   }
 
-  Future copyMoveFiles({
+  Future copyFilesTo({
     @required bool copy,
     @required String fromType,
     @required String toType,

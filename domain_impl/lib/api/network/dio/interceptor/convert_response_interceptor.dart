@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:domain/api/network/error/network_error.dart';
 import 'package:domain_impl/api/network/error_code.dart';
+import 'package:domain_impl/api/network/util.dart';
 
 class ConvertResponse extends Interceptor {
   @override
@@ -20,8 +21,23 @@ class ConvertResponse extends Interceptor {
             throw NetworkError(NetworkErrorCase.Undefined);
         }
       }
-      response.data = response.data["Result"];
+
+      if (response.data is Map) {
+        if (response.data.containsKey("Result")) {
+          response.data = _keysToLowerCase(response.data["Result"]);
+        } else {
+          response.data = _keysToLowerCase(response.data);
+        }
+      }
     }
     return super.onResponse(response);
+  }
+
+  dynamic _keysToLowerCase(dynamic map) {
+    if (map is Map<String, dynamic>) {
+      return keysToLowerCase(map);
+    } else {
+      return map;
+    }
   }
 }

@@ -8,12 +8,12 @@ part of 'quota.dart';
 
 Quota _$QuotaFromJson(Map<String, dynamic> json) {
   return Quota(
-    json['Limit'] as int,
-    json['Used'] as int,
+    json['limit'] as int,
+    json['used'] as int,
   );
 }
 
 Map<String, dynamic> _$QuotaToJson(Quota instance) => <String, dynamic>{
-      'Limit': instance.limit,
-      'Used': instance.used,
+      'limit': instance.limit,
+      'used': instance.used,
     };

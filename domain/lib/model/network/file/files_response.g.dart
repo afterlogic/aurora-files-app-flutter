@@ -8,18 +8,18 @@ part of 'files_response.dart';
 
 FilesResponse _$FilesResponseFromJson(Map<String, dynamic> json) {
   return FilesResponse(
-    (json['Items'] as List)
+    (json['items'] as List)
         ?.map((e) =>
             e == null ? null : LocalFile.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    json['Quota'] == null
+    json['quota'] == null
         ? null
-        : Quota.fromJson(json['Quota'] as Map<String, dynamic>),
+        : Quota.fromJson(json['quota'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$FilesResponseToJson(FilesResponse instance) =>
     <String, dynamic>{
-      'Items': instance.items,
-      'Quota': instance.quota,
+      'items': instance.items,
+      'quota': instance.quota,
     };

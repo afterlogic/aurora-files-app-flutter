@@ -11,12 +11,16 @@ class AuthNetwork implements AuthNetworkApi {
 
   Future<String> getHostname(String domain) async {
     final url = "$_AUTO_DISCOVER_URL?domain=$domain";
-    final result = await _dio.get(url);
+    final result = await _dio.get(url, options: RequestOptions());
     return result.data["url"];
   }
 
   Future<AuthResponse> login(AuthRequest request) async {
-    final route = ModuleCore(CoreMethod.Login);
+    final route = ModuleCore(
+      CoreMethod.Login,
+      parameters: request.toJson(),
+      toUpperCase: true,
+    );
     final result = await _dio.post("", data: route.toJson());
     return AuthResponse.fromJson(result.data);
   }

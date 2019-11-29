@@ -42,6 +42,7 @@ dependencies:
   open_file: ^2.0.3
 
   # ui
+  mpv: ^0.0.1
   material_design_icons_flutter: ^3.2.4096
   cupertino_icons: ^0.1.2
   shimmer: ^1.0.0
@@ -94,8 +95,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/assets/images/
-    - lib/assets/svg/
+    - res/images/
+    - res/svg/
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

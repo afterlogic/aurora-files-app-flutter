@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:domain/model/bd/storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -70,31 +70,33 @@ class _FilesAppBarState extends State<FilesAppBar>
         ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
         centerTitle: Platform.isIOS,
-        actions: _filesState.isOfflineMode ? [
+        actions: _filesState.isOfflineMode
+            ? [
 //          IconButton(
 //            icon: Icon(Icons.airplanemode_inactive),
 //            tooltip: "Delete files from offline",
 //            onPressed: () {},
 //          ),
-        ] : [
-          IconButton(
-            icon: Icon(MdiIcons.fileMove),
-            tooltip: "Move/Copy files",
-            onPressed: () {
-              _filesState.updateFilesCb = _filesPageState.onGetFiles;
-              _filesState.enableMoveMode(
-                selectedFileIds: _filesPageState.selectedFilesIds,
-                currentFiles: _filesPageState.currentFiles,
-              );
-              _filesPageState.quitSelectMode();
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_outline),
-            tooltip: "Delete files",
-            onPressed: () => widget.onDeleteFiles(context),
-          ),
-        ],
+              ]
+            : [
+                IconButton(
+                  icon: Icon(MdiIcons.fileMove),
+                  tooltip: "Move/Copy files",
+                  onPressed: () {
+                    _filesState.updateFilesCb = _filesPageState.onGetFiles;
+                    _filesState.enableMoveMode(
+                      selectedFileIds: _filesPageState.selectedFilesIds,
+                      currentFiles: _filesPageState.currentFiles,
+                    );
+                    _filesPageState.quitSelectMode();
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_outline),
+                  tooltip: "Delete files",
+                  onPressed: () => widget.onDeleteFiles(context),
+                ),
+              ],
       );
     } else if (_filesState.isMoveModeEnabled) {
       return AppBar(
@@ -187,7 +189,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else if (_filesPageState.isSearchMode) {
       return AppBar(
-      key: Key("defaault"),
+        key: Key("defaault"),
         leading: IconButton(
           icon: Icon(Icons.close),
           onPressed: () {
@@ -377,10 +379,10 @@ class _FilesAppBarState extends State<FilesAppBar>
 
     return Observer(
       builder: (_) => AnimatedSwitcher(
-          duration: Duration(milliseconds: 100),
-          reverseDuration: Duration(milliseconds: 300),
-          child: _getAppBar(context),
-        ),
+        duration: Duration(milliseconds: 100),
+        reverseDuration: Duration(milliseconds: 300),
+        child: _getAppBar(context),
+      ),
     );
   }
 }

@@ -1,53 +1,41 @@
-import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:domain/model/bd/local_file.dart';
 
-Storage getStorageFromName(String name) {
-  return new Storage(
-    type: name,
-    displayName: name[0].toUpperCase() + name.substring(1),
-    isExternal: false,
-    isDroppable: false,
-    order: 0,
-  );
-}
-
-FilesCompanion getCompanionFromLocalFile(LocalFile file, String pathToFile) {
-  return new FilesCompanion(
-    id: Value(file.id),
-    guid: Value(file.guid),
-    type: Value(file.type),
-    path: Value(file.path),
-    fullPath: Value(file.fullPath),
-    localPath: Value(pathToFile),
-    name: Value(file.name),
-    size: Value(file.size),
-    isFolder: Value(file.isFolder),
-    isOpenable: Value(file.isOpenable),
-    isLink: Value(file.isLink),
-    linkType: Value(file.linkType),
-    linkUrl: Value(file.linkUrl),
-    lastModified: Value(file.lastModified),
-    contentType: Value(file.contentType),
-    oEmbedHtml: Value(file.oEmbedHtml),
-    published: Value(file.published),
-    owner: Value(file.owner),
-    content: Value(file.content),
-    viewUrl: Value(file.viewUrl),
-    downloadUrl: Value(file.downloadUrl),
-    thumbnailUrl: Value(file.thumbnailUrl),
-    hash: Value(file.hash),
-    extendedProps: Value(file.extendedProps),
-    isExternal: Value(file.isExternal),
-    initVector: Value(file.initVector),
+LocalFile getCompanionFromLocalFile(LocalFile file, String pathToFile) {
+  return new LocalFile.fill(
+    id: file.id,
+    guid: file.guid,
+    type: file.type,
+    path: file.path,
+    fullPath: file.fullPath,
+    localPath: pathToFile,
+    name: file.name,
+    size: file.size,
+    isFolder: file.isFolder,
+    isOpenable: file.isOpenable,
+    isLink: file.isLink,
+    linkType: file.linkType,
+    linkUrl: file.linkUrl,
+    lastModified: file.lastModified,
+    contentType: file.contentType,
+    oEmbedHtml: file.oEmbedHtml,
+    published: file.published,
+    owner: file.owner,
+    content: file.content,
+    viewUrl: file.viewUrl,
+    downloadUrl: file.downloadUrl,
+    thumbnailUrl: file.thumbnailUrl,
+    hash: file.hash,
+    extendedProps: file.extendedProps,
+    isExternal: file.isExternal,
+    initVector: file.initVector,
   );
 }
 
 LocalFile getFolderFromName(String name, String path) {
   String storageType = AppStore.filesState.selectedStorage.type;
   String userEmail = AppStore.authState.userEmail;
-  return new LocalFile(
+  return new LocalFile.fill(
     localId: null,
     id: name,
     guid: null,

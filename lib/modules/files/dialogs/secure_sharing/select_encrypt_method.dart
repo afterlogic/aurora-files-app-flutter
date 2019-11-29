@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
+import 'package:domain/model/bd/pgp_key.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SelectEncryptMethod extends StatefulWidget {
   final Recipient recipient;
-  final LocalPgpKey pgpKey;
+  final PgpKey pgpKey;
 
   const SelectEncryptMethod(this.recipient, this.pgpKey);
 

@@ -1,10 +1,9 @@
-import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_model_route.dart';
+import 'package:domain/model/bd/pgp_key.dart';
 import 'package:flutter/material.dart';
 
 class KeyWidget extends StatelessWidget {
-  final LocalPgpKey pgpKey;
-  final Function(LocalPgpKey pgpKey) openKey;
+  final PgpKey pgpKey;
+  final Function(PgpKey pgpKey) openKey;
 
   const KeyWidget(this.pgpKey, this.openKey);
 

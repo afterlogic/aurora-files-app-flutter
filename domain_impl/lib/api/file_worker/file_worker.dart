@@ -1,120 +1,48 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:domain/api/crypto/aes_crypto_api.dart';
-import 'package:domain/api/file_worker/file_worker_api.dart';
-import 'package:domain/api/network/files_network_api.dart';
+import 'package:domain/api/cache/database/local_file_cache_api.dart';
+import 'package:domain/api/file_worker/file_cache_worker_api.dart';
 import 'package:domain/model/bd/local_file.dart';
-import 'package:domain/model/data/processing_file.dart';
-import 'package:domain/api/file_worker/error/file_error.dart';
-import 'package:domain/model/network/file/upload_file_request.dart';
-import 'package:encrypt/encrypt.dart';
 
 class FileWorker extends FileWorkerApi {
-  final FilesNetworkApi _filesNetworkApi;
-  final AesCryptoApi _aesCrypto;
+  final LocalFileCacheApi _fileCacheApi;
 
-  FileWorker(this._filesNetworkApi, this._aesCrypto);
+  FileWorker(this._fileCacheApi);
 
-  Future<Stream<double>> uploadFile(
-    ProcessingFile processingFile,
-    String url,
-    String storageType,
-    String path, {
-    String encryptKey,
-  }) async {
-    if (!await processingFile.fileOnDevice.exists()) {
-      throw FileError(FileErrorCase.NotExist, "File doesn't exist");
-    }
+  @override
+  Future deleteAll(List<LocalFile> list) async {
+    //todo
+    //if (!Platform.isIOS) await getStoragePermissions();
 
-    final uploadRequest = UploadFileRequest(storageType, path);
-
-    final shouldEncrypt = encryptKey != null;
-
-    var fileLength = await processingFile.fileOnDevice.length();
-    if (shouldEncrypt) {
-      fileLength = ((fileLength / _vectorLength) + 1).toInt() * _vectorLength;
-    }
-
-    var currentBytes = 0;
-    var currentProgress = 0.0;
-    final fileStream = processingFile.fileOnDevice.openRead().map((bytes) {
-      currentBytes += bytes.length;
-
-      currentProgress = currentBytes / fileLength;
-      return bytes;
+    final List<int> ids = list.map((file) => file.localId).toList();
+    list.forEach((file) {
+      final fileToDelete = new File(file.localPath);
+      if (fileToDelete.existsSync()) fileToDelete.delete();
     });
-
-    var outStream = fileStream;
-    if (shouldEncrypt) {
-      final vector = IV.fromSecureRandom(_vectorLength);
-      uploadRequest.extendedProps = ExtendedProps(vector.base16);
-
-      outStream = _aesCrypto.encryptStream(
-        outStream,
-        encryptKey,
-        vector.base64,
-        _vectorLength,
-        (v) {},
-      );
-    }
-
-    final fileName = _getFileName(processingFile.fileOnDevice.path);
-
-    _filesNetworkApi.upload(uploadRequest, outStream, fileLength, fileName);
-
-    return outStream.map((_) {
-      return currentProgress;
-    });
+    return _fileCacheApi.deleteAll(ids);
   }
 
-  Future<Stream<double>> downloadFile(
-    String url,
-    LocalFile file,
-    String encryptKey,
-    ProcessingFile processingFile, {
-    Function(File) onSuccess,
-  }) async {
-    if (!await processingFile.fileOnDevice.exists()) {
-      throw FileError(FileErrorCase.NotExist, "File doesn't exist");
-    }
-
-    final shouldDecrypt = file.initVector != null;
-
-    final networkStream = await _filesNetworkApi.download(url);
-
-    var outStream = networkStream;
-    if (shouldDecrypt) {
-      IV iv = IV.fromBase16(file.initVector);
-      outStream = _aesCrypto.decryptStream(
-        outStream,
-        encryptKey,
-        iv.base64,
-        _vectorLength,
-        (v) {},
-      );
-    }
-
-    var currentBytes = 0;
-    return _writeToFile(outStream, processingFile.fileOnDevice).map((bytes) {
-      currentBytes += bytes.length;
-      return currentBytes / file.size;
-    }).handleError((_, __) {
-      processingFile.fileOnDevice.delete(recursive: true);
-    });
+  @override
+  deleteFiles(List<LocalFile> filesToDeleteLocally) {
+    // TODO: implement deleteFiles
+    return null;
   }
 
-  Stream<List<int>> _writeToFile(Stream<List<int>> stream, File file) {
-    return stream.asyncMap((bytes) async {
-      file.writeAsBytes(bytes, mode: FileMode.append);
-      return bytes;
-    });
+  @override
+  getFilesAtPath(String pagePath) {
+    // TODO: implement getFilesAtPath
+    return null;
   }
 
-  String _getFileName(String path) {
-    final index = path.lastIndexOf("/");
-    return path.substring(index + 1);
+  @override
+  getStorages() {
+    // TODO: implement getStorages
+    return null;
   }
 
-  static const _vectorLength = 16;
+  @override
+  searchFiles(String pagePath, String searchPattern) {
+    // TODO: implement searchFiles
+    return null;
+  }
 }

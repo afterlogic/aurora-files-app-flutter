@@ -4,19 +4,19 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
-import 'package:aurorafiles/database/app_database.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/recipient.dart';
-import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/stream_util.dart';
 import 'package:domain/api/cache/storage/user_storage_api.dart';
+import 'package:domain/model/bd/storage.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/widgets.dart';
@@ -46,7 +46,7 @@ class FilesApi {
     if (res['Result'] is List) {
       final List<Storage> storages = [];
       res['Result']
-          .forEach((rawStorage) => storages.add(Storage.fromMap(rawStorage)));
+          .forEach((rawStorage) => storages.add(Storage.fromJson(rawStorage)));
       return storages;
     } else {
       throw CustomException(getErrMsg(res));
@@ -436,7 +436,7 @@ class FilesApi {
 
   Future<String> createPublicLink(
       String type, String path, String name, int size, bool isFolder) async {
-    final int userId =  userStorage.userId.get();
+    final int userId = userStorage.userId.get();
     final String hostName = AppStore.authState.hostName;
     final parameters = json.encode({
       "UserId": userId,

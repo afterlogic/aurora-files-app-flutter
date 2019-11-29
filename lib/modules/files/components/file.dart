@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
@@ -14,6 +13,7 @@ import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

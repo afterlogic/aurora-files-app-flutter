@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
+import 'package:domain/api/cache/database/pgp_key_cache_api.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
+import 'package:domain/model/bd/pgp_key.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,17 +20,17 @@ class SelectRecipient extends StatefulWidget {
 }
 
 class _SelectRecipientState extends State<SelectRecipient> {
-  final PgpKeyDao _pgpKeyDao = DI.get();
+  final PgpKeyCacheApi _pgpKeyDao = DI.get();
   bool hasError = false;
   List<Recipient> recipients;
-  Map<String, LocalPgpKey> keys;
+  Map<String, PgpKey> keys;
 
   loadRecipients() {
     hasError = false;
     widget.fileViewerState.getRecipient().then(
       (v) async {
         recipients = v;
-        final localKeys = await _pgpKeyDao.getPublicKey();
+        final localKeys = await _pgpKeyDao.getAll();
         keys = Map.fromEntries(
           localKeys.map(
             (item) => MapEntry(item.email, item),
@@ -137,14 +138,14 @@ class _SelectRecipientState extends State<SelectRecipient> {
 
 class SelectRecipientResult {
   final Recipient recipient;
-  final LocalPgpKey pgpKey;
+  final PgpKey pgpKey;
 
   SelectRecipientResult(this.recipient, this.pgpKey);
 }
 
 class RecipientWidget extends StatelessWidget {
   final Recipient recipient;
-  final LocalPgpKey pgpKey;
+  final PgpKey pgpKey;
 
   RecipientWidget(this.recipient, this.pgpKey);
 

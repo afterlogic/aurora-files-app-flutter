@@ -1,10 +1,10 @@
 import 'package:aurorafiles/models/quota.dart';
-import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/settings/dialogs/storage_info_dialog.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
+import 'package:domain/model/bd/storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

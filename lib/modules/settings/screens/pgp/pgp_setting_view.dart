@@ -1,4 +1,4 @@
-import 'package:aurorafiles/database/app_database.dart';
+import 'package:domain/model/bd/pgp_key.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -19,7 +19,7 @@ mixin PgpSettingView<W extends StatefulWidget> on State<W> {
 }
 
 class KeysState {
-  final List<LocalPgpKey> keys;
+  final List<PgpKey> keys;
   final bool isProgress;
 
   KeysState(this.keys, [this.isProgress = false]);

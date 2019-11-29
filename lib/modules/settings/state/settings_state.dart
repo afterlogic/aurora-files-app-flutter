@@ -6,8 +6,6 @@ import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-import 'package:moor_flutter/moor_flutter.dart';
-
 part 'settings_state.g.dart';
 
 class SettingsState = _SettingsState with _$SettingsState;

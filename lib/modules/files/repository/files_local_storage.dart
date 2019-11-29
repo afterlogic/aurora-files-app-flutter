@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
-import 'package:aurorafiles/database/app_database.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';

@@ -1,4 +1,4 @@
-import 'package:aurorafiles/database/app_database.dart';
+import 'package:domain/model/bd/local_file.dart';
 
 enum FileType {
   unknown,

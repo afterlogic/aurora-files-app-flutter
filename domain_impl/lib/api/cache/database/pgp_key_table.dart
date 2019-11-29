@@ -10,7 +10,6 @@ class PgpKeyTable extends DatabaseGateway<PgpKey> {
 
   @override
   Future createTable() {
-    //primary key autoincrement
     var createTableRequest = "CREATE TABLE IF NOT EXISTS $table("
         "$primaryId INTEGER PRIMARY KEY AUTOINCREMENT,"
         "email TEXT,"
@@ -19,6 +18,12 @@ class PgpKeyTable extends DatabaseGateway<PgpKey> {
 
     print(createTableRequest);
     return db.execute(createTableRequest);
+  }
+
+  Future deleteTable() {
+    var deleteTableRequest = "DROP TABLE IF EXISTS $table";
+    print(deleteTableRequest);
+    return db.execute(deleteTableRequest);
   }
 
   @override

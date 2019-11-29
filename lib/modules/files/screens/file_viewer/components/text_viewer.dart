@@ -1,4 +1,4 @@
-import 'package:aurorafiles/database/app_database.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';

@@ -1,10 +1,9 @@
 import 'dart:convert';
-
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
@@ -27,7 +26,7 @@ LocalFile getFakeLocalFileForUploadProgress(
     ProcessingFile processingFile, String path) {
   final fileName =
       FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path);
-  return new LocalFile(
+  return new LocalFile.fill(
     localId: null,
     id: fileName,
     guid: processingFile.guid,
@@ -178,7 +177,7 @@ String _getErrMsgFromCode(int code) {
 }
 
 LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
-  return LocalFile(
+  return LocalFile.fill(
     localId: null,
     id: rawFile["Id"],
     guid: rawFile["ExtendedProps"] is Map

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:domain/model/data/processing_file.dart';
 
-abstract class FileWorkerApi {
+abstract class FileLoadWorkerApi {
   Future<Stream<double>> uploadFile(
     ProcessingFile processingFile,
     String url,

@@ -18,7 +18,7 @@ dependencies:
 
   #sql
   sqflite: ^1.1.7+3
-  dao_wrapped: ^0.1.1
+  dao_wrapped: ^0.1.2
 
   # http
   http: ^0.12.0+2

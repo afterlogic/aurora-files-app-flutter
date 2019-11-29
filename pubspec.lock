@@ -211,6 +211,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
+  dao_wrapped:
+    dependency: transitive
+    description:
+      name: dao_wrapped
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   dart_style:
     dependency: transitive
     description:
@@ -452,13 +459,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.2"
-  moor_flutter:
-    dependency: "direct main"
-    description:
-      name: moor_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.7.0"
   moor_generator:
     dependency: "direct dev"
     description:
@@ -626,7 +626,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.4+5"
+    version: "0.5.4+6"
   shelf:
     dependency: transitive
     description:
@@ -668,12 +668,12 @@ packages:
     source: hosted
     version: "1.5.5"
   sqflite:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.7+2"
+    version: "1.1.7+3"
   sqlparser:
     dependency: transitive
     description:

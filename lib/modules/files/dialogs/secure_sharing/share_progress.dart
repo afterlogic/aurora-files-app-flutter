@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
+import 'package:domain/model/bd/pgp_key.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShareProgress extends StatefulWidget {
   final Recipient recipient;
-  final LocalPgpKey pgpKey;
+  final PgpKey pgpKey;
   final bool useKey;
   final Pgp pgp;
   final PreparedForShare file;

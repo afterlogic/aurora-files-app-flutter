@@ -1,17 +1,17 @@
-import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/database/files/files_dao.dart';
+import 'package:domain/api/cache/database/local_file_cache_api.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/processing_file.dart';
-import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:domain/model/bd/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
-
+import 'package:domain/api/file_worker/file_cache_worker_api.dart';
 import '../../app_store.dart';
 
 part 'files_page_state.g.dart';
@@ -27,7 +27,7 @@ class FilesPageState = _FilesPageState with _$FilesPageState;
 // State instance per each files location
 abstract class _FilesPageState with Store {
   final _filesApi = FilesApi();
-  final FilesDao _filesDao = DI.get();
+  final FileWorkerApi _filesDao = DI.get();
   final _filesLocal = FilesLocalStorage();
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();

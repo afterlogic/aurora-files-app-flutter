@@ -1,14 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
-
-import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/database/files/files_dao.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
-import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
@@ -16,6 +12,7 @@ import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:domain/model/bd/storage.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,19 +21,20 @@ import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:domain/api/file_worker/file_cache_worker_api.dart';
 
 part 'files_state.g.dart';
 
 class FilesState = _FilesState with _$FilesState;
 
-final dummyStorage = new Storage(
+final dummyStorage = new Storage.fill(
     type: "", displayName: "", isExternal: false, isDroppable: false, order: 0);
 
 // Global files state
 abstract class _FilesState with Store {
   final _filesApi = FilesApi();
   final _filesLocal = FilesLocalStorage();
-  final FilesDao _filesDao = DI.get();
+  final FileWorkerApi _filesDao = DI.get();
 
   final filesTileLeadingSize = 48.0;
 
@@ -241,7 +239,7 @@ abstract class _FilesState with Store {
     final shouldEncrypt = selectedStorage.type == "encrypted";
 
     final fileName = FileUtils.getFileNameFromPath(file.path);
-    final localFile = new LocalFile(
+    final localFile = new LocalFile.fill(
       localId: null,
       id: fileName,
       guid: Uuid().v4(),
@@ -476,9 +474,9 @@ abstract class _FilesState with Store {
             file.downloadUrl, file, processingFile, false,
             onSuccess: (_) async {
               deleteFromProcessing(file.guid);
-              final FilesCompanion filesCompanion =
+              final LocalFile filesCompanion =
                   getCompanionFromLocalFile(file, fileForOffline.path);
-              await _filesDao.addFile(filesCompanion);
+              await _filesDao.set(filesCompanion);
               onSuccess();
             },
             onError: (err) => deleteFromProcessing(file.guid));
@@ -486,7 +484,7 @@ abstract class _FilesState with Store {
         onStart(processingFile);
       }
     } else {
-      await _filesDao.deleteFiles([file]);
+      await _filesDao.deleteAll([file]);
       onSuccess();
     }
   }

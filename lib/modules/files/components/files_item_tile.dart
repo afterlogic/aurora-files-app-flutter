@@ -1,6 +1,6 @@
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

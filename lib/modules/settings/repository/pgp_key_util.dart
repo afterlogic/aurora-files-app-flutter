@@ -1,26 +1,25 @@
 import 'dart:io';
 
-import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
-import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
+import 'package:domain/api/cache/database/pgp_key_cache_api.dart';
+import 'package:domain/model/bd/pgp_key.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PgpKeyUtil {
   final Pgp pgp;
-  final PgpKeyDao pgpKeyDao;
+  final PgpKeyCacheApi pgpKeyDao;
 
   PgpKeyUtil(this.pgp, this.pgpKeyDao);
 
-  Future<List<LocalPgpKey>> validateText(String text) async {
+  Future<List<PgpKey>> validateText(String text) async {
     final keys = RegExp("$keyStart((\\D|\\d)*)$keyEnd")
         .allMatches(text)
         .map((regExp) => regExp.group(0))
         .toList();
-    final localKeys = <LocalPgpKey>[];
+    final localKeys = <PgpKey>[];
 
     for (String key in keys) {
       final emails = await pgp.getEmailFromKey(key);
@@ -34,20 +33,20 @@ class PgpKeyUtil {
           validEmail = email;
         }
         final localPgpKey =
-            LocalPgpKey(email: validEmail, key: key, isPrivate: false);
+            PgpKey.fill(email: validEmail, key: key, isPrivate: false);
 
         localKeys.add(localPgpKey);
       }
     }
 
     if (localKeys.isNotEmpty) {
-      await pgpKeyDao.addKeys(localKeys);
+      await pgpKeyDao.setAll(localKeys);
     }
 
     return localKeys;
   }
 
-  Future<List<LocalPgpKey>> importKeyFromFile() async {
+  Future<List<PgpKey>> importKeyFromFile() async {
     final File fileWithKey = await FilePicker.getFile();
     if (fileWithKey == null) return null;
     final String contents = await fileWithKey.readAsString();
@@ -63,7 +62,7 @@ class PgpKeyUtil {
     return dir.path + pgpKeyPath;
   }
 
-  Future<File> downloadKey(LocalPgpKey key, [String addedPath = ""]) async {
+  Future<File> downloadKey(PgpKey key, [String addedPath = ""]) async {
     if (!Platform.isIOS) await getStoragePermissions();
     final file = File(await keysFolder() + addedPath + key.email + ".asc");
     if (await file.exists()) {
@@ -74,8 +73,8 @@ class PgpKeyUtil {
     return file;
   }
 
-  Future deleteKey(LocalPgpKey key) async {
-    await pgpKeyDao.deleteKey(key);
+  Future deleteKey(PgpKey key) async {
+    await pgpKeyDao.delete(key.id);
   }
 
   static const pgpKeyPath = "/pgp_keys/";

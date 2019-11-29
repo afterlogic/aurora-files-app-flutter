@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/database/app_database.dart';
+import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';

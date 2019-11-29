@@ -1,4 +1,3 @@
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/key_from_text_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget.dart';
@@ -8,8 +7,8 @@ import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:aurorafiles/utils/stream_widget.dart';
+import 'package:domain/model/bd/pgp_key.dart';
 import 'package:flutter/material.dart';
-import 'package:share_extend/share_extend.dart';
 
 import 'key/pgp_key_model_route.dart';
 
@@ -97,7 +96,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
         ));
   }
 
-  openKey(LocalPgpKey pgpKey) async {
+  openKey(PgpKey pgpKey) async {
     final result = await Navigator.pushNamed(
       context,
       PgpKeyModelRoute.name,
@@ -109,7 +108,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     }
   }
 
-  exportAll(List<LocalPgpKey> keys) async {
+  exportAll(List<PgpKey> keys) async {
     final path = await _presenter.exportAll(keys);
     showSnack(
       context: context,

@@ -118,20 +118,4 @@ class LocalFileCache with DaoMixin<LocalFile> implements LocalFileCacheApi {
     // });
     return super.deleteAll(ids);
   }
-
-  //todo add to lib
-  Future<List<LocalFile>> getByFields(
-      List<String> fields, List<dynamic> value) async {
-    var where = "";
-    for (String field in fields) {
-      if (where.isNotEmpty) {
-        where += ",";
-      }
-      where += "$field = ?";
-    }
-
-    var result = await databaseGateway.db
-        .query(databaseGateway.table, where: where, whereArgs: value);
-    return result.map((json) => databaseGateway.fromMap(json)).toList();
-  }
 }

@@ -7,5 +7,5 @@ abstract class PgpKeyCacheApi {
 
   Future<List<PgpKey>> getByEmail(String email);
 
-  Future delete(String id);
+  Future delete(int id);
 }

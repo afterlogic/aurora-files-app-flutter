@@ -1,12 +1,13 @@
 import 'dart:io';
 
+import 'package:aurorafiles/di/di.dart';
+import 'package:domain/api/network/files_network_api.dart';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/models/processing_file.dart';
-import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
+import 'package:domain/model/data/recipient.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 
@@ -15,7 +16,7 @@ part 'file_viewer_state.g.dart';
 class FileViewerState = _FileViewerState with _$FileViewerState;
 
 abstract class _FileViewerState with Store {
-  final _filesApi = new FilesApi();
+  final FilesNetworkApi _filesApi = DI.get();
   final _filesLocal = new FilesLocalStorage();
 
   LocalFile file;

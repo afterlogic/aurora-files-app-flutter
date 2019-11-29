@@ -20,6 +20,15 @@ class PublicLinkRequest {
     this.isFolder,
   );
 
+  PublicLinkRequest.fill({
+    this.userId,
+    this.type,
+    this.path,
+    this.name,
+    this.size,
+    this.isFolder,
+  });
+
   factory PublicLinkRequest.fromJson(Map<String, dynamic> json) =>
       _$PublicLinkRequestFromJson(json);
 

@@ -1,13 +1,13 @@
-import 'package:domain/api/cache/database/local_file_cache_api.dart';
+import 'package:domain/api/network/files_network_api.dart';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/processing_file.dart';
-import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:domain/model/bd/storage.dart';
+import 'package:domain/model/network/file/get_files_request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
@@ -26,7 +26,7 @@ class FilesPageState = _FilesPageState with _$FilesPageState;
 
 // State instance per each files location
 abstract class _FilesPageState with Store {
-  final _filesApi = FilesApi();
+  final FilesNetworkApi _filesApi = DI.get();
   final FileWorkerApi _filesDao = DI.get();
   final _filesLocal = FilesLocalStorage();
 
@@ -82,11 +82,11 @@ abstract class _FilesPageState with Store {
   ) async {
     try {
       filesLoading = showLoading;
-      final response = await _filesApi.getFiles(
+      final response = await _filesApi.getFiles(GetFilesRequest(
         AppStore.filesState.selectedStorage.type,
         path != null ? path : pagePath,
         searchPattern,
-      );
+      ));
       List<LocalFile> filesFromServer = response.items;
       AppStore.filesState.quota = response.quota;
 

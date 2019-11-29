@@ -14,6 +14,7 @@ class CopyFileRequest {
 
   CopyFileRequest(this.copy, this.fromType, this.toType, this.fromPath, this.toPath, this.files);
 
+  CopyFileRequest.fill({this.copy, this.fromType, this.toType, this.fromPath, this.toPath, this.files});
 
   factory CopyFileRequest.fromJson(Map<String, dynamic> json) =>
       _$CopyFileRequestFromJson(json);

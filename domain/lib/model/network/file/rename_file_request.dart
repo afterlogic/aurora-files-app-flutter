@@ -20,6 +20,15 @@ class RenameFileRequest {
     this.isFolder,
   );
 
+  RenameFileRequest.fill({
+    this.type,
+    this.path,
+    this.name,
+    this.newName,
+    this.isLink,
+    this.isFolder,
+  });
+
   factory RenameFileRequest.fromJson(Map<String, dynamic> json) =>
       _$RenameFileRequestFromJson(json);
 

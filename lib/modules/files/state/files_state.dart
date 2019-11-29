@@ -1,18 +1,22 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:domain/api/cache/storage/user_storage_api.dart';
+import 'package:domain/api/network/files_network_api.dart';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/processing_file.dart';
-import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:domain/model/bd/storage.dart';
+import 'package:domain/model/data/quota.dart';
+import 'package:domain/model/network/file/copy_file_request.dart';
+import 'package:domain/model/network/file/create_public_link_reqest.dart';
+import 'package:domain/model/network/file/file_to_copy.dart';
+import 'package:domain/model/network/file/rename_file_request.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,10 +36,10 @@ final dummyStorage = new Storage.fill(
 
 // Global files state
 abstract class _FilesState with Store {
-  final _filesApi = FilesApi();
   final _filesLocal = FilesLocalStorage();
+  final FilesNetworkApi _filesApi = DI.get();
   final FileWorkerApi _filesDao = DI.get();
-
+  final UserStorageApi _userStorage = DI.get();
   final filesTileLeadingSize = 48.0;
 
   final List<String> folderNavStack = new List();
@@ -140,26 +144,22 @@ abstract class _FilesState with Store {
     @required Function onSuccess,
     @required Function(String) onError,
   }) async {
-    final List<Map<String, dynamic>> mappedFiles = [];
-
-    filesToMoveCopy.forEach((file) {
-      mappedFiles.add(FileToMove(
-              type: file.type,
-              path: file.path,
-              name: file.name,
-              isFolder: file.isFolder)
-          .toMap());
-    });
+    final fileToMove = filesToMoveCopy.map((file) => FileToMove(
+          file.type,
+          file.path,
+          file.name,
+          file.isFolder,
+        ));
 
     try {
-      await _filesApi.copyFilesTo(
+      await _filesApi.copyFilesTo(CopyFileRequest.fill(
         copy: copy,
-        files: mappedFiles,
         fromType: filesToMoveCopy[0].type,
         toType: selectedStorage.type,
         fromPath: filesToMoveCopy[0].path,
         toPath: toPath,
-      );
+        files: fileToMove,
+      ));
       onSuccess();
       if (updateFilesCb != null &&
           !copy &&
@@ -181,7 +181,15 @@ abstract class _FilesState with Store {
   }) async {
     try {
       final String link = await _filesApi.createPublicLink(
-          selectedStorage.type, path, name, size, isFolder);
+        PublicLinkRequest(
+          _userStorage.userId.get(),
+          selectedStorage.type,
+          path,
+          name,
+          size,
+          isFolder,
+        ),
+      );
       Clipboard.setData(ClipboardData(text: link));
       onSuccess();
     } catch (err) {
@@ -196,7 +204,14 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     try {
-      await _filesApi.deletePublicLink(selectedStorage.type, path, name);
+      await _filesApi.deletePublicLink(
+        PublicLinkRequest.fill(
+          userId: _userStorage.userId.get(),
+          type: selectedStorage.type,
+          path: path,
+          name: name,
+        ),
+      );
       onSuccess();
     } catch (err) {
       onError(err.toString());
@@ -212,12 +227,14 @@ abstract class _FilesState with Store {
     try {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
       final newNameFromServer = await _filesApi.renameFile(
-        type: file.type,
-        path: file.path,
-        name: file.name,
-        newName: newName,
-        isLink: file.isLink,
-        isFolder: file.isFolder,
+        RenameFileRequest.fill(
+          type: file.type,
+          path: file.path,
+          name: file.name,
+          newName: newName,
+          isLink: file.isLink,
+          isFolder: file.isFolder,
+        ),
       );
       onSuccess(newNameFromServer);
     } catch (err) {

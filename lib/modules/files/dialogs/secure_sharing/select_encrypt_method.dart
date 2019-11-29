@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:domain/model/bd/pgp_key.dart';
+import 'package:domain/model/data/recipient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

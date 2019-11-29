@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:domain/api/cache/database/pgp_key_cache_api.dart';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:domain/model/bd/pgp_key.dart';
+import 'package:domain/model/data/recipient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

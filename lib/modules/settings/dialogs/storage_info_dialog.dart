@@ -1,5 +1,6 @@
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -46,12 +47,12 @@ class StorageInfoDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 32.0),
                 Text(
-                  "Available space: ${_quota.availableFormatted}",
+                  "Available space: ${filesize(_quota.limit - _quota.used)}",
                   style: theme.textTheme.subhead,
                 ),
                 SizedBox(height: 22.0),
                 Text(
-                    "Used space: ${_quota.usedFormatted} out of ${_quota.limitFormatted}",
+                    "Used space: ${filesize(_quota.used)} out of ${filesize(_quota.limit)}",
                     style: theme.textTheme.subhead),
                 SizedBox(height: 46.0),
                 AppButton(

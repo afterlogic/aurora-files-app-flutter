@@ -1,10 +1,11 @@
-import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/settings/dialogs/storage_info_dialog.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:domain/model/bd/storage.dart';
+import 'package:domain/model/data/quota.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -72,7 +73,7 @@ class MainDrawer extends StatelessWidget {
                   child: Tooltip(
                     showDuration: Duration(seconds: 2),
                     message:
-                        "You are using ${(quota.progress * 100).round()}% of your ${quota.limitFormatted}",
+                        "You are using ${(quota.progress * 100).round()}% of your ${filesize(quota.limit)}",
                     child: LinearProgressIndicator(value: quota.progress),
                   ),
                 );

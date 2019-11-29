@@ -47,3 +47,18 @@ class PreferenceInt extends _Preference<int> {
     return _preferences.setInt(_key, value);
   }
 }
+
+class PreferenceBool extends _Preference<bool> {
+  PreferenceBool(SharedPreferences preferences, String key)
+      : super(preferences, key);
+
+  @override
+  bool get() {
+    return _preferences.getBool(_key);
+  }
+
+  @override
+  Future set(value) {
+    return _preferences.setBool(_key, value);
+  }
+}

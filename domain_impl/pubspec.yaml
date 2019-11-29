@@ -15,6 +15,7 @@ dependencies:
 
   # storage
   shared_preferences: ^0.5.4+6
+  flutter_secure_storage: ^3.3.1
 
   #sql
   sqflite: ^1.1.7+3

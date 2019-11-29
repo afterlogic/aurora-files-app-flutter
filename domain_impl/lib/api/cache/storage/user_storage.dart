@@ -8,10 +8,12 @@ class UserStorage implements UserStorageApi {
   final Delegate<String> token;
   final Delegate<String> userEmail;
   final Delegate<int> userId;
+  final Delegate<bool> isDarkTheme;
 
   UserStorage(SharedPreferences _preference)
       : host = PreferenceString(_preference, "host"),
         token = PreferenceString(_preference, "authToken"),
         userEmail = PreferenceString(_preference, "userEmail"),
-        userId = PreferenceInt(_preference, "userId");
+        userId = PreferenceInt(_preference, "userId"),
+        isDarkTheme = PreferenceBool(_preference, "isDarkTheme");
 }

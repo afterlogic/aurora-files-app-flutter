@@ -21,11 +21,13 @@ import 'package:domain_impl/api/network/files_network.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DI {
-  static Provider instance;
+  static Provider _instance;
 
-  static T get<T>() => instance.get<T>();
+  static T get<T>() => _instance.get<T>();
 
-  static init() async {
+  static bool get isInit => _instance != null;
+
+  static Future init() async {
     final builder = ProviderBuilder();
     //shared_preference
     builder.moduleImpl((_) => SharedPreferences.getInstance());
@@ -68,6 +70,6 @@ class DI {
       (p) => AuthNetwork(p.get()),
     );
 
-    instance = await builder.build();
+    _instance = await builder.build();
   }
 }

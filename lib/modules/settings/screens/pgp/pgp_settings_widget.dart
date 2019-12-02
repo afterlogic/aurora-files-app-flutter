@@ -3,7 +3,7 @@ import 'package:aurorafiles/modules/settings/screens/pgp/dialog/key_from_text_wi
 import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/ui/view/app_button.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:aurorafiles/utils/stream_widget.dart';

@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
-import 'package:aurorafiles/shared_ui/progress_loader.dart';
-import 'package:aurorafiles/utils/api_utils.dart';
+import 'package:aurorafiles/ui/view/progress_loader.dart';
+import 'package:aurorafiles/utils/get_header.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +146,7 @@ class _ImageViewerState extends State<ImageViewer> {
 
     if (_fileViewerState.file.viewUrl != null) {
       return Hero(
-          tag: _fileViewerState.file.localId ?? _fileViewerState.file.guid,
+          tag: _fileViewerState.file.id ?? _fileViewerState.file.guid,
           child: SizedBox(
             width: double.infinity,
             child: AppStore.filesState.isOfflineMode &&

@@ -19,7 +19,7 @@ import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart'
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_settings_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_android.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
-import 'package:aurorafiles/shared_ui/fade_route.dart';
+import 'package:aurorafiles/ui/view/fade_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -37,20 +37,19 @@ class AppNavigation {
             settings: RouteSettings(
               name: FilesRoute.name + (args == null ? "" : args.path),
             ),
-            builder: (context) =>
-            args != null
+            builder: (context) => args != null
                 ? FilesAndroid(
-              path: args.path,
-              isZip: args.isZip,
-            )
+                    path: args.path,
+                    isZip: args.isZip,
+                  )
                 : FilesAndroid());
       } else {
         return FadeRoute(
           page: args != null
               ? FilesAndroid(
-            path: args.path,
-            isZip: args.isZip,
-          )
+                  path: args.path,
+                  isZip: args.isZip,
+                )
               : FilesAndroid(),
           settings: RouteSettings(
             name: FilesRoute.name + (args == null ? "" : args.path),
@@ -74,8 +73,7 @@ class AppNavigation {
               settings: RouteSettings(
                 name: settings.name,
               ),
-              builder: (context) =>
-                  FileViewerAndroid(
+              builder: (context) => FileViewerAndroid(
                     immutableFile: args.file,
                     offlineFile: args.offlineFile,
                     filesState: args.filesState,
@@ -209,8 +207,7 @@ class AppNavigation {
             settings: RouteSettings(
               name: settings.name,
             ),
-            builder: (_) =>
-                Scaffold(
+            builder: (_) => Scaffold(
                   body: Center(
                       child: Text('No route defined for ${settings.name}')),
                 ));

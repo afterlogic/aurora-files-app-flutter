@@ -1,17 +1,22 @@
+import 'dart:io';
+
+import 'package:aurorafiles/utils/permissions.dart';
+import 'package:domain/api/cache/database/local_file_cache_api.dart';
 import 'package:domain/api/network/files_network_api.dart';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/models/file_to_delete.dart';
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:domain/model/bd/storage.dart';
+import 'package:domain/model/data/processing_file.dart';
+import 'package:domain/model/network/file/create_folder_request.dart';
+import 'package:domain/model/network/file/delete_request.dart';
+import 'package:domain/model/network/file/file_to_delete.dart';
 import 'package:domain/model/network/file/get_files_request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
-import 'package:domain/api/file_worker/file_cache_worker_api.dart';
 import '../../app_store.dart';
 
 part 'files_page_state.g.dart';
@@ -27,7 +32,7 @@ class FilesPageState = _FilesPageState with _$FilesPageState;
 // State instance per each files location
 abstract class _FilesPageState with Store {
   final FilesNetworkApi _filesApi = DI.get();
-  final FileWorkerApi _filesDao = DI.get();
+  final LocalFileCacheApi _filesDao = DI.get();
   final _filesLocal = FilesLocalStorage();
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -92,7 +97,8 @@ abstract class _FilesPageState with Store {
 
       filesFromServer = _addFakeUploadFiles(filesFromServer);
       filesFromServer = _sortFiles(filesFromServer);
-      final offlineFiles = await _filesDao.getFilesAtPath(pagePath);
+      final offlineFiles = await _filesDao.getFilesAtPath(
+          AppStore.filesState.selectedStorage.type, pagePath);
       if (offlineFiles.isNotEmpty) {
         currentFiles = [];
         _sortFiles(filesFromServer);
@@ -135,9 +141,11 @@ abstract class _FilesPageState with Store {
     try {
       filesLoading = showLoading;
       if (searchPattern != null && searchPattern.isNotEmpty) {
-        currentFiles = await _filesDao.searchFiles(pagePath, searchPattern);
+        currentFiles = await _filesDao.searchFiles(
+            AppStore.filesState.selectedStorage.type, pagePath, searchPattern);
       } else {
-        currentFiles = await _filesDao.getFilesAtPath(pagePath);
+        currentFiles = await _filesDao.getFilesAtPath(
+            AppStore.filesState.selectedStorage.type, pagePath);
       }
     } catch (err) {
       if (onError != null) onError(err.toString());
@@ -179,23 +187,21 @@ abstract class _FilesPageState with Store {
 
   // supports both extracting files from selected ids and passing file(s) directly
   void onDeleteFiles({
-    List<LocalFile> filesToDelete,
+    List<LocalFile> files,
     @required Storage storage,
     @required Function onSuccess,
     @required Function(String) onError,
   }) async {
-    final List<Map<String, dynamic>> mappedFilesToDelete = [];
+    final List<FileToDelete> toDelete = [];
     // files, that are deleted from direct mode are automatically deleted from offline
     final List<LocalFile> filesToDeleteLocally = [];
     final List<LocalFile> filesToDeleteFromCache = [];
 
-    if (filesToDelete is List) {
-      filesToDelete.forEach((file) {
+    if (files is List) {
+      files.forEach((file) {
         if (file.localPath != null) filesToDeleteLocally.add(file);
         filesToDeleteFromCache.add(file);
-        mappedFilesToDelete.add(FileToDelete(
-                path: file.path, name: file.name, isFolder: file.isFolder)
-            .toMap());
+        toDelete.add(FileToDelete(file.path, file.name, file.isFolder, null));
       });
     } else {
       // find selected files by their id
@@ -203,23 +209,35 @@ abstract class _FilesPageState with Store {
         if (selectedFilesIds.contains(file.id)) {
           if (file.localPath != null) filesToDeleteLocally.add(file);
           filesToDeleteFromCache.add(file);
-          mappedFilesToDelete.add(FileToDelete(
-                  path: file.path, name: file.name, isFolder: file.isFolder)
-              .toMap());
+          toDelete.add(FileToDelete(file.path, file.name, file.isFolder, null));
         }
       });
     }
 
     try {
       filesLoading = FilesLoadingType.filesVisible;
-      await _filesApi.delete(storage.type, pagePath, mappedFilesToDelete);
+      await _filesApi.delete(DeleteRequest(
+        storage.type,
+        pagePath,
+        toDelete,
+      ));
       await _filesLocal.deleteFilesFromCache(files: filesToDeleteFromCache);
-      await _filesDao.deleteFiles(filesToDeleteLocally);
+      await deleteFile(filesToDeleteLocally);
       onSuccess();
     } catch (stack, err) {
       onError(err.toString());
       filesLoading = FilesLoadingType.none;
     }
+  }
+
+  Future deleteFile(List<LocalFile> list) async {
+    if (!Platform.isIOS) await getStoragePermissions();
+    final List<int> ids = list.map((file) => file.localId).toList();
+    list.forEach((file) {
+      final fileToDelete = new File(file.localPath);
+      if (fileToDelete.existsSync()) fileToDelete.delete();
+    });
+    return _filesDao.deleteAll(ids);
   }
 
   void onCreateNewFolder({
@@ -229,8 +247,8 @@ abstract class _FilesPageState with Store {
     Function(String) onError,
   }) async {
     try {
-      final String newFolderNameFromServer =
-          await _filesApi.createFolder(storage.type, pagePath, folderName);
+      final String newFolderNameFromServer = await _filesApi.createFolder(
+          CreateFolderRequest(storage.type, pagePath, folderName));
       onSuccess(newFolderNameFromServer);
     } catch (err) {
       onError(err.toString());

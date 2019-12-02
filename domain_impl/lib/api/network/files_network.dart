@@ -14,6 +14,7 @@ import 'package:domain/model/network/file/get_files_request.dart';
 import 'package:domain/model/network/file/upload_file_request.dart';
 import 'package:domain_impl/api/network/route/module_contacts.dart';
 import 'package:domain_impl/api/network/route/module_files.dart';
+import 'package:domain_impl/api/network/util/map_util.dart';
 import 'package:http/http.dart' as http;
 
 import 'dio/interceptor/auth_interceptor.dart';
@@ -41,7 +42,7 @@ class FilesNetwork implements FilesNetworkApi {
     );
 
     final result = await _dio.post("/?Api/", data: route.toJson());
-
+    keysToLowerCase(result.data["quota"]);
     return FilesResponse.fromJson(result.data);
   }
 
@@ -55,7 +56,7 @@ class FilesNetwork implements FilesNetworkApi {
     return request.newName;
   }
 
-  Future upload(
+  Future<Stream<List<int>>> upload(
     UploadFileRequest request,
     Stream<List<int>> stream,
     int length,
@@ -75,11 +76,14 @@ class FilesNetwork implements FilesNetworkApi {
     final multipartRequest = http.MultipartRequest("POST", uri);
     final file = http.MultipartFile("file", stream, length, filename: filename);
 
-    multipartRequest.headers.addAll(headers);
-    multipartRequest.fields.addAll(route.toJson());
+    multipartRequest.headers.addAll(
+        headers.map((key, value) => MapEntry<String, String>(key, value)));
+    multipartRequest.fields.addAll(route
+        .toJson()
+        .map((key, value) => MapEntry<String, String>(key, value)));
     multipartRequest.files.add(file);
 
-    return multipartRequest.send();
+    return (await multipartRequest.send()).stream;
   }
 
   Future<Stream<List<int>>> download(

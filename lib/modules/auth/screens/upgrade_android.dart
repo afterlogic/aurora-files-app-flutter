@@ -1,5 +1,5 @@
-import 'package:aurorafiles/shared_ui/app_button.dart';
-import 'package:aurorafiles/shared_ui/main_gradient.dart';
+import 'package:aurorafiles/ui/view/app_button.dart';
+import 'package:aurorafiles/ui/view/main_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,8 +21,8 @@ class UpgradeAndroid extends StatelessWidget {
                     tag: "logo",
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child:
-                          Image.asset("lib/assets/images/private-mail-logo.png"),
+                      child: Image.asset(
+                          "lib/assets/images/private-mail-logo.png"),
                     ),
                   ),
                   SizedBox(height: 90.0),
@@ -30,7 +30,6 @@ class UpgradeAndroid extends StatelessWidget {
                     "Mobile apps are not allowed in your billing plan.\nPlease upgrade your plan.",
                     style: TextStyle(fontSize: 20.0),
                     textAlign: TextAlign.center,
-
                   ),
                   SizedBox(height: 70.0),
                   SizedBox(

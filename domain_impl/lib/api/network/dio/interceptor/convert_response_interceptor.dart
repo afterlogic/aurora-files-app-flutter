@@ -34,6 +34,9 @@ class ConvertResponse extends Interceptor {
   dynamic _keysToLowerCase(dynamic map) {
     if (map is Map<String, dynamic>) {
       return keysToLowerCase(map);
+    }
+    if (map is List) {
+      return map.map((item) => _keysToLowerCase(item)).toList();
     } else {
       return map;
     }

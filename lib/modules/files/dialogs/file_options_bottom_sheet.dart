@@ -189,7 +189,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     if (shouldDelete == true) {
                       widget.filesPageState.onDeleteFiles(
                         storage: widget.filesState.selectedStorage,
-                        filesToDelete: [widget.file],
+                        files: [widget.file],
                         onSuccess: () => widget.filesPageState.onGetFiles(),
                         onError: (String err) => showSnack(
                           context: context,

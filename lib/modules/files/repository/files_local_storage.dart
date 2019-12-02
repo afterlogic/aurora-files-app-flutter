@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/modules/app_store.dart';
+import 'package:domain/api/crypto/aes_crypto_api.dart';
 import 'package:domain/model/bd/local_file.dart';
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/permissions.dart';
+import 'package:domain/model/data/processing_file.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
@@ -11,6 +14,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
 class FilesLocalStorage {
+  AesCryptoApi _aesCrypto = DI.get();
+
   Future<File> pickFiles({FileType type, String extension}) {
     return FilePicker.getFile(type: type, fileExtension: extension);
   }
@@ -72,8 +77,7 @@ class FilesLocalStorage {
 
     final Directory dir = await getTemporaryDirectory();
     final File dartFile = new File(
-        "${dir.path}/files_to_delete/${useName == true ? file.name : file
-            .guid}");
+        "${dir.path}/files_to_delete/${useName == true ? file.name : file.guid}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {
@@ -90,7 +94,7 @@ class FilesLocalStorage {
 
     final Directory dir = await getTemporaryDirectory();
     final File dartFile =
-    new File("${dir.path}/images/${file.guid}_${file.name}");
+        new File("${dir.path}/images/${file.guid}_${file.name}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {
@@ -165,8 +169,8 @@ class FilesLocalStorage {
     }
   }
 
-  Future<File> downloadOffline(LocalFile file,
-      ProcessingFile processingFile) async {
+  Future<File> downloadOffline(
+      LocalFile file, ProcessingFile processingFile) async {
     final offlineFile = new File(file.localPath);
     if (!await offlineFile.exists()) {
       throw CustomException(
@@ -183,25 +187,44 @@ class FilesLocalStorage {
     }
   }
 
-  Future<PreparedForShare> shareOffline(LocalFile file,
-      ProcessingFile processingFile) async {
+  Future<PreparedForShare> shareOffline(
+      LocalFile file, ProcessingFile processingFile) async {
     File offlineFile = new File(file.localPath);
     if (!await offlineFile.exists()) {
       throw CustomException(
           "The file does not exist, please remove it and set offline when you are online again.");
     }
     if (file.initVector != null) {
-      offlineFile = await _decryptFile(
-          processingFile, offlineFile, processingFile.fileOnDevice);
+      offlineFile = await _decryptFile(processingFile, offlineFile);
     }
 
     return PreparedForShare(offlineFile, file);
   }
-//
-//  Future<File> _decryptFile(ProcessingFile processingFile,
-//      File encryptedFile,
-//      File decryptedFile,)
 
+  Future<File> _decryptFile(
+    ProcessingFile processingFile,
+    File encryptedFile,
+  ) async {
+    AppStore.settingsState.currentKey;
+
+    await _aesCrypto
+        .decryptStream(
+          encryptedFile.openRead(),
+          AppStore.settingsState.currentKey,
+          processingFile.ivBase64,
+          16,
+          (v) {
+            processingFile.ivBase64 = v;
+          },
+        )
+        .asyncMap((data) async {
+          processingFile.fileOnDevice.writeAsBytes(data, mode: FileMode.append);
+        })
+        .listen((_) {})
+        .asFuture();
+
+    return processingFile.fileOnDevice;
+  }
 }
 
 class PreparedForShare {

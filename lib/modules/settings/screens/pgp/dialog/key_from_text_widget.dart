@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/shared_ui/app_button.dart';
-import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
+import 'package:aurorafiles/ui/view/app_button.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

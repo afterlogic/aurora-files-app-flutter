@@ -6,7 +6,6 @@ import 'package:domain/model/data/processing_file.dart';
 abstract class FileLoadWorkerApi {
   Future<Stream<double>> uploadFile(
     ProcessingFile processingFile,
-    String url,
     String storageType,
     String path, {
     String encryptKey,

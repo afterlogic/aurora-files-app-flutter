@@ -1,7 +1,7 @@
+import 'package:aurorafiles/ui/view/app_button.dart';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

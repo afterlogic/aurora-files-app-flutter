@@ -32,7 +32,8 @@ LocalFile _$LocalFileFromJson(Map<String, dynamic> json) {
     ..downloadUrl = json['downloadUrl'] as String
     ..thumbnailUrl = json['thumbnailUrl'] as String
     ..hash = json['hash'] as String
-    ..extendedProps = json['extendedProps'] as String
+    ..actions = json['actions'] as Map<String, dynamic>
+    ..extendedProps = LocalFile.toExtendedProps(json['extendedProps'])
     ..isExternal = json['isExternal'] as bool
     ..initVector = json['initVector'] as String;
 }
@@ -62,6 +63,7 @@ Map<String, dynamic> _$LocalFileToJson(LocalFile instance) => <String, dynamic>{
       'downloadUrl': instance.downloadUrl,
       'thumbnailUrl': instance.thumbnailUrl,
       'hash': instance.hash,
+      'actions': instance.actions,
       'extendedProps': instance.extendedProps,
       'isExternal': instance.isExternal,
       'initVector': instance.initVector,

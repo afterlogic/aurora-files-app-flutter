@@ -1,6 +1,6 @@
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:domain/model/bd/local_file.dart';
+import 'package:domain/model/data/processing_file.dart';
 import 'package:uuid/uuid.dart';
 
 import 'file_utils.dart';

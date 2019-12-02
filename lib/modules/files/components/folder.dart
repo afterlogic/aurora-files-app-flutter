@@ -1,8 +1,8 @@
+import 'package:aurorafiles/ui/view/custom_bottom_sheet.dart';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';

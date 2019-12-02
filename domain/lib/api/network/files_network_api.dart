@@ -16,7 +16,7 @@ abstract class FilesNetworkApi {
 
   Future renameFile(RenameFileRequest request);
 
-  Future upload(UploadFileRequest request, Stream<List<int>> stream, int length,
+  Future<Stream<List<int>>> upload(UploadFileRequest request, Stream<List<int>> stream, int length,
       String filename);
 
   Future<Stream<List<int>>> download(String url);

@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
-import 'package:aurorafiles/utils/api_utils.dart';
+import 'package:aurorafiles/ui/view/custom_bottom_sheet.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
+import 'package:aurorafiles/utils/get_header.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:domain/model/bd/local_file.dart';
+import 'package:domain/model/data/processing_file.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -246,9 +246,9 @@ class _FileWidgetState extends State<FileWidget> {
                 image: DecorationImage(
                     fit: BoxFit.cover,
                     image:
-                        AssetImage("lib/assets/images/image_placeholder.jpg"))),
+                        AssetImage("res/images/image_placeholder.jpg"))),
             child: Hero(
-              tag: widget.file.localId ?? widget.file.guid,
+              tag: widget.file.id ?? widget.file.guid,
               child: filesState.isOfflineMode && widget.file.localPath != null
                   ? Image.file(new File(widget.file.localPath),
                       fit: BoxFit.cover)

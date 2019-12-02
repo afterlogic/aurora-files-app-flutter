@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:aurorafiles/di/di.dart';
+import 'package:domain/api/file_worker/file_load_worker_api.dart';
 import 'package:domain/api/network/files_network_api.dart';
 import 'package:domain/model/bd/local_file.dart';
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
+import 'package:domain/model/data/processing_file.dart';
 import 'package:domain/model/data/recipient.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
@@ -17,6 +18,7 @@ class FileViewerState = _FileViewerState with _$FileViewerState;
 
 abstract class _FileViewerState with Store {
   final FilesNetworkApi _filesApi = DI.get();
+  final FileLoadWorkerApi _fileLoad = DI.get();
   final _filesLocal = new FilesLocalStorage();
 
   LocalFile file;
@@ -44,7 +46,7 @@ abstract class _FileViewerState with Store {
         if (onDownloadEnd != null) onDownloadEnd(fileToView);
       } else {
         // view file are not added to the processingFiles list as of now
-        processingFile = new ProcessingFile(
+        processingFile = new ProcessingFile.fill(
           guid: file.guid,
           name: file.name,
           size: file.size,
@@ -55,33 +57,24 @@ abstract class _FileViewerState with Store {
         );
 
         // ignore: cancel_subscriptions
-        final sub = await _filesApi.getFileContentsFromServer(
-            file.viewUrl, file, processingFile, false,
-            onSuccess: (_) {
-              fileWithContents = fileToView;
-              downloadProgress = null;
-              processingFile = null;
-              if (onDownloadEnd != null) onDownloadEnd(fileToView);
-            },
-            updateViewerProgress: (progress) => downloadProgress = progress,
-            onError: (err) {
-              processingFile = null;
-            });
+        final sub = (await _fileLoad.downloadFile(
+          file.viewUrl,
+          file,
+          AppStore.settingsState.currentKey,
+          processingFile,
+        ))
+            .listen((progress) => downloadProgress = progress, onDone: () {
+          fileWithContents = fileToView;
+          downloadProgress = null;
+          processingFile = null;
+          if (onDownloadEnd != null) onDownloadEnd(fileToView);
+        }, onError: (err) {
+          processingFile = null;
+        }, cancelOnError: true);
+
         processingFile.subscription = sub;
       }
     }
-    // if encrypted - decrypt
-//    if (file.initVector != null) {
-//      downloadProgress = 0.5;
-//      await _filesLocal.decryptFile(
-//        file: file,
-//        fileBytes: fileContent,
-//        updateDecryptionProgress: (progress) =>
-//            downloadProgress = progress / 2 + 0.5, getChunk: (List a) {},
-//      );
-//    } else {
-//      fileBytes = fileContent;
-//    }
   }
 
   Future<void> getPreviewImage(Function(String) onError) async {

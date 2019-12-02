@@ -18,7 +18,6 @@ class FileLoadWorker extends FileLoadWorkerApi {
 
   Future<Stream<double>> uploadFile(
     ProcessingFile processingFile,
-    String url,
     String storageType,
     String path, {
     String encryptKey,
@@ -53,17 +52,19 @@ class FileLoadWorker extends FileLoadWorkerApi {
       outStream = _aesCrypto.encryptStream(
         outStream,
         encryptKey,
-        vector.base64,
+        processingFile.ivBase64 ?? vector.base64,
         _vectorLength,
-        (v) {},
+        (v) {
+          processingFile.ivBase64 = v;
+        },
       );
     }
 
     final fileName = _getFileName(processingFile.fileOnDevice.path);
 
-    _filesNetworkApi.upload(uploadRequest, outStream, fileLength, fileName);
-
-    return outStream.map((_) {
+    return (await _filesNetworkApi.upload(
+            uploadRequest, outStream, fileLength, fileName))
+        .map((_) {
       return currentProgress;
     });
   }
@@ -89,7 +90,7 @@ class FileLoadWorker extends FileLoadWorkerApi {
       outStream = _aesCrypto.decryptStream(
         outStream,
         encryptKey,
-        iv.base64,
+        processingFile.ivBase64 ?? iv.base64,
         _vectorLength,
         (v) {},
       );

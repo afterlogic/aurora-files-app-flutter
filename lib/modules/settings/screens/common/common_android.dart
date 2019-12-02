@@ -1,5 +1,5 @@
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/shared_ui/confirmation_dialog.dart';
+import 'package:aurorafiles/ui/view/confirmation_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

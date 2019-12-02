@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:aurorafiles/utils/permissions.dart';
+import 'package:domain/api/cache/database/local_file_cache_api.dart';
 import 'package:domain/api/cache/storage/user_storage_api.dart';
+import 'package:domain/api/file_worker/file_load_worker_api.dart';
 import 'package:domain/api/network/files_network_api.dart';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
@@ -12,6 +14,7 @@ import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:domain/model/bd/storage.dart';
+import 'package:domain/model/data/processing_file.dart';
 import 'package:domain/model/data/quota.dart';
 import 'package:domain/model/network/file/copy_file_request.dart';
 import 'package:domain/model/network/file/create_public_link_reqest.dart';
@@ -25,7 +28,6 @@ import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:domain/api/file_worker/file_cache_worker_api.dart';
 
 part 'files_state.g.dart';
 
@@ -38,7 +40,8 @@ final dummyStorage = new Storage.fill(
 abstract class _FilesState with Store {
   final _filesLocal = FilesLocalStorage();
   final FilesNetworkApi _filesApi = DI.get();
-  final FileWorkerApi _filesDao = DI.get();
+  final FileLoadWorkerApi _fileLoad = DI.get();
+  final LocalFileCacheApi _filesCache = DI.get();
   final UserStorageApi _userStorage = DI.get();
   final filesTileLeadingSize = 48.0;
 
@@ -121,7 +124,7 @@ abstract class _FilesState with Store {
 
   Future<void> _getOfflineStorages(Function(String) onError) async {
     try {
-      currentStorages = await _filesDao.getStorages();
+      currentStorages = await _filesCache.getStorages();
       if (currentStorages.length > 0) {
         selectedStorage = currentStorages[0];
       }
@@ -295,21 +298,20 @@ abstract class _FilesState with Store {
     onUploadStart(processingFile);
 
     try {
-      await _filesApi.uploadFile(
+      (await _fileLoad.uploadFile(
         processingFile,
-        shouldEncrypt,
-        storageType: selectedStorage.type,
-        path: path,
-        onSuccess: () {
-          deleteFromProcessing(processingFile.guid);
-          onSuccess();
-        },
-        onError: (err) {
-          deleteFromProcessing(processingFile.guid);
-          onError(err.toString());
-        },
-      );
-    } catch (err, s) {
+        selectedStorage.type,
+        path,
+        encryptKey: shouldEncrypt ? AppStore.settingsState.currentKey : null,
+      ))
+          .listen((_) {}, onError: (err) {
+        deleteFromProcessing(processingFile.guid);
+        onError(err.toString());
+      }, onDone: () {
+        deleteFromProcessing(processingFile.guid);
+        onSuccess();
+      }, cancelOnError: true);
+    } catch (err) {
       deleteFromProcessing(processingFile.guid);
       onError(err.toString());
     }
@@ -374,20 +376,21 @@ abstract class _FilesState with Store {
         onStart(processingFile);
 
         // ignore: cancel_subscriptions
-        final sub = await _filesApi.getFileContentsFromServer(
+        final sub = (await _fileLoad.downloadFile(
           file.downloadUrl,
           file,
+          AppStore.settingsState.currentKey,
           processingFile,
-          true,
-          onSuccess: (File downloadedFile) {
+          onSuccess: (downloadedFile) {
             deleteFromProcessing(file.guid);
             onSuccess(downloadedFile);
           },
-          onError: (err) {
-            deleteFromProcessing(file.guid);
-            onError(err);
-          },
-        );
+        ))
+            .listen((_) {}, onError: (err) {
+          deleteFromProcessing(file.guid);
+          onError(err);
+        }, cancelOnError: true);
+
         processingFile.subscription = sub;
       }
     } catch (err) {
@@ -446,13 +449,16 @@ abstract class _FilesState with Store {
       if (await tempFileForShare.length() <= 0) {
         onStart(processingFile);
         // ignore: cancel_subscriptions
-        final sub = await _filesApi.getFileContentsFromServer(
-            file.downloadUrl, file, processingFile, true,
-            onSuccess: (File savedFile) {
+        final sub = (await _fileLoad.downloadFile(
+                file.downloadUrl,
+                file,
+                AppStore.settingsState.currentKey,
+                processingFile, onSuccess: (File savedFile) {
           fileWithContents = savedFile;
           onSuccess(PreparedForShare(fileWithContents, file));
           deleteFromProcessing(file.guid);
-        }, onError: (err) {
+        }))
+            .listen((_) {}, onError: (err) {
           deleteFromProcessing(file.guid);
           onError(err);
         });
@@ -487,23 +493,33 @@ abstract class _FilesState with Store {
         final processingFile = addFileToProcessing(
             file, fileForOffline, ProcessingType.offline, file.initVector);
         // ignore: cancel_subscriptions
-        final sub = await _filesApi.getFileContentsFromServer(
-            file.downloadUrl, file, processingFile, false,
-            onSuccess: (_) async {
-              deleteFromProcessing(file.guid);
-              final LocalFile filesCompanion =
-                  getCompanionFromLocalFile(file, fileForOffline.path);
-              await _filesDao.set(filesCompanion);
-              onSuccess();
-            },
-            onError: (err) => deleteFromProcessing(file.guid));
+        final sub = (await _fileLoad
+                .downloadFile(file.downloadUrl, file, null, processingFile,
+                    onSuccess: (_) async {
+          deleteFromProcessing(file.guid);
+          final LocalFile filesCompanion =
+              getCompanionFromLocalFile(file, fileForOffline.path);
+          await _filesCache.set(filesCompanion);
+          onSuccess();
+        }))
+            .listen((_) {}, onError: (err) => deleteFromProcessing(file.guid));
         processingFile.subscription = sub;
         onStart(processingFile);
       }
     } else {
-      await _filesDao.deleteAll([file]);
+      await deleteFile([file]);
       onSuccess();
     }
+  }
+
+  Future deleteFile(List<LocalFile> list) async {
+    if (!Platform.isIOS) await getStoragePermissions();
+    final List<int> ids = list.map((file) => file.localId).toList();
+    list.forEach((file) {
+      final fileToDelete = new File(file.localPath);
+      if (fileToDelete.existsSync()) fileToDelete.delete();
+    });
+    return _filesCache.deleteAll(ids);
   }
 
   bool _isFileIsBeingProcessed(String guid) {
@@ -525,7 +541,7 @@ abstract class _FilesState with Store {
     } catch (err) {}
 
     // else
-    processingFile = new ProcessingFile(
+    processingFile = new ProcessingFile.fill(
       guid: file.guid,
       name: file.name,
       size: file.size,

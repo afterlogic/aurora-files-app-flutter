@@ -1,6 +1,6 @@
 
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/ui/view/app_button.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:domain/model/bd/pgp_key.dart';
 import 'package:flutter/material.dart';

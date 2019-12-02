@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:aurorafiles/ui/view/asset_icon.dart';
 import 'package:domain/model/bd/local_file.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
@@ -17,15 +17,14 @@ import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_vie
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/shared_ui/asset_icon.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:domain/model/data/processing_file.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -187,7 +186,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
     if (shouldDelete != null && shouldDelete) {
       widget.filesPageState.onDeleteFiles(
-        filesToDelete: [_file],
+        files: [_file],
         storage: widget.filesState.selectedStorage,
         onSuccess: () {
           widget.filesPageState.onGetFiles();
@@ -405,7 +404,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               : [
                   IconButton(
                     icon: AssetIcon(
-                      "lib/assets/svg/insert_link.svg",
+                      "res/svg/insert_link.svg",
                       addedSize: 14,
                     ),
                     tooltip: "Secure sharing",

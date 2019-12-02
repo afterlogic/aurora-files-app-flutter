@@ -1,5 +1,5 @@
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/ui/view/app_button.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';

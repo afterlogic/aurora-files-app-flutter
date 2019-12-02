@@ -40,7 +40,7 @@ class AesCrypto implements AesCryptoApi {
         ).base64;
         controller.add(encrypted);
       }
-      buffer = buffer;
+      buffer = bytes;
       return null;
     }).listen(
       (_) {},

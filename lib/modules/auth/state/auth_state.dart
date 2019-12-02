@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:dio/dio.dart';
 import 'package:domain/api/cache/storage/user_storage_api.dart';
 import 'package:domain/api/network/auth_network_api.dart';
 import 'package:domain/model/network/auth/auth_request.dart';
+import 'package:domain_impl/api/network/util/error_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
@@ -89,7 +89,7 @@ abstract class _AuthState with Store {
         isLoggingIn = false;
         if (err is SocketException && err.osError.errorCode == 7) {
           onError("\"$hostName\" is not a valid hostname");
-        } else if (err == accessDenied) {
+        } else if (err == ErrorCode.accessDenied) {
           onShowUpgrade();
         } else {
           onError(err.toString());

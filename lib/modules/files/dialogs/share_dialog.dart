@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:domain/model/bd/local_file.dart';
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:domain/model/data/processing_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

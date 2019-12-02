@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
+import 'package:aurorafiles/ui/view/ios/alert_input_ios.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

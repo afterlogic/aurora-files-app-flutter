@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/shared_ui/main_gradient.dart';
-import 'package:aurorafiles/themimg/material_theme.dart';
+import 'package:aurorafiles/ui/themimg/material_theme.dart';
+import 'package:aurorafiles/ui/view/main_gradient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

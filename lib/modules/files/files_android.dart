@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
-import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
-import 'package:aurorafiles/shared_ui/main_drawer.dart';
+import 'package:aurorafiles/ui/view/custom_speed_dial.dart';
+import 'package:aurorafiles/ui/view/main_drawer.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:domain/model/data/processing_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

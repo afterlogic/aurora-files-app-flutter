@@ -28,11 +28,17 @@ class LocalFile {
   String downloadUrl;
   String thumbnailUrl;
   String hash;
+  Map<String, dynamic> actions;
+  @JsonKey(fromJson: toExtendedProps)
   String extendedProps;
   bool isExternal;
   String initVector;
 
   LocalFile();
+
+  static String toExtendedProps(object) {
+    return object.toString();
+  }
 
   LocalFile.fill(
       {this.localId,
@@ -63,8 +69,14 @@ class LocalFile {
       this.isExternal,
       this.initVector});
 
-  factory LocalFile.fromJson(Map<String, dynamic> json) =>
-      _$LocalFileFromJson(json);
+  factory LocalFile.fromJson(Map<String, dynamic> json) {
+    final file = _$LocalFileFromJson(json);
+    try {
+      file.viewUrl = file.actions["view"]["url"];
+      file.downloadUrl = file.actions["download"]["url"];
+    } catch (_) {}
+    return file;
+  }
 
   Map<String, dynamic> toJson() => _$LocalFileToJson(this);
 

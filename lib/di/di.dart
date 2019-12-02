@@ -1,5 +1,6 @@
 import 'package:async_injector/async_injector.dart';
 import 'package:aurorafiles/di/module/database_module.dart';
+import 'package:aurorafiles/ui/navigator/app_navigator.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:dio/dio.dart';
 import 'package:domain/api/cache/database/local_file_cache_api.dart';
@@ -18,6 +19,8 @@ import 'package:domain_impl/api/network/auth_network.dart';
 import 'package:domain_impl/api/network/dio/dio_instance.dart';
 import 'package:domain_impl/api/network/dio/interceptor/auth_interceptor.dart';
 import 'package:domain_impl/api/network/files_network.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/navigator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DI {
@@ -25,7 +28,9 @@ class DI {
 
   static T get<T>() => instance.get<T>();
 
-  static init() async {
+  static bool get isInit => instance != null;
+
+  static Future init() async {
     final builder = ProviderBuilder();
     //shared_preference
     builder.moduleImpl((_) => SharedPreferences.getInstance());

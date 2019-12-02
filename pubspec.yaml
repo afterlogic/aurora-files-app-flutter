@@ -42,7 +42,7 @@ dependencies:
   open_file: ^2.0.3
 
   # ui
-  mpv: ^0.0.1
+  mpv: ^0.1.0+1
   material_design_icons_flutter: ^3.2.4096
   cupertino_icons: ^0.1.2
   shimmer: ^1.0.0

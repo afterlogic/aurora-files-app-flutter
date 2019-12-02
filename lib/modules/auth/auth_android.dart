@@ -242,6 +242,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 32.0),
+
                             child: Image.asset(
                                 "lib/assets/images/private-mail-logo.png"),
                           ),

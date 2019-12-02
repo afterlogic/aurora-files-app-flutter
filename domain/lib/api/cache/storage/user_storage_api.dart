@@ -8,4 +8,6 @@ abstract class UserStorageApi {
   Delegate<String> get userEmail;
 
   Delegate<int> get userId;
+
+  Delegate<bool> get isDarkTheme;
 }

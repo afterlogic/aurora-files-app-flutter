@@ -51,7 +51,7 @@ class ErrorCode {
   static const mailServerError = 901;
   static const unknownError = 999;
 
-  String message(int code) {
+  static String message(int code) {
     switch (code) {
       case invalidToken:
         return "Invalid token";

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:domain/model/network/auth/auth_request.dart';
 import 'package:domain/model/network/auth/auth_response.dart';
@@ -9,8 +11,8 @@ class AuthNetwork implements AuthNetworkApi {
 
   AuthNetwork(this._dio);
 
-  Future<String> getHostname(String domain) async {
-    final url = "$_AUTO_DISCOVER_URL?domain=$domain";
+  Future<String> getHostname(String email) async {
+    final url = "$_AUTO_DISCOVER_URL?email=$email";
     final result = await _dio.get(url, options: RequestOptions());
     return result.data["url"];
   }

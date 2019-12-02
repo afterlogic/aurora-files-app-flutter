@@ -4,9 +4,10 @@ part 'auth_response.g.dart';
 
 @JsonSerializable()
 class AuthResponse {
+  final int userId;
   final String authToken;
 
-  AuthResponse(this.authToken);
+  AuthResponse(this.authToken, this.userId);
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) =>
       _$AuthResponseFromJson(json);

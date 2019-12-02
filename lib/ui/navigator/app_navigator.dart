@@ -1,35 +1,25 @@
-import 'dart:io';
-
-import 'package:aurorafiles/ui/scene/auth/login/login_widget.dart';
-import 'package:aurorafiles/ui/scene/main/files_browser/files_browser_widget.dart';
-import 'package:aurorafiles/ui/view/fade_route.dart';
+import 'package:aurorafiles/ui/navigator/app_route.dart';
+import 'package:aurorafiles/ui/scene/auth/update/upgrate_widget.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 
 class AppNavigator {
-  static String initialRoute(bool hasToken) =>
-      "/" + (hasToken ? _login : _main);
+  final GlobalKey<NavigatorState> _navigatorKey;
 
-  static Route onGenerateRoute(RouteSettings settings) {
-    if (settings.name == _main) {
-      return _routeWrap(FilesBrowserWidget());
-    } else if (settings.name == route) {
-      return _routeWrap(LoginWidget());
-    } else {
-      assert(settings.arguments is Widget);
-      return _routeWrap(settings.arguments);
-    }
+  NavigatorState get _navigator => _navigatorKey.currentState;
+
+  AppNavigator(this._navigatorKey);
+
+  toLogin() {}
+
+  Future toFileBrowser() {
+//    return _navigator.push(_wrap(Files()));
   }
 
-  static Route _routeWrap(Widget widget) {
-    if (Platform.isIOS && false) {
-      return CupertinoPageRoute(builder: (context) => widget);
-    } else {
-      return FadeRoute(page: widget);
-    }
+  Future toUpgrade() {
+    return _navigator.push(_wrap(UpgradeWidget()));
   }
 
-  static const _login = "login";
-  static const _main = "main";
-  static const route = "custom";
+  Route _wrap(Widget widget) {
+    return AppRoute.routeWrap(widget);
+  }
 }

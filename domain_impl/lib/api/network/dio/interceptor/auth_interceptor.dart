@@ -34,5 +34,6 @@ class AuthInterceptor extends Interceptor {
     }
   }
 
+  static int userId;
   static const authorizationHeader = "Authorization";
 }

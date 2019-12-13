@@ -9,6 +9,10 @@ class Aes extends Crypt {
     String ivBase64, [
     bool isLast = false,
   ]) async {
+    if (fileBytes.length > chunkMaxSize) {
+      throw Exception(
+          "Passed chunk size for decryption (${fileBytes.length}) exceeds the max chunk size ($chunkMaxSize)");
+    }
     final List result = await invokeMethod(
       "$algorithm.decrypt",
       [Uint8List.fromList(fileBytes), keyBase64, ivBase64, isLast],
@@ -23,6 +27,10 @@ class Aes extends Crypt {
     String ivBase64, [
     bool isLast = false,
   ]) async {
+    if (fileBytes.length > chunkMaxSize) {
+      throw Exception(
+          "Passed chunk size for decryption (${fileBytes.length}) exceeds the max chunk size ($chunkMaxSize)");
+    }
     final List<dynamic> decrypted = await invokeMethod(
       "$algorithm.encrypt",
       [Uint8List.fromList(fileBytes), keyBase64, ivBase64, isLast],
@@ -32,4 +40,5 @@ class Aes extends Crypt {
   }
 
   static const algorithm = "aes";
+  static int chunkMaxSize = 4000000;
 }

@@ -24,5 +24,8 @@ class DI {
     instance.registerDependency<Pgp>((_) {
       return Pgp();
     });
+    instance.registerDependency<Aes>((_) {
+      return Aes();
+    });
   }
 }

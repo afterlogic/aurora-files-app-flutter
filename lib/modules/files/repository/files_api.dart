@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:aurorafiles/custom_libs/native_file_cryptor.dart';
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
@@ -15,12 +15,15 @@ import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/stream_util.dart';
+import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 class FilesApi {
+  Aes aes = DI.get();
+
   List<LocalFile> _sortFiles(List<LocalFile> unsortedFiles) {
     final List<LocalFile> folders = List();
     final List<LocalFile> files = List();
@@ -49,8 +52,8 @@ class FilesApi {
     }
   }
 
-  Future<GetFilesResponse> getFiles(
-      String type, String path, String pattern) async {
+  Future<GetFilesResponse> getFiles(String type, String path,
+      String pattern) async {
     final parameters = json.encode({
       "Type": type,
       "Path": path,
@@ -78,11 +81,11 @@ class FilesApi {
 
   Future<void> uploadFile(ProcessingFile processingFile, bool shouldEncrypt,
       {String url,
-      @required String storageType,
-      @required String path,
-      Function(int) updateProgress,
-      @required Function() onSuccess,
-      @required Function(String) onError}) async {
+        @required String storageType,
+        @required String path,
+        Function(int) updateProgress,
+        @required Function() onSuccess,
+        @required Function(String) onError}) async {
     final bool fileExists = await processingFile.fileOnDevice.exists();
     if (!fileExists) {
       throw CustomException("File to download data into doesn't exist");
@@ -108,9 +111,9 @@ class FilesApi {
     }
 
     final body = new ApiBody(
-            module: "Files",
-            method: "UploadFile",
-            parameters: jsonEncode(params))
+        module: "Files",
+        method: "UploadFile",
+        parameters: jsonEncode(params))
         .toMap();
     final stream = new http.ByteStream(
         _openFileRead(processingFile, shouldEncrypt, onError));
@@ -124,7 +127,7 @@ class FilesApi {
     final multipartFile = new http.MultipartFile(
         'file', stream, shouldEncrypt ? lengthWithPadding : length,
         filename:
-            FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path));
+        FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path));
 
     requestMultipart.headers.addAll(getHeader());
 
@@ -157,72 +160,72 @@ class FilesApi {
     controller = StreamController<List<int>>(onListen: () {
       fileReadSub =
           processingFile.fileOnDevice.openRead().listen((contents) async {
-        bytesUploaded += contents.length;
-        final num = 100 / processingFile.size * bytesUploaded / 100;
+            bytesUploaded += contents.length;
+            final num = 100 / processingFile.size * bytesUploaded / 100;
 
-        processingFile.updateProgress(num);
-        if (!shouldEncrypt) {
-          controller.add(contents);
-        } else {
-          // the chunk must always be equal to NativeFileCryptor.chunkMaxSize
-          // so we have to split the last part for the chunk to make it be equal to NativeFileCryptor.chunkMaxSize
-          // this part goes to contentsForCurrent, the rest goes to contentsForNext, which than goes to the next chunk
-          List<int> contentsForCurrent;
-          // by default all the contents received go to contentsForNext which then will be added to the buffer
-          // if current buffer + contentsForNext exceed NativeFileCryptor.chunkMaxSize, contentsForNext will be rewritten
-          List<int> contentsForNext = contents;
+            processingFile.updateProgress(num);
+            if (!shouldEncrypt) {
+              controller.add(contents);
+            } else {
+              // the chunk must always be equal to aes.chunkMaxSize
+              // so we have to split the last part for the chunk to make it be equal to aes.chunkMaxSize
+              // this part goes to contentsForCurrent, the rest goes to contentsForNext, which than goes to the next chunk
+              List<int> contentsForCurrent;
+              // by default all the contents received go to contentsForNext which then will be added to the buffer
+              // if current buffer + contentsForNext exceed aes.chunkMaxSize, contentsForNext will be rewritten
+              List<int> contentsForNext = contents;
 
-          // if this is the final part that forms a chunk
-          if (NativeFileCryptor.chunkMaxSize <=
-              fileBytesBuffer.length + contents.length) {
-            contentsForCurrent = contents.sublist(
-                0, NativeFileCryptor.chunkMaxSize - fileBytesBuffer.length);
+              // if this is the final part that forms a chunk
+              if (Aes.chunkMaxSize <=
+                  fileBytesBuffer.length + contents.length) {
+                contentsForCurrent = contents.sublist(
+                    0, Aes.chunkMaxSize - fileBytesBuffer.length);
 
-            contentsForNext = contents.sublist(
-                NativeFileCryptor.chunkMaxSize - fileBytesBuffer.length,
-                contents.length);
+                contentsForNext = contents.sublist(
+                    Aes.chunkMaxSize - fileBytesBuffer.length,
+                    contents.length);
 
-            fileBytesBuffer.addAll(contentsForCurrent);
+                fileBytesBuffer.addAll(contentsForCurrent);
 
-            fileReadSub.pause();
-            final encrypted = await NativeFileCryptor.encrypt(
-                fileBytes: fileBytesBuffer,
-                keyBase64: key.base64,
-                ivBase64: processingFile.ivBase64,
-                isLast: false);
-            processingFile.ivBase64 = IV(Uint8List.fromList(
+                fileReadSub.pause();
+                final encrypted = await aes.encrypt(
+                    fileBytesBuffer,
+                    key.base64,
+                    processingFile.ivBase64,
+                    false);
+                processingFile.ivBase64 = IV(Uint8List.fromList(
                     encrypted.sublist(encrypted.length - 16, encrypted.length)))
-                .base64;
-            controller.add(encrypted);
-            fileReadSub.resume();
-            // flush the buffer
-            fileBytesBuffer = new List();
-          }
-          fileBytesBuffer.addAll(contentsForNext);
-        }
-      }, onDone: () async {
-        if (shouldEncrypt) {
-          final encrypted = await NativeFileCryptor.encrypt(
-              fileBytes: fileBytesBuffer,
-              keyBase64: key.base64,
-              ivBase64: processingFile.ivBase64,
-              isLast: true);
-          controller.add(encrypted);
-        }
-        fileReadSub.cancel();
-        controller.close();
-      }, onError: (err, stack) {
-        print("_openFileRead err: $err");
-        print("_openFileRead stack: $stack");
-        onError("Error occured, could not upload file.");
-      }, cancelOnError: true);
+                    .base64;
+                controller.add(encrypted);
+                fileReadSub.resume();
+                // flush the buffer
+                fileBytesBuffer = new List();
+              }
+              fileBytesBuffer.addAll(contentsForNext);
+            }
+          }, onDone: () async {
+            if (shouldEncrypt) {
+              final encrypted = await aes.encrypt(
+                  fileBytesBuffer,
+                  key.base64,
+                  processingFile.ivBase64,
+                  true);
+              controller.add(encrypted);
+            }
+            fileReadSub.cancel();
+            controller.close();
+          }, onError: (err, stack) {
+            print("_openFileRead err: $err");
+            print("_openFileRead stack: $stack");
+            onError("Error occured, could not upload file.");
+          }, cancelOnError: true);
     },
 //        onPause: fileReadSub.pause,
 //        onResume: fileReadSub.resume,
         onCancel: () {
-      fileReadSub.cancel();
-      controller.close();
-    });
+          fileReadSub.cancel();
+          controller.close();
+        });
     processingFile.subscription = fileReadSub;
 
     return controller.stream;
@@ -234,9 +237,9 @@ class FilesApi {
   Future<StreamSubscription> getFileContentsFromServer(String url,
       LocalFile file, ProcessingFile processingFile, bool decryptFile,
       {Function(String) onError,
-      Function(double) updateViewerProgress,
-      @required Function(File) onSuccess,
-      bool isRedirect = false}) async {
+        Function(double) updateViewerProgress,
+        @required Function(File) onSuccess,
+        bool isRedirect = false}) async {
     // getFileContentsFromServer function assumes that fileToWriteInto exists
     final bool fileExists = await processingFile.fileOnDevice.exists();
     if (!fileExists) {
@@ -250,7 +253,7 @@ class FilesApi {
 
     try {
       final HttpClientRequest request =
-          await client.getUrl(Uri.parse(isRedirect ? url : hostName + url));
+      await client.getUrl(Uri.parse(isRedirect ? url : hostName + url));
       // disable auto redirects because it automatically applies the same headers, but we want different headers
       request.followRedirects = false;
       // token can only be applied to our api, in case of redirect we go to a different server, so we don't want to apply our token to such request
@@ -272,7 +275,7 @@ class FilesApi {
             onError: onError,
             isRedirect: true);
       }
-      // temporary buffer, which can hold not more than NativeFileCryptor.chunkMaxSize
+      // temporary buffer, which can hold not more than aes.chunkMaxSize
       List<int> fileBytesBuffer = new List();
 
       // set initial vector that comes with the LocalFile object that we get from our api
@@ -287,23 +290,23 @@ class FilesApi {
       // average size of contents ~3000 bytes
       downloadSubscription = listener<List<int>>(
         response,
-        (List<int> contents) async {
-          // the chunk must always be equal to NativeFileCryptor.chunkMaxSize
-          // so we have to split the last part for the chunk to make it be equal to NativeFileCryptor.chunkMaxSize
+            (List<int> contents) async {
+          // the chunk must always be equal to aes.chunkMaxSize
+          // so we have to split the last part for the chunk to make it be equal to aes.chunkMaxSize
           // this part goes to contentsForCurrent, the rest goes to contentsForNext, which than goes to the next chunk
           List<int> contentsForCurrent;
           // by default all the contents received go to contentsForNext which then will be added to the buffer
-          // if current buffer + contentsForNext exceed NativeFileCryptor.chunkMaxSize, contentsForNext will be rewritten
+          // if current buffer + contentsForNext exceed aes.chunkMaxSize, contentsForNext will be rewritten
           List<int> contentsForNext = contents;
 
           // if this is the final part that forms a chunk
-          if (NativeFileCryptor.chunkMaxSize <=
+          if (Aes.chunkMaxSize <=
               fileBytesBuffer.length + contents.length) {
             contentsForCurrent = contents.sublist(
-                0, NativeFileCryptor.chunkMaxSize - fileBytesBuffer.length);
+                0, Aes.chunkMaxSize - fileBytesBuffer.length);
 
             contentsForNext = contents.sublist(
-                NativeFileCryptor.chunkMaxSize - fileBytesBuffer.length,
+                Aes.chunkMaxSize - fileBytesBuffer.length,
                 contents.length);
 
             fileBytesBuffer.addAll(contentsForCurrent);
@@ -349,18 +352,18 @@ class FilesApi {
     // if encrypted - decrypt
     if (initVector != null) {
       final key =
-          prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
-      final decrypted = await NativeFileCryptor.decrypt(
-          fileBytes: fileBytes,
-          keyBase64: key.base64,
-          ivBase64: processingFile.ivBase64,
-          isLast: isLast);
+      prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+      final decrypted = await aes.decrypt(
+          fileBytes,
+          key.base64,
+          processingFile.ivBase64,
+          isLast);
       await processingFile.fileOnDevice
           .writeAsBytes(decrypted, mode: FileMode.append);
 
       // update vector with the last 16 bytes of the chunk
       final newVector =
-          fileBytes.sublist(fileBytes.length - 16, fileBytes.length);
+      fileBytes.sublist(fileBytes.length - 16, fileBytes.length);
       processingFile.ivBase64 = IV(Uint8List.fromList(newVector)).base64;
     } else {
       await processingFile.fileOnDevice
@@ -386,7 +389,7 @@ class FilesApi {
     });
 
     final body =
-        new ApiBody(module: "Files", method: "Rename", parameters: parameters);
+    new ApiBody(module: "Files", method: "Rename", parameters: parameters);
 
     final res = await sendRequest(body);
 
@@ -399,7 +402,7 @@ class FilesApi {
 
   Future createFolder(String type, String path, String folderName) async {
     final parameters =
-        json.encode({"Type": type, "Path": path, "FolderName": folderName});
+    json.encode({"Type": type, "Path": path, "FolderName": folderName});
 
     final body = new ApiBody(
         module: "Files", method: "CreateFolder", parameters: parameters);
@@ -416,10 +419,10 @@ class FilesApi {
   Future delete(String type, String path,
       List<Map<String, dynamic>> filesToDelete) async {
     final parameters =
-        json.encode({"Type": type, "Path": path, "Items": filesToDelete});
+    json.encode({"Type": type, "Path": path, "Items": filesToDelete});
 
     final body =
-        new ApiBody(module: "Files", method: "Delete", parameters: parameters);
+    new ApiBody(module: "Files", method: "Delete", parameters: parameters);
 
     final res = await sendRequest(body);
 
@@ -430,8 +433,8 @@ class FilesApi {
     }
   }
 
-  Future<String> createPublicLink(
-      String type, String path, String name, int size, bool isFolder) async {
+  Future<String> createPublicLink(String type, String path, String name,
+      int size, bool isFolder) async {
     final int userId = AppStore.authState.userId;
     final String hostName = AppStore.authState.hostName;
     final parameters = json.encode({

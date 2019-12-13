@@ -1,31 +1,21 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
-import 'package:injector/injector.dart';
+import 'package:get_it/get_it.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 
 class DI {
-  static Injector instance;
+  static GetIt instance;
 
-  static T get<T>() => instance.getDependency<T>();
+  static T get<T>() => instance.get<T>();
 
   static init() {
-    instance = Injector();
-    instance.registerDependency<AppDatabase>((_) {
-      return AppDatabase();
-    });
-    instance.registerDependency<FilesDao>((inj) {
-      return FilesDao(inj.getDependency());
-    });
-    instance.registerDependency<PgpKeyDao>((inj) {
-      return PgpKeyDao(inj.getDependency());
-    });
+    instance = GetIt.instance;
 
-    instance.registerDependency<Pgp>((_) {
-      return Pgp();
-    });
-    instance.registerDependency<Aes>((_) {
-      return Aes();
-    });
+    instance.registerSingleton<AppDatabase>(AppDatabase());
+    instance.registerSingleton<FilesDao>(FilesDao(get()));
+    instance.registerSingleton<PgpKeyDao>(PgpKeyDao(get()));
+    instance.registerSingleton<Pgp>(Pgp());
+    instance.registerSingleton<Aes>(Aes());
   }
 }

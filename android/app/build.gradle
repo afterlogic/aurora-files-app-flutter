@@ -50,6 +50,8 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -94,3 +96,6 @@ dependencies {
     implementation "androidx.versionedparcelable:versionedparcelable:1.1.0"
     implementation "androidx.core:core:1.2.0-rc01"
 }
+
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'

@@ -66,10 +66,14 @@ dependencies:
 
   package_info:
 
-  injector:
+  get_it:
 
   #async util
   rxdart:
+
+  #crashlytics
+  firebase_crashlytics:
+  firebase_core:
 
   crypto_plugin:
     path: crypto_plugin

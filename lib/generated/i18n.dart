@@ -110,7 +110,6 @@ class S implements WidgetsLocalizations {
   String get log_out => "Log out";
   String get login => "Login";
   String get mail => "Mail";
-  String get mail1 => "";
   String get move => "Move";
   String get move_file_or_folder => "Move files/folders";
   String get need_an_encryption_to_share => "You need an encryption key to share files.";

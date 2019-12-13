@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  meta: ^1.1.7
   # state management
   mobx: ^0.3.5
   flutter_mobx: ^0.3.0+1

@@ -114,7 +114,7 @@ abstract class _FilesPageState with Store {
       } else {
         currentFiles = filesFromServer;
       }
-    } catch (err) {
+    } catch (err,s) {
       if (!AppStore.filesState.isOfflineMode &&
           AppStore.settingsState.internetConnection !=
               ConnectivityResult.none) {

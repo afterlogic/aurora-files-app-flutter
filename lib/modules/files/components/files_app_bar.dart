@@ -187,7 +187,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else if (_filesPageState.isSearchMode) {
       return AppBar(
-      key: Key("defaault"),
+        key: Key("defaault"),
         leading: IconButton(
           icon: Icon(Icons.close),
           onPressed: () {
@@ -220,47 +220,45 @@ class _FilesAppBarState extends State<FilesAppBar>
         ),
         centerTitle: Platform.isIOS,
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(AppBar().preferredSize.height),
+          preferredSize: Size.fromHeight(kToolbarHeight),
           child: Container(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Platform.isIOS
-                  ? CupertinoTextField(
-                      onSubmitted: (_) => _search(),
-                      autofocus: true,
-                      controller: _searchInputCtrl,
-                      placeholder: "Search",
-                      style: TextStyle(color: Colors.white),
-                      suffix: IconButton(
-                          icon: Icon(Icons.search),
-                          color: Colors.white,
-                          onPressed: _search),
-                    )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      child: Container(
-                        color: Colors.white54,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 12.0, top: 2.0),
-                          child: TextField(
-                            autofocus: true,
-                            onSubmitted: (_) => _search(),
-                            style: TextStyle(color: Colors.black),
-                            controller: _searchInputCtrl,
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintStyle: TextStyle(color: Colors.black38),
-                                hintText: "Search",
-                                suffixIcon: IconButton(
-                                  icon: Icon(Icons.search),
-                                  color: Colors.black,
-                                  onPressed: _search,
-                                )),
-                          ),
+            padding:  const EdgeInsets.all(12.0),
+            child: Platform.isIOS
+                ? CupertinoTextField(
+                    onSubmitted: (_) => _search(),
+                    autofocus: true,
+                    controller: _searchInputCtrl,
+                    placeholder: "Search",
+                    style: TextStyle(color: Colors.white),
+                    suffix: IconButton(
+                        icon: Icon(Icons.search),
+                        color: Colors.white,
+                        onPressed: _search),
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    child: Container(
+                      color: Colors.white54,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12.0, top: 2.0),
+                        child: TextField(
+                          autofocus: true,
+                          onSubmitted: (_) => _search(),
+                          style: TextStyle(color: Colors.black),
+                          controller: _searchInputCtrl,
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintStyle: TextStyle(color: Colors.black38),
+                              hintText: "Search",
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.search),
+                                color: Colors.black,
+                                onPressed: _search,
+                              )),
                         ),
                       ),
                     ),
-            ),
+                  ),
           ),
         ),
       );
@@ -376,11 +374,7 @@ class _FilesAppBarState extends State<FilesAppBar>
     _filesPageState = Provider.of<FilesPageState>(context);
 
     return Observer(
-      builder: (_) => AnimatedSwitcher(
-          duration: Duration(milliseconds: 100),
-          reverseDuration: Duration(milliseconds: 300),
-          child: _getAppBar(context),
-        ),
+      builder: (_) => _getAppBar(context),
     );
   }
 }

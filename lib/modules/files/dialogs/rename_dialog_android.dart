@@ -110,7 +110,7 @@ class _RenameDialogState extends State<RenameDialog> {
         title: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Text("Rename ${widget.file.name}")),
-        content: isRenaming
+        content: Container(child: isRenaming
             ? Row(
                 children: <Widget>[
                   Padding(
@@ -118,7 +118,7 @@ class _RenameDialogState extends State<RenameDialog> {
                     child: CircularProgressIndicator(),
                   ),
                   SizedBox(width: 20.0),
-                  Text("Renaming to ${_fileNameCtrl.text}")
+                  Expanded(child: Text("Renaming to ${_fileNameCtrl.text}")),
                 ],
               )
             : Form(
@@ -141,6 +141,7 @@ class _RenameDialogState extends State<RenameDialog> {
                   ),
                 ),
               ),
+        ),
         actions: <Widget>[
           FlatButton(
             child: Text("CANCEL"),

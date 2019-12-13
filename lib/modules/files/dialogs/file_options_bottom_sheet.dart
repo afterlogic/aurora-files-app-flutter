@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
@@ -39,6 +40,8 @@ class FileOptionsBottomSheet extends StatefulWidget {
 
 class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
+  S s;
+
   void _shareFile() async {
     final hasDecryptKey = AppStore.settingsState.currentKey != null;
     final hasVector = widget.file.initVector != null;
@@ -47,17 +50,19 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       Navigator.pop(context);
       final result = await (Platform.isIOS
           ? showCupertinoDialog(
-              context: context,
-              builder: (_) => ShareDialog(
-                    filesState: widget.filesState,
-                    file: widget.file,
-                  ))
+          context: context,
+          builder: (_) =>
+              ShareDialog(
+                filesState: widget.filesState,
+                file: widget.file,
+              ))
           : showDialog(
-              context: context,
-              builder: (_) => ShareDialog(
-                    filesState: widget.filesState,
-                    file: widget.file,
-                  )));
+          context: context,
+          builder: (_) =>
+              ShareDialog(
+                filesState: widget.filesState,
+                file: widget.file,
+              )));
       if (result is PreparedForShare) {
         widget.filesState.share(result);
       }
@@ -72,6 +77,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     final offline = widget.filesState.isOfflineMode;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -103,7 +109,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   onTap: () => onItemSelected(
                       FileOptionsBottomSheetResult.toggleOffline),
                   leading: Icon(Icons.airplanemode_active),
-                  title: Text("Offline"),
+                  title: Text(s.offline),
                   trailing: Switch.adaptive(
                     value: widget.file.localId != null,
                     activeColor: Theme.of(context).accentColor,
@@ -117,7 +123,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   leading: Icon(widget.file.isFolder
                       ? MdiIcons.folderMove
                       : MdiIcons.fileMove),
-                  title: Text("Copy/Move"),
+                  title: Text(s.copy_or_move),
                   onTap: () {
                     widget.filesState.updateFilesCb =
                         widget.filesPageState.onGetFiles;
@@ -130,39 +136,41 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 ListTile(
                   leading: Icon(
                       Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
-                  title: Text("Share"),
+                  title: Text(s.share),
                   onTap: _shareFile,
                 ),
               if (!Platform.isIOS && !widget.file.isFolder)
                 ListTile(
                   leading: Icon(Icons.file_download),
-                  title: Text("Download"),
+                  title: Text(s.download),
                   onTap: () =>
                       onItemSelected(FileOptionsBottomSheetResult.download),
                 ),
               if (!offline)
                 ListTile(
                   leading: Icon(Icons.edit),
-                  title: Text("Rename"),
+                  title: Text(s.rename),
                   onTap: () async {
                     Navigator.pop(context);
                     final result = Platform.isIOS
                         ? await showCupertinoDialog(
-                            context: context,
-                            builder: (_) => RenameDialog(
-                                  file: widget.file,
-                                  filesState: widget.filesState,
-                                  filesPageState: widget.filesPageState,
-                                ))
-                        : await showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (_) => RenameDialog(
+                        context: context,
+                        builder: (_) =>
+                            RenameDialog(
                               file: widget.file,
                               filesState: widget.filesState,
                               filesPageState: widget.filesPageState,
-                            ),
-                          );
+                            ))
+                        : await showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) =>
+                          RenameDialog(
+                            file: widget.file,
+                            filesState: widget.filesState,
+                            filesPageState: widget.filesPageState,
+                          ),
+                    );
                     if (result is String) {
                       widget.filesPageState.onGetFiles();
                     }
@@ -171,7 +179,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               if (!offline)
                 ListTile(
                   leading: Icon(Icons.delete_outline),
-                  title: Text("Delete"),
+                  title: Text(s.delete),
                   onTap: () async {
                     Navigator.pop(context);
                     bool shouldDelete;
@@ -194,7 +202,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                         onError: (String err) => showSnack(
                           context: context,
                           scaffoldState:
-                              widget.filesPageState.scaffoldKey.currentState,
+                          widget.filesPageState.scaffoldKey.currentState,
                           msg: err,
                         ),
                       );

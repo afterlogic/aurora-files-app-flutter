@@ -1,3 +1,4 @@
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -50,6 +51,7 @@ class _MoveOptionsState extends State<MoveOptions> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Container(
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: Colors.grey)),
@@ -62,23 +64,23 @@ class _MoveOptionsState extends State<MoveOptions> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               FlatButton(
-                child: Text("Cancel"),
+                child: Text(s.cancel),
                 textColor: Theme.of(context).iconTheme.color,
                 onPressed: () {
                   widget.filesState.disableMoveMode();
                 },
               ),
               FlatButton(
-                child: Text("Copy"),
+                child: Text(s.copy),
                 textColor: Theme.of(context).iconTheme.color,
                 onPressed:
-                    _buttonsDisabled ? null : () => _moveFiles(context, true),
+                _buttonsDisabled ? null : () => _moveFiles(context, true),
               ),
               FlatButton(
-                child: Text("Move"),
+                child: Text(s.move),
                 textColor: Theme.of(context).iconTheme.color,
                 onPressed:
-                    _buttonsDisabled ? null : () => _moveFiles(context, false),
+                _buttonsDisabled ? null : () => _moveFiles(context, false),
               ),
             ],
           ),

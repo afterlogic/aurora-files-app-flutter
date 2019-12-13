@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -17,9 +18,10 @@ class ExportPgpKeyWidget extends StatefulWidget {
 
 class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  S s;
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     var keysText = "";
     for (LocalPgpKey key in widget._pgpKeys) {
       keysText += key.key + "\n\n";
@@ -27,7 +29,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("All public keys"),
+        title: Text(s.all_public_keys),
       ),
       body: OrientationBuilder(
         builder: (context, orientation) => Padding(
@@ -57,12 +59,12 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
                   children: <Widget>[
                     AppButton(
                       width: double.infinity,
-                      text: "Send all".toUpperCase(),
+                      text: s.send_all.toUpperCase(),
                       onPressed: () => share(keysText),
                     ),
                     AppButton(
                       width: double.infinity,
-                      text: "Download all".toUpperCase(),
+                      text: s.download_all.toUpperCase(),
                       onPressed: download,
                     ),
                   ],
@@ -85,7 +87,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
     showSnack(
       context: context,
       scaffoldState: _scaffoldKey.currentState,
-      msg: "Downloading ${result.path}",
+      msg: s.downloading_to(result.path),
       isError: false,
     );
   }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
@@ -55,7 +56,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   final _fileViewerScaffoldKey = GlobalKey<ScaffoldState>();
 
   final _fileViewerState = FileViewerState();
-
+  S s;
   LocalFile _file;
   FileType _fileType;
 
@@ -120,7 +121,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       showSnack(
         context: context,
         scaffoldState: _fileViewerScaffoldKey.currentState,
-        msg: "Please wait until the file finishes loading",
+        msg: s.please_wait_until_loading,
         isError: false,
       );
     } else {
@@ -216,18 +217,18 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         showSnack(
           context: context,
           scaffoldState: _fileViewerScaffoldKey.currentState,
-          msg: "Downloading ${_file.name}",
+          msg: s.downloading(_file.name),
           isError: false,
         );
       },
       onSuccess: (File savedFile) => showSnack(
           context: context,
           scaffoldState: _fileViewerScaffoldKey.currentState,
-          msg: "${_file.name} downloaded successfully into: ${savedFile.path}",
+          msg: s.downloaded_successfully_into(_file.name, savedFile.path),
           isError: false,
           duration: Duration(minutes: 10),
           action: SnackBarAction(
-            label: "OK",
+            label: s.oK,
             onPressed: _fileViewerScaffoldKey.currentState.hideCurrentSnackBar,
           )),
       onError: (String err) => showSnack(
@@ -262,7 +263,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           showSnack(
             context: context,
             scaffoldState: _fileViewerScaffoldKey.currentState,
-            msg: "Synching file...",
+            msg: s.synch_file_progress,
             isError: false,
           );
         }
@@ -278,7 +279,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 showSnack(
                   context: context,
                   scaffoldState: _fileViewerScaffoldKey.currentState,
-                  msg: "File synched successfully",
+                  msg: s.synched_successfully,
                   isError: false,
                 );
               }
@@ -366,6 +367,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     final theme = Theme.of(context);
     return MultiProvider(
       providers: [
@@ -384,61 +386,61 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         appBar: AppBar(
           actions: widget.filesState.isOfflineMode
               ? [
-                  IconButton(
-                    icon: Icon(
-                        Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
-                    tooltip: "Share",
-                    onPressed: () => _prepareShareFile(_shareFile),
-                  ),
-                  if (!Platform.isIOS)
-                    IconButton(
-                      icon: Icon(Icons.file_download),
-                      tooltip: "Download",
-                      onPressed: _downloadFile,
-                    ),
-                  IconButton(
-                    icon: Icon(Icons.airplanemode_inactive),
-                    tooltip: "Delete file from offline",
-                    onPressed: _setFileForOffline,
-                  ),
-                ]
+            IconButton(
+              icon: Icon(
+                  Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+              tooltip: s.share,
+              onPressed: () => _prepareShareFile(_shareFile),
+            ),
+            if (!Platform.isIOS)
+              IconButton(
+                icon: Icon(Icons.file_download),
+                tooltip: s.download,
+                onPressed: _downloadFile,
+              ),
+            IconButton(
+              icon: Icon(Icons.airplanemode_inactive),
+              tooltip: s.delete_from_offline,
+              onPressed: _setFileForOffline,
+            ),
+          ]
               : [
-                  IconButton(
-                    icon: AssetIcon(
-                      "lib/assets/svg/insert_link.svg",
-                      addedSize: 14,
-                    ),
-                    tooltip: "Secure sharing",
-                    onPressed: () => _prepareShareFile(_secureSharing),
-                  ),
-                  IconButton(
-                    icon: Icon(MdiIcons.fileMove),
-                    tooltip: "Move/Copy",
-                    onPressed: _moveFile,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                        Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
-                    tooltip: "Share",
-                    onPressed: () => _prepareShareFile(_shareFile),
-                  ),
-                  if (_file.downloadUrl != null && !Platform.isIOS)
-                    IconButton(
-                      icon: Icon(Icons.file_download),
-                      tooltip: "Download",
-                      onPressed: _downloadFile,
-                    ),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    tooltip: "Rename",
-                    onPressed: _renameFile,
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.delete_outline),
-                    tooltip: "Delete file",
-                    onPressed: _deleteFile,
-                  ),
-                ],
+            IconButton(
+              icon: AssetIcon(
+                "lib/assets/svg/insert_link.svg",
+                addedSize: 14,
+              ),
+              tooltip: s.secure_sharing,
+              onPressed: () => _prepareShareFile(_secureSharing),
+            ),
+            IconButton(
+              icon: Icon(MdiIcons.fileMove),
+              tooltip: s.copy_or_move,
+              onPressed: _moveFile,
+            ),
+            IconButton(
+              icon: Icon(
+                  Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+              tooltip: s.share,
+              onPressed: () => _prepareShareFile(_shareFile),
+            ),
+            if (_file.downloadUrl != null && !Platform.isIOS)
+              IconButton(
+                icon: Icon(Icons.file_download),
+                tooltip: s.download,
+                onPressed: _downloadFile,
+              ),
+            IconButton(
+              icon: Icon(Icons.edit),
+              tooltip: s.rename,
+              onPressed: _renameFile,
+            ),
+            IconButton(
+              icon: Icon(Icons.delete_outline),
+              tooltip: s.delete_file,
+              onPressed: _deleteFile,
+            ),
+          ],
         ),
         body: ListView(
           padding: const EdgeInsets.all(16.0),
@@ -448,7 +450,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               child: _getPreviewContent(),
             ),
             InfoListTile(
-              label: "Filename",
+              label: s.filename,
               content: _file.name,
               isPublic: _file.published,
               isOffline: _file.localId != null,
@@ -458,12 +460,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               children: <Widget>[
                 Expanded(
                   child: InfoListTile(
-                      label: "Size", content: filesize(_file.size)),
+                      label: s.size, content: filesize(_file.size)),
                 ),
                 SizedBox(width: 30),
                 Expanded(
                   child: InfoListTile(
-                    label: "Created",
+                    label: s.created,
                     content: DateFormatting.formatDateFromSeconds(
                       timestamp: _file.lastModified,
                     ),
@@ -472,9 +474,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               ],
             ),
             InfoListTile(
-                label: "Location",
+                label: s.location,
                 content: _file.path == "" ? "/" : _file.path),
-            InfoListTile(label: "Owner", content: _file.owner),
+            InfoListTile(label: s.owner, content: _file.owner),
             if (!widget.filesState.isOfflineMode)
               PublicLinkSwitch(
                 file: _file,
@@ -487,7 +489,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               contentPadding: EdgeInsets.zero,
               onTap: _isSyncingForOffline ? null : _setFileForOffline,
               leading: Icon(Icons.airplanemode_active),
-              title: Text("Offline"),
+              title: Text(s.offline),
               trailing: Switch.adaptive(
                 value: _isFileOffline,
                 activeColor: Theme.of(context).accentColor,

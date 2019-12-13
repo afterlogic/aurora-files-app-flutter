@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,28 +19,28 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = Text("Delete key");
-    final content = Text(
-        "Attention! You'll no longer be able to decrypt encrypted files on this device unless you import this key again.");
+    final s = S.of(context);
+    final title = Text(s.delete_key);
+    final content = Text(s.delete_key_description);
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
         title: title,
         content: content,
         actions: <Widget>[
           CupertinoButton(
-            child: Text("Cancel"),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(
                 context, DeleteKeyConfirmationDialogResult.cancel),
           ),
           CupertinoButton(
-            child: Text("Export"),
+            child: Text(s.export),
             onPressed: () {
               Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
             },
           ),
           CupertinoButton(
             child: Text(
-              "Delete",
+              s.delete,
               style: TextStyle(color: Theme.of(context).errorColor),
             ),
             onPressed: () async {
@@ -56,19 +57,19 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
         content: content,
         actions: <Widget>[
           FlatButton(
-            child: Text("CANCEL"),
+            child: Text(s.cancel.toUpperCase()),
             onPressed: () => Navigator.pop(
                 context, DeleteKeyConfirmationDialogResult.cancel),
           ),
           FlatButton(
-            child: Text("EXPORT"),
+            child: Text(s.export.toUpperCase()),
             onPressed: () {
               Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
             },
           ),
           FlatButton(
             child: Text(
-              "DELETE",
+              s.delete.toUpperCase(),
               style: TextStyle(color: Theme.of(context).errorColor),
             ),
             onPressed: () async {

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
@@ -24,7 +25,7 @@ class AddFolderDialogAndroid extends StatefulWidget {
 class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
   final _folderNameCtrl = TextEditingController();
   final _addFolderFormKey = GlobalKey<FormState>();
-
+  S s;
   bool isAdding = false;
   String errMsg = "";
 
@@ -36,129 +37,134 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
-        title: Text("Add new folder"),
+        title: Text(s.add_new_folder),
         content: isAdding
             ? Row(
-                children: <Widget>[
-                  CupertinoActivityIndicator(),
-                  SizedBox(width: 20.0),
-                  Text("Adding ${_folderNameCtrl.text} folder")
-                ],
-              )
+          children: <Widget>[
+            CupertinoActivityIndicator(),
+            SizedBox(width: 20.0),
+            Text(s.adding_folder(_folderNameCtrl.text))
+          ],
+        )
             : Form(
-                key: _addFolderFormKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    if (errMsg is String && errMsg.length > 0)
-                      Text(errMsg,
-                          style:
-                              TextStyle(color: Theme.of(context).errorColor)),
-                    AlertInputIos(
-                      controller: _folderNameCtrl,
-                      autofocus: true,
-                      placeholder: "Enter folder name",
-                    )
-                  ],
-                ),
-              ),
+          key: _addFolderFormKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              if (errMsg is String && errMsg.length > 0)
+                Text(errMsg,
+                    style:
+                    TextStyle(color: Theme
+                        .of(context)
+                        .errorColor)),
+              AlertInputIos(
+                controller: _folderNameCtrl,
+                autofocus: true,
+                placeholder: s.enter_folder_name,
+              )
+            ],
+          ),
+        ),
         actions: <Widget>[
           CupertinoButton(
-            child: Text("Cancel"),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(context),
           ),
           CupertinoButton(
-              child: Text("Add"),
+              child: Text(s.add),
               onPressed: isAdding
                   ? null
                   : () {
-                      if (!_addFolderFormKey.currentState.validate()) return;
-                      errMsg = "";
-                      setState(() => isAdding = true);
-                      widget.filesPageState.onCreateNewFolder(
-                        storage: widget.filesState.selectedStorage,
-                        folderName: _folderNameCtrl.text,
-                        onError: (String err) {
-                          errMsg = err;
-                          setState(() => isAdding = false);
-                        },
-                        onSuccess: (String newNameFromServer) {
-                          widget.filesPageState.onGetFiles();
-                          Navigator.pop(context, newNameFromServer);
-                        },
-                      );
-                    }),
+                if (!_addFolderFormKey.currentState.validate()) return;
+                errMsg = "";
+                setState(() => isAdding = true);
+                widget.filesPageState.onCreateNewFolder(
+                  storage: widget.filesState.selectedStorage,
+                  folderName: _folderNameCtrl.text,
+                  onError: (String err) {
+                    errMsg = err;
+                    setState(() => isAdding = false);
+                  },
+                  onSuccess: (String newNameFromServer) {
+                    widget.filesPageState.onGetFiles();
+                    Navigator.pop(context, newNameFromServer);
+                  },
+                );
+              }),
         ],
       );
     } else {
       return AlertDialog(
-        title: Text("Add new folder"),
+        title: Text(s.add_new_folder),
         content: isAdding
             ? Row(
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                  SizedBox(width: 20.0),
-                  //todo overflowed on the right
-                  Text("Adding ${_folderNameCtrl.text} folder")
-                ],
-              )
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(width: 20.0),
+            Expanded(child: Text(s.adding_folder(_folderNameCtrl.text)))
+          ],
+        )
             : Form(
-                key: _addFolderFormKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    if (errMsg is String && errMsg.length > 0)
-                      Text(errMsg,
-                          style:
-                              TextStyle(color: Theme.of(context).errorColor)),
-                    TextFormField(
-                      controller: _folderNameCtrl,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: "Enter folder name",
-                        border: UnderlineInputBorder(),
-                      ),
-                      validator: (value) => validateInput(
-                        value,
-                        [
-                          ValidationTypes.empty,
-                          ValidationTypes.fileName,
-                          ValidationTypes.uniqueName,
-                        ],
-                        widget.filesPageState.currentFiles,
-                      ),
-                    ),
-                  ],
+          key: _addFolderFormKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              if (errMsg is String && errMsg.length > 0)
+                Text(errMsg,
+                    style:
+                    TextStyle(color: Theme
+                        .of(context)
+                        .errorColor)),
+              TextFormField(
+                controller: _folderNameCtrl,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: s.enter_folder_name,
+                  border: UnderlineInputBorder(),
                 ),
+                validator: (value) =>
+                    validateInput(
+                      value,
+                      [
+                        ValidationTypes.empty,
+                        ValidationTypes.fileName,
+                        ValidationTypes.uniqueName,
+                      ],
+                      widget.filesPageState.currentFiles,
+                    ),
               ),
+            ],
+          ),
+        ),
         actions: <Widget>[
           FlatButton(
-            child: Text("CANCEL"),
+            child: Text(s.cancel.toUpperCase()),
             onPressed: () => Navigator.pop(context),
           ),
           FlatButton(
-              child: Text("ADD"),
+              child: Text(s.add.toUpperCase()),
               onPressed: isAdding
                   ? null
                   : () {
-                      if (!_addFolderFormKey.currentState.validate()) return;
-                      errMsg = "";
-                      setState(() => isAdding = true);
-                      widget.filesPageState.onCreateNewFolder(
-                        storage: widget.filesState.selectedStorage,
-                        folderName: _folderNameCtrl.text,
-                        onError: (String err) {
-                          errMsg = err;
-                          setState(() => isAdding = false);
-                        },
-                        onSuccess: (String newNameFromServer) {
-                          widget.filesPageState.onGetFiles();
-                          Navigator.pop(context, newNameFromServer);
-                        },
-                      );
-                    }),
+                if (!_addFolderFormKey.currentState.validate()) return;
+                errMsg = "";
+                setState(() => isAdding = true);
+                widget.filesPageState.onCreateNewFolder(
+                  storage: widget.filesState.selectedStorage,
+                  folderName: _folderNameCtrl.text,
+                  onError: (String err) {
+                    errMsg = err;
+                    setState(() => isAdding = false);
+                  },
+                  onSuccess: (String newNameFromServer) {
+                    widget.filesPageState.onGetFiles();
+                    Navigator.pop(context, newNameFromServer);
+                  },
+                );
+              }),
         ],
       );
     }

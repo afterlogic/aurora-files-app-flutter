@@ -1,3 +1,4 @@
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
@@ -18,33 +19,34 @@ class SettingsAndroid extends StatefulWidget {
 class _SettingsAndroidState extends State<SettingsAndroid> {
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Provider<SettingsState>(
       builder: (_) => AppStore.settingsState,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Settings"),
+          title: Text(s.settings),
         ),
 //        drawer: MainDrawer(),
         body: ListView(
           children: <Widget>[
             ListTile(
-              title: Text("Common"),
+              title: Text(s.common),
               leading: Icon(Icons.tune),
               onTap: () =>
                   Navigator.pushNamed(context, CommonSettingsRoute.name),
             ),
             ListTile(
-              title: Text("Encryption"),
+              title: Text(s.encryption),
               leading: Icon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
             ),
             ListTile(
-              title: Text("OpenPGP"),
+              title: Text(s.openPGP),
               leading: Icon(MdiIcons.key),
               onTap: () => Navigator.pushNamed(context, PgpSettingsRoute.name),
             ),
             ListTile(
-              title: Text("Storage info"),
+              title: Text(s.storage_info),
               leading: Icon(Icons.storage),
               onTap: () => Navigator.push(
                   context,
@@ -52,7 +54,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
                       fullscreenDialog: true, builder: (_) => StorageInfoDialog())),
             ),
             ListTile(
-              title: Text("About"),
+              title: Text(s.about),
               leading: Icon(Icons.info_outline),
               onTap: () => Navigator.pushNamed(context, AboutRoute.name),
             ),

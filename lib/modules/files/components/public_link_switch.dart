@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -31,7 +32,7 @@ class PublicLinkSwitch extends StatefulWidget {
 class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
   FilesState filesState;
   FilesPageState filesPageState;
-
+  S s;
   bool _isGettingPublicLink = false;
   bool _hasPublicLink = false;
 
@@ -54,7 +55,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
           scaffoldState: widget.scaffoldKey != null
               ? widget.scaffoldKey.currentState
               : filesPageState.scaffoldKey.currentState,
-          msg: "Link coppied to clipboard",
+          msg: s.link_coppied_to_clipboard,
           isError: false,
         );
         if (!widget.isFileViewer && Navigator.of(context).canPop()) {
@@ -105,7 +106,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
     filesState = widget.filesState ?? Provider.of<FilesState>(context);
     filesPageState =
         widget.filesPageState ?? Provider.of<FilesPageState>(context);
-
+    s = S.of(context);
     return Column(
       children: <Widget>[
         InkWell(
@@ -125,7 +126,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
           child: ListTile(
             contentPadding: widget.isFileViewer ? EdgeInsets.zero : null,
             leading: Icon(Icons.link),
-            title: Text("Public link access"),
+            title: Text(s.public_link_access),
             trailing: Switch.adaptive(
               value: _hasPublicLink,
               activeColor: Theme.of(context).accentColor,
@@ -151,7 +152,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
             child: ListTile(
               contentPadding: widget.isFileViewer ? EdgeInsets.zero : null,
               leading: Icon(Icons.content_copy),
-              title: Text("Copy public link"),
+              title: Text(s.copy_public_link),
               onTap: _isGettingPublicLink
                   ? null
                   : () {

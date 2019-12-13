@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/auth/auth_android.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_android.dart';
@@ -221,16 +222,18 @@ class AppNavigation {
               duration: 150);
         }
         break;
-
       default:
         return MaterialPageRoute(
             settings: RouteSettings(
               name: settings.name,
             ),
-            builder: (_) => Scaffold(
+            builder: (context) {
+              final s = S.of(context);
+              return Scaffold(
                   body: Center(
-                      child: Text('No route defined for ${settings.name}')),
-                ));
+                      child: Text(s.no_route(settings.name))),
+              );
+            });
     }
   }
 }

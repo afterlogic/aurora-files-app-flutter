@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +20,7 @@ class SelectEncryptMethod extends StatefulWidget {
 
 class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   bool useKey;
-
+  S s;
   @override
   void initState() {
     useKey = widget.pgpKey != null;
@@ -28,11 +29,12 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Text("Secure sharing"),
+      child: Text(s.secure_sharing),
     );
     final content = SizedBox(
       height: min(size.height/2,350),
@@ -44,15 +46,15 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
           ),
           Text(
             useKey
-                ? "Selected recipient has PGP public key. The file can be encrypted using this key."
-                : "Selected recipient has no PGP public key. The key based encryption is not allowed.",
+                ? s.has_PGP_public_key
+                : s.has_no_PGP_public_key,
             style: theme.textTheme.caption,
           ),
           SizedBox(
             height: 20,
           ),
           Text(
-            "Encryption type:",
+            s.encryption_type,
             style: theme.textTheme.subtitle,
           ),
           RadioEncryptMethod(useKey, (v) {
@@ -64,8 +66,8 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
           ),
           Text(
             useKey
-                ? "The Key based encryption will be used."
-                : "The Password based encryption will be used.",
+                ? s.key_will_be_used
+                : s.password_will_be_used,
             style: theme.textTheme.caption,
           ),
         ],
@@ -74,13 +76,13 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
 
     final actions = <Widget>[
       FlatButton(
-        child: Text("Encrypt"),
+        child: Text(s.encrypt),
         onPressed: () {
           Navigator.pop(context, SelectEncryptMethodResult(useKey));
         },
       ),
       FlatButton(
-        child: Text("Cancel"),
+        child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);
         },
@@ -88,15 +90,15 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
     ];
     return Platform.isIOS
         ? CupertinoAlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          )
+      title: title,
+      content: content,
+      actions: actions,
+    )
         : AlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          );
+      title: title,
+      content: content,
+      actions: actions,
+    );
   }
 }
 
@@ -108,6 +110,7 @@ class RadioEncryptMethod extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,12 +123,12 @@ class RadioEncryptMethod extends StatelessWidget {
           onTap: value
               ? null
               : () {
-                  onChanged(true);
-                },
+            onChanged(true);
+          },
           child: Row(children: <Widget>[
             RadioAnalog(value),
             Text(
-              "Key based",
+              s.key_based,
               style: theme.textTheme.body1,
             ),
           ]),
@@ -138,12 +141,12 @@ class RadioEncryptMethod extends StatelessWidget {
           onTap: !value
               ? null
               : () {
-                  onChanged(false);
-                },
+            onChanged(false);
+          },
           child: Row(children: <Widget>[
             RadioAnalog(!value),
             Text(
-              "Password based",
+              s.password_based,
               style: theme.textTheme.body1,
             ),
           ]),

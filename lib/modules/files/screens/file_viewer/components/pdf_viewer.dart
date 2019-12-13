@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
@@ -19,7 +20,7 @@ class PdfViewer extends StatefulWidget {
 
 class _PdfViewerState extends State<PdfViewer> {
   final _fileViewerState = new FileViewerState();
-
+  S s;
   @override
   void initState() {
     super.initState();
@@ -34,18 +35,19 @@ class _PdfViewerState extends State<PdfViewer> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     return Observer(
       builder: (_) => _fileViewerState.downloadProgress != null &&
-              _fileViewerState.downloadProgress < 1.0
+          _fileViewerState.downloadProgress < 1.0
           ? SizedBox(
-              height: 3.0,
-              child: LinearProgressIndicator(
-                  value: _fileViewerState.downloadProgress),
-            )
+        height: 3.0,
+        child: LinearProgressIndicator(
+            value: _fileViewerState.downloadProgress),
+      )
           : AppButton(
-              text: "Open PDF",
-              onPressed: _fileViewerState.onOpenPdf,
-            ),
+        text: s.open_PDF,
+        onPressed: _fileViewerState.onOpenPdf,
+      ),
     );
   }
 }

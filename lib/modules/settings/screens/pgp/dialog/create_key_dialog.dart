@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
@@ -25,6 +26,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
       TextEditingController(text: AppStore.authState.userEmail);
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  S s;
   String _error;
   bool _obscure = true;
   static const lengths = [1024, 2048, 3072, 4096, 8192];
@@ -32,7 +34,8 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final title = Text("Generate keys");
+    s = S.of(context);
+    final title = Text(s.generate_keys);
     if (Platform.isIOS) {
       final theme = CupertinoTheme.of(context);
       return CupertinoAlertDialog(
@@ -44,13 +47,13 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
             children: <Widget>[
               SizedBox(height: 10),
               CupertinoTextField(
-                prefix: Text(" Email:"),
+                prefix: Text(" ${s.email}:"),
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(height: 10),
               CupertinoTextField(
-                prefix: Text(" Password:"),
+                prefix: Text(" ${s.password}:"),
                 suffix: GestureDetector(
                   child:
                       Icon(_obscure ? Icons.visibility : Icons.visibility_off),
@@ -72,7 +75,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                       context: context,
                       builder: (_) {
                         return CupertinoActionSheet(
-                            title: Text("Select length"),
+                            title: Text(s.select_length),
                             actions: lengths
                                 .map((length) => CupertinoActionSheetAction(
                                       onPressed: () =>
@@ -91,7 +94,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text(" Length: "),
+                    Text(" ${s.length}: "),
                     Text(
                       length.toString(),
                       style: theme.textTheme.textStyle,
@@ -106,7 +109,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
               ),
               AppButton(
                 width: double.infinity,
-                text: "Generate".toUpperCase(),
+                text: s.generate.toUpperCase(),
                 onPressed: () {
                   if (_validateInput() == null) {
                     _generate();
@@ -116,7 +119,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
               ),
               AppButton(
                 width: double.infinity,
-                text: "Close".toUpperCase(),
+                text: s.close.toUpperCase(),
                 onPressed: _pop,
               ),
             ],
@@ -136,7 +139,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                 child: Column(
                   children: <Widget>[
                     TextFormField(
-                      decoration: const InputDecoration(labelText: "Email"),
+                      decoration: InputDecoration(labelText: s.email),
                       validator: (v) =>
                           validateInput(v, [ValidationTypes.email]),
                       controller: _emailController,
@@ -144,7 +147,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     ),
                     TextFormField(
                       decoration: InputDecoration(
-                        labelText: "Password",
+                        labelText: s.password,
                         suffix: GestureDetector(
                           child: Icon(
                             _obscure ? Icons.visibility : Icons.visibility_off,
@@ -162,7 +165,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     ),
                     DropdownButtonFormField(
                       hint: Text(length.toString()),
-                      decoration: const InputDecoration(labelText: "Email"),
+                      decoration: InputDecoration(labelText: s.email),
                       value: length,
                       items: lengths.map((value) {
                         return DropdownMenuItem<int>(
@@ -184,7 +187,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
               ),
               AppButton(
                 width: double.infinity,
-                text: "Generate".toUpperCase(),
+                text: s.generate.toUpperCase(),
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     _generate();
@@ -193,7 +196,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
               ),
               AppButton(
                 width: double.infinity,
-                text: "Close".toUpperCase(),
+                text: s.close.toUpperCase(),
                 onPressed: _pop,
               ),
             ],
@@ -213,18 +216,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
 
   String _validatePassword(String text) {
     if (text.length < 1) {
-      return "password is empty";
-    }
-    return null;
-  }
-
-  String _validateLength(String text) {
-    final length = int.tryParse(text);
-    if (length == null) {
-      return "invalid";
-    }
-    if (length > 4096 || length < 512) {
-      return "set length between 512..4096";
+      return s.password_is_empty;
     }
     return null;
   }
@@ -236,8 +228,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     if (hasKey) {
       final result = await openDialog(
         context,
-        (_) => ConfirmDeleteKeyWidget(
-            "You already have the key(s) for this email"),
+            (_) => ConfirmDeleteKeyWidget(s.already_have_key),
       );
       if (result != true) {
         return;

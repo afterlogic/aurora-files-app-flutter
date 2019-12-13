@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_key_confirmation_dialog.dart';
@@ -20,7 +21,7 @@ class EncryptionAndroid extends StatefulWidget {
 class _EncryptionAndroidState extends State<EncryptionAndroid> {
   final _settingsState = AppStore.settingsState;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  S s;
   void _exportKey() async {
     var exportedDir;
     if (Platform.isIOS) {
@@ -42,11 +43,11 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       showSnack(
           context: context,
           scaffoldState: _scaffoldKey.currentState,
-          msg: "The key was exported into: $exportedDir",
+          msg: s.key_exported_into(exportedDir),
           isError: false,
           duration: Duration(minutes: 10),
           action: SnackBarAction(
-            label: "OK",
+            label: s.oK,
             onPressed: _scaffoldKey.currentState.hideCurrentSnackBar,
           ));
     }
@@ -58,12 +59,12 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       return [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: Text("Encryption key:"),
+          child: Text(s.encryption_keys),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Text(
-            "To start using encryption of uploaded files your need to set any encryption key.",
+            s.need_to_set_encryption_key,
             style: Theme.of(context).textTheme.caption,
           ),
         ),
@@ -71,7 +72,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
-            text: "Import key from text",
+            text: s.import_key_from_text,
             onPressed: () => Platform.isIOS
                 ? showCupertinoDialog(
                     context: context,
@@ -89,24 +90,24 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
-            text: "Import key from file",
+            text: s.import_key_from_file,
             onPressed: () => _settingsState.onImportKeyFromFile(
                 onSuccess: () => showSnack(
                     context: context,
                     scaffoldState: _scaffoldKey.currentState,
                     isError: false,
-                    msg: "The encryption key was successfully imported."),
+                    msg: s.import_encryption_key_success),
                 onError: (err) => showSnack(
                       context: context,
                       scaffoldState: _scaffoldKey.currentState,
-                      msg: "Could not find a key in this file.",
+                  msg: s.key_not_found_in_file,
                     )),
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
-            text: "Generate keys",
+            text: s.generate_keys,
             onPressed: () => showDialog(
               context: context,
               barrierDismissible: false,
@@ -125,7 +126,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       return [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: Text("Encryption key:"),
+          child: Text(s.encryption_keys),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -141,20 +142,20 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Text(
-            "To access encrypted files on other devices/browsers, export the key and then import it on another device/browser.",
+            s.encryption_export_description,
             style: Theme.of(context).textTheme.caption,
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AppButton(text: "Export key", onPressed: _exportKey),
+          child: AppButton(text: s.export_key, onPressed: _exportKey),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
             buttonColor: !Platform.isIOS ? Theme.of(context).errorColor : null,
             textColor: Platform.isIOS ? Theme.of(context).errorColor : null,
-            text: "Delete key",
+            text: s.delete_key,
             onPressed: () async {
               final result = await showDialog(
                   context: context,
@@ -164,7 +165,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
                 showSnack(
                   context: context,
                   scaffoldState: _scaffoldKey.currentState,
-                  msg: "The encryption key was successfully deleted.",
+                  msg: s.delete_encryption_key_success,
                   isError: false,
                 );
               } else if (result == DeleteKeyConfirmationDialogResult.export) {
@@ -181,13 +182,14 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     return Provider<SettingsState>(
       builder: (_) => _settingsState,
       child: Observer(
         builder: (_) => Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text("Encryption"),
+            title: Text(s.encryption),
           ),
           body: ListView(
             children: <Widget>[
@@ -212,8 +214,11 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
-                  "Files are encrypted/decrypted right on this device, even the server itself cannot get access to non-encrypted content of paranoid-encrypted files. Encryption method is AES256.",
-                  style: Theme.of(context).textTheme.caption,
+                  s.encryption_description,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .caption,
                 ),
               ),
               ..._buildAddingKey(),

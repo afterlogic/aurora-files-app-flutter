@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,13 +52,14 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text("Import keys");
     final content = Flex(
       direction: Axis.vertical,
       children: <Widget>[
         if (isHaveKey)
-          Text("Keys which are already in the system are greyed out."),
+          Text(s.already_have_keys),
         Expanded(
           child: ListView.builder(
             itemBuilder: (_, i) {
@@ -77,29 +79,29 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
         ),
         AppButton(
             width: double.infinity,
-            text: "Import selected keys".toUpperCase(),
+            text: s.import_selected_keys.toUpperCase(),
             onPressed: () {
               Navigator.pop(context, selected.values.toList());
             }),
         AppButton(
             width: double.infinity,
-            text: "CANCEL".toUpperCase(),
+            text: s.cancel.toUpperCase(),
             onPressed: () => Navigator.pop(context)),
       ],
     );
 
     return Platform.isIOS
         ? CupertinoAlertDialog(
-            title: title,
-            content: SizedBox(
-              height: size.height / 2,
-              child: content,
-            ),
-          )
+      title: title,
+      content: SizedBox(
+        height: size.height / 2,
+        child: content,
+      ),
+    )
         : AlertDialog(
-            title: title,
-            content: content,
-          );
+      title: title,
+      content: content,
+    );
   }
 }
 

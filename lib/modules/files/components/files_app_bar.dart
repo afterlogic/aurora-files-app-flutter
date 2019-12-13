@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
@@ -24,6 +25,7 @@ class FilesAppBar extends StatefulWidget {
 class _FilesAppBarState extends State<FilesAppBar>
     with TickerProviderStateMixin {
   FilesState _filesState;
+  S s;
   FilesPageState _filesPageState;
   AnimationController _appBarIconAnimCtrl;
   final _searchInputCtrl = TextEditingController();
@@ -116,7 +118,7 @@ class _FilesAppBarState extends State<FilesAppBar>
               : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Move files/folders"),
+            Text(s.move_file_or_folder),
             SizedBox(height: 2),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -132,7 +134,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.create_new_folder),
-            tooltip: "Add folder",
+            tooltip: s.add_folder,
             onPressed: () => Platform.isIOS
                 ? showCupertinoDialog(
                     context: context,
@@ -204,7 +206,7 @@ class _FilesAppBarState extends State<FilesAppBar>
               : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Search"),
+            Text(s.search),
             if (_filesState.selectedStorage.displayName.length > 0)
               SizedBox(height: 2),
             if (_filesState.selectedStorage.displayName.length > 0)
@@ -227,8 +229,8 @@ class _FilesAppBarState extends State<FilesAppBar>
                 ? CupertinoTextField(
                     onSubmitted: (_) => _search(),
                     autofocus: true,
-                    controller: _searchInputCtrl,
-                    placeholder: "Search",
+              controller: _searchInputCtrl,
+              placeholder: s.search,
                     style: TextStyle(color: Colors.white),
                     suffix: IconButton(
                         icon: Icon(Icons.search),
@@ -249,7 +251,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                           decoration: InputDecoration(
                               border: InputBorder.none,
                               hintStyle: TextStyle(color: Colors.black38),
-                              hintText: "Search",
+                              hintText: s.search,
                               suffixIcon: IconButton(
                                 icon: Icon(Icons.search),
                                 color: Colors.black,
@@ -355,7 +357,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
-            tooltip: "Search",
+            tooltip: s.search,
             onPressed: () => _filesPageState.isSearchMode = true,
           ),
 //          IconButton(
@@ -372,7 +374,7 @@ class _FilesAppBarState extends State<FilesAppBar>
   Widget build(BuildContext context) {
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
-
+    s = S.of(context);
     return Observer(
       builder: (_) => _getAppBar(context),
     );

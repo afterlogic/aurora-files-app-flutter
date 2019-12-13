@@ -1,5 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/create_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
@@ -9,11 +10,8 @@ import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.d
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:aurorafiles/utils/stream_widget.dart';
-import 'package:crypto_plugin/algorithm/pgp.dart';
 import 'package:flutter/material.dart';
-import 'package:share_extend/share_extend.dart';
 
 import 'key/export_pgp_key_route.dart';
 import 'key/pgp_key_model_route.dart';
@@ -44,24 +42,25 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("OpenPGP"),
+          title: Text(s.openPGP),
         ),
         body: StreamWidget<KeysState>(
           keysState,
-          (_, state) {
+              (_, state) {
             if (state.isProgress) {
               return SizedBox.shrink();
             }
 
             final publicKeys =
-                state.public.map((item) => KeyWidget(item, openKey)).toList();
+            state.public.map((item) => KeyWidget(item, openKey)).toList();
 
             final privateKeys =
-                state.private.map((item) => KeyWidget(item, openKey)).toList();
+            state.private.map((item) => KeyWidget(item, openKey)).toList();
 
             return ListView(
               padding: const EdgeInsets.only(left: 16, bottom: 25),
@@ -70,7 +69,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 25),
                     child: Text(
-                      "Public keys",
+                      s.public_keys,
                       style: theme.textTheme.subhead,
                     ),
                   ),
@@ -82,7 +81,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 25),
                     child: Text(
-                      "Private keys",
+                      s.private_keys,
                       style: theme.textTheme.subhead,
                     ),
                   ),
@@ -97,7 +96,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: AppButton(
-                      text: "Export all public keys".toUpperCase(),
+                      text: s.export_all_public_keys.toUpperCase(),
                       onPressed: () {
                         exportAll(state.public);
                       },
@@ -106,21 +105,21 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: AppButton(
-                    text: "Import keys from text".toUpperCase(),
+                    text: s.import_keys_from_text.toUpperCase(),
                     onPressed: importKeyDialog,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: AppButton(
-                    text: "Import keys from file".toUpperCase(),
+                    text: s.import_keys_from_file.toUpperCase(),
                     onPressed: _presenter.getKeysFromFile,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: AppButton(
-                    text: "GENERATE KEYS".toUpperCase(),
+                    text: s.generate_keys.toUpperCase(),
                     onPressed: generateKeyDialog,
                   ),
                 ),

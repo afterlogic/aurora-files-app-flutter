@@ -1,3 +1,4 @@
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -22,7 +23,7 @@ class MainDrawer extends StatelessWidget {
     final authState = AppStore.authState;
     final filesState = AppStore.filesState;
     final settingsState = AppStore.settingsState;
-
+    final s = S.of(context);
     return Drawer(
       child: SafeArea(
         top: false,
@@ -71,8 +72,9 @@ class MainDrawer extends StatelessWidget {
                   onTap: () => _showAvailableSpaceInfo(context, quota),
                   child: Tooltip(
                     showDuration: Duration(seconds: 2),
-                    message:
-                        "You are using ${(quota.progress * 100).round()}% of your ${quota.limitFormatted}",
+                    message: s.quota_using((quota.progress * 100)
+                        .round()
+                        .toString(), quota.limitFormatted,),
                     child: LinearProgressIndicator(value: quota.progress),
                   ),
                 );
@@ -98,7 +100,7 @@ class MainDrawer extends StatelessWidget {
                               : null,
                           child: ListTile(
                             selected:
-                                filesState.selectedStorage.type == storage.type,
+                            filesState.selectedStorage.type == storage.type,
                             leading: Icon(Icons.storage),
                             title: Text(storage.displayName),
                             onTap: () async {
@@ -138,7 +140,7 @@ class MainDrawer extends StatelessWidget {
                         title: ListTile(
                           contentPadding: EdgeInsets.zero,
                           leading: Icon(Icons.airplanemode_active),
-                          title: Text("Offline mode"),
+                          title: Text(s.offline_mode),
                         ),
                       ),
 //                  SwitchListTile.adaptive(
@@ -161,7 +163,7 @@ class MainDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.settings),
-              title: Text("Settings"),
+              title: Text(s.settings),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, SettingsRoute.name);
@@ -169,7 +171,7 @@ class MainDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app),
-              title: Text('Log out'),
+              title: Text(s.log_out),
               onTap: () {
                 authState.onLogout();
                 Navigator.pushReplacementNamed(context, AuthRoute.name);

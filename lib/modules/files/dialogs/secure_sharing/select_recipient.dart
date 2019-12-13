@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/database/pgp_key/pgp_key.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +22,7 @@ class SelectRecipient extends StatefulWidget {
 
 class _SelectRecipientState extends State<SelectRecipient> {
   final PgpKeyDao _pgpKeyDao = DI.get();
+  S s;
   bool hasError = false;
   List<RecipientWithKey> recipients = [];
   Map<String, LocalPgpKey> keys;
@@ -68,11 +69,12 @@ class _SelectRecipientState extends State<SelectRecipient> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Text("Secure sharing"),
+      child: Text(s.secure_sharing),
     );
     final content = SizedBox(
       height: min(size.height / 2, 350),
@@ -84,7 +86,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
     );
     final actions = <Widget>[
       FlatButton(
-        child: Text("Cancel"),
+        child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);
         },
@@ -93,15 +95,15 @@ class _SelectRecipientState extends State<SelectRecipient> {
 
     return Platform.isIOS
         ? CupertinoAlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          )
+      title: title,
+      content: content,
+      actions: actions,
+    )
         : AlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          );
+      title: title,
+      content: content,
+      actions: actions,
+    );
   }
 
   List<Widget> body(ThemeData theme) {
@@ -110,7 +112,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
         return [
           Expanded(
             child: Center(
-              child: Text("Not have recipiens"),
+              child: Text(s.not_have_recipiens),
             ),
           )
         ];
@@ -122,7 +124,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
             height: 10,
           ),
         Text(
-          "Select recipient:",
+          s.select_recipient,
           style: theme.textTheme.subtitle,
         ),
         SizedBox(
@@ -150,11 +152,11 @@ class _SelectRecipientState extends State<SelectRecipient> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  "Cant load recipients:",
+                  s.cant_load_recipients,
                   style: theme.textTheme.title,
                 ),
                 FlatButton(
-                  child: Text("Try again"),
+                  child: Text(s.try_again),
                   onPressed: loadRecipients,
                 ),
               ],
@@ -187,11 +189,12 @@ class RecipientWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s=S.of(context);
     final theme = Theme.of(context);
     var name = recipient.recipient?.fullName;
     final hasName = !(name?.isNotEmpty != true);
     if (!hasName) {
-      name = "No name";
+      name = s.no_name;
     }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

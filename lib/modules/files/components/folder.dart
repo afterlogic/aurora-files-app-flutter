@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -30,7 +31,7 @@ class FolderWidget extends StatelessWidget {
     final filesState = Provider.of<FilesState>(context);
     final filesPageState = Provider.of<FilesPageState>(context);
     final margin = 5.0;
-
+    final s = S.of(context);
     return Observer(
       builder: (_) => SelectableFilesItemTile(
         file: folder,
@@ -77,13 +78,13 @@ class FolderWidget extends StatelessWidget {
                       if (folder.published)
                         Icon(
                           Icons.link,
-                          semanticLabel: "Has public link",
+                          semanticLabel: s.has_public_link,
                         ),
                       if (folder.published) SizedBox(width: margin),
                       if (folder.localId != null)
                         Icon(
                           Icons.airplanemode_active,
-                          semanticLabel: "Available offline",
+                          semanticLabel: s.available_offline,
                         ),
                     ]),
                   ),

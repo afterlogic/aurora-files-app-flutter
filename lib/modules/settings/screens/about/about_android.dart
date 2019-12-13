@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
@@ -46,62 +47,72 @@ class _AboutAndroidState extends State<AboutAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("About"),
+        title: Text(s.about),
       ),
       body: loading
           ? Center(child: CircularProgressIndicator())
           : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(_appName, style: Theme.of(context).textTheme.title),
-                SizedBox(height: 12.0),
-                Text(
-                  "Version $_version",
-                  style: Theme.of(context)
-                      .textTheme
-                      .caption
-                      .copyWith(fontSize: 14.0),
-                ),
-                SizedBox(height: 22.0),
-                Center(
-                  child: SizedBox(
-                    width: 120.0,
-                    height: 120.0,
-                    child: Image.asset("lib/assets/images/files-logo.png"),
-                  ),
-                ),
-                SizedBox(height: 42.0),
-                GestureDetector(
-                  child: Text(
-                    "Terms of Service",
-                    style: TextStyle(
-                      color: Theme.of(context).accentColor,
-                      decoration: TextDecoration.underline,
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  onTap: () => launch(Platform.isIOS
-                      ? "https://privatemail.com/terms.php"
-                      : "https://privatemail.com/terms.php"),
-                ),
-                SizedBox(height: 22.0),
-                GestureDetector(
-                  child: Text(
-                    "Privacy policy",
-                    style: TextStyle(
-                      color: Theme.of(context).accentColor,
-                      decoration: TextDecoration.underline,
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  onTap: () => launch("https://privatemail.com/privacy.php"),
-                ),
-                SizedBox(height: 42.0),
-              ],
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(_appName, style: Theme
+              .of(context)
+              .textTheme
+              .title),
+          SizedBox(height: 12.0),
+          Text(
+            s.version(_version),
+            style: Theme
+                .of(context)
+                .textTheme
+                .caption
+                .copyWith(fontSize: 14.0),
+          ),
+          SizedBox(height: 22.0),
+          Center(
+            child: SizedBox(
+              width: 120.0,
+              height: 120.0,
+              child: Image.asset("lib/assets/images/files-logo.png"),
             ),
+          ),
+          SizedBox(height: 42.0),
+          GestureDetector(
+            child: Text(
+              s.terms,
+              style: TextStyle(
+                color: Theme
+                    .of(context)
+                    .accentColor,
+                decoration: TextDecoration.underline,
+                fontSize: 18.0,
+              ),
+            ),
+            onTap: () =>
+                launch(Platform.isIOS
+                    ? "https://privatemail.com/terms.php"
+                    : "https://privatemail.com/terms.php"),
+          ),
+          SizedBox(height: 22.0),
+          GestureDetector(
+            child: Text(
+              s.privacy_policy,
+              style: TextStyle(
+                color: Theme
+                    .of(context)
+                    .accentColor,
+                decoration: TextDecoration.underline,
+                fontSize: 18.0,
+              ),
+            ),
+            onTap: () => launch("https://privatemail.com/privacy.php"),
+          ),
+          SizedBox(height: 42.0),
+        ],
+      ),
     );
   }
 }

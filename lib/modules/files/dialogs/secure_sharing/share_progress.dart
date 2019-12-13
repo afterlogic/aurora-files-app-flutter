@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
@@ -27,6 +28,7 @@ class _ShareProgressState extends State<ShareProgress> {
   Progress progress = Progress(1, 0);
   File output;
   File temp;
+  S s;
 
   encrypt() async {
     var isProgress = true;
@@ -70,10 +72,11 @@ class _ShareProgressState extends State<ShareProgress> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     final size = MediaQuery.of(context).size;
     final actions = <Widget>[
       FlatButton(
-        child: Text("Cancel"),
+        child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);
         },
@@ -81,7 +84,7 @@ class _ShareProgressState extends State<ShareProgress> {
     ];
     final title = Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Text("Secure sharing"),
+      child: Text(s.secure_sharing),
     );
     final content = SizedBox(
       height: min(size.height / 2, 350),
@@ -94,7 +97,7 @@ class _ShareProgressState extends State<ShareProgress> {
           SizedBox(
             height: 10,
           ),
-          Text("Encryption"),
+          Text(s.encryption),
           LinearProgressIndicator(
             value: (progress?.current ?? 0) / (progress?.total ?? 1),
           ),
@@ -102,21 +105,21 @@ class _ShareProgressState extends State<ShareProgress> {
             height: 20,
           ),
           Text(widget.useKey
-              ? "The file is encrypted using ${widget.recipient.fullName}'s PGP public key. You can send the link via encrypted email."
-              : "If you don't send email now, store the password somewhere. You will not be able to recover it otherwise.")
+              ? s.encrypted_using_key(widget.recipient.fullName)
+              : s.encrypted_using_password,)
         ],
       ),
     );
     return Platform.isIOS
         ? CupertinoAlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          )
+      title: title,
+      content: content,
+      actions: actions,
+    )
         : AlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          );
+      title: title,
+      content: content,
+      actions: actions,
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/progress_loader.dart';
@@ -25,6 +26,7 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
+  S s;
   FileViewerState _fileViewerState;
   bool _isError = false;
   Widget builtImage;
@@ -36,7 +38,7 @@ class _ImageViewerState extends State<ImageViewer> {
     if (AppStore.filesState.isOfflineMode &&
         _fileViewerState.file.initVector != null) {
       Future.delayed(Duration(milliseconds: 250),
-          () => _fileViewerState.getPreviewImage((err) => showError(err)));
+              () => _fileViewerState.getPreviewImage((err) => showError(err)));
     } else if (_fileViewerState.fileWithContents == null) {
       _fileViewerState.getPreviewImage((err) => showError(err));
     }
@@ -61,8 +63,7 @@ class _ImageViewerState extends State<ImageViewer> {
             Icon(Icons.error),
             SizedBox(width: 16.0),
             Flexible(
-              child: Text(
-                  "An error occurred during the decryption process. Perhaps, this file was encrypted with another key."),
+              child: Text(s.decrypt_error),
             ),
           ],
         );
@@ -84,7 +85,7 @@ class _ImageViewerState extends State<ImageViewer> {
         );
         precacheImage(image.image, context, onError: (e, stackTrace) {
           Future.delayed(Duration(milliseconds: 100),
-              () => setState(() => _isError = true));
+                  () => setState(() => _isError = true));
         });
         return ConstrainedBox(
           constraints: BoxConstraints(minHeight: 60.0),
@@ -98,7 +99,7 @@ class _ImageViewerState extends State<ImageViewer> {
             Icon(Icons.error),
             SizedBox(width: 16.0),
             Flexible(
-              child: Text("Error happened. Perhaps this file is damaged."),
+              child: Text(s.file_is_damaged),
             ),
           ],
         );
@@ -115,7 +116,7 @@ class _ImageViewerState extends State<ImageViewer> {
         );
         precacheImage(image.image, context, onError: (e, stack) {
           Future.delayed(Duration(milliseconds: 100),
-              () => setState(() => _isError = true));
+                  () => setState(() => _isError = true));
         });
         return ConstrainedBox(
           constraints: BoxConstraints(minHeight: 60.0),
@@ -127,6 +128,7 @@ class _ImageViewerState extends State<ImageViewer> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     double prevProgress = 999;
     Widget placeholder;
     if (AppStore.filesState.isOfflineMode) {
@@ -139,7 +141,7 @@ class _ImageViewerState extends State<ImageViewer> {
     } else {
       placeholder = CachedNetworkImage(
         imageUrl:
-            '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
+        '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
         fit: BoxFit.cover,
         httpHeaders: getHeader(),
       );
@@ -151,41 +153,41 @@ class _ImageViewerState extends State<ImageViewer> {
           child: SizedBox(
             width: double.infinity,
             child: AppStore.filesState.isOfflineMode &&
-                    _fileViewerState.fileWithContents != null
+                _fileViewerState.fileWithContents != null
                 ? Image.file(
-                    _fileViewerState.fileWithContents,
-                    fit: BoxFit.cover,
-                  )
+              _fileViewerState.fileWithContents,
+              fit: BoxFit.cover,
+            )
                 : Stack(
-                    fit: StackFit.passthrough,
-                    children: <Widget>[
-                      if (!_isError)
-                        ConstrainedBox(
-                          constraints: BoxConstraints(minHeight: 60.0),
-                          child: placeholder,
-                        ),
-                      Positioned.fill(
-                        child: ClipRect(
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(
-                              sigmaX: 8.0,
-                              sigmaY: 8.0,
-                            ),
-                            child: Container(
-                              color: Colors.transparent,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Observer(builder: (_) {
-                        if (prevProgress != _fileViewerState.downloadProgress) {
-                          builtImage = _buildImage();
-                          prevProgress = _fileViewerState.downloadProgress;
-                        }
-                        return builtImage;
-                      }),
-                    ],
+              fit: StackFit.passthrough,
+              children: <Widget>[
+                if (!_isError)
+                  ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: 60.0),
+                    child: placeholder,
                   ),
+                Positioned.fill(
+                  child: ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 8.0,
+                        sigmaY: 8.0,
+                      ),
+                      child: Container(
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                ),
+                Observer(builder: (_) {
+                  if (prevProgress != _fileViewerState.downloadProgress) {
+                    builtImage = _buildImage();
+                    prevProgress = _fileViewerState.downloadProgress;
+                  }
+                  return builtImage;
+                }),
+              ],
+            ),
           ));
     } else {
       return SizedBox();

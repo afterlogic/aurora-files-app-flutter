@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,32 +13,33 @@ class DeleteConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     String itemName;
     if (isFolder == true)
-      itemName = "folder";
+      itemName = s.folder;
     else if (isFolder == false)
-      itemName = "file";
+      itemName = s.file;
     else
-      itemName = "file/folder";
+      itemName = "${s.file}/${s.folder}";
 
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
         title: Text(itemsNumber != null && itemsNumber > 1
-            ? "Delete files"
-            : "Delete file"),
+            ? s.delete_files
+            : s.delete_file),
         content: Text(
-            "Are you sure you want to delete ${itemsNumber != null &&
+            s.confirm_delete_file(itemsNumber != null &&
                 itemsNumber > 1
-                ? "these $itemsNumber files/folders"
-                : "this $itemName?"}"),
+                ? s.these_files(itemsNumber.toString())
+                : s.these_files(itemName))),
         actions: <Widget>[
           CupertinoButton(
-            child: Text("Cancel"),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(context, false),
           ),
           CupertinoButton(
             child: Text(
-              "Delete",
+              s.delete,
               style: TextStyle(color: Theme
                   .of(context)
                   .errorColor),
@@ -49,21 +51,21 @@ class DeleteConfirmationDialog extends StatelessWidget {
     } else {
       return AlertDialog(
         title: Text(itemsNumber != null && itemsNumber > 1
-            ? "Delete files"
-            : "Delete file"),
+            ? s.delete_files
+            : s.delete_file),
         content: Text(
-            "Are you sure you want to delete ${itemsNumber != null &&
+            s.confirm_delete_file(itemsNumber != null &&
                 itemsNumber > 1
-                ? "these $itemsNumber files/folders"
-                : "this $itemName?"}"),
+                ? s.these_files(itemsNumber.toString())
+                : s.these_files(itemName))),
         actions: <Widget>[
           FlatButton(
-            child: Text("CANCEL"),
+            child: Text(s.cancel.toUpperCase()),
             onPressed: () => Navigator.pop(context, false),
           ),
           FlatButton(
             child: Text(
-              "DELETE",
+              s.delete.toUpperCase(),
               style: TextStyle(color: Theme
                   .of(context)
                   .errorColor),

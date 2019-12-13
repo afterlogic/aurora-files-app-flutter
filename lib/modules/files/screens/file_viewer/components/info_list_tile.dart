@@ -1,3 +1,4 @@
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -23,7 +24,7 @@ class InfoListTile extends StatefulWidget {
 
 class _InfoListTileState extends State<InfoListTile> {
   bool _expanded = false;
-
+  S s;
   double _rightPaddingForStatusIcons = 0.0;
 
   Widget _buildStatusIcons() {
@@ -40,19 +41,19 @@ class _InfoListTileState extends State<InfoListTile> {
           if (widget.isPublic)
             Icon(
               Icons.link,
-              semanticLabel: "Has public link",
+              semanticLabel: s.has_public_link,
             ),
           if (widget.isOffline) SizedBox(width: 10),
           if (widget.isOffline)
             Icon(
               Icons.airplanemode_active,
-              semanticLabel: "Available offline",
+              semanticLabel: s.available_offline,
             ),
           if (widget.isEncrypted) SizedBox(width: 10),
           if (widget.isEncrypted)
             Icon(
               MdiIcons.alien,
-              semanticLabel: "Encrypted",
+              semanticLabel: s.encrypted,
             ),
         ],
       ),
@@ -61,6 +62,7 @@ class _InfoListTileState extends State<InfoListTile> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     _rightPaddingForStatusIcons = 0.0;
     if (widget.isOffline) _rightPaddingForStatusIcons += 35.0;
     if (widget.isPublic) _rightPaddingForStatusIcons += 35.0;

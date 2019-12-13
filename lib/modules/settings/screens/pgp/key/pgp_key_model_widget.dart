@@ -1,4 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
@@ -19,14 +20,16 @@ class PgpKeyModelWidget extends StatefulWidget {
 
 class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  S s;
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     final theme = Theme.of(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(widget._pgpKey.isPrivate ? "Private key" : "Public key"),
+        title: Text(widget._pgpKey.isPrivate ? s.private_key : s.public_key),
       ),
       body: OrientationBuilder(
         builder: (context, orientation) => Padding(
@@ -60,17 +63,17 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
                   children: <Widget>[
                     AppButton(
                       width: double.infinity,
-                      text: "Share".toUpperCase(),
+                      text: s.share.toUpperCase(),
                       onPressed: share,
                     ),
                     AppButton(
                       width: double.infinity,
-                      text: "Download".toUpperCase(),
+                      text: s.download.toUpperCase(),
                       onPressed: download,
                     ),
                     AppButton(
                       width: double.infinity,
-                      text: "Delete".toUpperCase(),
+                      text: s.delete.toUpperCase(),
                       onPressed: delete,
                     ),
                   ],
@@ -93,7 +96,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
     showSnack(
       context: context,
       scaffoldState: _scaffoldKey.currentState,
-      msg: "Downloading ${result.path}",
+      msg: s.downloading_to(result.path),
       isError: false,
     );
   }
@@ -101,8 +104,12 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
   delete() async {
     final result = await openDialog(
         context,
-        (_) => ConfirmDeleteKeyWidget(
-            "Are you sure you want to delete OpenPGP key for ${widget._pgpKey.email}?"));
+          (_) {
+        return ConfirmDeleteKeyWidget(
+            s.confirm_delete_pgp_key(widget._pgpKey.email)
+        );
+      },
+    );
     if (result == true) {
       await widget._pgpKeyUtil.deleteKey(widget._pgpKey);
       Navigator.pop(context, true);

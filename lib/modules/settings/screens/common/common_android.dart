@@ -1,3 +1,4 @@
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/confirmation_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -13,29 +14,31 @@ class CommonSettingsAndroid extends StatefulWidget {
 class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
   final _settingsState = AppStore.settingsState;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+  S s;
 
   Future _clearCache() async {
     final result = await ConfirmationDialog.show(
         context,
-        "Clear cache",
-        "Are you sure you want to delete all the cached files and images? This will not affect saved files for offline.",
-        "Clear");
+        s.clear_cache,
+        s.confirm_delete,
+        s.clear);
     if (result == true) {
       await AppStore.filesState.clearCache(deleteCachedImages: true);
       showSnack(
           context: context,
           scaffoldState: scaffoldKey.currentState,
           isError: false,
-          msg: "Cache cleared successfully");
+          msg: s.cache_cleared_success);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text("Common"),
+        title: Text(s.common),
       ),
       body: ListView(
         children: <Widget>[
@@ -47,13 +50,13 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
               title: ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(MdiIcons.themeLightDark),
-                title: Text("Dark theme"),
+                title: Text(s.dark_theme),
               ),
             ),
           ),
           ListTile(
             leading: Icon(MdiIcons.broom),
-            title: Text("Clear cache"),
+            title: Text(s.clear_cache),
             onTap: _clearCache,
           ),
         ],

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_data.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
@@ -25,6 +26,7 @@ class AuthAndroid extends StatefulWidget {
 
 class _AuthAndroidState extends State<AuthAndroid> {
   final _authFormKey = GlobalKey<FormState>();
+  S s;
   AuthState _authState = AppStore.authState;
   bool _showHostField = false;
   bool _obscureText = true;
@@ -61,11 +63,11 @@ class _AuthAndroidState extends State<AuthAndroid> {
     String errMsg = "";
     if (Platform.isIOS) {
       if (_showHostField && _authState.hostCtrl.text.isEmpty) {
-        errMsg = "Please enter hostname";
+        errMsg = s.please_enter_hostname;
       } else if (_authState.emailCtrl.text.isEmpty) {
-        errMsg = "Please enter email";
+        errMsg = s.please_enter_email;
       } else if (_authState.passwordCtrl.text.isEmpty) {
-        errMsg = "Please enter password";
+        errMsg = s.please_enter_password;
       }
     }
     if (errMsg.isEmpty) {
@@ -90,8 +92,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           context: context,
           scaffoldState: Scaffold.of(context),
           duration: Duration(seconds: 6),
-          msg:
-              "Could not detect domain from this email, please specify your server url manually.",
+          msg: s.enter_host,
         );
       }
     } else {
@@ -113,7 +114,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
             keyboardType: TextInputType.url,
             decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: Colors.white38))),
-            placeholder: "Host",
+            placeholder: s.host,
             autocorrect: false,
             prefix: Opacity(
               opacity: 0.6,
@@ -130,7 +131,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           keyboardType: TextInputType.emailAddress,
           decoration: BoxDecoration(
               border: Border(bottom: const BorderSide(color: Colors.white38))),
-          placeholder: "Email",
+          placeholder: s.email,
           autocorrect: false,
           prefix: Opacity(
             opacity: 0.6,
@@ -146,7 +147,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           controller: _authState.passwordCtrl,
           decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: Colors.white38))),
-          placeholder: "Password",
+          placeholder: s.password,
           obscureText: _obscureText,
           autocorrect: false,
           prefix: Opacity(
@@ -179,7 +180,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                 : "",
             decoration: InputDecoration(
               alignLabelWithHint: true,
-              labelText: "Host",
+              labelText: s.host,
             ),
           ),
         SizedBox(height: 10),
@@ -190,7 +191,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           validator: (value) => validateInput(
               value, [ValidationTypes.empty, ValidationTypes.email]),
           decoration: InputDecoration(
-            labelText: "Email",
+            labelText: s.email,
             alignLabelWithHint: true,
           ),
         ),
@@ -201,7 +202,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           validator: (value) => validateInput(value, [ValidationTypes.empty]),
           obscureText: _obscureText,
           decoration: InputDecoration(
-            labelText: "Password",
+            labelText: s.password,
             alignLabelWithHint: true,
             suffixIcon: GestureDetector(
               child: Padding(
@@ -221,6 +222,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    s = S.of(context);
     final mq = MediaQuery.of(context);
     return Provider(
       builder: (_) => _authState,
@@ -242,7 +244,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                           tag: "logo",
                           child: Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 32.0),
+                            const EdgeInsets.symmetric(horizontal: 32.0),
                             child: Image.asset(
                                 "lib/assets/images/private-mail-logo.png"),
                           ),
@@ -254,7 +256,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                           width: double.infinity,
                           child: Observer(
                             builder: (BuildContext context) => AppButton(
-                              text: "Login",
+                              text: s.login,
                               buttonColor: Theme.of(context).accentColor,
                               textColor: Colors.white,
                               isLoading: _authState.isLoggingIn,

@@ -1,3 +1,4 @@
+import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 class UpgradeAndroid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final mq = MediaQuery.of(context);
     return Scaffold(
       body: MainGradient(
@@ -22,12 +24,12 @@ class UpgradeAndroid extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
                       child:
-                          Image.asset("lib/assets/images/private-mail-logo.png"),
+                      Image.asset("lib/assets/images/private-mail-logo.png"),
                     ),
                   ),
                   SizedBox(height: 90.0),
                   Text(
-                    "Mobile apps are not allowed in your billing plan.\nPlease upgrade your plan.",
+                    s.please_upgrade_your_plan,
                     style: TextStyle(fontSize: 20.0),
                     textAlign: TextAlign.center,
 
@@ -39,7 +41,7 @@ class UpgradeAndroid extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         AppButton(
-                          text: "Upgrade now",
+                          text: s.upgrade_now,
                           buttonColor: Theme.of(context).accentColor,
                           textColor: Colors.white,
                           onPressed: () => launch(
@@ -47,7 +49,7 @@ class UpgradeAndroid extends StatelessWidget {
                         ),
                         SizedBox(height: 6.0),
                         AppButton(
-                          text: "Back to login",
+                          text: s.back_to_login,
                           buttonColor: Color(0xFF54618d),
                           textColor: Colors.white,
                           onPressed: () => Navigator.of(context).pop(),

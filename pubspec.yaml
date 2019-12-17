@@ -72,8 +72,8 @@ dependencies:
   rxdart:
 
   #crashlytics
-  firebase_crashlytics:
-  firebase_core:
+#  firebase_crashlytics:
+#  firebase_core:
 
   crypto_plugin:
     path: crypto_plugin

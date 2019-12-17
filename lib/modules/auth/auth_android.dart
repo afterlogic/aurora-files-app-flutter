@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/modules/auth/auth_data.dart';
+//import 'package:aurorafiles/modules/auth/auth_data.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
@@ -42,9 +42,9 @@ class _AuthAndroidState extends State<AuthAndroid> {
     _authState.emailCtrl.text = _authState.userEmail;
     _authState.passwordCtrl.text = "";
     if (kDebugMode) {
-      _authState.hostCtrl.text = AuthData.host;
-      _authState.emailCtrl.text = AuthData.email;
-      _authState.passwordCtrl.text = AuthData.password;
+//      _authState.hostCtrl.text = AuthData.host;
+//      _authState.emailCtrl.text = AuthData.email;
+//      _authState.passwordCtrl.text = AuthData.password;
     }
   }
 

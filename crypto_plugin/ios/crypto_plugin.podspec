@@ -15,9 +15,10 @@ A new Flutter project.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-
-  s.ios.deployment_target = '8.0'
-  s.dependency 'ObjectivePGP', '0.15.0'
+  s.static_framework = true
+  s.ios.deployment_target = '11.0'
   s.dependency 'RxSwift', '4'
+  s.dependency 'DMSOpenPGP', '0.1.4'
+  s.dependency 'BouncyCastle-ObjC', '0.1.1'
 end
 

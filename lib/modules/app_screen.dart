@@ -26,7 +26,6 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    throw "jopka";
     super.initState();
     _initLocalStorage();
   }

@@ -16,9 +16,6 @@ A new Flutter project.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.static_framework = true
-  s.ios.deployment_target = '11.0'
-  s.dependency 'RxSwift', '4'
-  s.dependency 'DMSOpenPGP', '0.1.4'
-  s.dependency 'BouncyCastle-ObjC', '0.1.1'
+  s.ios.deployment_target = '8.0'
 end
 

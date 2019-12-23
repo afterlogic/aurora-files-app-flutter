@@ -405,14 +405,15 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             ),
           ]
               : [
-            IconButton(
-              icon: AssetIcon(
-                "lib/assets/svg/insert_link.svg",
-                addedSize: 14,
-              ),
-              tooltip: s.secure_sharing,
-              onPressed: () => _prepareShareFile(_secureSharing),
-            ),
+//            todo pgp
+//            IconButton(
+//              icon: AssetIcon(
+//                "lib/assets/svg/insert_link.svg",
+//                addedSize: 14,
+//              ),
+//              tooltip: s.secure_sharing,
+//              onPressed: () => _prepareShareFile(_secureSharing),
+//            ),
             IconButton(
               icon: Icon(MdiIcons.fileMove),
               tooltip: s.copy_or_move,

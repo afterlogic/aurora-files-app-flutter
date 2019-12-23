@@ -1,8 +1,8 @@
 name: aurorafiles
 description: File management system for PrivateMail.
 
-versionName: 0.0.6
-versionCode: 6
+versionName: 0.0.9
+versionCode: 9
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

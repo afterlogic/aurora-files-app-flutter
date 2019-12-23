@@ -21,7 +21,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Provider<SettingsState>(
-      builder: (_) => AppStore.settingsState,
+      create: (_) => AppStore.settingsState,
       child: Scaffold(
         appBar: AppBar(
           title: Text(s.settings),

@@ -27,7 +27,7 @@ dependencies:
 
   # local storage
   moor_flutter:
-  shared_preferences:
+  shared_preferences: 0.5.4
   flutter_secure_storage:
   sqflite:
 
@@ -36,7 +36,7 @@ dependencies:
   #  flutter_uploader: ^1.0.3+1
   #  flutter_downloader: ^1.1.9
   path_provider:
-  downloads_path_provider: 0.0.1
+  downloads_path_provider:
 
   # file encryption
   encrypt:
@@ -57,10 +57,10 @@ dependencies:
   #  fluttertoast: 3.0.5
 
   # misc
-  url_launcher:
+  url_launcher: 5.2.3
   filesize:
   intl:
-  permission_handler:
+  permission_handler: 3.2.2
   connectivity:
   uuid:
 

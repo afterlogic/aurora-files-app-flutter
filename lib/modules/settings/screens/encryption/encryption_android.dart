@@ -184,7 +184,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   Widget build(BuildContext context) {
     s = S.of(context);
     return Provider<SettingsState>(
-      builder: (_) => _settingsState,
+      create: (_) => _settingsState,
       child: Observer(
         builder: (_) => Scaffold(
           key: _scaffoldKey,

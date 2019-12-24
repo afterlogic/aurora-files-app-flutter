@@ -4,6 +4,7 @@ import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class PublicLinkSwitch extends StatefulWidget {
@@ -48,7 +49,8 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       name: widget.file.name,
       size: widget.file.size,
       isFolder: widget.file.isFolder,
-      onSuccess: () async {
+      onSuccess: (link) async {
+        Clipboard.setData(ClipboardData(text: link));
         setState(() => _isGettingPublicLink = false);
         showSnack(
           context: context,

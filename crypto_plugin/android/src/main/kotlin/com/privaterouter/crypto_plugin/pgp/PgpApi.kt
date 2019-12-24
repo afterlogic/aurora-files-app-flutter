@@ -68,7 +68,7 @@ open class PgpApi {
 
     }
 
-    private fun encript(outputStream: OutputStream, inputStream: InputStream, length: Long) {
+    private fun encrypt(outputStream: OutputStream, inputStream: InputStream, length: Long) {
         assert(publicKey != null)
         assert(tempFile != null)
         pgp.encrypt(
@@ -89,12 +89,12 @@ open class PgpApi {
         outputFile.createNewFile()
         assert(outputFile.isFile)
         assert(outputFile.canWrite())
-        encript(FileOutputStream(outputFile), FileInputStream(inputFile), inputFile.length())
+        encrypt(FileOutputStream(outputFile), FileInputStream(inputFile), inputFile.length())
     }
 
     fun encriptBytes(array: ByteArray): ByteArray {
         val outStream = ByteArrayOutputStream()
-        encript(outStream, ByteArrayInputStream(array), array.size.toLong())
+        encrypt(outStream, ByteArrayInputStream(array), array.size.toLong())
         return outStream.toByteArray()
     }
 

@@ -60,7 +60,9 @@ class S implements WidgetsLocalizations {
   String get email => "Email";
   String get empty_here => "Empty here";
   String get encrypt => "Encrypt";
+  String get encrypt_error => "Encrypt error";
   String get encrypted => "Encrypted";
+  String get encrypted_file_link => "Encrypted file public link:";
   String get encrypted_using_password => "If you don't send email now, store the password somewhere. You will not be able to recover it otherwise.";
   String get encryption => "Encryption";
   String get encryption_description => "Files are encrypted/decrypted right on this device, even the server itself cannot get access to non-encrypted content of paranoid-encrypted files. Encryption method is AES256.";
@@ -147,7 +149,9 @@ class S implements WidgetsLocalizations {
   String get secure_sharing => "Secure sharing";
   String get select_length => "Select length";
   String get select_recipient => "Select recipient:";
+  String get send => "Send via email";
   String get send_all => "Send all";
+  String get send_encrypted => "Send via encrypted email";
   String get set_any_encryption_key => "You have enabled encryption of uploaded files but haven't set any encryption key.";
   String get settings => "Settings";
   String get share => "Share";
@@ -161,6 +165,7 @@ class S implements WidgetsLocalizations {
   String get terms => "Terms of Service";
   String get try_again => "Try again";
   String get upgrade_now => "Upgrade now";
+  String get upload => "Upload";
   String adding_folder(String name) => "Adding $name folder";
   String available_space(String format) => "Available space: $format";
   String confirm_delete_file(String file) => "Are you sure you want to delete $file";

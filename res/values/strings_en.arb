@@ -154,5 +154,10 @@
   "please_enter_password": "Please enter password",
   "enter_host": "Could not detect domain from this email, please specify your server url manually.",
   "host": "Host",
-  "login": "Login"
+  "login": "Login",
+  "encrypted_file_link": "Encrypted file public link:",
+  "send": "Send via email",
+  "send_encrypted": "Send via encrypted email",
+  "upload": "Upload",
+  "encrypt_error": "Encrypt error"
 }

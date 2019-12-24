@@ -57,7 +57,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
             s.encryption_type,
             style: theme.textTheme.subtitle,
           ),
-          RadioEncryptMethod(useKey, (v) {
+          RadioEncryptMethod(widget.pgpKey != null, useKey, (v) {
             useKey = v;
             setState(() {});
           }),
@@ -78,7 +78,10 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
       FlatButton(
         child: Text(s.encrypt),
         onPressed: () {
-          Navigator.pop(context, SelectEncryptMethodResult(useKey));
+          //todo use password
+          if (useKey) {
+            Navigator.pop(context, SelectEncryptMethodResult(useKey));
+          }
         },
       ),
       FlatButton(
@@ -104,9 +107,10 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
 
 class RadioEncryptMethod extends StatelessWidget {
   final bool value;
+  final bool hasKey;
   final Function(bool) onChanged;
 
-  RadioEncryptMethod(this.value, this.onChanged);
+  RadioEncryptMethod(this.hasKey, this.value, this.onChanged);
 
   @override
   Widget build(BuildContext context) {
@@ -118,24 +122,26 @@ class RadioEncryptMethod extends StatelessWidget {
         Divider(
           color: Colors.transparent,
         ),
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: value
-              ? null
-              : () {
-            onChanged(true);
-          },
-          child: Row(children: <Widget>[
-            RadioAnalog(value),
-            Text(
-              s.key_based,
-              style: theme.textTheme.body1,
-            ),
-          ]),
-        ),
-        Divider(
-          color: Colors.grey,
-        ),
+        if(hasKey)
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: value
+                ? null
+                : () {
+              onChanged(true);
+            },
+            child: Row(children: <Widget>[
+              RadioAnalog(value),
+              Text(
+                s.key_based,
+                style: theme.textTheme.body1,
+              ),
+            ]),
+          ),
+        if(hasKey)
+          Divider(
+            color: Colors.grey,
+          ),
         GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: !value

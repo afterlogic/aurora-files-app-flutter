@@ -27,7 +27,7 @@ class Pgp extends Crypt {
     );
     if (result is List) {
       final list = List<int>.from(result);
-      return Progress(list[0], list[1]);
+      return Progress(list[0].toDouble(), list[1].toDouble());
     } else {
       return null;
     }
@@ -91,7 +91,7 @@ class Pgp extends Crypt {
     return List<int>.from(result);
   }
 
-  Future encryptFile(File inputFile, File outputFile) async {
+  Future<void> encryptFile(File inputFile, File outputFile) async {
     if (Platform.isIOS) {
       await outputFile.writeAsBytes(
         List<int>.from(
@@ -136,8 +136,8 @@ class Pgp extends Crypt {
 }
 
 class Progress {
-  final int total;
-  final int current;
+  final double total;
+  final double current;
 
   Progress(this.total, this.current);
 

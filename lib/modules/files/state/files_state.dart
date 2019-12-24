@@ -178,14 +178,13 @@ abstract class _FilesState with Store {
     @required int size,
     @required bool isFolder,
     @required String path,
-    @required Function onSuccess,
+    @required Function(String) onSuccess,
     @required Function(String) onError,
   }) async {
     try {
       final String link = await _filesApi.createPublicLink(
           selectedStorage.type, path, name, size, isFolder);
-      Clipboard.setData(ClipboardData(text: link));
-      onSuccess();
+      onSuccess(link);
     } catch (err) {
       onError(err.toString());
     }
@@ -227,20 +226,35 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future onUploadFile({
+  Future<void> onUploadFile({
     @required String path,
     @required Function(ProcessingFile) onUploadStart,
     @required Function() onSuccess,
     @required Function(String) onError,
   }) async {
-    // Pick 1 file since our back supports adding only 1 file at a time
     File file = await _filesLocal.pickFiles();
 
     if (file == null) return;
+    return uploadFile(
+      file: file,
+      path: path,
+      onUploadStart: onUploadStart,
+      onSuccess: onSuccess,
+      onError: onError,
+      shouldEncrypt: selectedStorage.type == "encrypted",
+    );
+  }
 
-    final shouldEncrypt = selectedStorage.type == "encrypted";
-
-    final fileName = FileUtils.getFileNameFromPath(file.path);
+  Future<void> uploadFile({
+    @required bool shouldEncrypt,
+    @required File file,
+    String name,
+    @required String path,
+    @required Function(ProcessingFile) onUploadStart,
+    @required Function() onSuccess,
+    @required Function(String) onError,
+  }) async {
+    final fileName = name ?? FileUtils.getFileNameFromPath(file.path);
     final localFile = new LocalFile(
       localId: null,
       id: fileName,
@@ -283,6 +297,7 @@ abstract class _FilesState with Store {
       await _filesApi.uploadFile(
         processingFile,
         shouldEncrypt,
+        name: name,
         storageType: selectedStorage.type,
         path: path,
         onSuccess: () {

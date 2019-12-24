@@ -177,6 +177,9 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                       }).toList(),
                       onChanged: (v) {
                         length = v;
+                        setState(() {
+
+                        });
                       },
                     ),
                   ],

@@ -26,7 +26,6 @@ import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -66,6 +65,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   @override
   void initState() {
     super.initState();
+    _fileViewerState.fileState = widget.filesState;
     _file = widget.immutableFile;
     _isFileOffline = _file.localId != null;
     _fileViewerState.file = widget.immutableFile;
@@ -314,15 +314,19 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             selectRecipientResult.recipient, selectRecipientResult.pgpKey),
       );
       if (selectEncryptMethodResult is SelectEncryptMethodResult) {
-        openDialog(
+        await openDialog(
           context,
           (context) => ShareProgress(
-            prepareForShare,
-            selectRecipientResult.recipient,
-            selectRecipientResult.pgpKey,
-            selectEncryptMethodResult.useKey,
-            DI.get(),
-          ),
+              _fileViewerState,
+              prepareForShare,
+              selectRecipientResult.recipient,
+              selectRecipientResult.pgpKey,
+              selectEncryptMethodResult.useKey,
+              DI.get(), () {
+            widget.filesPageState.onGetFiles(
+              showLoading: FilesLoadingType.filesVisible,
+            );
+          }),
         );
       }
     }
@@ -385,62 +389,61 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         appBar: AppBar(
           actions: widget.filesState.isOfflineMode
               ? [
-            IconButton(
-              icon: Icon(
-                  Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
-              tooltip: s.share,
-              onPressed: () => _prepareShareFile(_shareFile),
-            ),
-            if (!Platform.isIOS)
-              IconButton(
-                icon: Icon(Icons.file_download),
-                tooltip: s.download,
-                onPressed: _downloadFile,
-              ),
-            IconButton(
-              icon: Icon(Icons.airplanemode_inactive),
-              tooltip: s.delete_from_offline,
-              onPressed: _setFileForOffline,
-            ),
-          ]
+                  IconButton(
+                    icon: Icon(
+                        Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+                    tooltip: s.share,
+                    onPressed: () => _prepareShareFile(_shareFile),
+                  ),
+                  if (!Platform.isIOS)
+                    IconButton(
+                      icon: Icon(Icons.file_download),
+                      tooltip: s.download,
+                      onPressed: _downloadFile,
+                    ),
+                  IconButton(
+                    icon: Icon(Icons.airplanemode_inactive),
+                    tooltip: s.delete_from_offline,
+                    onPressed: _setFileForOffline,
+                  ),
+                ]
               : [
-//            todo pgp
-//            IconButton(
-//              icon: AssetIcon(
-//                "lib/assets/svg/insert_link.svg",
-//                addedSize: 14,
-//              ),
-//              tooltip: s.secure_sharing,
-//              onPressed: () => _prepareShareFile(_secureSharing),
-//            ),
-            IconButton(
-              icon: Icon(MdiIcons.fileMove),
-              tooltip: s.copy_or_move,
-              onPressed: _moveFile,
-            ),
-            IconButton(
-              icon: Icon(
-                  Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
-              tooltip: s.share,
-              onPressed: () => _prepareShareFile(_shareFile),
-            ),
-            if (_file.downloadUrl != null && !Platform.isIOS)
-              IconButton(
-                icon: Icon(Icons.file_download),
-                tooltip: s.download,
-                onPressed: _downloadFile,
-              ),
-            IconButton(
-              icon: Icon(Icons.edit),
-              tooltip: s.rename,
-              onPressed: _renameFile,
-            ),
-            IconButton(
-              icon: Icon(Icons.delete_outline),
-              tooltip: s.delete_file,
-              onPressed: _deleteFile,
-            ),
-          ],
+                  IconButton(
+                    icon: AssetIcon(
+                      "lib/assets/svg/insert_link.svg",
+                      addedSize: 14,
+                    ),
+                    tooltip: s.secure_sharing,
+                    onPressed: () => _prepareShareFile(_secureSharing),
+                  ),
+                  IconButton(
+                    icon: Icon(MdiIcons.fileMove),
+                    tooltip: s.copy_or_move,
+                    onPressed: _moveFile,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                        Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+                    tooltip: s.share,
+                    onPressed: () => _prepareShareFile(_shareFile),
+                  ),
+                  if (_file.downloadUrl != null && !Platform.isIOS)
+                    IconButton(
+                      icon: Icon(Icons.file_download),
+                      tooltip: s.download,
+                      onPressed: _downloadFile,
+                    ),
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    tooltip: s.rename,
+                    onPressed: _renameFile,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete_outline),
+                    tooltip: s.delete_file,
+                    onPressed: _deleteFile,
+                  ),
+                ],
         ),
         body: ListView(
           padding: const EdgeInsets.all(16.0),

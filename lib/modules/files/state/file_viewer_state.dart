@@ -3,12 +3,17 @@ import 'dart:io';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
+import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:flutter/services.dart';
+import 'package:meta/meta.dart';
 import 'package:mobx/mobx.dart';
+import 'package:uuid/uuid.dart';
 
 part 'file_viewer_state.g.dart';
 
@@ -17,7 +22,9 @@ class FileViewerState = _FileViewerState with _$FileViewerState;
 abstract class _FileViewerState with Store {
   final _filesApi = new FilesApi();
   final _filesLocal = new FilesLocalStorage();
+  FilesState fileState;
 
+  Storage storage;
   LocalFile file;
 
   @observable
@@ -110,14 +117,46 @@ abstract class _FileViewerState with Store {
 
   Future<void> onOpenPdf() async {
     final File pdfToView =
-        await _filesLocal.createTempFile(file, useName: true);
+    await _filesLocal.createTempFile(file, useName: true);
     await _getPreviewFile(pdfToView, onDownloadEnd: (File storedFile) {
       fileWithContents = storedFile;
       _filesLocal.openFileWith(fileWithContents);
     });
   }
 
-    Future<List<Recipient>> getRecipient() async {
+  Future<List<Recipient>> getRecipient() async {
     return _filesApi.getRecipient();
+  }
+
+  Future<void> uploadSecureFile({
+    @required File file,
+    @required Function(ProcessingFile) onUploadStart,
+    @required Function() onSuccess,
+    @required Function(String) onError,
+  }) {
+    return fileState.uploadFile(
+        name: this.file.name + ".pgp",
+        shouldEncrypt: false,
+        file: file,
+        path: this.file.path,
+        onUploadStart: onUploadStart,
+        onSuccess: onSuccess,
+        onError: onError);
+  }
+
+  Future<void> createPublicLink({
+    @required ProcessingFile processingFile,
+    @required Function(String) onSuccess,
+    @required Function(String) onError,
+  }) async {
+    final size = await processingFile.fileOnDevice.length();
+    return fileState.onGetPublicLink(
+        name: processingFile.name,
+        size: size,
+        isFolder: false,
+        path: this.file.path,
+        onSuccess: onSuccess,
+        onError: onError
+    );
   }
 }

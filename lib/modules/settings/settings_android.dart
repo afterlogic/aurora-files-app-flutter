@@ -40,12 +40,11 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               leading: Icon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
             ),
-//            todo pgp
-//            ListTile(
-//              title: Text(s.openPGP),
-//              leading: Icon(MdiIcons.key),
-//              onTap: () => Navigator.pushNamed(context, PgpSettingsRoute.name),
-//            ),
+            ListTile(
+              title: Text(s.openPGP),
+              leading: Icon(MdiIcons.key),
+              onTap: () => Navigator.pushNamed(context, PgpSettingsRoute.name),
+            ),
             ListTile(
               title: Text(s.storage_info),
               leading: Icon(Icons.storage),

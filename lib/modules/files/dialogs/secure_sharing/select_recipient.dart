@@ -53,7 +53,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
   }
 
   loadKeys() async {
-    final localKeys = await _pgpKeyDao.getKeys();
+    final localKeys = await _pgpKeyDao.getPublicKeys();
     keys = Map.fromEntries(
       localKeys.map(
         (item) => MapEntry(item.email, item),

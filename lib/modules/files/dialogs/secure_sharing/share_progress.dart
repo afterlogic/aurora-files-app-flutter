@@ -3,22 +3,36 @@ import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
+import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ShareProgress extends StatefulWidget {
+  final FileViewerState _fileViewerState;
   final Recipient recipient;
   final LocalPgpKey pgpKey;
   final bool useKey;
   final Pgp pgp;
   final PreparedForShare file;
+  final Function onLoad;
 
   const ShareProgress(
-      this.file, this.recipient, this.pgpKey, this.useKey, this.pgp);
+    this._fileViewerState,
+    this.file,
+    this.recipient,
+    this.pgpKey,
+    this.useKey,
+    this.pgp,
+    this.onLoad,
+  );
 
   @override
   _ShareProgressState createState() => _ShareProgressState();
@@ -26,8 +40,10 @@ class ShareProgress extends StatefulWidget {
 
 class _ShareProgressState extends State<ShareProgress> {
   Progress progress = Progress(1, 0);
+  bool isDownload = false;
   File output;
   File temp;
+  String link;
   S s;
 
   encrypt() async {
@@ -35,22 +51,64 @@ class _ShareProgressState extends State<ShareProgress> {
     if (await output.exists()) await output.delete();
     if (await temp.exists()) await temp.delete();
 
-    widget.pgp.setTempFile(temp);
-    widget.pgp.setPublicKey(widget.pgpKey.key);
+    await widget.pgp.setTempFile(temp);
+    await widget.pgp.setPublicKey(widget.pgpKey.key);
     widget.pgp.encryptFile(widget.file.file, output).then((_) {
-      "";
+      upload();
     }, onError: (e) {
-      e;
+      showSnack(
+        context: context,
+        scaffoldState: Scaffold.of(context),
+        msg: s.encrypt_error,
+      );
     }).whenComplete(() {
       isProgress = false;
     });
     while (isProgress) {
       progress = await widget.pgp.getProgress();
-      setState(() {});
-      await Future.delayed(Duration(seconds: 1));
+      if (isProgress) {
+        setState(() {});
+      }
+      await Future.delayed(Duration(milliseconds: 500));
     }
-    progress = Progress(1, 1);
+  }
+
+  upload() {
+    isDownload = true;
     setState(() {});
+    ProcessingFile _processingFile;
+    widget._fileViewerState.uploadSecureFile(
+      file: output,
+      onUploadStart: (processingFile) {
+        _processingFile = processingFile;
+        processingFile.progressStream.listen((value) {
+          progress = Progress(1, value);
+          setState(() {});
+        });
+      },
+      onSuccess: () {
+        widget.onLoad();
+        createPublicLink(_processingFile);
+      },
+      onError: (e) {
+        showSnack(
+            context: context, scaffoldState: Scaffold.of(context), msg: e);
+      },
+    );
+  }
+
+  createPublicLink(ProcessingFile processingFile) {
+    widget._fileViewerState.createPublicLink(
+      processingFile: processingFile,
+      onError: (e) {
+        showSnack(
+            context: context, scaffoldState: Scaffold.of(context), msg: e);
+      },
+      onSuccess: (link) {
+        this.link = link;
+        setState(() {});
+      },
+    );
   }
 
   @override
@@ -75,6 +133,13 @@ class _ShareProgressState extends State<ShareProgress> {
     s = S.of(context);
     final size = MediaQuery.of(context).size;
     final actions = <Widget>[
+      if (link != null)
+        FlatButton(
+          child: Text(widget.useKey ? s.send_encrypted : s.send),
+          onPressed: () {
+            openEmail();
+          },
+        ),
       FlatButton(
         child: Text(s.cancel),
         onPressed: () {
@@ -97,29 +162,72 @@ class _ShareProgressState extends State<ShareProgress> {
           SizedBox(
             height: 10,
           ),
-          Text(s.encryption),
-          LinearProgressIndicator(
-            value: (progress?.current ?? 0) / (progress?.total ?? 1),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(widget.useKey
-              ? s.encrypted_using_key(widget.recipient.fullName)
-              : s.encrypted_using_password,)
+          ...progressLabel(),
         ],
       ),
     );
+
     return Platform.isIOS
         ? CupertinoAlertDialog(
-      title: title,
-      content: content,
-      actions: actions,
-    )
+            title: title,
+            content: content,
+            actions: actions,
+          )
         : AlertDialog(
-      title: title,
-      content: content,
-      actions: actions,
-    );
+            title: title,
+            content: content,
+            actions: actions,
+          );
+  }
+
+  openEmail() async {
+    final uri = Uri.encodeFull(
+        "mailto:${widget.recipient.email}?subject=Secure share&body=$link");
+    if (await canLaunch(uri)) {
+      launch(uri);
+    }
+  }
+
+  List<Widget> progressLabel() {
+    final theme = Theme.of(context);
+    return link == null
+        ? [
+            Text(isDownload ? s.upload : s.encryption),
+            LinearProgressIndicator(
+              value: (progress?.current ?? 0) / (progress?.total ?? 1),
+            ),
+          ]
+        : [
+            Text(s.encrypted_file_link),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                children: <Widget>[
+                  InkWell(
+                    child: Icon(Icons.content_copy),
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: link));
+                    },
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(link),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.useKey
+                  ? s.encrypted_using_key(widget.recipient.fullName)
+                  : s.encrypted_using_password,
+              style: theme.textTheme.caption,
+            )
+          ];
   }
 }

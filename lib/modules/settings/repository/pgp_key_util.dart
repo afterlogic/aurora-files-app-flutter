@@ -106,7 +106,8 @@ class PgpKeyUtil {
     await pgpKeyDao.deleteKey(key);
   }
 
-  Future createKeys(int length, String email, String password) {
+  Future<KeyPair> createKeys(int length, String email, String password) async{
+    await pgp.stop();
     return pgp.createKeys(length, email, password);
   }
 

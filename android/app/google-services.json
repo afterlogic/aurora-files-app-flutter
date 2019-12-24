@@ -42,35 +42,6 @@
           ]
         }
       }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:311563359119:android:43f18b6700d0cf7d9e31fa",
-        "android_client_info": {
-          "package_name": "ru.dikiy.scroll_test"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "311563359119-3vs7m20equtnitjqk20k7n9gj69phv09.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyC8kcExICZkpOd-2iYaRsXpA8bDSSmp1Wg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "311563359119-3vs7m20equtnitjqk20k7n9gj69phv09.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
     }
   ],
   "configuration_version": "1"

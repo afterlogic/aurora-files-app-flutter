@@ -4,12 +4,6 @@ import 'dart:typed_data';
 import 'crypt.dart';
 
 class Pgp extends Crypt {
-  Future clear() async {
-    await invokeMethod(
-      "$algorithm.clear",
-      [],
-    );
-  }
 
   Future stop() async {
     await invokeMethod(

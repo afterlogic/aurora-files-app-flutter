@@ -2,15 +2,16 @@ import Flutter
 import UIKit
 import Foundation
 import RxSwift
+import BouncyCastle_ObjC
 
 public class CryptoPlugin: NSObject, FlutterPlugin {
     let scheduler = ConcurrentDispatchQueueScheduler(qos: .background)
-    let composite = CompositeDisposable()
-//    var pgp = Pgp()
+    var composite = CompositeDisposable()
+    var pgp = Pgp()
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "crypto_plugin", binaryMessenger: registrar.messenger())
-//        JavaSecuritySecurity.addProvider(with: BCJceProviderBouncyCastleProvider())
+        JavaSecuritySecurity.addProvider(with: BCJceProviderBouncyCastleProvider())
         let instance = CryptoPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
@@ -22,6 +23,14 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
         let arguments = call.arguments as! [Any]
         print(algorithm + "." + method)
 
+        if(algorithm=="pgp"&&method=="stop"){
+            self.pgp = Pgp()
+            self.composite.dispose()
+            self.composite = CompositeDisposable()
+            result("")
+            return;
+        }
+
         let disposable =  Single<Any>.create { emitter in
             do {
                 let data  = try self.execute(algorithm: algorithm, method:method, arguments: arguments)
@@ -31,19 +40,19 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
             }
             return Disposables.create {}
         }
-            .subscribeOn(arguments.isEmpty ? MainScheduler.instance:scheduler)
-            .observeOn(MainScheduler.instance)
-            .subscribe(onSuccess: { (any) in
-                result(any)
-            },onError: { (error) in
-                
-                if error is MethodNotImplemented{
-                    result(FlutterMethodNotImplemented)
-                }else if error is  CryptionError{
-                    result( FlutterError(code: "CryptionError", message: (error as! CryptionError).message, details: nil))
-                }else{
-                    result( FlutterError(code: "error", message:  error.localizedDescription, details: nil))
-                }
+        .subscribeOn(arguments.isEmpty ? MainScheduler.instance:scheduler)
+        .observeOn(MainScheduler.instance)
+        .subscribe(onSuccess: { (any) in
+            result(any)
+        },onError: { (error) in
+
+            if error is MethodNotImplemented{
+                result(FlutterMethodNotImplemented)
+            }else if error is  CryptionError{
+                result( FlutterError(code: "CryptionError", message: (error as! CryptionError).message, details: nil))
+            }else{
+                result( FlutterError(code: "error", message:  error.localizedDescription, details: nil))
+            }
         })
         composite.insert(disposable)
     }
@@ -69,43 +78,40 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
             }
         case "pgp":
             switch method {
-            case "clear":
-//                self.pgp = Pgp()
-                self.composite.dispose()
-                return ""
-            case "stop":
-                self.composite.dispose()
-                return ""
             case "getKeyDescription":
                 let data = arguments[0] as! String
-//                let info =  try self.pgp.getKeyDescription(  data.data(using: String.Encoding.utf8)!)
-//                return [info.emails,info.length]
+                let info =  try self.pgp.getKeyDescription(  data.data(using: String.Encoding.utf8)!)
+                return [info.emails,info.length]
             case "setPrivateKey":
+
                 let data = arguments[0] as! String
-//                try self.pgp.setPrivateKey( data)
+                try self.pgp.setPrivateKey( data)
                 return ""
             case "setPublicKey":
                 let data = arguments[0] as! String
-//                try self.pgp.setPublicKey(  data)
+                try self.pgp.setPublicKey(  data)
                 return ""
             case "decryptBytes":
+
                 let data = arguments[0] as! FlutterStandardTypedData
                 let password = arguments[1] as! String
-//                let result = try self.pgp.decrypt(Data.init(data.data), password)
-//                return   result.withUnsafeBytes {
-//                    [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
-//                }
+                let result = try self.pgp.decrypt(Data.init(data.data), password)
+                return   result.withUnsafeBytes {
+                    [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
+                }
             case "encryptBytes":
+
                 let data = arguments[0] as! FlutterStandardTypedData
-//                let result = try self.pgp.encrypt(Data.init(data.data))
-//                return  result.withUnsafeBytes {
-//                    [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
-//                }
+                let result = try self.pgp.encrypt(Data.init(data.data))
+                return  result.withUnsafeBytes {
+                    [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
+                }
             case "createKeys":
+
                 let length = arguments[0] as!   NSNumber
                 let email = arguments[1] as! String
                 let password = arguments[2] as! String
-//                return try self.pgp.createKeys(Int32(truncating: length), email, password)
+                return try self.pgp.createKeys(Int32(truncating: length), email, password)
             default:
                 break
             }

@@ -65,7 +65,6 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                 obscureText: _obscure,
                 controller: _passwordController,
                 keyboardType: TextInputType.visiblePassword,
-                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
               ),
               SizedBox(height: 20),
               GestureDetector(

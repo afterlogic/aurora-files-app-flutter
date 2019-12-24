@@ -24,6 +24,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
     s = S.of(context);
     var keysText = "";
     for (LocalPgpKey key in widget._pgpKeys) {
+      if(key.key!=null)
       keysText += key.key + "\n\n";
     }
     return Scaffold(

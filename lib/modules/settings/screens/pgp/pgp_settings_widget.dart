@@ -131,6 +131,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   openKey(LocalPgpKey pgpKey) async {
+    if(pgpKey.key==null)return;
     final result = await Navigator.pushNamed(
       context,
       PgpKeyModelRoute.name,

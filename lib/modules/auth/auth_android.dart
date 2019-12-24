@@ -225,7 +225,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     s = S.of(context);
     final mq = MediaQuery.of(context);
     return Provider(
-      builder: (_) => _authState,
+      create: (_) => _authState,
       child: Theme(
         data: AppMaterialTheme.darkTheme,
         child: Scaffold(

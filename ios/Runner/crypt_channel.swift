@@ -22,7 +22,7 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
         let method = route[1]
         let arguments = call.arguments as! [Any]
         print(algorithm + "." + method)
-        
+
         if(algorithm=="pgp"&&method=="stop"){
             self.pgp = Pgp()
             self.composite.dispose()
@@ -30,7 +30,7 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
             result("")
             return;
         }
-        
+
         let disposable =  Single<Any>.create { emitter in
             do {
                 let data  = try self.execute(algorithm: algorithm, method:method, arguments: arguments)
@@ -45,7 +45,7 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
         .subscribe(onSuccess: { (any) in
             result(any)
         },onError: { (error) in
-            
+
             if error is MethodNotImplemented{
                 result(FlutterMethodNotImplemented)
             }else if error is  CryptionError{
@@ -83,7 +83,7 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
                 let info =  try self.pgp.getKeyDescription(  data.data(using: String.Encoding.utf8)!)
                 return [info.emails,info.length]
             case "setPrivateKey":
-                
+
                 let data = arguments[0] as! String
                 try self.pgp.setPrivateKey( data)
                 return ""
@@ -92,7 +92,7 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
                 try self.pgp.setPublicKey(  data)
                 return ""
             case "decryptBytes":
-            
+
                 let data = arguments[0] as! FlutterStandardTypedData
                 let password = arguments[1] as! String
                 let result = try self.pgp.decrypt(Data.init(data.data), password)
@@ -100,14 +100,14 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
                     [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
                 }
             case "encryptBytes":
-                
+
                 let data = arguments[0] as! FlutterStandardTypedData
                 let result = try self.pgp.encrypt(Data.init(data.data))
                 return  result.withUnsafeBytes {
                     [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
                 }
             case "createKeys":
-               
+
                 let length = arguments[0] as!   NSNumber
                 let email = arguments[1] as! String
                 let password = arguments[2] as! String

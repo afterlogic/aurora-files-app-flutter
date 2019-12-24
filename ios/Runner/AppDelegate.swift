@@ -2,7 +2,6 @@ import UIKit
 import Flutter
 import CommonCrypto
 import Foundation
-import DMSOpenPGP
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {

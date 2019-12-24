@@ -21,7 +21,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Provider<SettingsState>(
-      builder: (_) => AppStore.settingsState,
+      create: (_) => AppStore.settingsState,
       child: Scaffold(
         appBar: AppBar(
           title: Text(s.settings),
@@ -40,11 +40,12 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               leading: Icon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
             ),
-            ListTile(
-              title: Text(s.openPGP),
-              leading: Icon(MdiIcons.key),
-              onTap: () => Navigator.pushNamed(context, PgpSettingsRoute.name),
-            ),
+//            todo pgp
+//            ListTile(
+//              title: Text(s.openPGP),
+//              leading: Icon(MdiIcons.key),
+//              onTap: () => Navigator.pushNamed(context, PgpSettingsRoute.name),
+//            ),
             ListTile(
               title: Text(s.storage_info),
               leading: Icon(Icons.storage),

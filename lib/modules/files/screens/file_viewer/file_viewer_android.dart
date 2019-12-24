@@ -83,7 +83,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       _fileViewerState.processingFile.subscription?.cancel();
       _fileViewerState.processingFile.fileOnDevice?.delete();
     }
-    _fileViewerState.dispose();
   }
 
   void _updateFile(String fileId) {
@@ -372,13 +371,13 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     return MultiProvider(
       providers: [
         Provider<FilesState>(
-          builder: (_) => widget.filesState,
+          create: (_) => widget.filesState,
         ),
         Provider<FilesPageState>(
-          builder: (_) => widget.filesPageState,
+          create: (_) => widget.filesPageState,
         ),
         Provider<AuthState>(
-          builder: (_) => AppStore.authState,
+          create: (_) => AppStore.authState,
         ),
       ],
       child: Scaffold(
@@ -405,14 +404,15 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             ),
           ]
               : [
-            IconButton(
-              icon: AssetIcon(
-                "lib/assets/svg/insert_link.svg",
-                addedSize: 14,
-              ),
-              tooltip: s.secure_sharing,
-              onPressed: () => _prepareShareFile(_secureSharing),
-            ),
+//            todo pgp
+//            IconButton(
+//              icon: AssetIcon(
+//                "lib/assets/svg/insert_link.svg",
+//                addedSize: 14,
+//              ),
+//              tooltip: s.secure_sharing,
+//              onPressed: () => _prepareShareFile(_secureSharing),
+//            ),
             IconButton(
               icon: Icon(MdiIcons.fileMove),
               tooltip: s.copy_or_move,

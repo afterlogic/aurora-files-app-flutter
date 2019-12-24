@@ -81,7 +81,6 @@ class _FilesAndroidState extends State<FilesAndroid>
   void dispose() {
     super.dispose();
     _filesState.folderNavStack.removeLast();
-    _filesPageState.dispose();
   }
 
   Future<void> _initFiles() async {
@@ -253,14 +252,13 @@ class _FilesAndroidState extends State<FilesAndroid>
     return MultiProvider(
       providers: [
         Provider<FilesState>(
-          builder: (_) => _filesState,
+          create: (_) => _filesState,
         ),
         Provider<FilesPageState>(
-          builder: (_) => _filesPageState,
-          dispose: (_, value) => value.dispose(),
+          create: (_) => _filesPageState,
         ),
         Provider<AuthState>(
-          builder: (_) => AppStore.authState,
+          create: (_) => AppStore.authState,
         )
       ],
       child: Observer(

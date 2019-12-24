@@ -18,7 +18,9 @@ Future sendRequest(ApiBody body) async {
   final authState = AppStore.authState;
   final rawResponse = await http.post(authState.apiUrl,
       headers: getHeader(), body: body.toMap());
-
+  if (rawResponse.statusCode != 200) {
+    return {"ErrorCode": unknownError};
+  }
   return json.decode(rawResponse.body);
 }
 
@@ -85,7 +87,7 @@ String _getErrMsgFromCode(int code) {
       return "Captcha error";
     case accessDenied:
       return "Access denied";
-    case unknownError:
+    case unknownEmail:
       return "Unknown email";
     case userisNotAllowed:
       return "User is not allowed";

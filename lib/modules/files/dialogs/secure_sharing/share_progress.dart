@@ -91,8 +91,7 @@ class _ShareProgressState extends State<ShareProgress> {
         createPublicLink(_processingFile);
       },
       onError: (e) {
-        showSnack(
-            context: context, scaffoldState: Scaffold.of(context), msg: e);
+        showSnack(context: context, scaffoldState: Scaffold.of(context), msg: e);
       },
     );
   }
@@ -101,8 +100,7 @@ class _ShareProgressState extends State<ShareProgress> {
     widget._fileViewerState.createPublicLink(
       processingFile: processingFile,
       onError: (e) {
-        showSnack(
-            context: context, scaffoldState: Scaffold.of(context), msg: e);
+        showSnack(context: context, scaffoldState: Scaffold.of(context), msg: e);
       },
       onSuccess: (link) {
         this.link = link;
@@ -194,7 +192,9 @@ class _ShareProgressState extends State<ShareProgress> {
         ? [
             Text(isDownload ? s.upload : s.encryption),
             LinearProgressIndicator(
-              value: (progress?.current ?? 0) / (progress?.total ?? 1),
+              value: Platform.isIOS && !isDownload
+                  ? null
+                  : (progress?.current ?? 0) / (progress?.total ?? 1),
             ),
           ]
         : [
@@ -203,7 +203,7 @@ class _ShareProgressState extends State<ShareProgress> {
               padding: EdgeInsets.symmetric(vertical: 10),
               child: Row(
                 children: <Widget>[
-                  InkWell(
+                  GestureDetector(
                     child: Icon(Icons.content_copy),
                     onTap: () {
                       Clipboard.setData(ClipboardData(text: link));
@@ -224,9 +224,8 @@ class _ShareProgressState extends State<ShareProgress> {
             ),
             Text(
               widget.useKey
-                  ? s.encrypted_using_key(widget.recipient?.fullName ??
-                      widget.recipient?.email ??
-                      widget.pgpKey?.email)
+                  ? s.encrypted_using_key(
+                      widget.recipient?.fullName ?? widget.recipient?.email ?? widget.pgpKey?.email)
                   : s.encrypted_using_password,
               style: theme.textTheme.caption,
             )

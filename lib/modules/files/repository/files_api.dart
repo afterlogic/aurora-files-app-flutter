@@ -378,7 +378,6 @@ class FilesApi {
 
     final body =
         new ApiBody(module: "Files", method: "Rename", parameters: parameters);
-
     final res = await sendRequest(body);
 
     if (res['Result'] != null && res['Result']) {

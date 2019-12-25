@@ -182,7 +182,7 @@ class _ShareProgressState extends State<ShareProgress> {
 
   openEmail() async {
     final uri = Uri.encodeFull(
-        "mailto:${widget.recipient.email}?subject=Secure share&body=$link");
+        "mailto:${widget.recipient?.email ?? widget.pgpKey?.email}?subject=Secure share&body=$link");
     if (await canLaunch(uri)) {
       launch(uri);
     }
@@ -224,7 +224,9 @@ class _ShareProgressState extends State<ShareProgress> {
             ),
             Text(
               widget.useKey
-                  ? s.encrypted_using_key(widget.recipient.fullName)
+                  ? s.encrypted_using_key(widget.recipient?.fullName ??
+                      widget.recipient?.email ??
+                      widget.pgpKey?.email)
                   : s.encrypted_using_password,
               style: theme.textTheme.caption,
             )

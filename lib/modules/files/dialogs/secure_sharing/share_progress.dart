@@ -213,7 +213,9 @@ class _ShareProgressState extends State<ShareProgress> {
       return [
         Text(isDownload ? s.upload : s.encryption),
         LinearProgressIndicator(
-          value: (progress?.current ?? 0) / (progress?.total ?? 1),
+          value: Platform.isIOS && !isDownload
+              ? null
+              : (progress?.current ?? 0) / (progress?.total ?? 1),
         ),
       ];
     }
@@ -223,7 +225,7 @@ class _ShareProgressState extends State<ShareProgress> {
         padding: EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: <Widget>[
-            InkWell(
+            GestureDetector(
               child: Icon(Icons.content_copy),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: link));

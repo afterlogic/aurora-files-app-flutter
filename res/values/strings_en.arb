@@ -159,5 +159,6 @@
   "send": "Send via email",
   "send_encrypted": "Send via encrypted email",
   "upload": "Upload",
-  "encrypt_error": "Encrypt error"
+  "encrypt_error": "Encrypt error",
+  "encrypted_file_password":"Encrypted file password",
 }

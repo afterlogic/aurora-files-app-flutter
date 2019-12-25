@@ -63,6 +63,7 @@ class S implements WidgetsLocalizations {
   String get encrypt_error => "Encrypt error";
   String get encrypted => "Encrypted";
   String get encrypted_file_link => "Encrypted file public link:";
+  String get encrypted_file_password => "Encrypted file password";
   String get encrypted_using_password => "If you don't send email now, store the password somewhere. You will not be able to recover it otherwise.";
   String get encryption => "Encryption";
   String get encryption_description => "Files are encrypted/decrypted right on this device, even the server itself cannot get access to non-encrypted content of paranoid-encrypted files. Encryption method is AES256.";

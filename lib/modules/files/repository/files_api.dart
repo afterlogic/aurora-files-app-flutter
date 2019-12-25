@@ -82,6 +82,7 @@ class FilesApi {
   Future<void> uploadFile(ProcessingFile processingFile, bool shouldEncrypt,
       {String url,
       String name,
+      bool passwordEncryption,
       @required String storageType,
       @required String path,
       Function(int) updateProgress,
@@ -101,14 +102,18 @@ class FilesApi {
       "SubPath": "",
       "Overwrite": false,
     };
-
+    params["ExtendedProps"] = {};
     if (shouldEncrypt == true) {
       final vector = IV.fromSecureRandom(vectorLength);
       processingFile.ivBase64 = vector.base64;
 
-      params["ExtendedProps"] = {};
       params["ExtendedProps"]["InitializationVector"] = vector.base16;
       params["ExtendedProps"]["FirstChunk"] = true;
+    }
+    if (passwordEncryption == true) {
+      params["ExtendedProps"]["PgpEncryptionMode"] = "password";
+      params["ExtendedProps"]["PgpEncryptionRecipientEmail"] =
+          "vasil@afterlogic.com";
     }
 
     final body = new ApiBody(

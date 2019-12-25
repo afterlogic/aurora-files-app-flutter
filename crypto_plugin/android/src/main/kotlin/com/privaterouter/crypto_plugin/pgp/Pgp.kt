@@ -2,9 +2,6 @@ package com.privaterouter.crypto_plugin.pgp
 
 
 import KeyDescription
-import android.os.Build
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
 import org.bouncycastle.bcpg.ArmoredOutputStream
 import java.util.Date
 
@@ -13,25 +10,20 @@ import org.bouncycastle.openpgp.*
 import org.bouncycastle.openpgp.operator.KeyFingerPrintCalculator
 import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator
 import java.security.*
-import org.bouncycastle.bcpg.HashAlgorithmTags
 import org.bouncycastle.openpgp.operator.jcajce.*
 import java.io.*
 import org.bouncycastle.openpgp.PGPPublicKey
-import java.security.interfaces.RSAPrivateCrtKey
-import java.security.interfaces.RSAPrivateKey
-import java.security.spec.RSAPrivateCrtKeySpec
-import java.math.BigInteger
-import java.security.interfaces.RSAPublicKey
-import org.bouncycastle.openpgp.PGPSignature
-import org.bouncycastle.openpgp.PGPKeyPair
-import org.bouncycastle.crypto.KeyGenerationParameters
-import org.bouncycastle.crypto.generators.RSAKeyPairGenerator
-import org.bouncycastle.crypto.params.RSAKeyGenerationParameters
+import org.bouncycastle.openpgp.bc.BcPGPObjectFactory
+import org.bouncycastle.openpgp.operator.bc.BcPBEDataDecryptorFactory
+import org.bouncycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider
+import org.bouncycastle.util.io.Streams
 import org.pgpainless.PGPainless
+import org.pgpainless.algorithm.CompressionAlgorithm
+import org.pgpainless.algorithm.SymmetricKeyAlgorithm
 import org.pgpainless.key.generation.type.RSA_GENERAL
 import org.pgpainless.key.generation.type.length.RsaLength
+import org.pgpainless.symmetric_encryption.SymmetricEncryptorDecryptor
 import org.pgpainless.util.Passphrase
-import java.security.spec.KeySpec
 
 
 /**
@@ -125,7 +117,7 @@ class Pgp {
         try {
             progress.total = length
             var inputStream1 = inputStream
-            inputStream1 = org.bouncycastle.openpgp.PGPUtil.getDecoderStream(inputStream1)
+            inputStream1 = PGPUtil.getDecoderStream(inputStream1)
             val pgpF = PGPObjectFactory(inputStream1, calculator)
             val enc: PGPEncryptedDataList
             val o = pgpF.nextObject()
@@ -146,7 +138,8 @@ class Pgp {
             var pbe: PGPPublicKeyEncryptedData? = null
 
             while (sKey == null && it.hasNext()) {
-                pbe = it.next() as PGPPublicKeyEncryptedData?
+                val next = it.next()
+                pbe = next as PGPPublicKeyEncryptedData?
                 sKey = findSecretKey(keyIn, pbe!!.keyID, passwd)
             }
 
@@ -208,6 +201,7 @@ class Pgp {
         val progress = Progress()
         this.progress = progress
         try {
+            val output = ArmoredOutputStream(output)
             val comData = PGPCompressedDataGenerator(
                     PGPCompressedData.ZIP)
 
@@ -319,5 +313,104 @@ class Pgp {
         return arrayListOf<ByteArray>(publicOut.toByteArray(), secretOut.toByteArray())
     }
 
+
+    fun symmetricallyEncrypt(inputStream: InputStream,
+                             outputStream: OutputStream,
+                             prepareEncrypt: File,
+                             length: Long,
+                             password: String) {
+
+        val encryptionAlgorithm = SymmetricKeyAlgorithm.AES_256
+        val compressionAlgorithm = CompressionAlgorithm.ZIP
+        val passphrase = Passphrase(password.toCharArray())
+        compress(inputStream, FileOutputStream(prepareEncrypt), compressionAlgorithm.algorithmId, length)
+        val preparedInputStream = FileInputStream(prepareEncrypt)
+
+        val encGen = PGPEncryptedDataGenerator(
+                JcePGPDataEncryptorBuilder(encryptionAlgorithm.algorithmId)
+                        .setWithIntegrityPacket(true)
+                        .setSecureRandom(SecureRandom())
+                        .setProvider(provider))
+
+        encGen.addMethod(JcePBEKeyEncryptionMethodGenerator(passphrase.chars).setProvider(provider))
+
+        val encOut = encGen.open(outputStream, prepareEncrypt.length())
+
+        Streams.pipeAll(preparedInputStream, encOut)
+
+        encOut.close()
+    }
+
+    @Throws(IOException::class, PGPException::class)
+    fun symmetricallyDecrypt(inputStream: InputStream, outputStream: OutputStream, password: String) {
+        val passphrase = Passphrase(password.toCharArray())
+        val pbe: PGPPBEEncryptedData
+
+        val decoderInput = PGPUtil.getDecoderStream(inputStream)
+
+        try {
+            val pgpF = BcPGPObjectFactory(decoderInput)
+            val enc: PGPEncryptedDataList
+            var o = pgpF.nextObject()
+
+            if (o is PGPEncryptedDataList) {
+                enc = o
+            } else {
+                enc = pgpF.nextObject() as PGPEncryptedDataList
+            }
+
+            pbe = enc.get(0) as PGPPBEEncryptedData
+
+            val clear = pbe.getDataStream(
+                    BcPBEDataDecryptorFactory(passphrase.chars, BcPGPDigestCalculatorProvider()))
+
+            var pgpFact = BcPGPObjectFactory(clear)
+
+            o = pgpFact.nextObject()
+            if (o is PGPCompressedData) {
+                pgpFact = BcPGPObjectFactory(o.dataStream)
+                o = pgpFact.nextObject()
+            }
+
+            val ld = o as PGPLiteralData
+            val unc = ld.inputStream
+
+            try {
+
+                Streams.pipeAll(unc, outputStream)
+            } finally {
+                outputStream?.close()
+            }
+        } finally {
+            decoderInput.close()
+        }
+
+        if (pbe.isIntegrityProtected) {
+            if (!pbe.verify()) {
+                throw PGPException("Integrity check failed.")
+            }
+        } else {
+            throw PGPException("Symmetrically encrypted data is not integrity protected.")
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun compress(inputStream: InputStream, outputStream: OutputStream, algorithm: Int, size: Long) {
+        val comData = PGPCompressedDataGenerator(algorithm)
+        val cos = comData.open(outputStream)
+
+        val lData = PGPLiteralDataGenerator()
+
+        val pOut = lData.open(cos,
+                PGPLiteralData.BINARY,
+                PGPLiteralDataGenerator.CONSOLE,
+                size,
+                Date()
+        )
+        Streams.pipeAll(inputStream, pOut)
+        pOut.close()
+
+        comData.close()
+    }
 
 }

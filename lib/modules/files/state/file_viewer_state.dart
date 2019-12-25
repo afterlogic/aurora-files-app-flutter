@@ -117,7 +117,7 @@ abstract class _FileViewerState with Store {
 
   Future<void> onOpenPdf() async {
     final File pdfToView =
-    await _filesLocal.createTempFile(file, useName: true);
+        await _filesLocal.createTempFile(file, useName: true);
     await _getPreviewFile(pdfToView, onDownloadEnd: (File storedFile) {
       fileWithContents = storedFile;
       _filesLocal.openFileWith(fileWithContents);
@@ -133,9 +133,10 @@ abstract class _FileViewerState with Store {
     @required Function(ProcessingFile) onUploadStart,
     @required Function() onSuccess,
     @required Function(String) onError,
+    @required bool passwordEncryption,
   }) {
     return fileState.uploadFile(
-        name: this.file.name + ".pgp",
+        name: this.file.name + (passwordEncryption ? ".gpg" : ".pgp"),
         shouldEncrypt: false,
         file: file,
         path: this.file.path,
@@ -156,7 +157,6 @@ abstract class _FileViewerState with Store {
         isFolder: false,
         path: this.file.path,
         onSuccess: onSuccess,
-        onError: onError
-    );
+        onError: onError);
   }
 }

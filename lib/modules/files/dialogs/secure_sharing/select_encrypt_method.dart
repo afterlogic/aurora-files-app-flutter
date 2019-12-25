@@ -21,6 +21,7 @@ class SelectEncryptMethod extends StatefulWidget {
 class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   bool useKey;
   S s;
+
   @override
   void initState() {
     useKey = widget.pgpKey != null;
@@ -37,7 +38,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
       child: Text(s.secure_sharing),
     );
     final content = SizedBox(
-      height: min(size.height/2,350),
+      height: min(size.height / 2, 350),
       child: ListView(
         children: <Widget>[
           RecipientWidget(RecipientWithKey(widget.recipient, widget.pgpKey)),
@@ -45,9 +46,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
             height: 10,
           ),
           Text(
-            useKey
-                ? s.has_PGP_public_key
-                : s.has_no_PGP_public_key,
+            useKey ? s.has_PGP_public_key : s.has_no_PGP_public_key,
             style: theme.textTheme.caption,
           ),
           SizedBox(
@@ -65,9 +64,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
             height: 10,
           ),
           Text(
-            useKey
-                ? s.key_will_be_used
-                : s.password_will_be_used,
+            useKey ? s.key_will_be_used : s.password_will_be_used,
             style: theme.textTheme.caption,
           ),
         ],
@@ -78,10 +75,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
       FlatButton(
         child: Text(s.encrypt),
         onPressed: () {
-          //todo use password
-          if (useKey) {
-            Navigator.pop(context, SelectEncryptMethodResult(useKey));
-          }
+          Navigator.pop(context, SelectEncryptMethodResult(useKey));
         },
       ),
       FlatButton(
@@ -93,15 +87,15 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
     ];
     return Platform.isIOS
         ? CupertinoAlertDialog(
-      title: title,
-      content: content,
-      actions: actions,
-    )
+            title: title,
+            content: content,
+            actions: actions,
+          )
         : AlertDialog(
-      title: title,
-      content: content,
-      actions: actions,
-    );
+            title: title,
+            content: content,
+            actions: actions,
+          );
   }
 }
 
@@ -122,14 +116,14 @@ class RadioEncryptMethod extends StatelessWidget {
         Divider(
           color: Colors.transparent,
         ),
-        if(hasKey)
+        if (hasKey)
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: value
                 ? null
                 : () {
-              onChanged(true);
-            },
+                    onChanged(true);
+                  },
             child: Row(children: <Widget>[
               RadioAnalog(value),
               Text(
@@ -138,7 +132,7 @@ class RadioEncryptMethod extends StatelessWidget {
               ),
             ]),
           ),
-        if(hasKey)
+        if (hasKey)
           Divider(
             color: Colors.grey,
           ),
@@ -147,8 +141,8 @@ class RadioEncryptMethod extends StatelessWidget {
           onTap: !value
               ? null
               : () {
-            onChanged(false);
-          },
+                  onChanged(false);
+                },
           child: Row(children: <Widget>[
             RadioAnalog(!value),
             Text(

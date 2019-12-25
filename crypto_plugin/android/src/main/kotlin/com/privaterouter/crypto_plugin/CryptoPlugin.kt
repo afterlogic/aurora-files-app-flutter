@@ -135,6 +135,32 @@ class CryptoPlugin : MethodCallHandler {
                         return pgp.encriptBytes(text)
 
                     }
+                    "decryptSymmetricBytes" -> {
+                        val array = arguments[0] as ByteArray
+                        val password = arguments[1] as String
+                        return pgp.decryptSymmetricBytes(array, password)
+
+                    }
+                    "decryptSymmetricFile" -> {
+                        val inputFile = arguments[0] as String
+                        val outputFile = arguments[1] as String
+                        val password = arguments[2] as String
+                        pgp.decryptSymmetricFile(inputFile, outputFile, password)
+                        return ""
+                    }
+                    "encryptSymmetricFile" -> {
+                        val inputFile = arguments[0] as String
+                        val outputFile = arguments[1] as String
+                        val password = arguments[2] as String
+                        pgp.encryptSymmetricFile(inputFile, outputFile, password)
+                        return ""
+                    }
+                    "encryptSymmetricBytes" -> {
+                        val text = arguments[0] as ByteArray
+                        val password = arguments[1] as String
+                        return pgp.encryptSymmetricBytes(text, password)
+
+                    }
                     "createKeys" -> {
                         val length = arguments[0] as Int
                         val email = arguments[1] as String

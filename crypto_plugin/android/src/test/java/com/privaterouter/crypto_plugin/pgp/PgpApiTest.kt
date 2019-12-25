@@ -33,9 +33,9 @@ class PgpApiTest {
         pgpHelper.setPublicKey(publicKey)
         pgpHelper.setTempFile("/home/dikiy/test_pgp")
         val message = "message".toByteArray()
-        val messageD = pgpHelper.encriptBytes(message)
-        val messageE = pgpHelper.decryptBytes(messageD, password)
-        assert(String(messageE) == String(message))
+        val messageEncrypted = pgpHelper.encriptBytes(message)
+        val messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password)
+        assert(String(messageDecrypted) == String(message))
     }
 
     @Test
@@ -51,6 +51,27 @@ class PgpApiTest {
         pgpHelper.encriptFile(file, fileD)
         pgpHelper.decryptFile(fileD, fileC, password)
         assert(File(file).length() == File(fileC).length())
+    }
+
+
+    @Test
+    fun testEncryptSymmetric() {
+        val pgpHelper = PgpApi()
+        val file = File("/home/dikiy/test/test.png")
+        val outFile = File("/home/dikiy/test/test.png.gpg")
+        pgpHelper.setTempFile("/home/dikiy/test_pgp")
+        pgpHelper.encryptSymmetricFile(file.path, outFile.path, "test")
+
+    }
+
+
+    @Test
+    fun testDecryptSymmetric() {
+        val pgpHelper = PgpApi()
+        val file = File("/home/dikiy/test/test.png.gpg")
+        val outFile = File("/home/dikiy/test/test.png")
+
+        pgpHelper.decryptSymmetricFile(file.path, outFile.path, "test")
     }
 
     companion object {

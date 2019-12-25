@@ -56,6 +56,7 @@ open class PgpApi {
         return outStream.toByteArray()
     }
 
+
     fun decryptFile(inputFilePath: String, outputFilePath: String, password: String) {
         val inputFile = File(inputFilePath)
         val outputFile = File(outputFilePath)
@@ -103,6 +104,51 @@ open class PgpApi {
         return pgp.createKeys(length, email, password).mapIndexed { i, it ->
             it.toString(Charsets.UTF_8)
         }
+    }
+
+
+    fun decryptSymmetric(inputStream: InputStream, outputStream: OutputStream, password: String) {
+        pgp.symmetricallyDecrypt(inputStream, outputStream, password)
+    }
+
+    fun encryptSymmetric(inputStream: InputStream, outputStream: OutputStream, length: Long, password: String) {
+        assert(tempFile != null)
+        pgp.symmetricallyEncrypt(inputStream, outputStream, tempFile!!, length, password)
+    }
+
+    fun encryptSymmetricBytes(array: ByteArray, password: String): ByteArray {
+        val outStream = ByteArrayOutputStream()
+        encryptSymmetric(ByteArrayInputStream(array), outStream, array.size.toLong(), password)
+        return outStream.toByteArray()
+    }
+
+    fun encryptSymmetricFile(inputFilePath: String, outputFilePath: String, password: String) {
+        val inputFile = File(inputFilePath)
+        val outputFile = File(outputFilePath)
+        assert(inputFile.isFile)
+        assert(inputFile.exists())
+        assert(inputFile.canRead())
+        outputFile.createNewFile()
+        assert(outputFile.isFile)
+        assert(outputFile.canWrite())
+        encryptSymmetric(FileInputStream(inputFile), FileOutputStream(outputFile), inputFile.length(), password)
+    }
+
+    fun decryptSymmetricBytes(array: ByteArray, password: String): ByteArray {
+        val outStream = ByteArrayOutputStream()
+        decryptSymmetric(ByteArrayInputStream(array), outStream, password)
+        return outStream.toByteArray()
+    }
+
+    fun decryptSymmetricFile(inputFilePath: String, outputFilePath: String, password: String) {
+        val inputFile = File(inputFilePath)
+        val outputFile = File(outputFilePath)
+        assert(inputFile.isFile)
+        assert(inputFile.exists())
+        outputFile.createNewFile()
+        assert(outputFile.isFile)
+        assert(outputFile.canWrite())
+        decryptSymmetric(FileInputStream(inputFile), FileOutputStream(outputFile), password)
     }
 
     companion object {

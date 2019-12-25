@@ -8,6 +8,7 @@ import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
+import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,6 +46,7 @@ class _ShareProgressState extends State<ShareProgress> {
   File temp;
   String link;
   S s;
+  String error;
 
   encrypt() async {
     var isProgress = true;
@@ -56,11 +58,8 @@ class _ShareProgressState extends State<ShareProgress> {
     widget.pgp.encryptFile(widget.file.file, output).then((_) {
       upload();
     }, onError: (e) {
-      showSnack(
-        context: context,
-        scaffoldState: Scaffold.of(context),
-        msg: s.encrypt_error,
-      );
+      error = s.encrypt_error;
+      setState(() {});
     }).whenComplete(() {
       isProgress = false;
     });
@@ -91,8 +90,8 @@ class _ShareProgressState extends State<ShareProgress> {
         createPublicLink(_processingFile);
       },
       onError: (e) {
-        showSnack(
-            context: context, scaffoldState: Scaffold.of(context), msg: e);
+        error = e;
+        setState(() {});
       },
     );
   }
@@ -101,8 +100,8 @@ class _ShareProgressState extends State<ShareProgress> {
     widget._fileViewerState.createPublicLink(
       processingFile: processingFile,
       onError: (e) {
-        showSnack(
-            context: context, scaffoldState: Scaffold.of(context), msg: e);
+        error = e;
+        setState(() {});
       },
       onSuccess: (link) {
         this.link = link;
@@ -190,46 +189,67 @@ class _ShareProgressState extends State<ShareProgress> {
 
   List<Widget> progressLabel() {
     final theme = Theme.of(context);
-    return link == null
-        ? [
-            Text(isDownload ? s.upload : s.encryption),
-            LinearProgressIndicator(
-              value: (progress?.current ?? 0) / (progress?.total ?? 1),
+    if (error != null) {
+      return [
+        SizedBox(
+          height: 20,
+        ),
+        Text(error),
+        SizedBox(
+          height: 10,
+        ),
+        Center(
+          child: AppButton(
+            onPressed: () {
+              error = null;
+              encrypt();
+            },
+            text: s.try_again,
+          ),
+        )
+      ];
+    }
+    if (link == null) {
+      return [
+        Text(isDownload ? s.upload : s.encryption),
+        LinearProgressIndicator(
+          value: (progress?.current ?? 0) / (progress?.total ?? 1),
+        ),
+      ];
+    }
+    return [
+      Text(s.encrypted_file_link),
+      Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: <Widget>[
+            InkWell(
+              child: Icon(Icons.content_copy),
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: link));
+              },
             ),
-          ]
-        : [
-            Text(s.encrypted_file_link),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                children: <Widget>[
-                  InkWell(
-                    child: Icon(Icons.content_copy),
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: link));
-                    },
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(link),
-                    ),
-                  )
-                ],
+            SizedBox(width: 10),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(link),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              widget.useKey
-                  ? s.encrypted_using_key(widget.recipient?.fullName ??
-                      widget.recipient?.email ??
-                      widget.pgpKey?.email)
-                  : s.encrypted_using_password,
-              style: theme.textTheme.caption,
             )
-          ];
+          ],
+        ),
+      ),
+      SizedBox(
+        height: 10,
+      ),
+      Text(
+        widget.useKey
+            ? s.encrypted_using_key(widget.recipient?.fullName ??
+                widget.recipient?.email ??
+                widget.pgpKey?.email)
+            : s.encrypted_using_password,
+        style: theme.textTheme.caption,
+      )
+    ];
   }
 }

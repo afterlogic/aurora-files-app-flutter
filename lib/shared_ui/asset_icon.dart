@@ -11,7 +11,6 @@ class AssetIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = IconTheme.of(context);
-    print(theme.color);
     return SvgPicture.asset(
       res,
       width: (size ?? theme.size) + addedSize ?? 0,

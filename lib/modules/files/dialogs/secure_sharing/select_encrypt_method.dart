@@ -46,7 +46,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
             height: 10,
           ),
           Text(
-            useKey ? s.has_PGP_public_key : s.has_no_PGP_public_key,
+            widget.pgpKey!=null ? s.has_PGP_public_key : s.has_no_PGP_public_key,
             style: theme.textTheme.caption,
           ),
           SizedBox(

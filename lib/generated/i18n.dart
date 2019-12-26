@@ -44,6 +44,7 @@ class S implements WidgetsLocalizations {
   String get contacts => "Contacts";
   String get copy => "Copy";
   String get copy_or_move => "Copy/Move";
+  String get copy_password => "You can send the link via email. The password must be sent using a different channel. Warning: write password down, it will not be available later.";
   String get copy_public_link => "Copy public link";
   String get created => "Created";
   String get dark_theme => "Dark theme";

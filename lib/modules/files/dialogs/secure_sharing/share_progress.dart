@@ -320,7 +320,9 @@ class _ShareProgressState extends State<ShareProgress> {
             ? s.encrypted_using_key(widget.recipient?.fullName ??
                 widget.recipient?.email ??
                 widget.pgpKey?.email)
-            : s.encrypted_using_password,
+            : widget.pgpKey != null
+                ? s.encrypted_using_password
+                : s.copy_password,
         style: theme.textTheme.caption,
       )
     ];

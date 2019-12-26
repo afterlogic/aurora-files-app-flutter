@@ -7,6 +7,7 @@ import 'modules/app_screen.dart';
 import 'utils/pgp_key_util.dart';
 
 void main() {
+  // todo crashlytics
 //  if (!kDebugMode) {
 //    Crashlytics.instance.enableInDevMode = true;
 //    FlutterError.onError = Crashlytics.instance.recordFlutterError;

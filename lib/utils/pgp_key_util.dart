@@ -7,7 +7,7 @@ class PgpUtil {
       base64 = base64.substring(0, base64.length - 2);
     }
     return base64.replaceAllMapped(
-      RegExp("[^a-zA-Z0-9\0]"),
+      RegExp("[^a-zA-Z0-9]"),
       (match) {
         return createSymmetricKey(1, true)[0];
       },

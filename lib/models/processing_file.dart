@@ -36,6 +36,7 @@ class ProcessingFile {
   });
 
   void updateProgress(double num) {
+    print(num);
     if (num > 1.05 || num < 0.0) {
       throw Exception("Progress $num is out of bounds (from 0.0 to 1.05)");
     }

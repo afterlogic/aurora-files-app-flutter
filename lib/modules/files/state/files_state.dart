@@ -8,6 +8,7 @@ import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
+import 'package:aurorafiles/models/secure_link.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
@@ -190,6 +191,23 @@ abstract class _FilesState with Store {
     }
   }
 
+  Future onGetSecureLink({
+    @required String name,
+    @required int size,
+    @required bool isFolder,
+    @required String path,
+    @required Function(SecureLink) onSuccess,
+    @required Function(String) onError,
+  }) async {
+    try {
+      final SecureLink result = await _filesApi.createSecureLink(
+          selectedStorage.type, path, name, size, isFolder);
+      onSuccess(result);
+    } catch (err) {
+      onError(err.toString());
+    }
+  }
+
   Future onDeletePublicLink({
     @required String name,
     @required String path,
@@ -253,6 +271,8 @@ abstract class _FilesState with Store {
     @required Function(ProcessingFile) onUploadStart,
     @required Function() onSuccess,
     @required Function(String) onError,
+    String encryptionRecipientEmail,
+    bool passwordEncryption,
   }) async {
     final fileName = name ?? FileUtils.getFileNameFromPath(file.path);
     final localFile = new LocalFile(
@@ -298,8 +318,10 @@ abstract class _FilesState with Store {
         processingFile,
         shouldEncrypt,
         name: name,
+        passwordEncryption: passwordEncryption,
         storageType: selectedStorage.type,
         path: path,
+        encryptionRecipientEmail: encryptionRecipientEmail,
         onSuccess: () {
           deleteFromProcessing(processingFile.guid);
           onSuccess();

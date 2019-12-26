@@ -7,10 +7,13 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
+import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +26,7 @@ class ShareProgress extends StatefulWidget {
   final Recipient recipient;
   final LocalPgpKey pgpKey;
   final bool useKey;
+  final bool useEncrypt;
   final Pgp pgp;
   final PreparedForShare file;
   final Function onLoad;
@@ -35,6 +39,7 @@ class ShareProgress extends StatefulWidget {
     this.useKey,
     this.pgp,
     this.onLoad,
+    this.useEncrypt,
   );
 
   @override
@@ -42,6 +47,7 @@ class ShareProgress extends StatefulWidget {
 }
 
 class _ShareProgressState extends State<ShareProgress> {
+  ProcessingFile _processingFile;
   double progress = 0;
   bool isDownload = false;
   File output;
@@ -55,10 +61,8 @@ class _ShareProgressState extends State<ShareProgress> {
     var isProgress = true;
     if (await output.exists()) await output.delete();
     if (await temp.exists()) await temp.delete();
-    await widget.pgp.setTempFile(temp);
 
     if (widget.useKey) {
-      await widget.pgp.setPublicKey(widget.pgpKey.key);
       widget.pgp.encryptFile(widget.file.file, output).then((_) {
         upload();
       }, onError: (e) {
@@ -92,9 +96,12 @@ class _ShareProgressState extends State<ShareProgress> {
 
   upload() {
     isDownload = true;
+    final extend = !widget.useKey ? ".gpg" : ".pgp";
     setState(() {});
-    ProcessingFile _processingFile;
+
     widget._fileViewerState.uploadSecureFile(
+      extend: extend,
+      encryptionRecipientEmail: widget.recipient?.email ?? widget.pgpKey?.email,
       passwordEncryption: !widget.useKey,
       file: output,
       onUploadStart: (processingFile) {
@@ -106,7 +113,7 @@ class _ShareProgressState extends State<ShareProgress> {
       },
       onSuccess: () {
         widget.onLoad();
-        createPublicLink(_processingFile);
+        createPublicLink(_processingFile.fileOnDevice, extend);
       },
       onError: (e) {
         error = e;
@@ -115,30 +122,70 @@ class _ShareProgressState extends State<ShareProgress> {
     );
   }
 
-  createPublicLink(ProcessingFile processingFile) {
-    widget._fileViewerState.createPublicLink(
-      processingFile: processingFile,
-      onError: (e) {
-        error = e;
-        setState(() {});
-      },
-      onSuccess: (link) {
-        this.link = link;
-        setState(() {});
-      },
-    );
+  createPublicLink(File file, String extend) {
+    isDownload = true;
+    setState(() {});
+    if (widget.useEncrypt) {
+      widget._fileViewerState.createPublicLink(
+        extend: extend,
+        file: file,
+        onError: (e) {
+          error = e;
+          setState(() {});
+        },
+        onSuccess: (link) {
+          this.link = link;
+          setState(() {});
+        },
+      );
+    } else {
+      widget._fileViewerState.createSecureLink(
+        extend: extend,
+        file: file,
+        onError: (e) {
+          error = e;
+          setState(() {});
+        },
+        onSuccess: (link) {
+          this.link = link.link;
+          this.password = link.password;
+          setState(() {});
+        },
+      );
+    }
+  }
+
+  share() async {
+    if (widget.useEncrypt) {
+      if (isDownload) {
+        upload();
+      } else {
+        encrypt();
+      }
+    } else {
+      createPublicLink(widget.file.file, "");
+    }
+  }
+
+  prepare() async {
+    if (widget.pgpKey != null) {
+      await widget.pgp.setPublicKey(widget.pgpKey.key);
+      await widget.pgp.setTempFile(temp);
+    }
+    share();
   }
 
   @override
   void initState() {
     temp = File(widget.file.file.path + ".temp");
     output = File(widget.file.file.path + (!widget.useKey ? ".gpg" : ".pgp"));
-    encrypt();
+    prepare();
     super.initState();
   }
 
   @override
   void dispose() {
+    _processingFile?.endProcess();
     widget.pgp.stop().whenComplete(() async {
       if (await output.exists()) await output.delete();
       if (await temp.exists()) await temp.delete();
@@ -153,7 +200,7 @@ class _ShareProgressState extends State<ShareProgress> {
     final actions = <Widget>[
       if (link != null)
         FlatButton(
-          child: Text(widget.useKey ? s.send_encrypted : s.send),
+          child: Text(widget.pgpKey != null ? s.send_encrypted : s.send),
           onPressed: () {
             openEmail();
           },
@@ -199,20 +246,32 @@ class _ShareProgressState extends State<ShareProgress> {
   }
 
   openEmail() async {
-    var body = link;
-    if (!widget.useKey) {
-      body += "\n$password";
-    }
-    if (widget.useKey) {
+    final recipient = widget.recipient?.fullName ??
+        widget.recipient?.email ??
+        widget.pgpKey?.email;
 
-      final encrypt = await widget.pgp.encryptBytes(Uint8List.fromList(body.codeUnits));
+    var template = MailTemplate.getTemplate(
+      widget.useEncrypt,
+      widget.useKey,
+      FileUtils.getFileNameFromPath(widget.file.file.path),
+      link,
+      widget.pgpKey != null ? password : null,
+      recipient,
+      AppStore.authState.userEmail,
+    );
 
-      body = String.fromCharCodes(encrypt);
+    if (widget.pgpKey != null) {
+      final encrypt = await widget.pgp
+          .encryptBytes(Uint8List.fromList(template.body.codeUnits));
+
+      template.body = String.fromCharCodes(encrypt);
     }
+
     final uri = Uri.encodeFull(
         "mailto:${widget.recipient?.email ?? widget.pgpKey?.email}"
-        "?subject=Secure share"
-        "&body=$body");
+        "?subject=${template.subject}"
+        "&body=${template.body}");
+
     if (await canLaunch(uri)) {
       launch(uri);
     }
@@ -233,11 +292,8 @@ class _ShareProgressState extends State<ShareProgress> {
           child: AppButton(
             onPressed: () {
               error = null;
-              if (isDownload) {
-                upload();
-              } else {
-                encrypt();
-              }
+
+              share();
             },
             text: s.try_again,
           ),
@@ -258,10 +314,7 @@ class _ShareProgressState extends State<ShareProgress> {
         height: 10,
       ),
       if (!widget.useKey) ClipboardLabel(password, s.encrypted_file_password),
-      if (!widget.useKey)
-        SizedBox(
-          height: 10,
-        ),
+      if (!widget.useKey) SizedBox(height: 10),
       Text(
         widget.useKey
             ? s.encrypted_using_key(widget.recipient?.fullName ??

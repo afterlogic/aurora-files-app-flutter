@@ -9,6 +9,7 @@ import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/models/secure_link.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -79,15 +80,19 @@ class FilesApi {
     }
   }
 
-  Future<void> uploadFile(ProcessingFile processingFile, bool shouldEncrypt,
-      {String url,
-      String name,
-      bool passwordEncryption,
-      @required String storageType,
-      @required String path,
-      Function(int) updateProgress,
-      @required Function() onSuccess,
-      @required Function(String) onError}) async {
+  Future<void> uploadFile(
+    ProcessingFile processingFile,
+    bool shouldEncrypt, {
+    String url,
+    String name,
+    bool passwordEncryption,
+    String encryptionRecipientEmail,
+    @required String storageType,
+    @required String path,
+    Function(int) updateProgress,
+    @required Function() onSuccess,
+    @required Function(String) onError,
+  }) async {
     final bool fileExists = await processingFile.fileOnDevice.exists();
     if (!fileExists) {
       throw CustomException("File to download data into doesn't exist");
@@ -103,17 +108,19 @@ class FilesApi {
       "Overwrite": false,
     };
     params["ExtendedProps"] = {};
+
+    if (passwordEncryption == true) {
+      params["ExtendedProps"]["PgpEncryptionMode"] = "password";
+      params["ExtendedProps"]["PgpEncryptionRecipientEmail"] =
+          encryptionRecipientEmail;
+    }
+
     if (shouldEncrypt == true) {
       final vector = IV.fromSecureRandom(vectorLength);
       processingFile.ivBase64 = vector.base64;
 
       params["ExtendedProps"]["InitializationVector"] = vector.base16;
       params["ExtendedProps"]["FirstChunk"] = true;
-    }
-    if (passwordEncryption == true) {
-      params["ExtendedProps"]["PgpEncryptionMode"] = "password";
-      params["ExtendedProps"]["PgpEncryptionRecipientEmail"] =
-          "vasil@afterlogic.com";
     }
 
     final body = new ApiBody(
@@ -445,6 +452,32 @@ class FilesApi {
 
     if (res['Result'] is String) {
       return "$hostName/${res['Result']}";
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<SecureLink> createSecureLink(
+      String type, String path, String name, int size, bool isFolder,
+      [String linkPassword]) async {
+    final String hostName = AppStore.authState.hostName;
+    final parameters = {
+      "Type": type,
+      "Path": path,
+      "Name": name,
+      "Size": size,
+      "IsFolder": isFolder,
+    };
+
+    final body = new ApiBody(
+        module: "OpenPgpFilesWebclient",
+        method: "CreatePublicLink",
+        parameters: json.encode(parameters));
+
+    final res = await sendRequest(body, {"TenantName": "Default"}) as Map;
+
+    if (res.containsKey("Result")) {
+      return SecureLink(hostName+"/"+res["Result"]["link"], res["Result"]["password"]);
     } else {
       throw CustomException(getErrMsg(res));
     }

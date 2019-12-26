@@ -14,10 +14,14 @@ Map<String, String> getHeader() {
   return {'Authorization': 'Bearer ${AppStore.authState.authToken}'};
 }
 
-Future sendRequest(ApiBody body) async {
+Future sendRequest(ApiBody body, [Map<String, dynamic> addedBody]) async {
   final authState = AppStore.authState;
-  final rawResponse = await http.post(authState.apiUrl,
-      headers: getHeader(), body: body.toMap());
+  final map = body.toMap();
+  addedBody?.forEach((key, value) {
+    map[key] = value;
+  });
+  final rawResponse =
+      await http.post(authState.apiUrl, headers: getHeader(), body: map);
   if (rawResponse.statusCode != 200) {
     return {"ErrorCode": unknownError};
   }

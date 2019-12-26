@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/models/secure_link.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
@@ -128,15 +129,18 @@ abstract class _FileViewerState with Store {
     return _filesApi.getRecipient();
   }
 
-  Future<void> uploadSecureFile({
-    @required File file,
-    @required Function(ProcessingFile) onUploadStart,
-    @required Function() onSuccess,
-    @required Function(String) onError,
-    @required bool passwordEncryption,
-  }) {
+  Future<void> uploadSecureFile(
+      {@required File file,
+      @required Function(ProcessingFile) onUploadStart,
+      @required Function() onSuccess,
+      @required Function(String) onError,
+      @required bool passwordEncryption,
+      @required String encryptionRecipientEmail,
+      @required String extend}) {
     return fileState.uploadFile(
-        name: this.file.name + (passwordEncryption ? ".gpg" : ".pgp"),
+        passwordEncryption: passwordEncryption,
+        encryptionRecipientEmail: encryptionRecipientEmail,
+        name: this.file.name + extend,
         shouldEncrypt: false,
         file: file,
         path: this.file.path,
@@ -146,13 +150,30 @@ abstract class _FileViewerState with Store {
   }
 
   Future<void> createPublicLink({
-    @required ProcessingFile processingFile,
+    @required File file,
     @required Function(String) onSuccess,
     @required Function(String) onError,
+    @required String extend,
   }) async {
-    final size = await processingFile.fileOnDevice.length();
+    final size = await file.length();
     return fileState.onGetPublicLink(
-        name: processingFile.name,
+        name: this.file.name + extend,
+        size: size,
+        isFolder: false,
+        path: this.file.path,
+        onSuccess: onSuccess,
+        onError: onError);
+  }
+
+  Future<void> createSecureLink({
+    @required File file,
+    @required Function(SecureLink) onSuccess,
+    @required Function(String) onError,
+    @required String extend,
+  }) async {
+    final size = await file.length();
+    return fileState.onGetSecureLink(
+        name: this.file.name + extend,
         size: size,
         isFolder: false,
         path: this.file.path,

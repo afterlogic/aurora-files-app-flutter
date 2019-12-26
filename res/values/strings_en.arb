@@ -161,4 +161,5 @@
   "upload": "Upload",
   "encrypt_error": "Encrypt error",
   "encrypted_file_password":"Encrypted file password",
+  "copy_password":"Please, copy the password. It will not be able to get later"
 }

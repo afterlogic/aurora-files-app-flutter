@@ -326,7 +326,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             widget.filesPageState.onGetFiles(
               showLoading: FilesLoadingType.filesVisible,
             );
-          }),
+          }, widget.filesState.selectedStorage.type == "encrypted"),
         );
       }
     }

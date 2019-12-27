@@ -12,6 +12,7 @@ import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipien
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
@@ -56,6 +57,7 @@ class _ShareProgressState extends State<ShareProgress> {
   S s;
   String error;
   String password;
+  final toastKey = GlobalKey<ToastWidgetState>();
 
   encrypt() async {
     var isProgress = true;
@@ -221,16 +223,27 @@ class _ShareProgressState extends State<ShareProgress> {
     );
     final content = SizedBox(
       height: min(size.height / 2, 350),
-      child: ListView(
+      child: Stack(
         children: <Widget>[
-          SizedBox(
-            height: 10,
+          ListView(
+            children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
+              RecipientWidget(
+                  RecipientWithKey(widget.recipient, widget.pgpKey)),
+              SizedBox(
+                height: 10,
+              ),
+              ...progressLabel(),
+            ],
           ),
-          RecipientWidget(RecipientWithKey(widget.recipient, widget.pgpKey)),
-          SizedBox(
-            height: 10,
+          Align(
+            alignment: Alignment(0, 1),
+            child: ToastWidget(
+              key: toastKey,
+            ),
           ),
-          ...progressLabel(),
         ],
       ),
     );
@@ -312,11 +325,16 @@ class _ShareProgressState extends State<ShareProgress> {
       ];
     }
     return [
-      ClipboardLabel(link, s.encrypted_file_link),
+      ClipboardLabel(link, s.encrypted_file_link, () {
+        toastKey.currentState.show(s.link_coppied_to_clipboard);
+      }),
       SizedBox(
         height: 10,
       ),
-      if (!widget.useKey) ClipboardLabel(password, s.encrypted_file_password),
+      if (!widget.useKey)
+        ClipboardLabel(password, s.encrypted_file_password, () {
+          toastKey.currentState.show(s.link_coppied_to_clipboard);
+        }),
       if (!widget.useKey) SizedBox(height: 10),
       Text(
         widget.useKey
@@ -335,8 +353,9 @@ class _ShareProgressState extends State<ShareProgress> {
 class ClipboardLabel extends StatefulWidget {
   final String link;
   final String description;
+  final Function onTap;
 
-  const ClipboardLabel(this.link, this.description);
+  const ClipboardLabel(this.link, this.description, this.onTap);
 
   @override
   _ClipboardLabelState createState() => _ClipboardLabelState();
@@ -347,6 +366,7 @@ class _ClipboardLabelState extends State<ClipboardLabel> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        widget.onTap();
         Clipboard.setData(ClipboardData(text: widget.link));
       },
       child: Column(

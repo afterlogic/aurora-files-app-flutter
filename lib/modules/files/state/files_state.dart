@@ -198,10 +198,17 @@ abstract class _FilesState with Store {
     @required String path,
     @required Function(SecureLink) onSuccess,
     @required Function(String) onError,
+    @required String password,
   }) async {
     try {
       final SecureLink result = await _filesApi.createSecureLink(
-          selectedStorage.type, path, name, size, isFolder);
+        selectedStorage.type,
+        path,
+        name,
+        size,
+        isFolder,
+        password,
+      );
       onSuccess(result);
     } catch (err) {
       onError(err.toString());

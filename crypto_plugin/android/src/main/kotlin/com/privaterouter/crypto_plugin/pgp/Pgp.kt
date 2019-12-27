@@ -19,30 +19,31 @@ import org.bouncycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider
 import org.bouncycastle.util.io.Streams
 import org.pgpainless.PGPainless
 import org.pgpainless.algorithm.CompressionAlgorithm
+import org.pgpainless.algorithm.HashAlgorithm
 import org.pgpainless.algorithm.SymmetricKeyAlgorithm
+import org.pgpainless.decryption_verification.DecryptionBuilder
+import org.pgpainless.decryption_verification.DecryptionStream
+import org.pgpainless.encryption_signing.EncryptionBuilder
+import org.pgpainless.encryption_signing.EncryptionStream
 import org.pgpainless.key.generation.type.RSA_GENERAL
 import org.pgpainless.key.generation.type.length.RsaLength
-import org.pgpainless.symmetric_encryption.SymmetricEncryptorDecryptor
+import org.pgpainless.key.parsing.KeyRingReader
+import org.pgpainless.key.protection.KeyRingProtectionSettings
+import org.pgpainless.key.protection.PasswordBasedSecretKeyRingProtector
+import org.pgpainless.key.protection.SecretKeyPassphraseProvider
+import org.pgpainless.util.BCUtil
 import org.pgpainless.util.Passphrase
 
 
-/**
- * Taken from org.bouncycastle.openpgp.examples
- *
- * @author seamans
- * @author jdamico <damico></damico>@dcon.com.br>
- */
 class Pgp {
-
-    private val provider: Provider
-    private val calculator: KeyFingerPrintCalculator
+    private val digestCalculator = BcPGPDigestCalculatorProvider()
+    private val provider = BouncyCastleProvider()
+    private val calculator: KeyFingerPrintCalculator = BcKeyFingerprintCalculator()
     var progress: Progress? = null
         private set
 
     init {
-        provider = BouncyCastleProvider()
         Security.addProvider(provider)
-        calculator = BcKeyFingerprintCalculator()
     }
 
     @Throws(IOException::class, PGPException::class)
@@ -50,15 +51,9 @@ class Pgp {
         var inputStream1 = inputStream
         inputStream1 = PGPUtil.getDecoderStream(inputStream1)
         val pgpPub = PGPPublicKeyRingCollection(inputStream1, calculator)
-        //
-        // we just loop through the collection till we find a key suitable for encryption, inputStream the real
-        // world you would probably want to be a bit smarter about this.
-        //
+
         var key: PGPPublicKey? = null
 
-        //
-        // iterate through the key rings.
-        //
         val rIt = pgpPub.keyRings
 
         while (key == null && rIt.hasNext()) {
@@ -78,203 +73,86 @@ class Pgp {
         return key!!
     }
 
-    /**
-     * Load a secret key ring collection from keyIn and find the secret key corresponding to
-     * keyID if it exists.
-     *
-     * @param keyIn input stream representing a key ring collection.
-     * @param keyID keyID we want.
-     * @param pass  passphrase to decrypt secret key with.
-     * @return
-     * @throws IOException
-     * @throws PGPException
-     * @throws NoSuchProviderException
-     */
-    @Throws(IOException::class, PGPException::class, NoSuchProviderException::class)
-    fun findSecretKey(keyIn: InputStream, keyID: Long, pass: CharArray): PGPPrivateKey? {
-        val pgpSec = PGPSecretKeyRingCollection(
-                PGPUtil.getDecoderStream(keyIn), calculator)
-
-        val pgpSecKey = pgpSec.getSecretKey(keyID) ?: return null
-
-        val a = JcePBESecretKeyDecryptorBuilder(JcaPGPDigestCalculatorProviderBuilder()
-                .setProvider(provider)
-                .build())
-                .setProvider(provider)
-                .build(pass)
-
-        return pgpSecKey.extractPrivateKey(a)
-    }
-
-    /**
-     * decrypt the passed inputStream message stream
-     */
     @Throws(Exception::class)
-    fun decrypt(inputStream: InputStream, out: OutputStream, keyIn: InputStream, passwd: CharArray, length: Long) {
+    fun decrypt(inputStream: InputStream, output: OutputStream, privateKey: String, password: String, fileLength: Long) {
         this.progress?.stop = true
         val progress = Progress()
         this.progress = progress
+        progress.total = fileLength
+        var decryptionStream: DecryptionStream? = null
         try {
-            progress.total = length
-            var inputStream1 = inputStream
-            inputStream1 = PGPUtil.getDecoderStream(inputStream1)
-            val pgpF = PGPObjectFactory(inputStream1, calculator)
-            val enc: PGPEncryptedDataList
-            val o = pgpF.nextObject()
-            //
-            // the first object might be a PGP marker packet.
-            //
-            enc = if (o is PGPEncryptedDataList) {
-                o
-            } else {
-                pgpF.nextObject() as PGPEncryptedDataList
-            }
 
-            //
-            // find the secret key
-            //
-            val it = enc.encryptedDataObjects
-            var sKey: PGPPrivateKey? = null
-            var pbe: PGPPublicKeyEncryptedData? = null
+            val settings = KeyRingProtectionSettings(SymmetricKeyAlgorithm.AES_256, HashAlgorithm.MD5, 0)
+            val secretKeys = KeyRingReader().secretKeyRing(privateKey)
+            val secretKeyDecryptor = PasswordBasedSecretKeyRingProtector(settings, SecretKeyPassphraseProvider { Passphrase(password.toCharArray()) })
 
-            while (sKey == null && it.hasNext()) {
-                val next = it.next()
-                pbe = next as PGPPublicKeyEncryptedData?
-                sKey = findSecretKey(keyIn, pbe!!.keyID, passwd)
-            }
+            decryptionStream = DecryptionBuilder()
+                    .onInputStream(inputStream)
+                    .decryptWith(secretKeyDecryptor, BCUtil.keyRingsToKeyRingCollection(secretKeys))
+                    .doNotVerify()
+                    .build()
 
-            requireNotNull(sKey) { "Secret key for message not found." }
-
-            val b = JcePublicKeyDataDecryptorFactoryBuilder()
-                    .setProvider(provider)
-                    .setContentProvider(provider)
-                    .build(sKey)
-
-            val clear = pbe!!.getDataStream(b)
-
-            val plainFact = PGPObjectFactory(clear, calculator)
-
-            var message = plainFact.nextObject()
-
-            if (message is PGPCompressedData) {
-                val pgpFact = PGPObjectFactory(message.dataStream, calculator)
-
-                message = pgpFact.nextObject()
-                if (message is PGPOnePassSignatureList) {
-                    message = pgpFact.nextObject()
-                }
-            }
-
-            if (message is PGPLiteralData) {
-                val unc = message.inputStream
-                var ch: Int
-                while (true) {
-                    ch = unc.read()
-                    if (ch < 0) {
-                        break
-                    }
-                    progress.update(1)
-                    out.write(ch)
-                }
-            } else if (message is PGPOnePassSignatureList) {
-                throw PGPException("Encrypted message contains a signed message - not literal data.")
-            } else {
-                throw PGPException("Message is not a simple encrypted file - type unknown.")
-            }
-
-            if (pbe.isIntegrityProtected) {
-                if (!pbe.verify()) {
-                    throw PGPException("Message failed integrity check")
-                }
-            }
-            progress.complete = true
-        } catch (e: Throwable) {
-            progress.complete = true
-            throw  e
-        }
-    }
-
-    @Throws(IOException::class, NoSuchProviderException::class, PGPException::class)
-    fun encrypt(output: OutputStream, prepareEncrypt: File, input: InputStream,
-                encKey: PGPPublicKey, fileLength: Long) {
-        this.progress?.stop = true
-        val progress = Progress()
-        this.progress = progress
-        try {
-            val output = ArmoredOutputStream(output)
-            val comData = PGPCompressedDataGenerator(
-                    PGPCompressedData.ZIP)
-
-            prepareEncrypt.deleteOnExit()
-
-            writeFileToLiteralData(comData.open(FileOutputStream(prepareEncrypt)), input, fileLength)
-
-            comData.close()
-
-            val c = JcePGPDataEncryptorBuilder(PGPEncryptedData.CAST5)
-                    .setWithIntegrityPacket(false)
-                    .setSecureRandom(SecureRandom())
-                    .setProvider(provider)
-
-            val cPk = PGPEncryptedDataGenerator(c)
-
-            val d = JcePublicKeyKeyEncryptionMethodGenerator(encKey)
-                    .setProvider(provider)
-                    .setSecureRandom(SecureRandom())
-
-            cPk.addMethod(d)
-            val cOut = cPk.open(output, prepareEncrypt.length())
-
-            val fileInput = FileInputStream(prepareEncrypt)
-
-            progress.total = prepareEncrypt.length()
             val byffer = ByteArray(4096)
             var length: Int
             while (true) {
-                length = fileInput.read(byffer)
+                length = decryptionStream.read(byffer)
                 if (length <= 0) {
                     break
                 }
                 progress.update(length)
-                cOut.write(byffer, 0, length)
+                output.write(byffer, 0, length)
             }
-
-            prepareEncrypt.deleteOnExit()
-            cOut.close()
-            output.close()
-            fileInput.close()
-            progress.complete = true
         } catch (e: Throwable) {
+            throw  e
+        } finally {
+            decryptionStream?.close()
+            output.close()
+            inputStream.close()
             progress.complete = true
-            throw e
         }
     }
 
+    @Throws(IOException::class, NoSuchProviderException::class, PGPException::class)
+    fun encrypt(output: OutputStream, input: InputStream,
+                encKey: PGPPublicKey, fileLength: Long) {
+        this.progress?.stop = true
+        val progress = Progress()
+        this.progress = progress
+        progress.total = fileLength
 
-    @Throws(IOException::class)
-    private fun writeFileToLiteralData(outputStream: OutputStream, inputStream: InputStream, length: Long) {
-        val var3 = PGPLiteralDataGenerator()
-        val var4 = var3.open(outputStream, PGPLiteralData.BINARY, "temp", length, Date(System.currentTimeMillis()))
-        pipeFileContents(inputStream, var4)
-    }
+        var encryptionStream: EncryptionStream? = null
+        try {
+            encryptionStream = EncryptionBuilder()
+                    .onOutputStream(output)
+                    .toRecipients(encKey)
+                    .usingAlgorithms(
+                            SymmetricKeyAlgorithm.AES_256,
+                            HashAlgorithm.SHA512,
+                            CompressionAlgorithm.UNCOMPRESSED
+                    )
+                    .doNotSign()
+                    .asciiArmor()
 
-    @Throws(IOException::class)
-    private fun pipeFileContents(inputStream: InputStream, var1: OutputStream) {
-        val var4 = ByteArray(4096)
-
-        var var5: Int
-        while (true) {
-            var5 = inputStream.read(var4)
-            if (var5 <= 0) {
-                break
+            val byffer = ByteArray(4096)
+            var length: Int
+            while (true) {
+                length = input.read(byffer)
+                if (length <= 0) {
+                    break
+                }
+                progress.update(length)
+                encryptionStream.write(byffer, 0, length)
             }
-            var1.write(var4, 0, var5)
+
+        } catch (e: Throwable) {
+            throw e
+        } finally {
+            encryptionStream?.close()
+            input.close()
+            output.close()
+            progress.complete = true
         }
-
-        var1.close()
-        inputStream.close()
     }
-
 
     fun getEmailFromKey(inputStream: InputStream): KeyDescription {
         val key = readPublicKey(inputStream)
@@ -317,32 +195,63 @@ class Pgp {
     fun symmetricallyEncrypt(inputStream: InputStream,
                              outputStream: OutputStream,
                              prepareEncrypt: File,
-                             length: Long,
+                             fileLength: Long,
                              password: String) {
+        this.progress?.stop = true
+        val progress = Progress()
+        this.progress = progress
+        progress.total = fileLength
+        var preparedInputStream: InputStream? = null
+        var encOut: OutputStream? = null
+        try {
+            val encryptionAlgorithm = SymmetricKeyAlgorithm.AES_256
+            val compressionAlgorithm = CompressionAlgorithm.ZIP
+            val passphrase = Passphrase(password.toCharArray())
+            compress(inputStream, FileOutputStream(prepareEncrypt), compressionAlgorithm.algorithmId, fileLength)
+            preparedInputStream = FileInputStream(prepareEncrypt)
 
-        val encryptionAlgorithm = SymmetricKeyAlgorithm.AES_256
-        val compressionAlgorithm = CompressionAlgorithm.ZIP
-        val passphrase = Passphrase(password.toCharArray())
-        compress(inputStream, FileOutputStream(prepareEncrypt), compressionAlgorithm.algorithmId, length)
-        val preparedInputStream = FileInputStream(prepareEncrypt)
+            val encGen = PGPEncryptedDataGenerator(
+                    JcePGPDataEncryptorBuilder(encryptionAlgorithm.algorithmId)
+                            .setWithIntegrityPacket(true)
+                            .setSecureRandom(SecureRandom())
+            //provider not have AES/CFB/NoPadding
+                            )
 
-        val encGen = PGPEncryptedDataGenerator(
-                JcePGPDataEncryptorBuilder(encryptionAlgorithm.algorithmId)
-                        .setWithIntegrityPacket(true)
-                        .setSecureRandom(SecureRandom())
-                        .setProvider(provider))
+            encGen.addMethod(
+                    JcePBEKeyEncryptionMethodGenerator(passphrase.chars)
+                            .setProvider(provider)
+            )
 
-        encGen.addMethod(JcePBEKeyEncryptionMethodGenerator(passphrase.chars).setProvider(provider))
+            encOut = encGen.open(outputStream, prepareEncrypt.length())
 
-        val encOut = encGen.open(outputStream, prepareEncrypt.length())
-
-        Streams.pipeAll(preparedInputStream, encOut)
-
-        encOut.close()
+            val byffer = ByteArray(4096)
+            var length: Int
+            while (true) {
+                length = preparedInputStream.read(byffer)
+                if (length <= 0) {
+                    break
+                }
+                progress.update(length)
+                encOut.write(byffer, 0, length)
+            }
+            encOut.close()
+        } catch (e: Throwable) {
+            throw  e
+        } finally {
+            prepareEncrypt.delete()
+            encOut?.close()
+            preparedInputStream?.close()
+            inputStream.close()
+            outputStream.close()
+            progress.complete = true
+        }
     }
 
     @Throws(IOException::class, PGPException::class)
     fun symmetricallyDecrypt(inputStream: InputStream, outputStream: OutputStream, password: String) {
+        this.progress?.stop = true
+        val progress = Progress()
+        this.progress = progress
         val passphrase = Passphrase(password.toCharArray())
         val pbe: PGPPBEEncryptedData
 
@@ -353,16 +262,16 @@ class Pgp {
             val enc: PGPEncryptedDataList
             var o = pgpF.nextObject()
 
-            if (o is PGPEncryptedDataList) {
-                enc = o
+            enc = if (o !is PGPEncryptedDataList) {
+                pgpF.nextObject() as PGPEncryptedDataList
             } else {
-                enc = pgpF.nextObject() as PGPEncryptedDataList
+                o
             }
 
             pbe = enc.get(0) as PGPPBEEncryptedData
 
             val clear = pbe.getDataStream(
-                    BcPBEDataDecryptorFactory(passphrase.chars, BcPGPDigestCalculatorProvider()))
+                    BcPBEDataDecryptorFactory(passphrase.chars, digestCalculator))
 
             var pgpFact = BcPGPObjectFactory(clear)
 
@@ -375,14 +284,20 @@ class Pgp {
             val ld = o as PGPLiteralData
             val unc = ld.inputStream
 
-            try {
-
-                Streams.pipeAll(unc, outputStream)
-            } finally {
-                outputStream?.close()
+            val byffer = ByteArray(4096)
+            var length: Int
+            while (true) {
+                length = unc.read(byffer)
+                if (length <= 0) {
+                    break
+                }
+                progress.update(length)
+                outputStream.write(byffer, 0, length)
             }
         } finally {
+            outputStream.close()
             decoderInput.close()
+            progress.complete = true
         }
 
         if (pbe.isIntegrityProtected) {

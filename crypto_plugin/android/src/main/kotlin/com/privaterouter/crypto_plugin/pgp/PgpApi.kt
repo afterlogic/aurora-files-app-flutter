@@ -7,7 +7,7 @@ import java.io.*
 open class PgpApi {
     private val pgp = Pgp()
     private var publicKey: PGPPublicKey? = null
-    private var privateKey: ByteArray? = null
+    private var privateKey: String? = null
     private var tempFile: File? = null
 
     fun getKeyDescription(key: String): KeyDescription {
@@ -15,7 +15,7 @@ open class PgpApi {
     }
 
     fun setPrivateKey(key: String?) {
-        privateKey = key?.toByteArray()
+        privateKey = key
     }
 
     fun setPublicKey(key: String?) {
@@ -45,9 +45,8 @@ open class PgpApi {
 
     private fun decrypt(inputStream: InputStream, outputStream: OutputStream, password: String, length: Long) {
         assert(privateKey != null)
-        val privateKeyStream = ByteArrayInputStream(privateKey)
-        pgp.decrypt(inputStream, outputStream, privateKeyStream, password.toCharArray(), length)
-        privateKeyStream.close()
+        pgp.decrypt(inputStream, outputStream, privateKey!!, password, length)
+
     }
 
     fun decryptBytes(array: ByteArray, password: String): ByteArray {
@@ -71,10 +70,8 @@ open class PgpApi {
 
     private fun encrypt(outputStream: OutputStream, inputStream: InputStream, length: Long) {
         assert(publicKey != null)
-        assert(tempFile != null)
         pgp.encrypt(
                 outputStream,
-                tempFile!!,
                 inputStream,
                 publicKey!!,
                 length
@@ -100,7 +97,6 @@ open class PgpApi {
     }
 
     fun createKeys(length: Int, email: String, password: String): List<String> {
-//        assert(length in 512..4096)
         return pgp.createKeys(length, email, password).mapIndexed { i, it ->
             it.toString(Charsets.UTF_8)
         }
@@ -149,14 +145,5 @@ open class PgpApi {
         assert(outputFile.isFile)
         assert(outputFile.canWrite())
         decryptSymmetric(FileInputStream(inputFile), FileOutputStream(outputFile), password)
-    }
-
-    companion object {
-        const val privateKeyStart = "-----BEGIN PGP PRIVATE KEY BLOCK-----\n" +
-                "Version: OpenPGP.js v4.5.5\n\n"
-        const val privateKeyEnd = "\n\n-----END PGP PRIVATE KEY BLOCK-----"
-        const val publicKeyStart = "-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
-                "Version: OpenPGP.js v4.5.5\n\n"
-        const val publicKeyEnd = "\n\n-----END PGP PUBLIC KEY BLOCK-----"
     }
 }

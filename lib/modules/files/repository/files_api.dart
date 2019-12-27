@@ -458,8 +458,13 @@ class FilesApi {
   }
 
   Future<SecureLink> createSecureLink(
-      String type, String path, String name, int size, bool isFolder,
-      [String linkPassword]) async {
+    String type,
+    String path,
+    String name,
+    int size,
+    bool isFolder,
+    String linkPassword,
+  ) async {
     final String hostName = AppStore.authState.hostName;
     final parameters = {
       "Type": type,
@@ -467,6 +472,7 @@ class FilesApi {
       "Name": name,
       "Size": size,
       "IsFolder": isFolder,
+      "Password":linkPassword,
     };
 
     final body = new ApiBody(
@@ -477,7 +483,8 @@ class FilesApi {
     final res = await sendRequest(body, {"TenantName": "Default"}) as Map;
 
     if (res.containsKey("Result")) {
-      return SecureLink(hostName+"/"+res["Result"]["link"], res["Result"]["password"]);
+      return SecureLink(
+          hostName + "/" + res["Result"]["link"], res["Result"]["password"]);
     } else {
       throw CustomException(getErrMsg(res));
     }

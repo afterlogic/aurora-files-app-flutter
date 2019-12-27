@@ -170,9 +170,11 @@ abstract class _FileViewerState with Store {
     @required Function(SecureLink) onSuccess,
     @required Function(String) onError,
     @required String extend,
+    @required String password,
   }) async {
     final size = await file.length();
     return fileState.onGetSecureLink(
+        password: password,
         name: this.file.name + extend,
         size: size,
         isFolder: false,

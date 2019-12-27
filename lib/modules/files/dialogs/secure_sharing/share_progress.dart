@@ -139,7 +139,9 @@ class _ShareProgressState extends State<ShareProgress> {
         },
       );
     } else {
+      password = PgpUtil.createSymmetricKey();
       widget._fileViewerState.createSecureLink(
+        password: password,
         extend: extend,
         file: file,
         onError: (e) {
@@ -148,7 +150,6 @@ class _ShareProgressState extends State<ShareProgress> {
         },
         onSuccess: (link) {
           this.link = link.link;
-          this.password = link.password;
           setState(() {});
         },
       );
@@ -168,9 +169,11 @@ class _ShareProgressState extends State<ShareProgress> {
   }
 
   prepare() async {
+    if (widget.useEncrypt) {
+      await widget.pgp.setTempFile(temp);
+    }
     if (widget.pgpKey != null) {
       await widget.pgp.setPublicKey(widget.pgpKey.key);
-      await widget.pgp.setTempFile(temp);
     }
     share();
   }
@@ -329,39 +332,44 @@ class _ShareProgressState extends State<ShareProgress> {
   }
 }
 
-class ClipboardLabel extends StatelessWidget {
+class ClipboardLabel extends StatefulWidget {
   final String link;
   final String description;
 
   const ClipboardLabel(this.link, this.description);
 
   @override
+  _ClipboardLabelState createState() => _ClipboardLabelState();
+}
+
+class _ClipboardLabelState extends State<ClipboardLabel> {
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(description),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 10),
-          child: Row(
-            children: <Widget>[
-              GestureDetector(
-                child: Icon(Icons.content_copy),
-                onTap: () {
-                  Clipboard.setData(ClipboardData(text: link));
-                },
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Text(link),
-                ),
-              )
-            ],
+    return GestureDetector(
+      onTap: () {
+        Clipboard.setData(ClipboardData(text: widget.link));
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(widget.description),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.content_copy),
+                SizedBox(width: 10),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(widget.link),
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

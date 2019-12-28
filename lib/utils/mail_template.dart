@@ -46,7 +46,7 @@ class MailTemplate {
         : password?.isNotEmpty == true
             ? encryptedFile
                 ? "File encrypted with password: $password"
-                : "Link secure with password: $password"
+                : "Link protected with password: $password"
             : "";
     body += "\n\n";
     body += "Regards\n"

@@ -7,7 +7,7 @@ import BouncyCastle_ObjC
 public class CryptoPlugin: NSObject, FlutterPlugin {
     let scheduler = ConcurrentDispatchQueueScheduler(qos: .background)
     var composite = CompositeDisposable()
-    var pgp = Pgp()
+    var pgp = PgpApi()
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "crypto_plugin", binaryMessenger: registrar.messenger())
@@ -22,15 +22,15 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
         let method = route[1]
         let arguments = call.arguments as! [Any]
         print(algorithm + "." + method)
-
+        
         if(algorithm=="pgp"&&method=="stop"){
-            self.pgp = Pgp()
+            self.pgp = PgpApi()
             self.composite.dispose()
             self.composite = CompositeDisposable()
             result("")
             return;
         }
-
+        
         let disposable =  Single<Any>.create { emitter in
             do {
                 let data  = try self.execute(algorithm: algorithm, method:method, arguments: arguments)
@@ -45,7 +45,7 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
         .subscribe(onSuccess: { (any) in
             result(any)
         },onError: { (error) in
-
+            
             if error is MethodNotImplemented{
                 result(FlutterMethodNotImplemented)
             }else if error is  CryptionError{
@@ -82,32 +82,45 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
                 let data = arguments[0] as! String
                 let info =  try self.pgp.getKeyDescription(  data.data(using: String.Encoding.utf8)!)
                 return [info.emails,info.length]
-            case "setPrivateKey":
-
+                
+            case "setTempFile":
+                
                 let data = arguments[0] as! String
-                try self.pgp.setPrivateKey( data)
+                self.pgp.setTempFile(data)
                 return ""
             case "setPublicKey":
                 let data = arguments[0] as! String
-                try self.pgp.setPublicKey(  data)
+                try self.pgp.setPublicKey( data)
                 return ""
             case "decryptBytes":
-
                 let data = arguments[0] as! FlutterStandardTypedData
                 let password = arguments[1] as! String
-                let result = try self.pgp.decrypt(Data.init(data.data), password)
+                let result = try self.pgp.decryptBytes(Data.init(data.data), password)
                 return   result.withUnsafeBytes {
                     [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
                 }
+            case "decryptFile":
+                let input = arguments[0] as! String
+                let output = arguments[1] as! String
+                let password = arguments[2] as! String
+                
+                try self.pgp.decryptFile(input, output, password)
+                return ""
             case "encryptBytes":
-
+                
                 let data = arguments[0] as! FlutterStandardTypedData
-                let result = try self.pgp.encrypt(Data.init(data.data))
+                let result = try self.pgp.encryptBytes(Data.init(data.data))
                 return  result.withUnsafeBytes {
                     [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
                 }
+            case "encryptFile":
+                let input = arguments[0] as! String
+                let output = arguments[1] as! String
+                
+                try self.pgp.encryptFile(input, output)
+                return ""
             case "createKeys":
-
+                
                 let length = arguments[0] as!   NSNumber
                 let email = arguments[1] as! String
                 let password = arguments[2] as! String

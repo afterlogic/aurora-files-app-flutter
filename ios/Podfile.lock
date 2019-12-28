@@ -8,8 +8,6 @@ PODS:
   - DMSOpenPGP (0.1.4):
     - BouncyCastle-ObjC (~> 0.1.0)
     - OpenSSL-Universal (~> 1.0.2.17)
-  - downloads_path_provider (0.0.1):
-    - Flutter
   - file_picker (0.0.1):
     - Flutter
   - Flutter (1.0.0)
@@ -46,7 +44,6 @@ DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - crypto_plugin (from `.symlinks/plugins/crypto_plugin/ios`)
   - DMSOpenPGP (= 0.1.4)
-  - downloads_path_provider (from `.symlinks/plugins/downloads_path_provider/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
@@ -74,8 +71,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity/ios"
   crypto_plugin:
     :path: ".symlinks/plugins/crypto_plugin/ios"
-  downloads_path_provider:
-    :path: ".symlinks/plugins/downloads_path_provider/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
@@ -104,7 +99,6 @@ SPEC CHECKSUMS:
   connectivity: 6e94255659cc86dcbef1d452ad3e0491bb1b3e75
   crypto_plugin: 628115b4b05d5843f12b3398012e0b53eabcc603
   DMSOpenPGP: 3c667b775e705abef816582f320bbadb972bd8ce
-  downloads_path_provider: fe0d06888d4b8c055a59edbc2f51f03e63cb0e28
   file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec

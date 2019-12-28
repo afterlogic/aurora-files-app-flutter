@@ -106,7 +106,7 @@ class _ShareLinkState extends State<ShareLink> {
                     () {
                   toastKey.currentState.show(s.link_coppied_to_clipboard);
                 }),
-                if (widget.file.localFile.linkPassword.isNotEmpty == true)
+                if (widget.file.localFile.linkPassword?.isNotEmpty == true)
                   ClipboardLabel(widget.file.localFile.linkPassword, s.password,
                       () {
                     toastKey.currentState.show(s.link_coppied_to_clipboard);
@@ -119,7 +119,7 @@ class _ShareLinkState extends State<ShareLink> {
                   }),
                   SizedBox(height: 10),
                   Text(
-                    widget.file.localFile.linkPassword.isNotEmpty == true
+                    widget.file.localFile.linkPassword?.isNotEmpty == true
                         ? widget.selectRecipientResult.pgpKey != null
                             ? s.encrypted_mail_using_key
                             : s.copy_password

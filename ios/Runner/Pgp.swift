@@ -11,9 +11,9 @@ class  Pgp {
         try decryptor.decrypt( privateKey!,  password,output)
     }
     
-    func encrypt(_ input:JavaIoInputStream,_ input2:JavaIoInputStream,_ output:JavaIoOutputStream,_ publicKey: BCOpenpgpPGPPublicKeyRing) throws  {
+    func encrypt(_ input:JavaIoInputStream,_ output:JavaIoOutputStream,_ publicKey: BCOpenpgpPGPPublicKeyRing) throws  {
         let encryptor = try DMSPGPEncryptor(publicKeyRings: [publicKey])
-        try encryptor.encrypt(input,input2,output)
+        try encryptor.encrypt(input,output)
     }
     
     func getKeyDescription(_ key:Data) throws->KeyInfo {
@@ -64,7 +64,7 @@ class KeyInfo {
 extension DMSPGPEncryptor {
     
     
-    public func encrypt(_ input:JavaIoInputStream,_ input2:JavaIoInputStream,_ output:JavaIoOutputStream) throws ->Void {
+    public func encrypt(_ input:JavaIoInputStream,_ output:JavaIoOutputStream) throws ->Void {
         
         let armoredOutput = TCMessageArmoredOutputStream(javaIoOutputStream: output)
         
@@ -120,11 +120,11 @@ extension DMSPGPEncryptor {
                 }
                 literalDataOutput.write(with: buffer)
             }
-       
+            input.reset()
             literalDataOutput.write(with: IOSByteArray(nsData: Data("\r\n".utf8)))
             if(signer != nil){
                 while true {
-                    length = input2.read(with: buffer)
+                    length = input.read(with: buffer)
                     if(length <= 0){
                         break
                     }

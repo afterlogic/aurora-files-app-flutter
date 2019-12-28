@@ -13,7 +13,7 @@ class Pgp extends Crypt {
   }
 
   Future<Progress> getProgress() async {
-    if (Platform.isIOS) return Progress(1, -1);
+    if (Platform.isIOS) return null;
 
     final result = await invokeMethod(
       "$algorithm.getProgress",
@@ -28,9 +28,7 @@ class Pgp extends Crypt {
   }
 
   Future setTempFile(File temp) async {
-    if (Platform.isIOS) return;
-
-    await invokeMethod(
+     await invokeMethod(
       "$algorithm.setTempFile",
       [temp?.path],
     );
@@ -62,15 +60,6 @@ class Pgp extends Crypt {
   }
 
   Future decryptFile(File inputFile, File outputFile, String password) async {
-    if (Platform.isIOS) {
-      await outputFile.writeAsBytes(
-        await decryptBytes(
-          await inputFile.readAsBytes(),
-          password,
-        ),
-      );
-      return;
-    }
     await invokeMethod(
       "$algorithm.decryptFile",
       [inputFile.path, outputFile.path, password],
@@ -86,16 +75,6 @@ class Pgp extends Crypt {
   }
 
   Future<void> encryptFile(File inputFile, File outputFile) async {
-    if (Platform.isIOS) {
-      await outputFile.writeAsBytes(
-        List<int>.from(
-          await encryptBytes(
-            await inputFile.readAsBytes(),
-          ),
-        ),
-      );
-      return;
-    }
     await invokeMethod(
       "$algorithm.encryptFile",
       [inputFile.path, outputFile.path],
@@ -113,15 +92,6 @@ class Pgp extends Crypt {
 
   Future decryptSymmetricFile(
       File inputFile, File outputFile, String password) async {
-    if (Platform.isIOS) {
-      await outputFile.writeAsBytes(
-        await decryptSymmetricBytes(
-          await inputFile.readAsBytes(),
-          password,
-        ),
-      );
-      return;
-    }
     await invokeMethod(
       "$algorithm.decryptSymmetricFile",
       [inputFile.path, outputFile.path, password],
@@ -139,14 +109,6 @@ class Pgp extends Crypt {
 
   Future<void> encryptSymmetricFile(
       File inputFile, File outputFile, String password) async {
-    if (Platform.isIOS) {
-      await outputFile.writeAsBytes(
-        List<int>.from(
-          await encryptSymmetricBytes(await inputFile.readAsBytes(), password),
-        ),
-      );
-      return;
-    }
     await invokeMethod(
       "$algorithm.encryptSymmetricFile",
       [inputFile.path, outputFile.path, password],

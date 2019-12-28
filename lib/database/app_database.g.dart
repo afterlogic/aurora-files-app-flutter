@@ -35,6 +35,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   final String extendedProps;
   final bool isExternal;
   final String initVector;
+  final String linkPassword;
   LocalFile(
       {@required this.localId,
       @required this.id,
@@ -62,7 +63,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       @required this.hash,
       @required this.extendedProps,
       @required this.isExternal,
-      this.initVector});
+      this.initVector,
+      this.linkPassword});
   factory LocalFile.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -117,6 +119,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           .mapFromDatabaseResponse(data['${effectivePrefix}is_external']),
       initVector: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}init_vector']),
+      linkPassword: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}link_password']),
     );
   }
   factory LocalFile.fromJson(Map<String, dynamic> json,
@@ -149,6 +153,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       extendedProps: serializer.fromJson<String>(json['extendedProps']),
       isExternal: serializer.fromJson<bool>(json['isExternal']),
       initVector: serializer.fromJson<String>(json['initVector']),
+      linkPassword: serializer.fromJson<String>(json['linkPassword']),
     );
   }
   @override
@@ -182,6 +187,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       'extendedProps': serializer.toJson<String>(extendedProps),
       'isExternal': serializer.toJson<bool>(isExternal),
       'initVector': serializer.toJson<String>(initVector),
+      'linkPassword': serializer.toJson<String>(linkPassword),
     };
   }
 
@@ -253,6 +259,9 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       initVector: initVector == null && nullToAbsent
           ? const Value.absent()
           : Value(initVector),
+      linkPassword: linkPassword == null && nullToAbsent
+          ? const Value.absent()
+          : Value(linkPassword),
     ) as T;
   }
 
@@ -283,7 +292,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           String hash,
           String extendedProps,
           bool isExternal,
-          String initVector}) =>
+          String initVector,
+          String linkPassword}) =>
       LocalFile(
         localId: localId ?? this.localId,
         id: id ?? this.id,
@@ -312,6 +322,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
         extendedProps: extendedProps ?? this.extendedProps,
         isExternal: isExternal ?? this.isExternal,
         initVector: initVector ?? this.initVector,
+        linkPassword: linkPassword ?? this.linkPassword,
       );
   @override
   String toString() {
@@ -342,7 +353,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           ..write('hash: $hash, ')
           ..write('extendedProps: $extendedProps, ')
           ..write('isExternal: $isExternal, ')
-          ..write('initVector: $initVector')
+          ..write('initVector: $initVector, ')
+          ..write('linkPassword: $linkPassword')
           ..write(')'))
         .toString();
   }
@@ -390,7 +402,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
                                                                               .hashCode,
                                                                           $mrjc(
                                                                               owner.hashCode,
-                                                                              $mrjc(content.hashCode, $mrjc(viewUrl.hashCode, $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, initVector.hashCode)))))))))))))))))))))))))));
+                                                                              $mrjc(content.hashCode, $mrjc(viewUrl.hashCode, $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, $mrjc(initVector.hashCode, linkPassword.hashCode))))))))))))))))))))))))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
@@ -421,7 +433,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           other.hash == hash &&
           other.extendedProps == extendedProps &&
           other.isExternal == isExternal &&
-          other.initVector == initVector);
+          other.initVector == initVector &&
+          other.linkPassword == linkPassword);
 }
 
 class FilesCompanion extends UpdateCompanion<LocalFile> {
@@ -452,6 +465,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
   final Value<String> extendedProps;
   final Value<bool> isExternal;
   final Value<String> initVector;
+  final Value<String> linkPassword;
   const FilesCompanion({
     this.localId = const Value.absent(),
     this.id = const Value.absent(),
@@ -480,6 +494,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
     this.extendedProps = const Value.absent(),
     this.isExternal = const Value.absent(),
     this.initVector = const Value.absent(),
+    this.linkPassword = const Value.absent(),
   });
   FilesCompanion copyWith(
       {Value<int> localId,
@@ -508,7 +523,8 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       Value<String> hash,
       Value<String> extendedProps,
       Value<bool> isExternal,
-      Value<String> initVector}) {
+      Value<String> initVector,
+      Value<String> linkPassword}) {
     return FilesCompanion(
       localId: localId ?? this.localId,
       id: id ?? this.id,
@@ -537,6 +553,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       extendedProps: extendedProps ?? this.extendedProps,
       isExternal: isExternal ?? this.isExternal,
       initVector: initVector ?? this.initVector,
+      linkPassword: linkPassword ?? this.linkPassword,
     );
   }
 }
@@ -876,6 +893,20 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     );
   }
 
+  final VerificationMeta _linkPasswordMeta =
+      const VerificationMeta('linkPassword');
+  GeneratedTextColumn _linkPassword;
+  @override
+  GeneratedTextColumn get linkPassword =>
+      _linkPassword ??= _constructLinkPassword();
+  GeneratedTextColumn _constructLinkPassword() {
+    return GeneratedTextColumn(
+      'link_password',
+      $tableName,
+      true,
+    );
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         localId,
@@ -904,7 +935,8 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
         hash,
         extendedProps,
         isExternal,
-        initVector
+        initVector,
+        linkPassword
       ];
   @override
   $FilesTable get asDslTable => this;
@@ -1083,6 +1115,14 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     } else if (initVector.isRequired && isInserting) {
       context.missing(_initVectorMeta);
     }
+    if (d.linkPassword.present) {
+      context.handle(
+          _linkPasswordMeta,
+          linkPassword.isAcceptableValue(
+              d.linkPassword.value, _linkPasswordMeta));
+    } else if (linkPassword.isRequired && isInserting) {
+      context.missing(_linkPasswordMeta);
+    }
     return context;
   }
 
@@ -1178,6 +1218,9 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     }
     if (d.initVector.present) {
       map['init_vector'] = Variable<String, StringType>(d.initVector.value);
+    }
+    if (d.linkPassword.present) {
+      map['link_password'] = Variable<String, StringType>(d.linkPassword.value);
     }
     return map;
   }

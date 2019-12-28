@@ -269,7 +269,7 @@ class _ShareProgressState extends State<ShareProgress> {
     var template = MailTemplate.getTemplate(
       widget.useEncrypt,
       widget.useKey,
-      FileUtils.getFileNameFromPath(widget.file.file.path),
+      widget.file.localFile.name,
       link,
       widget.pgpKey != null ? password : null,
       recipient,

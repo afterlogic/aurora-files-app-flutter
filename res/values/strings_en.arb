@@ -160,6 +160,15 @@
   "send_encrypted": "Send via encrypted email",
   "upload": "Upload",
   "encrypt_error": "Encrypt error",
-  "encrypted_file_password":"Encrypted file password",
-  "copy_password":"You can send the link via email. The password must be sent using a different channel. Warning: write password down, it will not be available later."
+  "encrypted_file_password": "Encrypted file password",
+  "copy_password": "You can send the link via email. The password must be sent using a different channel.",
+  "create_link": "Create public link",
+  "create_encrypt_link": "Create protected public link",
+  "encrypt_link": "Protect public link with password",
+  "public_link": "Public link",
+  "remove_link": "Remove link",
+  "send_to": "Send to..",
+  "recipient": "Recipient",
+  "encrypted_mail_using_key": "You can send the link and the password via email.",
+  "send_email": "You can send the link via email."
 }

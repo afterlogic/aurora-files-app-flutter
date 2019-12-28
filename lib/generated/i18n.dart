@@ -44,8 +44,10 @@ class S implements WidgetsLocalizations {
   String get contacts => "Contacts";
   String get copy => "Copy";
   String get copy_or_move => "Copy/Move";
-  String get copy_password => "You can send the link via email. The password must be sent using a different channel. Warning: write password down, it will not be available later.";
+  String get copy_password => "You can send the link via email. The password must be sent using a different channel.";
   String get copy_public_link => "Copy public link";
+  String get create_encrypt_link => "Create protected public link";
+  String get create_link => "Create public link";
   String get created => "Created";
   String get dark_theme => "Dark theme";
   String get decrypt_error => "An error occurred during the decryption process. Perhaps, this file was encrypted with another key.";
@@ -62,9 +64,11 @@ class S implements WidgetsLocalizations {
   String get empty_here => "Empty here";
   String get encrypt => "Encrypt";
   String get encrypt_error => "Encrypt error";
+  String get encrypt_link => "Protect public link with password";
   String get encrypted => "Encrypted";
   String get encrypted_file_link => "Encrypted file public link:";
   String get encrypted_file_password => "Encrypted file password";
+  String get encrypted_mail_using_key => "You can send the link and the password via email.";
   String get encrypted_using_password => "If you don't send email now, store the password somewhere. You will not be able to recover it otherwise.";
   String get encryption => "Encryption";
   String get encryption_description => "Files are encrypted/decrypted right on this device, even the server itself cannot get access to non-encrypted content of paranoid-encrypted files. Encryption method is AES256.";
@@ -144,7 +148,10 @@ class S implements WidgetsLocalizations {
   String get private_keys => "Private keys";
   String get public_key => "Public key";
   String get public_keys => "Public keys";
+  String get public_link => "Public link";
   String get public_link_access => "Public link access";
+  String get recipient => "Recipient";
+  String get remove_link => "Remove link";
   String get rename => "Rename";
   String get retry => "Retry";
   String get search => "Search";
@@ -153,7 +160,9 @@ class S implements WidgetsLocalizations {
   String get select_recipient => "Select recipient:";
   String get send => "Send via email";
   String get send_all => "Send all";
+  String get send_email => "You can send the link via email.";
   String get send_encrypted => "Send via encrypted email";
+  String get send_to => "Send to..";
   String get set_any_encryption_key => "You have enabled encryption of uploaded files but haven't set any encryption key.";
   String get settings => "Settings";
   String get share => "Share";

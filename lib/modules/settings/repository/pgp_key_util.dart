@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
-import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PgpKeyUtil {
@@ -57,6 +56,7 @@ class PgpKeyUtil {
   Future<bool> checkHasKey(String email) {
     return pgpKeyDao.checkHasKey(email);
   }
+
   Future deleteByEmail(List<String> emails) {
     return pgpKeyDao.deleteByEmail(emails);
   }
@@ -73,7 +73,9 @@ class PgpKeyUtil {
   }
 
   Future<String> keysFolder() async {
-    final Directory dir = await DownloadsPathProvider.downloadsDirectory;
+    final Directory dir =
+        (await getExternalStorageDirectories(type: StorageDirectory.downloads))
+            .first;
     return dir.path + pgpKeyPath;
   }
 
@@ -106,7 +108,7 @@ class PgpKeyUtil {
     await pgpKeyDao.deleteKey(key);
   }
 
-  Future<KeyPair> createKeys(int length, String email, String password) async{
+  Future<KeyPair> createKeys(int length, String email, String password) async {
     await pgp.stop();
     return pgp.createKeys(length, email, password);
   }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
@@ -50,19 +51,17 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       Navigator.pop(context);
       final result = await (Platform.isIOS
           ? showCupertinoDialog(
-          context: context,
-          builder: (_) =>
-              ShareDialog(
-                filesState: widget.filesState,
-                file: widget.file,
-              ))
+              context: context,
+              builder: (_) => ShareDialog(
+                    filesState: widget.filesState,
+                    file: widget.file,
+                  ))
           : showDialog(
-          context: context,
-          builder: (_) =>
-              ShareDialog(
-                filesState: widget.filesState,
-                file: widget.file,
-              )));
+              context: context,
+              builder: (_) => ShareDialog(
+                    filesState: widget.filesState,
+                    file: widget.file,
+                  )));
       if (result is PreparedForShare) {
         widget.filesState.share(result);
       }
@@ -97,7 +96,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             padding: EdgeInsets.only(
                 top: 0.0, bottom: MediaQuery.of(context).padding.bottom),
             children: <Widget>[
-              if (widget.file.initVector == null && !offline)
+              if (widget.file.initVector == null &&
+                  !offline &&
+                  useCommonLinkShare)
                 PublicLinkSwitch(
                   file: widget.file,
                   filesState: widget.filesState,
@@ -154,23 +155,21 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     Navigator.pop(context);
                     final result = Platform.isIOS
                         ? await showCupertinoDialog(
-                        context: context,
-                        builder: (_) =>
-                            RenameDialog(
+                            context: context,
+                            builder: (_) => RenameDialog(
+                                  file: widget.file,
+                                  filesState: widget.filesState,
+                                  filesPageState: widget.filesPageState,
+                                ))
+                        : await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => RenameDialog(
                               file: widget.file,
                               filesState: widget.filesState,
                               filesPageState: widget.filesPageState,
-                            ))
-                        : await showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (_) =>
-                          RenameDialog(
-                            file: widget.file,
-                            filesState: widget.filesState,
-                            filesPageState: widget.filesPageState,
-                          ),
-                    );
+                            ),
+                          );
                     if (result is String) {
                       widget.filesPageState.onGetFiles();
                     }
@@ -202,7 +201,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                         onError: (String err) => showSnack(
                           context: context,
                           scaffoldState:
-                          widget.filesPageState.scaffoldKey.currentState,
+                              widget.filesPageState.scaffoldKey.currentState,
                           msg: err,
                         ),
                       );

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
@@ -17,7 +16,6 @@ import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -251,6 +249,10 @@ abstract class _FilesState with Store {
     }
   }
 
+  Future updateFile(FilesCompanion file) {
+    return _filesDao.updateFile(file);
+  }
+
   Future<void> onUploadFile({
     @required String path,
     @required Function(ProcessingFile) onUploadStart,
@@ -384,7 +386,9 @@ abstract class _FilesState with Store {
       }
 
       // if file exists in cache, just copy it to downloads folder
-      final Directory dir = await DownloadsPathProvider.downloadsDirectory;
+      final Directory dir = (await getExternalStorageDirectories(
+              type: StorageDirectory.downloads))
+          .first;
       final File copiedFile =
           await _filesLocal.copyFromCache(file, "${dir.path}/${file.name}");
       if (copiedFile != null && file.size == copiedFile.lengthSync()) {

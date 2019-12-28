@@ -13,14 +13,14 @@ Storage getStorageFromName(String name) {
   );
 }
 
-FilesCompanion getCompanionFromLocalFile(LocalFile file, String pathToFile) {
+FilesCompanion getCompanionFromLocalFile(LocalFile file, [String pathToFile]) {
   return new FilesCompanion(
     id: Value(file.id),
     guid: Value(file.guid),
     type: Value(file.type),
     path: Value(file.path),
     fullPath: Value(file.fullPath),
-    localPath: Value(pathToFile),
+    localPath: Value(pathToFile ?? file.localPath),
     name: Value(file.name),
     size: Value(file.size),
     isFolder: Value(file.isFolder),

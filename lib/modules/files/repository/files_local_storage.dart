@@ -7,10 +7,8 @@ import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file_picker/file_picker.dart';
@@ -59,7 +57,9 @@ class FilesLocalStorage {
   Future<File> createFileForDownloadAndroid(LocalFile file) async {
     if (!Platform.isIOS) await getStoragePermissions();
 
-    final Directory dir = await DownloadsPathProvider.downloadsDirectory;
+    final Directory dir =
+        (await getExternalStorageDirectories(type: StorageDirectory.downloads))
+            .first;
     File dartFile = new File("${dir.path}/${file.name}");
 
     // if name exists add suffix (name_0.png)
@@ -99,7 +99,7 @@ class FilesLocalStorage {
 
     final Directory dir = await getTemporaryDirectory();
     final File dartFile =
-    new File("${dir.path}/images/${file.guid}_${file.name}");
+        new File("${dir.path}/images/${file.guid}_${file.name}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {
@@ -149,7 +149,8 @@ class FilesLocalStorage {
     return null;
   }
 
-  Future<void> deleteFilesFromCache({List<LocalFile> files, bool deleteCachedImages = false}) async {
+  Future<void> deleteFilesFromCache(
+      {List<LocalFile> files, bool deleteCachedImages = false}) async {
     final Directory dir = await getTemporaryDirectory();
     if (files != null) {
       for (final file in files) {
@@ -173,8 +174,8 @@ class FilesLocalStorage {
     }
   }
 
-  Future<File> downloadOffline(LocalFile file,
-      ProcessingFile processingFile) async {
+  Future<File> downloadOffline(
+      LocalFile file, ProcessingFile processingFile) async {
     final offlineFile = new File(file.localPath);
     if (!await offlineFile.exists()) {
       throw CustomException(
@@ -191,8 +192,8 @@ class FilesLocalStorage {
     }
   }
 
-  Future<PreparedForShare> shareOffline(LocalFile file,
-      ProcessingFile processingFile) async {
+  Future<PreparedForShare> shareOffline(
+      LocalFile file, ProcessingFile processingFile) async {
     File offlineFile = new File(file.localPath);
     if (!await offlineFile.exists()) {
       throw CustomException(
@@ -205,8 +206,8 @@ class FilesLocalStorage {
     return PreparedForShare(offlineFile, file);
   }
 
-  Future<File> _decryptFile(ProcessingFile processingFile,
-      File encryptedFile) async {
+  Future<File> _decryptFile(
+      ProcessingFile processingFile, File encryptedFile) async {
     assert(processingFile.ivBase64 != null);
 
     await processingFile.fileOnDevice.create(recursive: true);
@@ -223,22 +224,17 @@ class FilesLocalStorage {
       List<int> contentsForNext = contents;
 
       // if this is the final part that forms a chunk
-      if (Aes.chunkMaxSize <=
-          fileBytesBuffer.length + contents.length) {
-        contentsForCurrent = contents.sublist(
-            0, Aes.chunkMaxSize - fileBytesBuffer.length);
+      if (Aes.chunkMaxSize <= fileBytesBuffer.length + contents.length) {
+        contentsForCurrent =
+            contents.sublist(0, Aes.chunkMaxSize - fileBytesBuffer.length);
 
         contentsForNext = contents.sublist(
-            Aes.chunkMaxSize - fileBytesBuffer.length,
-            contents.length);
+            Aes.chunkMaxSize - fileBytesBuffer.length, contents.length);
 
         fileBytesBuffer.addAll(contentsForCurrent);
 
         final decrypted = await aes.decrypt(
-            fileBytesBuffer,
-            key.base64,
-            processingFile.ivBase64,
-            false);
+            fileBytesBuffer, key.base64, processingFile.ivBase64, false);
         await processingFile.fileOnDevice
             .writeAsBytes(decrypted, mode: FileMode.append);
         // update vector with the last 16 bytes of the chunk
@@ -258,10 +254,7 @@ class FilesLocalStorage {
     }
     if (fileBytesBuffer.isNotEmpty) {
       final decrypted = await aes.decrypt(
-          fileBytesBuffer,
-          key.base64,
-          processingFile.ivBase64,
-          true);
+          fileBytesBuffer, key.base64, processingFile.ivBase64, true);
       await processingFile.fileOnDevice
           .writeAsBytes(decrypted, mode: FileMode.append);
     }
@@ -271,8 +264,8 @@ class FilesLocalStorage {
 }
 
 class PreparedForShare {
-  final File file;
-  final LocalFile localFile;
+  File file;
+  LocalFile localFile;
 
   PreparedForShare(this.file, this.localFile);
 }

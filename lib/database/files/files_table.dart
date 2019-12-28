@@ -55,4 +55,6 @@ class Files extends Table {
   BoolColumn get isExternal => boolean()();
 
   TextColumn get initVector => text().nullable()();
+
+  TextColumn get linkPassword => text().nullable()();
 }

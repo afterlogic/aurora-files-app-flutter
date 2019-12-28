@@ -183,12 +183,17 @@ String _getErrMsgFromCode(int code) {
 }
 
 LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
+  final props =
+      rawFile["ExtendedProps"] is Map ? rawFile["ExtendedProps"] as Map : null;
+  var publicLink = props != null ? props["PublicLink"] : null;
+  if (publicLink != null) {
+    publicLink = AppStore.authState.hostName + "/" + publicLink;
+  }
+  final linkPassword = props != null ? props["PasswordForSharing"] : null;
   return LocalFile(
     localId: null,
     id: rawFile["Id"],
-    guid: rawFile["ExtendedProps"] is Map
-        ? rawFile["ExtendedProps"]["GUID"]
-        : Uuid().v4(),
+    guid: props != null ? props["GUID"] : Uuid().v4(),
     type: rawFile["Type"],
     localPath: null,
     path: rawFile["Path"],
@@ -200,11 +205,12 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
         rawFile["Actions"] != null && rawFile["Actions"]["list"] != null,
     isLink: rawFile["IsLink"],
     linkType: rawFile["LinkType"],
-    linkUrl: rawFile["LinkUrl"],
+    linkUrl: publicLink ?? rawFile["LinkUrl"],
+    linkPassword: linkPassword,
     lastModified: rawFile["LastModified"],
     contentType: rawFile["ContentType"],
     oEmbedHtml: rawFile["OembedHtml"],
-    published: rawFile["Published"],
+    published: publicLink != null || rawFile["Published"],
     owner: rawFile["Owner"],
     content: rawFile["Content"],
     isExternal: rawFile["IsExternal"],
@@ -217,8 +223,6 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
         : null,
     hash: rawFile["Hash"],
     extendedProps: rawFile["ExtendedProps"].toString(),
-    initVector: rawFile["ExtendedProps"] is Map
-        ? rawFile["ExtendedProps"]["InitializationVector"]
-        : null,
+    initVector: props != null ? props["InitializationVector"] : null,
   );
 }

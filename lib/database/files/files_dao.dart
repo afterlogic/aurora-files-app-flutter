@@ -127,4 +127,8 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     });
     return (delete(files)..where((file) => isIn(file.localId, ids))).go();
   }
+
+  Future<int> updateFile(FilesCompanion file) {
+    return into(files).insert(file, orReplace: true);
+  }
 }

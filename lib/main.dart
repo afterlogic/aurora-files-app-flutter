@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'di/di.dart';
 import 'modules/app_screen.dart';
 
+//todo
+const useCommonLinkShare = false;
+
 void main() {
   // todo crashlytics
 //  if (!kDebugMode) {

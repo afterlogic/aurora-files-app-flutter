@@ -4,7 +4,6 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -22,7 +21,9 @@ class SettingsLocalStorage {
 
   Future<String> exportKey(String keyName, String encryptionKey) async {
     await getStoragePermissions();
-    Directory dir = await DownloadsPathProvider.downloadsDirectory;
+    Directory dir =
+        (await getExternalStorageDirectories(type: StorageDirectory.downloads))
+            .first;
     if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
     if (!dir.existsSync())
       throw CustomException("Could not resolve save directory");

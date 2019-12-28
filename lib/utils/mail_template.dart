@@ -39,11 +39,15 @@ class MailTemplate {
     body += "\n\n";
     body += encryptedFile
         ? "You can get the encrypted file here:  $link"
-        : " You can download the file at: $link";
+        : "You can download the file at: $link";
     body += "\n";
     body += useKey
         ? "\nThe file is encrypted using $recipient's PGP public key.You can decrypt it if you're logged in PrivateMail WebMail Client system. If you're not logged in there, you'll be able to download the encrypted file only. You can decrypt it using other PGP tools then."
-        : password != null ? "File encrypted with password: $password" : "";
+        : password?.isNotEmpty == true
+            ? encryptedFile
+                ? "File encrypted with password: $password"
+                : "Link secure with password: $password"
+            : "";
     body += "\n\n";
     body += "Regards\n"
         "$sender";

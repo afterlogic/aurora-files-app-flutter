@@ -3,14 +3,17 @@ import 'dart:io';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
+import 'package:aurorafiles/modules/files/dialogs/secure_sharing/link_option.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_encrypt_method.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
+import 'package:aurorafiles/modules/files/dialogs/secure_sharing/share_link.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/share_progress.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
@@ -21,6 +24,7 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/asset_icon.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
+import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
@@ -302,9 +306,50 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   _secureSharing(PreparedForShare prepareForShare) async {
+    if (widget.filesState.selectedStorage.type == "encrypted") {
+      return _secureEncryptSharing(prepareForShare);
+    }
+
+    bool result = true;
+
+    if (!prepareForShare.localFile.published) {
+      result = await openDialog(
+        context,
+        (context) => LinkOptionWidget(prepareForShare, _fileViewerState),
+      );
+    }
+
+    RecipientWithKey selectRecipientResult;
+    if (result != null) {
+      while (true) {
+        result = await openDialog(
+          context,
+          (context) => ShareLink(
+              prepareForShare, selectRecipientResult, widget.filesState),
+        );
+        if (result == null) {
+          break;
+        }
+
+        selectRecipientResult = await openDialog(
+          context,
+          (context) => SelectRecipient(_fileViewerState),
+        );
+        if (selectRecipientResult == null) {
+          break;
+        }
+      }
+    }
+    _file = prepareForShare.localFile;
+    await widget.filesState
+        .updateFile(getCompanionFromLocalFile(prepareForShare.localFile,prepareForShare.file.path));
+    setState(() {});
+  }
+
+  _secureEncryptSharing(PreparedForShare prepareForShare) async {
     final selectRecipientResult = await openDialog(
       context,
-      (context) => SelectRecipient(_file, _fileViewerState),
+      (context) => SelectRecipient(_fileViewerState),
     );
 
     if (selectRecipientResult is RecipientWithKey) {
@@ -326,10 +371,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             widget.filesPageState.onGetFiles(
               showLoading: FilesLoadingType.filesVisible,
             );
-          }, widget.filesState.selectedStorage.type == "encrypted"),
+          }, true),
         );
       }
     }
+    _file = prepareForShare.localFile;
+    setState(() {});
   }
 
   Widget _getPreviewContent() {
@@ -480,7 +527,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 label: s.location,
                 content: _file.path == "" ? "/" : _file.path),
             InfoListTile(label: s.owner, content: _file.owner),
-            if (!widget.filesState.isOfflineMode)
+            if (!widget.filesState.isOfflineMode && useCommonLinkShare)
               PublicLinkSwitch(
                 file: _file,
                 isFileViewer: true,

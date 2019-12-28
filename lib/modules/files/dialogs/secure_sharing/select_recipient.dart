@@ -12,9 +12,8 @@ import 'package:flutter/material.dart';
 
 class SelectRecipient extends StatefulWidget {
   final FileViewerState fileViewerState;
-  final LocalFile file;
 
-  SelectRecipient(this.file, this.fileViewerState);
+  SelectRecipient(this.fileViewerState);
 
   @override
   _SelectRecipientState createState() => _SelectRecipientState();
@@ -95,15 +94,15 @@ class _SelectRecipientState extends State<SelectRecipient> {
 
     return Platform.isIOS
         ? CupertinoAlertDialog(
-      title: title,
-      content: content,
-      actions: actions,
-    )
+            title: title,
+            content: content,
+            actions: actions,
+          )
         : AlertDialog(
-      title: title,
-      content: content,
-      actions: actions,
-    );
+            title: title,
+            content: content,
+            actions: actions,
+          );
   }
 
   List<Widget> body(ThemeData theme) {
@@ -134,9 +133,9 @@ class _SelectRecipientState extends State<SelectRecipient> {
           child: ListView.separated(
             itemBuilder: (_, i) {
               final recipient = recipients[i];
-              return RecipientWidget(
-                recipient,
-              );
+              return RecipientWidget(recipient, (recipient) {
+                Navigator.pop(context, recipient);
+              });
             },
             separatorBuilder: (_, __) => Divider(color: Colors.grey),
             itemCount: recipients.length,
@@ -184,12 +183,13 @@ class RecipientWithKey {
 
 class RecipientWidget extends StatelessWidget {
   final RecipientWithKey recipient;
+  final Function(RecipientWithKey) onTap;
 
-  RecipientWidget(this.recipient);
+  RecipientWidget(this.recipient, [this.onTap]);
 
   @override
   Widget build(BuildContext context) {
-    final s=S.of(context);
+    final s = S.of(context);
     final theme = Theme.of(context);
     var name = recipient.recipient?.fullName;
     final hasName = !(name?.isNotEmpty != true);
@@ -199,7 +199,7 @@ class RecipientWidget extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        Navigator.pop(context, recipient);
+        if (onTap != null) onTap(recipient);
       },
       child: Flex(
         direction: Axis.horizontal,

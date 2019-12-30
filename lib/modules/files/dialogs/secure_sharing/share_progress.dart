@@ -11,18 +11,18 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
+import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
-import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ShareProgress extends StatefulWidget {
+  final FilesState filesState;
   final FileViewerState _fileViewerState;
   final Recipient recipient;
   final LocalPgpKey pgpKey;
@@ -41,6 +41,7 @@ class ShareProgress extends StatefulWidget {
     this.pgp,
     this.onLoad,
     this.useEncrypt,
+    this.filesState,
   );
 
   @override
@@ -51,6 +52,8 @@ class _ShareProgressState extends State<ShareProgress> {
   ProcessingFile _processingFile;
   double progress = 0;
   bool isDownload = false;
+  bool sendProgress = false;
+
   File output;
   File temp;
   String link;
@@ -204,9 +207,11 @@ class _ShareProgressState extends State<ShareProgress> {
       if (link != null)
         FlatButton(
           child: Text(widget.pgpKey != null ? s.send_encrypted : s.send),
-          onPressed: () {
-            openEmail();
-          },
+          onPressed: sendProgress
+              ? null
+              : () {
+                  openEmail();
+                },
         ),
       FlatButton(
         child: Text(s.cancel),
@@ -258,6 +263,9 @@ class _ShareProgressState extends State<ShareProgress> {
   }
 
   openEmail() async {
+    sendProgress = true;
+    setState(() {});
+    toastKey.currentState.show(s.sending);
     final recipient = widget.recipient?.fullName ??
         widget.recipient?.email ??
         widget.pgpKey?.email;
@@ -279,12 +287,19 @@ class _ShareProgressState extends State<ShareProgress> {
       template.body = String.fromCharCodes(encrypt);
     }
 
-    final uri =
-        template.mailTo(widget.recipient?.email ?? widget.pgpKey?.email);
-
-    if (await canLaunch(uri)) {
-      launch(uri);
-    }
+    widget.filesState
+        .sendViaEmail(template, widget.recipient?.email ?? widget.pgpKey?.email)
+        .then(
+      (_) {
+        toastKey.currentState.show(s.sending_complete);
+      },
+      onError: (e) {
+        toastKey.currentState.show(s.failed);
+      },
+    ).whenComplete(() {
+      sendProgress = false;
+      setState(() {});
+    });
   }
 
   List<Widget> progressLabel() {
@@ -375,7 +390,10 @@ class _ClipboardLabelState extends State<ClipboardLabel> {
                 Icon(Icons.content_copy),
                 SizedBox(width: 10),
                 Expanded(
-                  child: Text(widget.link,maxLines: null,),
+                  child: Text(
+                    widget.link,
+                    maxLines: null,
+                  ),
                 )
               ],
             ),

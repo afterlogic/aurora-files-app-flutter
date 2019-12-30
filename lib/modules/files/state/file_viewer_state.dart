@@ -8,6 +8,7 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
+import 'package:aurorafiles/modules/files/repository/mail_api.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
@@ -22,6 +23,7 @@ class FileViewerState = _FileViewerState with _$FileViewerState;
 
 abstract class _FileViewerState with Store {
   final _filesApi = new FilesApi();
+  final _mailApi = new MailApi();
   final _filesLocal = new FilesLocalStorage();
   FilesState fileState;
 
@@ -126,7 +128,7 @@ abstract class _FileViewerState with Store {
   }
 
   Future<List<Recipient>> getRecipient() async {
-    return _filesApi.getRecipient();
+    return _mailApi.getRecipient();
   }
 
   Future<void> uploadSecureFile(

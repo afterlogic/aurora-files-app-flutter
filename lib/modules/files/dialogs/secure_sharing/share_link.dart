@@ -42,7 +42,9 @@ class ShareLink extends StatefulWidget {
 
 class _ShareLinkState extends State<ShareLink> {
   Pgp pgp = DI.get();
+  S s;
   bool progress = false;
+  bool sendProgress = false;
   String error;
   final toastKey = GlobalKey<ToastWidgetState>();
 
@@ -108,6 +110,9 @@ class _ShareLinkState extends State<ShareLink> {
   }
 
   void _sendTo() async {
+    sendProgress = true;
+    toastKey.currentState.show(s.sending);
+    setState(() {});
     final recipient = widget.selectRecipientResult.recipient?.fullName ??
         widget.selectRecipientResult.recipient?.email ??
         widget.selectRecipientResult.pgpKey?.email;
@@ -128,23 +133,34 @@ class _ShareLinkState extends State<ShareLink> {
       pgp.setTempFile(
           File((await getTemporaryDirectory()).path + "/temp" + ".temp"));
       pgp.setPublicKey(widget.selectRecipientResult.pgpKey.key);
+
       final encrypt =
           await pgp.encryptBytes(Uint8List.fromList(template.body.codeUnits));
 
       template.body = String.fromCharCodes(encrypt);
     }
 
-    final uri = template.mailTo(widget.selectRecipientResult.recipient?.email ??
-        widget.selectRecipientResult.pgpKey?.email);
-
-    if (await canLaunch(uri)) {
-      launch(uri);
-    }
+    widget.filesState
+        .sendViaEmail(
+            template,
+            widget.selectRecipientResult.recipient?.email ??
+                widget.selectRecipientResult.pgpKey?.email)
+        .then(
+      (_) {
+        toastKey.currentState.show(s.sending_complete);
+      },
+      onError: (e) {
+        toastKey.currentState.show(s.failed);
+      },
+    ).whenComplete(() {
+      sendProgress = false;
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    s = S.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(s.secure_sharing);
@@ -227,9 +243,11 @@ class _ShareLinkState extends State<ShareLink> {
               child: Text(widget.selectRecipientResult.pgpKey != null
                   ? s.send_encrypted
                   : s.send),
-              onPressed: () {
-                _sendTo();
-              },
+              onPressed: sendProgress
+                  ? null
+                  : () {
+                      _sendTo();
+                    },
             ),
       FlatButton(
         child: Text(s.remove_link),

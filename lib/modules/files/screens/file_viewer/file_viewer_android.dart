@@ -364,16 +364,20 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         await openDialog(
           context,
           (context) => ShareProgress(
-              _fileViewerState,
-              prepareForShare,
-              selectRecipientResult.recipient,
-              selectRecipientResult.pgpKey,
-              selectEncryptMethodResult.useKey,
-              DI.get(), () {
-            widget.filesPageState.onGetFiles(
-              showLoading: FilesLoadingType.filesVisible,
-            );
-          }, true),
+            _fileViewerState,
+            prepareForShare,
+            selectRecipientResult.recipient,
+            selectRecipientResult.pgpKey,
+            selectEncryptMethodResult.useKey,
+            DI.get(),
+            () {
+              widget.filesPageState.onGetFiles(
+                showLoading: FilesLoadingType.filesVisible,
+              );
+            },
+            true,
+            widget.filesState,
+          ),
         );
       }
     }

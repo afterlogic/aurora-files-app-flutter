@@ -80,10 +80,8 @@ class _ShareLinkState extends State<ShareLink> {
       template.body = String.fromCharCodes(encrypt);
     }
 
-    final uri = Uri.encodeFull(
-        "mailto:${widget.selectRecipientResult.recipient?.email ?? widget.selectRecipientResult.pgpKey?.email}"
-        "?subject=${template.subject}"
-        "&body=${template.body}");
+    final uri = template.mailTo(widget.selectRecipientResult.recipient?.email ??
+        widget.selectRecipientResult.pgpKey?.email);
 
     if (await canLaunch(uri)) {
       launch(uri);

@@ -4,6 +4,13 @@ class MailTemplate {
 
   MailTemplate(this.subject, this.body);
 
+ String mailTo(String recipient) {
+    return Uri.encodeFull("mailto:$recipient"
+            "?subject=$subject"
+            "&body=$body")
+        .replaceAll("+", "%2B");
+  }
+
   static MailTemplate getTemplate(
     bool encryptedFile,
     bool useKey,

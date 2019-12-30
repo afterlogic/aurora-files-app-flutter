@@ -283,10 +283,8 @@ class _ShareProgressState extends State<ShareProgress> {
       template.body = String.fromCharCodes(encrypt);
     }
 
-    final uri = Uri.encodeFull(
-        "mailto:${widget.recipient?.email ?? widget.pgpKey?.email}"
-        "?subject=${template.subject}"
-        "&body=${template.body}");
+    final uri =
+        template.mailTo(widget.recipient?.email ?? widget.pgpKey?.email);
 
     if (await canLaunch(uri)) {
       launch(uri);

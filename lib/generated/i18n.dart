@@ -83,6 +83,7 @@ class S implements WidgetsLocalizations {
   String get export_confirm => "Are you sure you want to export this key?";
   String get export_key => "Export key";
   String get export_key_progress => "Exporting the key...";
+  String get failed => "failed";
   String get file => "file";
   String get file_is_damaged => "Error happened. Perhaps this file is damaged.";
   String get filename => "Filename";
@@ -163,6 +164,8 @@ class S implements WidgetsLocalizations {
   String get send_email => "You can send the link via email.";
   String get send_encrypted => "Send via encrypted email";
   String get send_to => "Send to..";
+  String get sending => "Sending..";
+  String get sending_complete => "Sending complete";
   String get set_any_encryption_key => "You have enabled encryption of uploaded files but haven't set any encryption key.";
   String get settings => "Settings";
   String get share => "Share";

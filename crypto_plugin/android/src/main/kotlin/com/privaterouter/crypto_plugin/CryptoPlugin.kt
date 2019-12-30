@@ -94,7 +94,7 @@ class CryptoPlugin : MethodCallHandler {
                     "getKeyDescription" -> {
                         val key = arguments[0] as String
                         val description = pgp.getKeyDescription(key)
-                        return arrayListOf(description.emails, description.length)
+                        return arrayListOf(description.emails, description.length, description.isPrivate)
                     }
                     "setTempFile" -> {
                         val tempFile = arguments[0] as String?

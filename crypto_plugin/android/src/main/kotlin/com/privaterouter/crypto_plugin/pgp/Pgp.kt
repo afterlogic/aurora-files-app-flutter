@@ -76,7 +76,7 @@ class Pgp {
         return key!!
     }
 
-    fun readPrivateKey(inputStream: InputStream): PGPSecretKey {
+    private fun readPrivateKey(inputStream: InputStream): PGPSecretKey {
         var inputStream1 = inputStream
         inputStream1 = PGPUtil.getDecoderStream(inputStream1)
         return requireNotNull(KeyRingReader.readSecretKeyRing(inputStream1).secretKey)
@@ -333,7 +333,13 @@ class Pgp {
         val passphrase = Passphrase(password.toCharArray())
         val pbe: PGPPBEEncryptedData
 
-        val decoderInput = PGPUtil.getDecoderStream(inputStream)
+        val decoderInput = PGPUtil.getDecoderStream(
+                if (publicKey != null) {
+                    checkSign(inputStream, publicKey)
+                } else {
+                    inputStream
+                }
+        )
 
         try {
             val pgpF = BcPGPObjectFactory(decoderInput)
@@ -360,11 +366,8 @@ class Pgp {
             }
 
             val ld = o as PGPLiteralData
-            val unc = if (publicKey == null) {
-                ld.inputStream
-            } else {
-                checkSign(ld.inputStream, publicKey)
-            }
+            val unc = ld.inputStream
+
 
             val byffer = ByteArray(4096)
             var length: Int
@@ -434,12 +437,14 @@ class Pgp {
                 .onOutputStream(output)
                 .doNotEncrypt()
                 .let {
-                    val settings = KeyRingProtectionSettings(SymmetricKeyAlgorithm.AES_256, HashAlgorithm.MD5, 0)
+                    val settings = KeyRingProtectionSettings(SymmetricKeyAlgorithm.AES_256, HashAlgorithm.SHA512, 0)
                     val secretKeys = KeyRingReader().secretKeyRing(privateKey)
                     val secretKeyDecryptor = PasswordBasedSecretKeyRingProtector(settings, SecretKeyPassphraseProvider { Passphrase(password.toCharArray()) })
 
                     it.signWith<Any>(secretKeyDecryptor, secretKeys)
                 }
-                .asciiArmor()
+                .noArmor()
+        
+        
     }
 }

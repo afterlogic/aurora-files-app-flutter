@@ -1,7 +1,11 @@
 package com.privaterouter.crypto_plugin.pgp
 
+import org.bouncycastle.util.io.Streams
 import org.junit.Test
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.nio.charset.Charset
 
 class PgpApiTest {
 
@@ -76,7 +80,7 @@ class PgpApiTest {
             messageEncrypted = pgpHelper.encriptBytes(message, true, password)
             pgpHelper.setPublicKey(otherPublicKey)
             pgpHelper.decryptBytes(messageEncrypted, password, true)
-            throw SignError()
+            throw Throwable("failed check Sign")
         } catch (e: SignError) {
             //is ok
         }
@@ -84,17 +88,46 @@ class PgpApiTest {
         assert(String(messageDecrypted) == String(message))
     }
 
+    @Test
+    fun testPrimarySign() {
+        val message = "message asd adasdasd"
+        val inputStream = ByteArrayInputStream(message.toByteArray())
+        val outputStream = ByteArrayOutputStream()
+        val signStream = Pgp().sign(outputStream, privateKey, password)
+
+        Streams.pipeAll(inputStream, signStream)
+        signStream.close()
+        try {
+            val inputStream1 = ByteArrayInputStream(outputStream.toByteArray())
+            val outputStream1 = ByteArrayOutputStream()
+            val checkSignStream = Pgp().checkSign(inputStream1, otherPublicKey)
+            Streams.pipeAll(checkSignStream, outputStream1)
+            checkSignStream.close()
+            throw Throwable("failed check Sign")
+        } catch (e: SignError) {
+
+            val inputStream1 = ByteArrayInputStream(outputStream.toByteArray())
+            val outputStream1 = ByteArrayOutputStream()
+            val checkSignStream = Pgp().checkSign(inputStream1, publicKey)
+            Streams.pipeAll(checkSignStream, outputStream1)
+            checkSignStream.close()
+            assert(message == outputStream1.toByteArray().toString(Charset.defaultCharset()))
+        }
+
+    }
 
     @Test
     fun testSymmetric() {
         val pgpHelper = PgpApi()
         val decrypt = File(testFile)
         val encrypt = File(testEncrypt)
+        pgpHelper.setPrivateKey(privateKey)
+        pgpHelper.setPublicKey(publicKey)
         val startLength = File(testFile).length()
         pgpHelper.setTempFile(temp)
 
-        pgpHelper.encryptSymmetricFile(decrypt.path, encrypt.path, password)
-        pgpHelper.decryptSymmetricFile(encrypt.path, decrypt.path, password)
+        pgpHelper.encryptSymmetricFile(decrypt.path, encrypt.path, password, password)
+        pgpHelper.decryptSymmetricFile(encrypt.path, decrypt.path, password, true)
         assert(startLength == File(testFile).length())
     }
 

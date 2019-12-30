@@ -170,5 +170,8 @@
   "send_to": "Send to..",
   "recipient": "Recipient",
   "encrypted_mail_using_key": "You can send the link and the password via email.",
-  "send_email": "You can send the link via email."
+  "send_email": "You can send the link via email.",
+  "sending": "Sending..",
+  "sending_complete": "Sending complete",
+  "failed": "failed"
 }

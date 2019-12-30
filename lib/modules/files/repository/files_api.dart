@@ -472,7 +472,7 @@ class FilesApi {
       "Name": name,
       "Size": size,
       "IsFolder": isFolder,
-      "Password":linkPassword,
+      "Password": linkPassword,
     };
 
     final body = new ApiBody(
@@ -539,31 +539,6 @@ class FilesApi {
     }
   }
 
-  Future<List<Recipient>> getRecipient() async {
-    final parameters = {
-      "Search": "",
-      "Storage": "all",
-      "SortField": 3,
-      "SortOrder": 1,
-      "WithGroups": false,
-      "WithoutTeamContactsDuplicates": true
-    };
-    final body = new ApiBody(
-      module: "Contacts",
-      method: "GetContacts",
-      parameters: json.encode(parameters),
-    );
-
-    final res = (await sendRequest(body)) as Map;
-
-    if (res.containsKey("Result")) {
-      return (res["Result"]["List"] as List)
-          .map((item) => Recipient.fromJson(item))
-          .toList();
-    } else {
-      throw CustomException(getErrMsg(res));
-    }
-  }
 }
 
 class GetFilesResponse {

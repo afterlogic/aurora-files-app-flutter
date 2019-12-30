@@ -5,6 +5,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
+import 'package:aurorafiles/models/folder.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/secure_link.dart';
@@ -12,8 +13,10 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
+import 'package:aurorafiles/modules/files/repository/mail_api.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
+import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:encrypt/encrypt.dart';
@@ -22,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 part 'files_state.g.dart';
@@ -34,6 +38,7 @@ final dummyStorage = new Storage(
 // Global files state
 abstract class _FilesState with Store {
   final _filesApi = FilesApi();
+  final _mailApi = MailApi();
   final _filesLocal = FilesLocalStorage();
   final FilesDao _filesDao = DI.get();
 
@@ -586,5 +591,24 @@ abstract class _FilesState with Store {
   Future<void> clearCache({deleteCachedImages = false}) async {
     return _filesLocal.deleteFilesFromCache(
         deleteCachedImages: deleteCachedImages);
+  }
+
+  Future sendViaEmail(MailTemplate template, String to) async {
+    final accounts = await _mailApi.getAccounts();
+    if (accounts.isEmpty) {
+      final uri = template.mailTo(to);
+      if (await canLaunch(uri)) {
+        await launch(uri);
+      }
+    } else {
+      final accountID = accounts.last.accountID;
+      final folders = await _mailApi.getFolder(accountID);
+      final sendFolder = folders.folders.firstWhere(
+          (item) => item.type == Folder.sendType,
+          orElse: () => Folder(Folder.sentFolder, 2, ""));
+      final sendFolderPath = folders.namespace + sendFolder.fullName;
+      await _mailApi.sendMail(
+          accountID, sendFolderPath, template.subject, template.body, to);
+    }
   }
 }

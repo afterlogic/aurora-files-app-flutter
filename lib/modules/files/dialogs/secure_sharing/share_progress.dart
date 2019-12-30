@@ -130,7 +130,6 @@ class _ShareProgressState extends State<ShareProgress> {
     if (widget.useEncrypt) {
       widget._fileViewerState.createPublicLink(
         extend: extend,
-        file: file,
         onError: (e) {
           error = e;
           setState(() {});
@@ -145,7 +144,6 @@ class _ShareProgressState extends State<ShareProgress> {
       widget._fileViewerState.createSecureLink(
         password: password,
         extend: extend,
-        file: file,
         onError: (e) {
           error = e;
           setState(() {});
@@ -217,12 +215,10 @@ class _ShareProgressState extends State<ShareProgress> {
         },
       )
     ];
-    final title = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Text(s.secure_sharing),
-    );
+    final title = Text(s.secure_sharing);
     final content = SizedBox(
       height: min(size.height / 2, 350),
+      width: min(size.width - 40, 300),
       child: Stack(
         children: <Widget>[
           ListView(
@@ -374,14 +370,12 @@ class _ClipboardLabelState extends State<ClipboardLabel> {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 10),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Icon(Icons.content_copy),
                 SizedBox(width: 10),
                 Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(widget.link),
-                  ),
+                  child: Text(widget.link,maxLines: null,),
                 )
               ],
             ),

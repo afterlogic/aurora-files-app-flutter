@@ -150,15 +150,13 @@ abstract class _FileViewerState with Store {
   }
 
   Future<void> createPublicLink({
-    @required File file,
     @required Function(String) onSuccess,
     @required Function(String) onError,
     @required String extend,
   }) async {
-    final size = await file.length();
     return fileState.onGetPublicLink(
         name: this.file.name + extend,
-        size: size,
+        size: this.file.size,
         isFolder: false,
         path: this.file.path,
         onSuccess: onSuccess,
@@ -166,17 +164,15 @@ abstract class _FileViewerState with Store {
   }
 
   Future<void> createSecureLink({
-    @required File file,
     @required Function(SecureLink) onSuccess,
     @required Function(String) onError,
     @required String extend,
     @required String password,
   }) async {
-    final size = await file.length();
     return fileState.onGetSecureLink(
         password: password,
         name: this.file.name + extend,
-        size: size,
+        size: this.file.size,
         isFolder: false,
         path: this.file.path,
         onSuccess: onSuccess,

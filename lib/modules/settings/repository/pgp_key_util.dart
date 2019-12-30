@@ -35,7 +35,7 @@ class PgpKeyUtil {
         final localPgpKey = LocalPgpKey(
             email: validEmail,
             key: key,
-            isPrivate: false,
+            isPrivate: description.isPrivate,
             length: description.length);
 
         localKeys.add(localPgpKey);
@@ -114,8 +114,8 @@ class PgpKeyUtil {
   }
 
   static const pgpKeyPath = "/pgp_keys/";
-  static const keyStart = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
-  static const keyEnd = "-----END PGP PUBLIC KEY BLOCK-----";
+  static const keyStart = "-----BEGIN PGP \\w* KEY BLOCK-----";
+  static const keyEnd = "-----END PGP \\w* KEY BLOCK-----";
 
   close() {
     pgp.stop();

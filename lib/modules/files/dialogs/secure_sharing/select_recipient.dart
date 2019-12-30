@@ -31,10 +31,12 @@ class _SelectRecipientState extends State<SelectRecipient> {
     hasError = false;
     recipients = null;
     widget.fileViewerState.getRecipient().then(
-      (v) async {
+      (result) async {
         recipients = [];
         await loadKeys();
-        for (Recipient recipient in v) {
+        final filterRecipients =
+            result.where((item) => item.email?.isNotEmpty == true);
+        for (Recipient recipient in filterRecipients) {
           final key = keys.remove(recipient.email);
           recipients.add(RecipientWithKey(recipient, key));
         }
@@ -71,12 +73,10 @@ class _SelectRecipientState extends State<SelectRecipient> {
     s = S.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final title = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Text(s.secure_sharing),
-    );
+    final title = Text(s.secure_sharing);
     final content = SizedBox(
       height: min(size.height / 2, 350),
+      width: min(size.width - 40, 300),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -33,12 +33,10 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
     s = S.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final title = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Text(s.secure_sharing),
-    );
+    final title = Text(s.secure_sharing);
     final content = SizedBox(
       height: min(size.height / 2, 350),
+      width: min(size.width - 40, 300),
       child: ListView(
         children: <Widget>[
           RecipientWidget(RecipientWithKey(widget.recipient, widget.pgpKey)),

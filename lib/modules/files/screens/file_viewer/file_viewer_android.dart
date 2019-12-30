@@ -305,29 +305,35 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
   }
 
-  _secureSharing(PreparedForShare prepareForShare) async {
+  _secureSharing() async {
     if (widget.filesState.selectedStorage.type == "encrypted") {
-      return _secureEncryptSharing(prepareForShare);
+      return _prepareShareFile(_secureEncryptSharing);
     }
-
-    bool result = true;
+    final prepareForShare = PreparedForShare(null, _file);
+    bool usePassword = true;
 
     if (!prepareForShare.localFile.published) {
-      result = await openDialog(
+      usePassword = await openDialog(
         context,
-        (context) => LinkOptionWidget(prepareForShare, _fileViewerState),
+        (context) => LinkOptionWidget(),
       );
     }
 
     RecipientWithKey selectRecipientResult;
-    if (result != null) {
+    if (usePassword != null) {
       while (true) {
-        result = await openDialog(
+        final needRecipient = await openDialog(
           context,
           (context) => ShareLink(
-              prepareForShare, selectRecipientResult, widget.filesState),
+            usePassword,
+            prepareForShare,
+            selectRecipientResult,
+            widget.filesState,
+            _fileViewerState,
+          ),
         );
-        if (result == null) {
+
+        if (needRecipient == null) {
           break;
         }
 
@@ -342,7 +348,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
     _file = prepareForShare.localFile;
     await widget.filesState
-        .updateFile(getCompanionFromLocalFile(prepareForShare.localFile,prepareForShare.file.path));
+        .updateFile(getCompanionFromLocalFile(prepareForShare.localFile));
     setState(() {});
   }
 
@@ -461,7 +467,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                       addedSize: 14,
                     ),
                     tooltip: s.secure_sharing,
-                    onPressed: () => _prepareShareFile(_secureSharing),
+                    onPressed: _secureSharing,
                   ),
                   IconButton(
                     icon: Icon(MdiIcons.fileMove),

@@ -28,7 +28,7 @@ class Pgp extends Crypt {
   }
 
   Future setTempFile(File temp) async {
-     await invokeMethod(
+    await invokeMethod(
       "$algorithm.setTempFile",
       [temp?.path],
     );
@@ -123,7 +123,7 @@ class Pgp extends Crypt {
       [key],
     );
     if (result is List) {
-      return KeyDescription(List<String>.from(result[0]), result[1]);
+      return KeyDescription(List<String>.from(result[0]), result[1], result[2]);
     } else {
       return null;
     }
@@ -160,8 +160,9 @@ class Progress {
 class KeyDescription {
   final List<String> email;
   final int length;
+  final bool isPrivate;
 
-  KeyDescription(this.email, this.length);
+  KeyDescription(this.email, this.length, this.isPrivate);
 }
 
 class KeyPair {

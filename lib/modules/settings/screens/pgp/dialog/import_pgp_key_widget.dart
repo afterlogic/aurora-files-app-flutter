@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/i18n.dart';
@@ -58,8 +59,7 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
     final content = Flex(
       direction: Axis.vertical,
       children: <Widget>[
-        if (isHaveKey)
-          Text(s.already_have_keys),
+        if (isHaveKey) Text(s.already_have_keys),
         Expanded(
           child: ListView.builder(
             itemBuilder: (_, i) {
@@ -92,16 +92,20 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
 
     return Platform.isIOS
         ? CupertinoAlertDialog(
-      title: title,
-      content: SizedBox(
-        height: size.height / 2,
-        child: content,
-      ),
-    )
+            title: title,
+            content: SizedBox(
+              height: size.height / 2,
+              width: min(size.width - 40, 300),
+              child: content,
+            ),
+          )
         : AlertDialog(
-      title: title,
-      content: content,
-    );
+            title: title,
+            content: SizedBox(
+                height: size.height / 2,
+                width: min(size.width - 40, 300),
+                child: content),
+          );
   }
 }
 

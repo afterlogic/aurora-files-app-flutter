@@ -23,6 +23,7 @@ class _AlertInputIosState extends State<AlertInputIos> {
   @override
   Widget build(BuildContext context) {
     return CupertinoTextField(
+      style: TextStyle(color: Colors.white),
       autofocus: widget.autofocus == null || widget.autofocus == false ? false : true,
       controller: widget.controller,
       prefix: widget.icon == null ? null : Padding(
@@ -32,7 +33,6 @@ class _AlertInputIosState extends State<AlertInputIos> {
       decoration: BoxDecoration(
           color: Colors.white, border: Border.all(color: Colors.black26)),
       placeholder: widget.placeholder,
-      style: TextStyle(color: Colors.black),
     );
   }
 }

@@ -42,6 +42,7 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
           children: <Widget>[
             Expanded(
               child: CupertinoTextField(
+                style: TextStyle(color: Colors.white),
                 maxLines: null,
                 autofocus: true,
                 controller: _textController,

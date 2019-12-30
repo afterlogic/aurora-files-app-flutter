@@ -109,6 +109,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
       return [
         if (_showHostField)
           CupertinoTextField(
+            style: TextStyle(color: Colors.white),
             cursorColor: Theme.of(context).accentColor,
             controller: _authState.hostCtrl,
             keyboardType: TextInputType.url,
@@ -129,6 +130,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           cursorColor: Theme.of(context).accentColor,
           controller: _authState.emailCtrl,
           keyboardType: TextInputType.emailAddress,
+          style: TextStyle(color: Colors.white),
           decoration: BoxDecoration(
               border: Border(bottom: const BorderSide(color: Colors.white38))),
           placeholder: s.email,
@@ -143,6 +145,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
         SizedBox(height: 20),
         CupertinoTextField(
+          style: TextStyle(color: Colors.white),
           cursorColor: Theme.of(context).accentColor,
           controller: _authState.passwordCtrl,
           decoration: BoxDecoration(

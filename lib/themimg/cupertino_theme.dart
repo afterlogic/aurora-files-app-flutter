@@ -13,6 +13,9 @@ class AppCupertinoTheme {
   );
 
   static final _inputTheme = InputDecorationTheme(
+    helperStyle: TextStyle(color: Colors.white),
+    hintStyle:TextStyle(color: Colors.white),
+    labelStyle: TextStyle(color: Colors.white),
     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
   );
 

@@ -227,7 +227,6 @@ class _FilesAppBarState extends State<FilesAppBar>
             padding:  const EdgeInsets.all(12.0),
             child: Platform.isIOS
                 ? CupertinoTextField(
-              style: TextStyle(color: Colors.white),
                     onSubmitted: (_) => _search(),
                     autofocus: true,
               controller: _searchInputCtrl,

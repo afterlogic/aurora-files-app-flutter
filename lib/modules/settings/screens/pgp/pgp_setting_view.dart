@@ -18,6 +18,8 @@ mixin PgpSettingView<W extends StatefulWidget> on State<W> {
   }
 
   showImportDialog(List<LocalPgpKey> result);
+
+   keysNotFound();
 }
 
 class KeysState {

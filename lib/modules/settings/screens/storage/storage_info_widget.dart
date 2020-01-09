@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class StorageInfoDialog extends StatelessWidget {
+class StorageInfoWidget extends StatelessWidget {
   final _quota = AppStore.filesState.quota;
 
   @override

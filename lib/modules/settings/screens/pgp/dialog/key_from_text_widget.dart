@@ -30,77 +30,75 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
     final size = MediaQuery.of(context).size;
     return Platform.isIOS
         ? CupertinoAlertDialog(
-      title: Text(
-        s.import_keys,
-        style: theme.textTheme.title,
-      ),
-      content: SizedBox(
-        height: size.height / 2,
-        child: Flex(
-          direction: Axis.vertical,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: CupertinoTextField(
-                style: TextStyle(color: Colors.white),
-                maxLines: null,
-                autofocus: true,
-                controller: _textController,
-              ),
+            title: Text(
+              s.import_keys,
+              style: theme.textTheme.title,
             ),
-            AppButton(
-                width: double.infinity,
-                text: s.check_keys.toUpperCase(),
-                onPressed: () {
-                  Navigator.pop(context, _textController.text);
-                }),
-            AppButton(
-              width: double.infinity,
-              text: s.close.toUpperCase(),
-              onPressed: () => Navigator.pop(context),
+            content: Flex(
+              direction: Axis.vertical,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 300
+                  ),
+                  child: CupertinoTextField(
+                    maxLines: null,
+                    autofocus: true,
+                    controller: _textController,
+                  ),
+                ),
+                AppButton(
+                    width: double.infinity,
+                    text: s.check_keys.toUpperCase(),
+                    onPressed: () {
+                      Navigator.pop(context, _textController.text);
+                    }),
+                AppButton(
+                  width: double.infinity,
+                  text: s.close.toUpperCase(),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    )
+          )
         : AlertDialog(
-      title: Text(
-        s.import_keys,
-        style: theme.textTheme.title,
-      ),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Form(
-              key: formKey,
-              child: TextFormField(
-                validator: (v) =>
-                    validateInput(v, [
-                      ValidationTypes.empty,
-                    ]),
-                controller: _textController,
-                expands: true,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-              ),
+            title: Text(
+              s.import_keys,
+              style: theme.textTheme.title,
             ),
-          ),
-          AppButton(
-              width: double.infinity,
-              text: s.check_keys.toUpperCase(),
-              onPressed: () {
-                if (formKey.currentState.validate()) {
-                  Navigator.pop(context, _textController.text);
-                }
-              }),
-          AppButton(
-            width: double.infinity,
-            text: s.close.toUpperCase(),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-      ),
-    );
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Form(
+                    key: formKey,
+                    child: TextFormField(
+                      validator: (v) => validateInput(v, [
+                        ValidationTypes.empty,
+                      ]),
+                      controller: _textController,
+                      expands: true,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                    ),
+                  ),
+                ),
+                AppButton(
+                    width: double.infinity,
+                    text: s.check_keys.toUpperCase(),
+                    onPressed: () {
+                      if (formKey.currentState.validate()) {
+                        Navigator.pop(context, _textController.text);
+                      }
+                    }),
+                AppButton(
+                  width: double.infinity,
+                  text: s.close.toUpperCase(),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          );
   }
 }

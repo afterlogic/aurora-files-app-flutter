@@ -60,6 +60,7 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                 autofocus: true,
                 icon: Icons.title,
                 placeholder: s.key_name,
+
               ),
               if (widget.isImport) SizedBox(height: 8.0),
               if (widget.isImport)
@@ -73,7 +74,7 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
         ),
         actions: <Widget>[
           CupertinoButton(
-            child: Text(s.cancel.toUpperCase()),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(context),
           ),
           CupertinoButton(

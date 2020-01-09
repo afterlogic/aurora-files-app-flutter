@@ -38,15 +38,19 @@ class PgpSettingPresenter {
 
   getKeysFromFile() async {
     final result = await pgpKeyUtil.importKeyFromFile();
-    if (result != null && result.isNotEmpty) {
+    if (result.isNotEmpty) {
       _view.showImportDialog(result);
+    }else{
+      _view.keysNotFound();
     }
   }
 
   getKeysFromText(String text) async {
     final result = await pgpKeyUtil.validateText(text);
-    if (result != null && result.isNotEmpty) {
+    if (result.isNotEmpty) {
       _view.showImportDialog(result);
+    }else{
+      _view.keysNotFound();
     }
   }
 

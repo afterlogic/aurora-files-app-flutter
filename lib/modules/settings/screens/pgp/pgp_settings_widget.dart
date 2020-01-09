@@ -21,8 +21,7 @@ class PgpSettingWidget extends StatefulWidget {
   _PgpSettingWidgetState createState() => _PgpSettingWidgetState();
 }
 
-class _PgpSettingWidgetState extends State<PgpSettingWidget>
-    with PgpSettingView {
+class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView {
   PgpSettingPresenter _presenter;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -51,16 +50,14 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
         ),
         body: StreamWidget<KeysState>(
           keysState,
-              (_, state) {
+          (_, state) {
             if (state.isProgress) {
               return SizedBox.shrink();
             }
 
-            final publicKeys =
-            state.public.map((item) => KeyWidget(item, openKey)).toList();
+            final publicKeys = state.public.map((item) => KeyWidget(item, openKey)).toList();
 
-            final privateKeys =
-            state.private.map((item) => KeyWidget(item, openKey)).toList();
+            final privateKeys = state.private.map((item) => KeyWidget(item, openKey)).toList();
 
             return ListView(
               padding: const EdgeInsets.only(left: 16, bottom: 25),
@@ -131,7 +128,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   openKey(LocalPgpKey pgpKey) async {
-    if(pgpKey.key==null)return;
+    if (pgpKey.key == null) return;
     final result = await Navigator.pushNamed(
       context,
       PgpKeyModelRoute.name,
@@ -144,8 +141,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   exportAll(List<LocalPgpKey> keys) async {
-    Navigator.pushNamed(context, PgpKeyExportRoute.name,
-        arguments: [keys, _presenter.pgpKeyUtil]);
+    Navigator.pushNamed(context, PgpKeyExportRoute.name, arguments: [keys, _presenter.pgpKeyUtil]);
   }
 
   @override
@@ -158,16 +154,19 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
   @override
   showImportDialog(List<LocalPgpKey> keys) async {
-    final result = await openDialog(
-        context, (_) => ImportPgpKeyWidget(keys, _presenter.pgpKeyUtil));
+    final result =
+        await openDialog(context, (_) => ImportPgpKeyWidget(keys, _presenter.pgpKeyUtil));
     if (result is List<LocalPgpKey>) {
       _presenter.saveKeys(result);
     }
   }
 
+  keysNotFound() {
+//    openDialog(context, (_) => Dialog);
+  }
+
   generateKeyDialog() async {
-    final result = await openDialog(
-        context, (_) => CreateKeyDialog(_presenter.pgpKeyUtil));
+    final result = await openDialog(context, (_) => CreateKeyDialog(_presenter.pgpKeyUtil));
     if (result is CreateKeyResult) {
       _presenter.addPrivateKey(result);
     }

@@ -47,14 +47,12 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
             children: <Widget>[
               SizedBox(height: 10),
               CupertinoTextField(
-                style: TextStyle(color: Colors.white),
                 prefix: Text(" ${s.email}:"),
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(height: 10),
               CupertinoTextField(
-                style: TextStyle(color: Colors.white),
                 prefix: Text(" ${s.password}:"),
                 suffix: GestureDetector(
                   child:

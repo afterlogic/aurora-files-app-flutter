@@ -13,15 +13,11 @@ class AppCupertinoTheme {
   );
 
   static final _inputTheme = InputDecorationTheme(
-    helperStyle: TextStyle(color: Colors.white),
-    hintStyle:TextStyle(color: Colors.white),
-    labelStyle: TextStyle(color: Colors.white),
     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
   );
 
   static final _buttonTheme = ButtonThemeData(
-    shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(50.0)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
     textTheme: ButtonTextTheme.primary,
   );
 }
-

@@ -20,6 +20,8 @@ import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_model_widge
 import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_model_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_settings_widget.dart';
+import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.dart';
+import 'package:aurorafiles/modules/settings/screens/storage/storage_info_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_android.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:aurorafiles/shared_ui/fade_route.dart';
@@ -150,6 +152,22 @@ class AppNavigation {
                 name: settings.name,
               ),
               page: PgpSettingWidget(),
+              duration: 150);
+        }
+        break;
+      case StorageInfoRoute.name:
+        if (Platform.isIOS) {
+          return CupertinoPageRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              builder: (context) => StorageInfoWidget());
+        } else {
+          return FadeRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              page: StorageInfoWidget(),
               duration: 150);
         }
         break;

@@ -17,10 +17,17 @@ class  Pgp {
     }
     
     func getKeyDescription(_ key:Data) throws->KeyInfo {
-        let key = try readPublicKey(key)
-        let userIds = key.userIDs
-        let length = key.getBitStrength()
-        return KeyInfo(emails:userIds,length: Int(length))
+        do {
+            let key = try readPublicKey(key)
+            let userIds = key.userIDs
+            let length = key.getBitStrength()
+            return KeyInfo(emails:userIds,length: Int(length),isPrivate: false)
+        } catch  {
+            let key = try readPrivateKey(key)
+            let userIds = key.userIDs
+            let length = key.getPublicKey().getBitStrength()
+            return KeyInfo(emails:userIds,length: Int(length),isPrivate: true)
+        }
     }
     
     func createKeys(_ length:Int32,_ email:String,_ password:String)throws ->[String]{
@@ -49,15 +56,27 @@ class  Pgp {
         }
         throw CryptionError();
     }
-    
+    func readPrivateKey(_ key:Data)throws->BCOpenpgpPGPSecretKey{
+        let byteArray = IOSByteArray(nsData: key)!
+        let input:JavaIoInputStream = JavaIoByteArrayInputStream(byteArray: byteArray)
+
+       return BCOpenpgpPGPSecretKeyRing(
+            javaIoInputStream:BCOpenpgpPGPUtil.getDecoderStream(with: input),
+            with: BCOpenpgpOperatorBcBcKeyFingerprintCalculator()
+            ).getSecretKey()
+        
+    }
 }
 
 class KeyInfo {
     let emails:[String]
     let length:Int
-    init(emails:[String],length:Int) {
+    let isPrivate:Bool
+    
+    init(emails:[String],length:Int,isPrivate:Bool) {
         self.emails=emails
         self.length=length
+        self.isPrivate=isPrivate
     }
 }
 

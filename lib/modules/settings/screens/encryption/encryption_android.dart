@@ -107,7 +107,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
-            text: s.generate_keys,
+            text: s.generate_key,
             onPressed: () => showDialog(
               context: context,
               barrierDismissible: false,

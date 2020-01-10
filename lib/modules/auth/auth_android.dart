@@ -113,15 +113,15 @@ class _AuthAndroidState extends State<AuthAndroid> {
             cursorColor: Theme.of(context).accentColor,
             controller: _authState.hostCtrl,
             keyboardType: TextInputType.url,
-            decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.white38))),
+            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white38))),
             placeholder: s.host,
+            placeholderStyle: TextStyle(color: Colors.white70),
             autocorrect: false,
             prefix: Opacity(
               opacity: 0.6,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-                child: Icon(MdiIcons.web),
+              child: Icon(MdiIcons.web),
               ),
             ),
           ),
@@ -131,9 +131,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
           controller: _authState.emailCtrl,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(color: Colors.white),
-          decoration: BoxDecoration(
-              border: Border(bottom: const BorderSide(color: Colors.white38))),
+          decoration:
+              BoxDecoration(border: Border(bottom: const BorderSide(color: Colors.white38))),
           placeholder: s.email,
+          placeholderStyle: TextStyle(color: Colors.white70),
           autocorrect: false,
           prefix: Opacity(
             opacity: 0.6,
@@ -148,9 +149,9 @@ class _AuthAndroidState extends State<AuthAndroid> {
           style: TextStyle(color: Colors.white),
           cursorColor: Theme.of(context).accentColor,
           controller: _authState.passwordCtrl,
-          decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.white38))),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white38))),
           placeholder: s.password,
+          placeholderStyle: TextStyle(color: Colors.white70),
           obscureText: _obscureText,
           autocorrect: false,
           prefix: Opacity(
@@ -178,9 +179,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
             cursorColor: Theme.of(context).accentColor,
             controller: _authState.hostCtrl,
             keyboardType: TextInputType.url,
-            validator: (value) => _showHostField
-                ? validateInput(value, [ValidationTypes.empty])
-                : "",
+            validator: (value) =>
+                _showHostField ? validateInput(value, [ValidationTypes.empty]) : "",
             decoration: InputDecoration(
               alignLabelWithHint: true,
               labelText: s.host,
@@ -191,8 +191,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
           cursorColor: Theme.of(context).accentColor,
           controller: _authState.emailCtrl,
           keyboardType: TextInputType.emailAddress,
-          validator: (value) => validateInput(
-              value, [ValidationTypes.empty, ValidationTypes.email]),
+          validator: (value) =>
+              validateInput(value, [ValidationTypes.empty, ValidationTypes.email]),
           decoration: InputDecoration(
             labelText: s.email,
             alignLabelWithHint: true,
@@ -246,10 +246,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
                         Hero(
                           tag: "logo",
                           child: Padding(
-                            padding:
-                            const EdgeInsets.symmetric(horizontal: 32.0),
-                            child: Image.asset(
-                                "lib/assets/images/private-mail-logo.png"),
+                            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                            child: Image.asset("lib/assets/images/private-mail-logo.png"),
                           ),
                         ),
                         SizedBox(height: 70.0),

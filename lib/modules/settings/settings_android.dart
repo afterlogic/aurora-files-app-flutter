@@ -42,7 +42,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               leading: Icon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
             ),
-
+            if (!Platform.isIOS)
               ListTile(
                 title: Text(s.openPGP),
                 leading: Icon(MdiIcons.key),

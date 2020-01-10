@@ -38,10 +38,8 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
               direction: Axis.vertical,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: 300
-                  ),
+                SizedBox(
+                  height: 200,
                   child: CupertinoTextField(
                     maxLines: null,
                     autofocus: true,

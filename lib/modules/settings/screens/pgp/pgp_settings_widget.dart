@@ -9,6 +9,7 @@ import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/shared_ui/error_dialog.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/stream_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class PgpSettingWidget extends StatefulWidget {
 
 class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView {
   PgpSettingPresenter _presenter;
-
+  S s;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -41,7 +42,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    s = S.of(context);
     final theme = Theme.of(context);
     return Scaffold(
         key: _scaffoldKey,
@@ -93,7 +94,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: AppButton(
-                      text: s.export_all_public_keys.toUpperCase(),
+                      text: s.export_all_public_keys,
                       onPressed: () {
                         exportAll(state.public);
                       },
@@ -102,21 +103,21 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: AppButton(
-                    text: s.import_keys_from_text.toUpperCase(),
+                    text: s.import_keys_from_text,
                     onPressed: importKeyDialog,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: AppButton(
-                    text: s.import_keys_from_file.toUpperCase(),
+                    text: s.import_keys_from_file,
                     onPressed: _presenter.getKeysFromFile,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: AppButton(
-                    text: s.generate_keys.toUpperCase(),
+                    text: s.generate_keys,
                     onPressed: generateKeyDialog,
                   ),
                 ),
@@ -162,7 +163,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
   }
 
   keysNotFound() {
-//    openDialog(context, (_) => Dialog);
+    openDialog(context, (_) => ErrorDialog(s.failed, s.keys_not_found));
   }
 
   generateKeyDialog() async {

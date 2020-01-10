@@ -23,7 +23,9 @@ class CreateKeyDialog extends StatefulWidget {
 
 class _CreateKeyDialogState extends State<CreateKeyDialog> {
   final _emailController =
-      TextEditingController(text: AppStore.authState.userEmail);
+  TextEditingController(text: AppStore.authState.userEmail);
+  final _lengthController =
+   TextEditingController(text: lengths[1].toString());
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   S s;
@@ -47,16 +49,27 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
             children: <Widget>[
               SizedBox(height: 10),
               CupertinoTextField(
-                prefix: Text(" ${s.email}:"),
+                enabled: false,
+                prefix: Padding(
+                  padding: const EdgeInsets.only(left:8.0),
+                  child: Text("${s.email}:"),
+                ),
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(height: 10),
               CupertinoTextField(
-                prefix: Text(" ${s.password}:"),
+                autofocus: true,
+                prefix: Padding(
+                  padding: const EdgeInsets.only(left:8.0),
+                  child: Text("${s.password}:"),
+                ),
                 suffix: GestureDetector(
                   child:
-                      Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                  Padding(
+                    padding: const EdgeInsets.only(right:8.0),
+                    child: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                  ),
                   onTap: () {
                     _obscure = !_obscure;
                     setState(() {});
@@ -66,7 +79,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                 controller: _passwordController,
                 keyboardType: TextInputType.visiblePassword,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
@@ -76,29 +89,25 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                         return CupertinoActionSheet(
                             title: Text(s.select_length),
                             actions: lengths
-                                .map((length) => CupertinoActionSheetAction(
-                                      onPressed: () =>
-                                          Navigator.pop(context, length),
-                                      child: Text(length.toString()),
-                                    ))
+                                .map((length) =>
+                                CupertinoActionSheetAction(
+                                  onPressed: () =>
+                                      Navigator.pop(context, length),
+                                  child: Text(length.toString()),
+                                ))
                                 .toList());
                       }).then((result) {
                     if (result is int) {
+                      _lengthController.text=result.toString();
                       length = result;
                       setState(() {});
                     }
                   });
                 },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(" ${s.length}: "),
-                    Text(
-                      length.toString(),
-                      style: theme.textTheme.textStyle,
-                    )
-                  ],
+                child: CupertinoTextField(
+                  enabled: false,
+                  prefix: Text(" ${s.length}: "),
+                  controller:_lengthController,
                 ),
               ),
               SizedBox(height: 10),

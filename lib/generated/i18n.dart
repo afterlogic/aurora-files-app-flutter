@@ -83,7 +83,7 @@ class S implements WidgetsLocalizations {
   String get export_confirm => "Are you sure you want to export this key?";
   String get export_key => "Export key";
   String get export_key_progress => "Exporting the key...";
-  String get failed => "failed";
+  String get failed => "Failed";
   String get file => "file";
   String get file_is_damaged => "Error happened. Perhaps this file is damaged.";
   String get filename => "Filename";
@@ -180,6 +180,7 @@ class S implements WidgetsLocalizations {
   String get try_again => "Try again";
   String get upgrade_now => "Upgrade now";
   String get upload => "Upload";
+  String get keys_not_found => "Keys not found";
   String adding_folder(String name) => "Adding $name folder";
   String available_space(String format) => "Available space: $format";
   String confirm_delete_file(String file) => "Are you sure you want to delete $file";

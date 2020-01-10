@@ -173,5 +173,6 @@
   "send_email": "You can send the link via email.",
   "sending": "Sending..",
   "sending_complete": "Sending complete",
-  "failed": "failed"
+  "failed": "Failed",
+  "keys_not_found": "Keys not found"
 }

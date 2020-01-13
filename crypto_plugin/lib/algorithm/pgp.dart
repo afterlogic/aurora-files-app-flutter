@@ -51,33 +51,34 @@ class Pgp extends Crypt {
   }
 
   Future<List<int>> decryptBytes(
-      Uint8List encryptedBytes, String password) async {
+      Uint8List encryptedBytes, String password, bool checkSign) async {
     final result = await invokeMethod(
       "$algorithm.decryptBytes",
-      [encryptedBytes, password],
+      [encryptedBytes, password, checkSign],
     );
     return List<int>.from(result);
   }
 
-  Future decryptFile(File inputFile, File outputFile, String password) async {
+  Future decryptFile(
+      File inputFile, File outputFile, String password, bool checkSign) async {
     await invokeMethod(
       "$algorithm.decryptFile",
-      [inputFile.path, outputFile.path, password],
+      [inputFile.path, outputFile.path, password, checkSign],
     );
   }
 
-  Future<List<int>> encryptBytes(Uint8List messageBytes) async {
+  Future<List<int>> encryptBytes(Uint8List messageBytes, bool sign) async {
     final result = await invokeMethod(
       "$algorithm.encryptBytes",
-      [messageBytes],
+      [messageBytes, sign],
     );
     return List<int>.from(result);
   }
 
-  Future<void> encryptFile(File inputFile, File outputFile) async {
+  Future<void> encryptFile(File inputFile, File outputFile, bool sign) async {
     await invokeMethod(
       "$algorithm.encryptFile",
-      [inputFile.path, outputFile.path],
+      [inputFile.path, outputFile.path, sign],
     );
   }
 

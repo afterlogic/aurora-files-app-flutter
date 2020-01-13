@@ -5,14 +5,16 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SelectEncryptMethod extends StatefulWidget {
+  final LocalPgpKey userPgpKey;
   final Recipient recipient;
   final LocalPgpKey pgpKey;
 
-  const SelectEncryptMethod(this.recipient, this.pgpKey);
+  const SelectEncryptMethod(this.userPgpKey, this.recipient, this.pgpKey);
 
   @override
   _SelectEncryptMethodState createState() => _SelectEncryptMethodState();
@@ -20,11 +22,13 @@ class SelectEncryptMethod extends StatefulWidget {
 
 class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   bool useKey;
+  bool useSign;
   S s;
 
   @override
   void initState() {
     useKey = widget.pgpKey != null;
+    useSign = useKey && widget.userPgpKey != null;
     super.initState();
   }
 
@@ -44,7 +48,9 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
             height: 10,
           ),
           Text(
-            widget.pgpKey!=null ? s.has_PGP_public_key : s.has_no_PGP_public_key,
+            widget.pgpKey != null
+                ? s.has_PGP_public_key
+                : s.has_no_PGP_public_key,
             style: theme.textTheme.caption,
           ),
           SizedBox(
@@ -56,6 +62,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
           ),
           RadioEncryptMethod(widget.pgpKey != null, useKey, (v) {
             useKey = v;
+            useSign = useKey && widget.userPgpKey != null;
             setState(() {});
           }),
           SizedBox(
@@ -63,6 +70,33 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
           ),
           Text(
             useKey ? s.key_will_be_used : s.password_will_be_used,
+            style: theme.textTheme.caption,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              CheckAnalog(
+                  useSign,
+                  widget.userPgpKey == null
+                      ? null
+                      : (v) {
+                          useSign = v;
+                          setState(() {});
+                        }),
+              Text(s.sign_file_email),
+            ],
+          ),
+          Divider(
+            color: Colors.grey,
+          ),
+          Text(
+            !useKey
+                ? s.password_sign
+                : widget.pgpKey == null
+                    ? s.sign_with_not_key(s.data)
+                    : useSign
+                        ? s.data_signed(s.data)
+                        : s.data_not_signed(s.data),
             style: theme.textTheme.caption,
           ),
         ],
@@ -73,7 +107,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
       FlatButton(
         child: Text(s.encrypt),
         onPressed: () {
-          Navigator.pop(context, SelectEncryptMethodResult(useKey));
+          Navigator.pop(context, SelectEncryptMethodResult(useKey, useSign));
         },
       ),
       FlatButton(
@@ -180,6 +214,7 @@ class RadioAnalog extends StatelessWidget {
 
 class SelectEncryptMethodResult {
   final bool useKey;
+  final bool useSign;
 
-  SelectEncryptMethodResult(this.useKey);
+  SelectEncryptMethodResult(this.useKey, this.useSign);
 }

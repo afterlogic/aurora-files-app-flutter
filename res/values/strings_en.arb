@@ -174,5 +174,12 @@
   "sending": "Sending..",
   "sending_complete": "Sending complete",
   "failed": "Failed",
-  "keys_not_found": "Keys not found"
+  "keys_not_found": "Keys not found",
+  "password_sign": "For password-based encryption the signin is not supported.",
+  "sign_with_not_key": "$data can’t be signed because the private key has not been added.",
+  "data_signed": "The $data will be signed using your private key.",
+  "data_not_signed": "The $data will not be signed, but encrypted.",
+  "sign_file_email": "Sign file and email",
+  "sign_email": "Sign email",
+  "data": "data"
 }

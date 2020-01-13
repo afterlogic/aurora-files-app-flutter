@@ -14,13 +14,14 @@ import 'package:aurorafiles/modules/files/dialogs/secure_sharing/link_option.dar
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_encrypt_method.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/share_link.dart';
-import 'package:aurorafiles/modules/files/dialogs/secure_sharing/share_progress.dart';
+import 'package:aurorafiles/modules/files/dialogs/secure_sharing/encrypted_share_link.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/asset_icon.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
@@ -215,7 +216,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       file: _file,
       onStart: (ProcessingFile process) {
         // TODO VO: update ui without refreshing files
-        widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesHidden);
+        widget.filesPageState
+            .onGetFiles(showLoading: FilesLoadingType.filesHidden);
         showSnack(
           context: context,
           scaffoldState: _fileViewerScaffoldKey.currentState,
@@ -246,7 +248,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       widget.filesState.onSetFileOffline(_file,
           onStart: (process) {
             _fileViewerState.processingFile = process;
-            widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesHidden);
+            widget.filesPageState
+                .onGetFiles(showLoading: FilesLoadingType.filesHidden);
           },
           onSuccess: () async {
             _fileViewerState.processingFile = null;
@@ -271,7 +274,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         await widget.filesState.onSetFileOffline(_file,
             onStart: (process) {
               _fileViewerState.processingFile = process;
-              widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesHidden);
+              widget.filesPageState
+                  .onGetFiles(showLoading: FilesLoadingType.filesHidden);
             },
             onSuccess: () async {
               _fileViewerState.processingFile = null;
@@ -307,6 +311,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       return _prepareShareFile(_secureEncryptSharing);
     }
     final prepareForShare = PreparedForShare(null, _file);
+    final pgpKeyUtil = PgpKeyUtil(DI.get(), DI.get());
+    final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     bool usePassword = true;
 
     if (!prepareForShare.localFile.published) {
@@ -322,6 +328,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         final needRecipient = await openDialog(
           context,
           (context) => ShareLink(
+            userPrivateKey,
             usePassword,
             prepareForShare,
             selectRecipientResult,
@@ -344,11 +351,15 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       }
     }
     _file = prepareForShare.localFile;
-    await widget.filesState.updateFile(getCompanionFromLocalFile(prepareForShare.localFile));
+    await widget.filesState
+        .updateFile(getCompanionFromLocalFile(prepareForShare.localFile));
     setState(() {});
   }
 
   _secureEncryptSharing(PreparedForShare prepareForShare) async {
+    final pgpKeyUtil = PgpKeyUtil(DI.get(), DI.get());
+    final userPrivateKey = await pgpKeyUtil.userPrivateKey();
+
     final selectRecipientResult = await openDialog(
       context,
       (context) => SelectRecipient(_fileViewerState),
@@ -357,18 +368,23 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     if (selectRecipientResult is RecipientWithKey) {
       final selectEncryptMethodResult = await openDialog(
         context,
-        (context) =>
-            SelectEncryptMethod(selectRecipientResult.recipient, selectRecipientResult.pgpKey),
+        (context) => SelectEncryptMethod(
+          userPrivateKey,
+          selectRecipientResult.recipient,
+          selectRecipientResult.pgpKey,
+        ),
       );
       if (selectEncryptMethodResult is SelectEncryptMethodResult) {
         await openDialog(
           context,
-          (context) => ShareProgress(
+          (context) => EncryptedShareLink(
             _fileViewerState,
+            userPrivateKey,
             prepareForShare,
             selectRecipientResult.recipient,
             selectRecipientResult.pgpKey,
             selectEncryptMethodResult.useKey,
+            selectEncryptMethodResult.useSign,
             DI.get(),
             () {
               widget.filesPageState.onGetFiles(
@@ -443,7 +459,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           actions: widget.filesState.isOfflineMode
               ? [
                   IconButton(
-                    icon: Icon(Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+                    icon: Icon(
+                        Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
                     tooltip: s.share,
                     onPressed: () => _prepareShareFile(_shareFile),
                   ),
@@ -475,7 +492,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     onPressed: _moveFile,
                   ),
                   IconButton(
-                    icon: Icon(Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+                    icon: Icon(
+                        Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
                     tooltip: s.share,
                     onPressed: () => _prepareShareFile(_shareFile),
                   ),
@@ -514,7 +532,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: InfoListTile(label: s.size, content: filesize(_file.size)),
+                  child: InfoListTile(
+                      label: s.size, content: filesize(_file.size)),
                 ),
                 SizedBox(width: 30),
                 Expanded(
@@ -527,7 +546,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 ),
               ],
             ),
-            InfoListTile(label: s.location, content: _file.path == "" ? "/" : _file.path),
+            InfoListTile(
+                label: s.location,
+                content: _file.path == "" ? "/" : _file.path),
             InfoListTile(label: s.owner, content: _file.owner),
             if (!widget.filesState.isOfflineMode && useCommonLinkShare)
               PublicLinkSwitch(
@@ -545,7 +566,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               trailing: Switch.adaptive(
                 value: _isFileOffline,
                 activeColor: Theme.of(context).accentColor,
-                onChanged: _isSyncingForOffline ? null : (bool val) => _setFileForOffline(),
+                onChanged: _isSyncingForOffline
+                    ? null
+                    : (bool val) => _setFileForOffline(),
               ),
             ),
             SizedBox(

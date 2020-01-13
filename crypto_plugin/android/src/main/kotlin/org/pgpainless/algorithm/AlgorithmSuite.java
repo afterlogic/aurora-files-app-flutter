@@ -43,7 +43,7 @@ public class AlgorithmSuite {
     private List<HashAlgorithm> hashAlgorithms;
     private List<CompressionAlgorithm> compressionAlgorithms;
 
-    public AlgorithmSuite(List<SymmetricKeyAlgorithm> symmetricKeyAlgorithms,
+    public  AlgorithmSuite(List<SymmetricKeyAlgorithm> symmetricKeyAlgorithms,
                           List<HashAlgorithm> hashAlgorithms,
                           List<CompressionAlgorithm> compressionAlgorithms) {
         this.symmetricKeyAlgorithms = Collections.unmodifiableList(symmetricKeyAlgorithms);

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
+import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:file_picker/file_picker.dart';
@@ -43,6 +44,10 @@ class PgpKeyUtil {
     }
 
     return localKeys;
+  }
+
+  Future<LocalPgpKey> userPrivateKey() {
+    return pgpKeyDao.getKey(AppStore.authState.userEmail, true);
   }
 
   saveKeys(List<LocalPgpKey> keys) async {

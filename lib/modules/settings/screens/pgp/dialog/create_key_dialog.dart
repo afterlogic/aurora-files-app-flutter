@@ -39,7 +39,6 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     s = S.of(context);
     final title = Text(s.generate_keys);
     if (Platform.isIOS) {
-      final theme = CupertinoTheme.of(context);
       return CupertinoAlertDialog(
         title: title,
         content: SizedBox(
@@ -147,6 +146,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                 child: Column(
                   children: <Widget>[
                     TextFormField(
+                      enabled: false,
                       decoration: InputDecoration(labelText: s.email),
                       validator: (v) =>
                           validateInput(v, [ValidationTypes.email]),

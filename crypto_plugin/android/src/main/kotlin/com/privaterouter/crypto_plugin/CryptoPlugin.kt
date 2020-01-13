@@ -51,7 +51,7 @@ class CryptoPlugin : MethodCallHandler {
                     if (it is NotImplemented) {
                         result.notImplemented()
                     } else {
-                        result.error("", it.message, "")
+                        result.error(it.javaClass.toString(), it.message, "")
                     }
                 }).let {
                     disposable.add(it)
@@ -114,25 +114,29 @@ class CryptoPlugin : MethodCallHandler {
                     "decryptBytes" -> {
                         val array = arguments[0] as ByteArray
                         val password = arguments[1] as String
-                        return pgp.decryptBytes(array, password)
+                        val checkSign = arguments[3] as Boolean
+                        return pgp.decryptBytes(array, password, checkSign)
 
                     }
                     "decryptFile" -> {
                         val inputFile = arguments[0] as String
                         val outputFile = arguments[1] as String
                         val password = arguments[2] as String
-                        pgp.decryptFile(inputFile, outputFile, password)
+                        val checkSign = arguments[3] as Boolean
+                        pgp.decryptFile(inputFile, outputFile, password, checkSign)
                         return ""
                     }
                     "encryptFile" -> {
                         val inputFile = arguments[0] as String
                         val outputFile = arguments[1] as String
-                        pgp.encriptFile(inputFile, outputFile)
+                        val sign = arguments[2] as Boolean
+                        pgp.encriptFile(inputFile, outputFile, sign)
                         return ""
                     }
                     "encryptBytes" -> {
                         val text = arguments[0] as ByteArray
-                        return pgp.encriptBytes(text)
+                        val sign = arguments[1] as Boolean
+                        return pgp.encriptBytes(text, sign)
 
                     }
                     "decryptSymmetricBytes" -> {

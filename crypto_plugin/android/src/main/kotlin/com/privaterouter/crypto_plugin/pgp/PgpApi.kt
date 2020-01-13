@@ -46,7 +46,6 @@ open class PgpApi {
         if (checkSign) {
             assert(publicKey != null)
         }
-//        pgp.decrypt(inputStream, outputStream, ByteArrayInputStream(privateKey!!.toByteArray()), password.toCharArray(), length)
         pgp.decrypt(inputStream, outputStream, privateKey, password, length, if (checkSign) {
             publicKey
         } else {

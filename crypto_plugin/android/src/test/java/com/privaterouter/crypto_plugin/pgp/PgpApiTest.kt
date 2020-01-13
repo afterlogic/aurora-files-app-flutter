@@ -1,5 +1,6 @@
 package com.privaterouter.crypto_plugin.pgp
 
+import org.bouncycastle.openpgp.PGPException
 import org.bouncycastle.util.io.Streams
 import org.junit.Test
 import java.io.ByteArrayInputStream
@@ -74,7 +75,16 @@ class PgpApiTest {
 
         val message = "message".toByteArray()
         var messageEncrypted = pgpHelper.encriptBytes(message, true, password)
-        val messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password, true)
+        var messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password, true)
+        assert(String(messageDecrypted) == String(message))
+
+        messageEncrypted = pgpHelper.encriptBytes(message, false, password)
+        messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password, true)
+        assert(String(messageDecrypted) == String(message))
+
+        messageEncrypted = pgpHelper.encriptBytes(message, true, password)
+        messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password, false)
+        assert(String(messageDecrypted) == String(message))
 
         try {
             messageEncrypted = pgpHelper.encriptBytes(message, true, password)
@@ -82,10 +92,7 @@ class PgpApiTest {
             pgpHelper.decryptBytes(messageEncrypted, password, true)
             throw Throwable("failed check Sign")
         } catch (e: SignError) {
-            //is ok
         }
-
-        assert(String(messageDecrypted) == String(message))
     }
 
     @Test
@@ -126,8 +133,8 @@ class PgpApiTest {
         val startLength = File(testFile).length()
         pgpHelper.setTempFile(temp)
 
-        pgpHelper.encryptSymmetricFile(decrypt.path, encrypt.path, password, password)
-        pgpHelper.decryptSymmetricFile(encrypt.path, decrypt.path, password, true)
+        pgpHelper.encryptSymmetricFile(decrypt.path, encrypt.path, password)
+        pgpHelper.decryptSymmetricFile(encrypt.path, decrypt.path, password)
         assert(startLength == File(testFile).length())
     }
 
@@ -135,6 +142,8 @@ class PgpApiTest {
     companion object {
         // past you test file
         const val testFile = "/home/dikiy/test/test1 (копия).png"
+
+
         const val testEncrypt = "$testFile.gpg"
         const val temp = "$testFile.temp"
         const val password = "111"

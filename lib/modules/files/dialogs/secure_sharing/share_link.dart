@@ -2,14 +2,16 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
-import 'package:aurorafiles/modules/files/dialogs/secure_sharing/share_progress.dart';
+import 'package:aurorafiles/modules/files/dialogs/secure_sharing/encrypted_share_link.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
@@ -19,9 +21,9 @@ import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ShareLink extends StatefulWidget {
+  final LocalPgpKey userPgpKey;
   final bool usePassword;
   final PreparedForShare file;
   final RecipientWithKey selectRecipientResult;
@@ -29,6 +31,7 @@ class ShareLink extends StatefulWidget {
   final FileViewerState fileViewerState;
 
   ShareLink(
+    this.userPgpKey,
     this.usePassword,
     this.file,
     this.selectRecipientResult,
@@ -45,11 +48,13 @@ class _ShareLinkState extends State<ShareLink> {
   S s;
   bool progress = false;
   bool sendProgress = false;
+  bool useSign;
   String error;
   final toastKey = GlobalKey<ToastWidgetState>();
 
   @override
   void initState() {
+    useSign = widget.userPgpKey != null;
     super.initState();
     if (!widget.file.localFile.published) {
       _createLink();
@@ -134,8 +139,8 @@ class _ShareLinkState extends State<ShareLink> {
           File((await getTemporaryDirectory()).path + "/temp" + ".temp"));
       pgp.setPublicKey(widget.selectRecipientResult.pgpKey.key);
 
-      final encrypt =
-          await pgp.encryptBytes(Uint8List.fromList(template.body.codeUnits));
+      final encrypt = await pgp.encryptBytes(
+          Uint8List.fromList(template.body.codeUnits), useSign);
 
       template.body = String.fromCharCodes(encrypt);
     }
@@ -219,8 +224,31 @@ class _ShareLinkState extends State<ShareLink> {
                                       : s.copy_password
                                   : s.send_email,
                               style: theme.textTheme.caption,
-                            )
+                            ),
                           ],
+                          if (widget.selectRecipientResult?.pgpKey != null) ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                CheckAnalog(
+                                    useSign,
+                                    widget.userPgpKey == null
+                                        ? null
+                                        : (v) {
+                                            useSign = v;
+                                            setState(() {});
+                                          }),
+                                Text(s.sign_email),
+                              ],
+                            ),
+                            Divider(color: Colors.grey),
+                            Text(
+                              useSign
+                                  ? s.data_signed(s.email.toLowerCase())
+                                  : s.data_not_signed(s.email.toLowerCase()),
+                              style: theme.textTheme.caption,
+                            )
+                          ]
                         ],
                       ),
                       Align(

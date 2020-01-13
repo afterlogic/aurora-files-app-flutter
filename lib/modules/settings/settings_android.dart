@@ -12,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/storage/storage_info_widget.dart';
-
 class SettingsAndroid extends StatefulWidget {
   @override
   _SettingsAndroidState createState() => _SettingsAndroidState();
@@ -35,7 +33,8 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             ListTile(
               title: Text(s.common),
               leading: Icon(Icons.tune),
-              onTap: () => Navigator.pushNamed(context, CommonSettingsRoute.name),
+              onTap: () =>
+                  Navigator.pushNamed(context, CommonSettingsRoute.name),
             ),
             ListTile(
               title: Text(s.encryption),
@@ -46,7 +45,8 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               ListTile(
                 title: Text(s.openPGP),
                 leading: Icon(MdiIcons.key),
-                onTap: () => Navigator.pushNamed(context, PgpSettingsRoute.name),
+                onTap: () =>
+                    Navigator.pushNamed(context, PgpSettingsRoute.name),
               ),
             ListTile(
               title: Text(s.storage_info),

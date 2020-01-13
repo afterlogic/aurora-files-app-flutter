@@ -65,37 +65,41 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
               s.import_keys,
               style: theme.textTheme.title,
             ),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: Form(
-                    key: formKey,
-                    child: TextFormField(
-                      validator: (v) => validateInput(v, [
-                        ValidationTypes.empty,
-                      ]),
-                      controller: _textController,
-                      expands: true,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 150,
+                    child: Form(
+                      key: formKey,
+                      child: TextFormField(
+                        validator: (v) => validateInput(v, [
+                          ValidationTypes.empty,
+                        ]),
+                        controller: _textController,
+                        expands: true,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                      ),
                     ),
                   ),
-                ),
-                AppButton(
+                  AppButton(
+                      width: double.infinity,
+                      text: s.check_keys.toUpperCase(),
+                      onPressed: () {
+                        if (formKey.currentState.validate()) {
+                          Navigator.pop(context, _textController.text);
+                        }
+                      }),
+                  AppButton(
                     width: double.infinity,
-                    text: s.check_keys.toUpperCase(),
-                    onPressed: () {
-                      if (formKey.currentState.validate()) {
-                        Navigator.pop(context, _textController.text);
-                      }
-                    }),
-                AppButton(
-                  width: double.infinity,
-                  text: s.close.toUpperCase(),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
+                    text: s.close.toUpperCase(),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
             ),
           );
   }

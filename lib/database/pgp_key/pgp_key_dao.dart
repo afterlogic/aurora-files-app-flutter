@@ -8,13 +8,21 @@ part 'pgp_key_dao.g.dart';
 class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
   PgpKeyDao(AppDatabase db) : super(db);
 
+  Future<LocalPgpKey> getKey(String email, bool isPrivate) {
+    return (select(pgpKey)
+          ..where((item) => item.isPrivate.equals(isPrivate))
+          ..where((item) => item.email.equals(email)))
+        .getSingle();
+  }
+
   Future<List<LocalPgpKey>> getKeys() {
     return select(pgpKey).get();
   }
-  Future<List<LocalPgpKey>> getPublicKeys() {
-    return (select(pgpKey)..where((item)=>item.isPrivate.equals(false))).get();
-  }
 
+  Future<List<LocalPgpKey>> getPublicKeys() {
+    return (select(pgpKey)..where((item) => item.isPrivate.equals(false)))
+        .get();
+  }
 
   Future<List<LocalPgpKey>> checkHasKeys(List<LocalPgpKey> keys) {
     final emails = keys.map((item) => item.email);

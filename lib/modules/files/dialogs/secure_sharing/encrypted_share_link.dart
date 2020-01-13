@@ -21,23 +21,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ShareProgress extends StatefulWidget {
+class EncryptedShareLink extends StatefulWidget {
   final FilesState filesState;
   final FileViewerState _fileViewerState;
   final Recipient recipient;
   final LocalPgpKey pgpKey;
+  final LocalPgpKey userPgpKey;
   final bool useKey;
+  final bool useSign;
   final bool useEncrypt;
   final Pgp pgp;
   final PreparedForShare file;
   final Function onLoad;
 
-  const ShareProgress(
+  const EncryptedShareLink(
     this._fileViewerState,
+    this.userPgpKey,
     this.file,
     this.recipient,
     this.pgpKey,
     this.useKey,
+    this.useSign,
     this.pgp,
     this.onLoad,
     this.useEncrypt,
@@ -45,10 +49,10 @@ class ShareProgress extends StatefulWidget {
   );
 
   @override
-  _ShareProgressState createState() => _ShareProgressState();
+  _EncryptedShareLinkState createState() => _EncryptedShareLinkState();
 }
 
-class _ShareProgressState extends State<ShareProgress> {
+class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   ProcessingFile _processingFile;
   double progress = 0;
   bool isDownload = false;
@@ -68,7 +72,8 @@ class _ShareProgressState extends State<ShareProgress> {
     if (await temp.exists()) await temp.delete();
 
     if (widget.useKey) {
-      widget.pgp.encryptFile(widget.file.file, output).then((_) {
+      widget.pgp.encryptFile(widget.file.file, output, widget.useSign).then(
+          (_) {
         upload();
       }, onError: (e) {
         error = s.encrypt_error;
@@ -178,6 +183,9 @@ class _ShareProgressState extends State<ShareProgress> {
     if (widget.pgpKey != null) {
       await widget.pgp.setPublicKey(widget.pgpKey.key);
     }
+    if (widget.useSign == true) {
+      await widget.pgp.setPrivateKey(widget.userPgpKey.key);
+    }
     share();
   }
 
@@ -281,8 +289,10 @@ class _ShareProgressState extends State<ShareProgress> {
     );
 
     if (widget.pgpKey != null) {
-      final encrypt = await widget.pgp
-          .encryptBytes(Uint8List.fromList(template.body.codeUnits));
+      final encrypt = await widget.pgp.encryptBytes(
+        Uint8List.fromList(template.body.codeUnits),
+        widget.useSign,
+      );
 
       template.body = String.fromCharCodes(encrypt);
     }

@@ -181,14 +181,14 @@ class CheckAnalog extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(10),
               child: Icon(
-                  isCheck ? Icons.check_box : Icons.check_box_outline_blank),
+                isCheck ? Icons.check_box : Icons.check_box_outline_blank,
+                color: onChange == null ? Colors.grey : null,
+              ),
             ),
           )
         : Checkbox(
             value: isCheck,
-            onChanged: (b) {
-              onChange(b);
-            },
+            onChanged: onChange,
           );
   }
 }

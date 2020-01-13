@@ -27,11 +27,7 @@ public enum PublicKeyAlgorithm {
     RSA_SIGN        (PublicKeyAlgorithmTags.RSA_SIGN),
     ELGAMAL_ENCRYPT (PublicKeyAlgorithmTags.ELGAMAL_ENCRYPT),
     DSA             (PublicKeyAlgorithmTags.DSA),
-    /**
-     * EC is deprecated.
-     * @deprecated use {@link #ECDH} instead.
-     */
-    EC              (PublicKeyAlgorithmTags.EC),
+
     ECDH            (PublicKeyAlgorithmTags.ECDH),
     ECDSA           (PublicKeyAlgorithmTags.ECDSA),
     ELGAMAL_GENERAL (PublicKeyAlgorithmTags.ELGAMAL_GENERAL),

@@ -79,7 +79,7 @@ class MailApi {
     final parameters = {
       "AccountID": accountID,
       "IsHtml": false,
-      "SentFolder": "Sent",
+      "SentFolder": folder,
       "Subject": subject,
       "Text": text,
       "To": to,

@@ -67,18 +67,18 @@ class Pgp extends Crypt {
     );
   }
 
-  Future<List<int>> encryptBytes(Uint8List messageBytes, bool sign) async {
+  Future<List<int>> encryptBytes(Uint8List messageBytes, String passwordForSign) async {
     final result = await invokeMethod(
       "$algorithm.encryptBytes",
-      [messageBytes, sign],
+      [messageBytes, passwordForSign],
     );
     return List<int>.from(result);
   }
 
-  Future<void> encryptFile(File inputFile, File outputFile, bool sign) async {
+  Future<void> encryptFile(File inputFile, File outputFile, String passwordForSign) async {
     await invokeMethod(
       "$algorithm.encryptFile",
-      [inputFile.path, outputFile.path, sign],
+      [inputFile.path, outputFile.path, passwordForSign],
     );
   }
 
@@ -137,6 +137,18 @@ class Pgp extends Crypt {
     );
     if (result is List) {
       return KeyPair(result[0], result[1]);
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> checkPassword(String password, String key) async {
+    final result = await invokeMethod(
+      "$algorithm.checkPassword",
+      [password, key],
+    );
+    if (result is bool) {
+      return result;
     } else {
       return null;
     }

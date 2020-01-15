@@ -41,7 +41,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
     setState(() => loading = true);
     final packageInfo = await PackageInfo.fromPlatform();
     _appName = packageInfo.appName;
-    _version = packageInfo.version;
+    _version = packageInfo.version+"+"+packageInfo.buildNumber;
     setState(() => loading = false);
   }
 

@@ -3,8 +3,6 @@ package com.privaterouter.crypto_plugin.pgp
 
 import KeyDescription
 import org.bouncycastle.bcpg.ArmoredOutputStream
-import org.bouncycastle.crypto.params.AsymmetricKeyParameter
-import org.bouncycastle.crypto.util.PrivateKeyInfoFactory
 import java.util.Date
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -151,7 +149,7 @@ class Pgp {
             input: InputStream,
             publicKey: String?,
             privateKey: String?,
-            password: String,
+            password: String?,
             fileLength: Long
     ) {
 
@@ -180,7 +178,7 @@ class Pgp {
                         }
                     }
                     .let {
-                        if (privateKey == null) {
+                        if (privateKey == null || password == null) {
                             it.doNotSign()
                         } else {
                             val settings = KeyRingProtectionSettings(SymmetricKeyAlgorithm.AES_256, HashAlgorithm.MD5, 0)
@@ -204,7 +202,12 @@ class Pgp {
             }
 
         } catch (e: Throwable) {
-            throw e
+            if (e is PGPException) {
+                throw InputDataError()
+            } else {
+                e.printStackTrace()
+                throw e
+            }
         } finally {
             encryptionStream?.close()
             input.close()
@@ -444,7 +447,24 @@ class Pgp {
                     it.signWith<Any>(secretKeyDecryptor, secretKeys)
                 }
                 .noArmor()
-        
-        
+
+
+    }
+
+    fun checkPassword(password: String, privateKey: String): Boolean {
+        return try {
+            val settings = KeyRingProtectionSettings(SymmetricKeyAlgorithm.AES_256, HashAlgorithm.MD5, 0)
+            val secretKeyRing = KeyRingReader().secretKeyRing(privateKey)
+            val secretKeyRingProtector = PasswordBasedSecretKeyRingProtector(settings, SecretKeyPassphraseProvider { Passphrase(password.toCharArray()) })
+            val keys = secretKeyRing.iterator()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                key.keyID
+                key.extractPrivateKey(secretKeyRingProtector.getDecryptor(key.keyID))
+            }
+            true
+        } catch (e: Throwable) {
+            false
+        }
     }
 }

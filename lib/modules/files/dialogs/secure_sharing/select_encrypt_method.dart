@@ -4,8 +4,10 @@ import 'dart:math';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
-import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
+import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,14 +15,18 @@ class SelectEncryptMethod extends StatefulWidget {
   final LocalPgpKey userPgpKey;
   final Recipient recipient;
   final LocalPgpKey pgpKey;
+  final PgpKeyUtil pgpUtil;
 
-  const SelectEncryptMethod(this.userPgpKey, this.recipient, this.pgpKey);
+  const SelectEncryptMethod(
+      this.userPgpKey, this.recipient, this.pgpKey, this.pgpUtil);
 
   @override
   _SelectEncryptMethodState createState() => _SelectEncryptMethodState();
 }
 
 class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
+  final signKey = GlobalKey<SignCheckBoxState>();
+  final toastKey = GlobalKey<ToastWidgetState>();
   bool useKey;
   bool useSign;
   S s;
@@ -41,63 +47,63 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
     final content = SizedBox(
       height: min(size.height / 2, 350),
       width: min(size.width - 40, 300),
-      child: ListView(
+      child: Stack(
         children: <Widget>[
-          RecipientWidget(RecipientWithKey(widget.recipient, widget.pgpKey)),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            widget.pgpKey != null
-                ? s.has_PGP_public_key
-                : s.has_no_PGP_public_key,
-            style: theme.textTheme.caption,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            s.encryption_type,
-            style: theme.textTheme.subtitle,
-          ),
-          RadioEncryptMethod(widget.pgpKey != null, useKey, (v) {
-            useKey = v;
-            useSign = useKey && widget.userPgpKey != null;
-            setState(() {});
-          }),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            useKey ? s.key_will_be_used : s.password_will_be_used,
-            style: theme.textTheme.caption,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          ListView(
             children: <Widget>[
-              CheckAnalog(
-                  useSign,
-                  widget.userPgpKey == null
-                      ? null
-                      : (v) {
-                          useSign = v;
-                          setState(() {});
-                        }),
-              Text(s.sign_file_email),
+              RecipientWidget(
+                  RecipientWithKey(widget.recipient, widget.pgpKey)),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                widget.pgpKey != null
+                    ? s.has_PGP_public_key
+                    : s.has_no_PGP_public_key,
+                style: theme.textTheme.caption,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                s.encryption_type,
+                style: theme.textTheme.subtitle,
+              ),
+              RadioEncryptMethod(widget.pgpKey != null, useKey, (v) {
+                useKey = v;
+                useSign = useKey && widget.userPgpKey != null;
+                setState(() {});
+              }),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                useKey ? s.key_will_be_used : s.password_will_be_used,
+                style: theme.textTheme.caption,
+              ),
+              SignCheckBox(
+                key: signKey,
+                checked: useSign,
+                enable: widget.pgpKey != null,
+                label: !useKey
+                    ? s.password_sign
+                    : widget.pgpKey == null
+                        ? s.sign_with_not_key(s.data)
+                        : useSign
+                            ? s.data_signed(s.data)
+                            : s.data_not_signed_but_enc(s.data),
+                onCheck: (bool check) {
+                  useSign = check;
+                  setState(() {});
+                },
+              ),
             ],
           ),
-          Divider(
-            color: Colors.grey,
-          ),
-          Text(
-            !useKey
-                ? s.password_sign
-                : widget.pgpKey == null
-                    ? s.sign_with_not_key(s.data)
-                    : useSign
-                        ? s.data_signed(s.data)
-                        : s.data_not_signed(s.data),
-            style: theme.textTheme.caption,
+          Align(
+            alignment: Alignment(0, 1),
+            child: ToastWidget(
+              key: toastKey,
+            ),
           ),
         ],
       ),
@@ -107,7 +113,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
       FlatButton(
         child: Text(s.encrypt),
         onPressed: () {
-          Navigator.pop(context, SelectEncryptMethodResult(useKey, useSign));
+          checkSign();
         },
       ),
       FlatButton(
@@ -128,6 +134,31 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
             content: content,
             actions: actions,
           );
+  }
+
+  checkSign() async {
+    String password;
+    if (useSign && widget.userPgpKey != null) {
+      password = signKey.currentState.password;
+      if (password.isEmpty) {
+        toastKey.currentState.show(s.password_is_empty);
+        return;
+      }
+      final isValidPassword =
+          await widget.pgpUtil.checkPrivateKey(password, widget.userPgpKey.key);
+      if (!isValidPassword) {
+        toastKey.currentState.show(s.invalid_password);
+        return;
+      }
+    }
+    Navigator.pop(
+      context,
+      SelectEncryptMethodResult(
+        useKey,
+        useSign,
+        password,
+      ),
+    );
   }
 }
 
@@ -215,6 +246,7 @@ class RadioAnalog extends StatelessWidget {
 class SelectEncryptMethodResult {
   final bool useKey;
   final bool useSign;
+  final String password;
 
-  SelectEncryptMethodResult(this.useKey, this.useSign);
+  SelectEncryptMethodResult(this.useKey, this.useSign, this.password);
 }

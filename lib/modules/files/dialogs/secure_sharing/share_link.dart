@@ -6,12 +6,13 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/i18n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/encrypted_share_link.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
@@ -29,6 +30,7 @@ class ShareLink extends StatefulWidget {
   final RecipientWithKey selectRecipientResult;
   final FilesState filesState;
   final FileViewerState fileViewerState;
+  final PgpKeyUtil pgpKeyUtil;
 
   ShareLink(
     this.userPgpKey,
@@ -37,6 +39,7 @@ class ShareLink extends StatefulWidget {
     this.selectRecipientResult,
     this.filesState,
     this.fileViewerState,
+    this.pgpKeyUtil,
   );
 
   @override
@@ -51,6 +54,7 @@ class _ShareLinkState extends State<ShareLink> {
   bool useSign;
   String error;
   final toastKey = GlobalKey<ToastWidgetState>();
+  final signKey = GlobalKey<SignCheckBoxState>();
 
   @override
   void initState() {
@@ -114,10 +118,35 @@ class _ShareLinkState extends State<ShareLink> {
     Navigator.pop(context);
   }
 
+  Future<bool> checkSign() async {
+    String password;
+    if (useSign && widget.userPgpKey != null) {
+      password = signKey.currentState.password;
+      if (password.isEmpty) {
+        toastKey.currentState.show(s.password_is_empty);
+        return false;
+      }
+      final isValidPassword = await widget.pgpKeyUtil
+          .checkPrivateKey(password, widget.userPgpKey.key);
+      if (!isValidPassword) {
+        toastKey.currentState.show(s.invalid_password);
+        return false;
+      }
+    }
+    return true;
+  }
+
   void _sendTo() async {
     sendProgress = true;
     toastKey.currentState.show(s.sending);
     setState(() {});
+
+    if (!await checkSign()) {
+      sendProgress = false;
+      setState(() {});
+      return;
+    }
+
     final recipient = widget.selectRecipientResult.recipient?.fullName ??
         widget.selectRecipientResult.recipient?.email ??
         widget.selectRecipientResult.pgpKey?.email;
@@ -138,9 +167,13 @@ class _ShareLinkState extends State<ShareLink> {
       pgp.setTempFile(
           File((await getTemporaryDirectory()).path + "/temp" + ".temp"));
       pgp.setPublicKey(widget.selectRecipientResult.pgpKey.key);
-
+      if (useSign) {
+        pgp.setPrivateKey(widget.userPgpKey.key);
+      }
       final encrypt = await pgp.encryptBytes(
-          Uint8List.fromList(template.body.codeUnits), useSign);
+        Uint8List.fromList(template.body.codeUnits),
+        useSign ? signKey.currentState.password : null,
+      );
 
       template.body = String.fromCharCodes(encrypt);
     }
@@ -169,96 +202,7 @@ class _ShareLinkState extends State<ShareLink> {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(s.secure_sharing);
-    final content = SizedBox(
-        height: min(size.height / 2, 350),
-        width: min(size.width - 40, 300),
-        child: progress
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : error != null
-                ? Center(
-                    child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(error),
-                      AppButton(
-                        text: s.try_again,
-                        onPressed: _createLink,
-                      )
-                    ],
-                  ))
-                : Stack(
-                    children: [
-                      ListView(
-                        children: [
-                          ClipboardLabel(
-                              widget.file.localFile.linkUrl, s.public_link, () {
-                            toastKey.currentState
-                                .show(s.link_coppied_to_clipboard);
-                          }),
-                          if (widget.file.localFile.linkPassword?.isNotEmpty ==
-                              true)
-                            ClipboardLabel(
-                                widget.file.localFile.linkPassword, s.password,
-                                () {
-                              toastKey.currentState
-                                  .show(s.link_coppied_to_clipboard);
-                            }),
-                          if (widget.selectRecipientResult != null) ...[
-                            Text(s.recipient),
-                            SizedBox(height: 10),
-                            RecipientWidget(
-                              widget.selectRecipientResult,
-                              (_) {
-                                Navigator.pop(context, true);
-                              },
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              widget.file.localFile.linkPassword?.isNotEmpty ==
-                                      true
-                                  ? widget.selectRecipientResult.pgpKey != null
-                                      ? s.encrypted_mail_using_key
-                                      : s.copy_password
-                                  : s.send_email,
-                              style: theme.textTheme.caption,
-                            ),
-                          ],
-                          if (widget.selectRecipientResult?.pgpKey != null) ...[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                CheckAnalog(
-                                    useSign,
-                                    widget.userPgpKey == null
-                                        ? null
-                                        : (v) {
-                                            useSign = v;
-                                            setState(() {});
-                                          }),
-                                Text(s.sign_email),
-                              ],
-                            ),
-                            Divider(color: Colors.grey),
-                            Text(
-                              useSign
-                                  ? s.data_signed(s.email.toLowerCase())
-                                  : s.data_not_signed(s.email.toLowerCase()),
-                              style: theme.textTheme.caption,
-                            )
-                          ]
-                        ],
-                      ),
-                      Align(
-                        alignment: Alignment(0, 1),
-                        child: ToastWidget(
-                          key: toastKey,
-                        ),
-                      ),
-                    ],
-                  ));
+
     final actions = <Widget>[
       widget.selectRecipientResult == null
           ? FlatButton(
@@ -291,6 +235,108 @@ class _ShareLinkState extends State<ShareLink> {
       ),
     ];
 
+    final content = SizedBox(
+        height: size.height / 1.5,
+        width: min(size.width - 40, 300),
+        child: progress
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : error != null
+                ? Center(
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(error),
+                      AppButton(
+                        text: s.try_again,
+                        onPressed: _createLink,
+                      )
+                    ],
+                  ))
+                : Stack(
+                    children: [
+                      contentWrap(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipboardLabel(widget.file.localFile.linkUrl,
+                                    s.public_link, () {
+                                  toastKey.currentState
+                                      .show(s.link_coppied_to_clipboard);
+                                }),
+                                if (widget.file.localFile.linkPassword
+                                        ?.isNotEmpty ==
+                                    true)
+                                  ClipboardLabel(
+                                      widget.file.localFile.linkPassword,
+                                      s.password, () {
+                                    toastKey.currentState
+                                        .show(s.link_coppied_to_clipboard);
+                                  }),
+                                if (widget.selectRecipientResult != null) ...[
+                                  Text(s.recipient),
+                                  SizedBox(height: 10),
+                                  RecipientWidget(
+                                    widget.selectRecipientResult,
+                                    (_) {
+                                      Navigator.pop(context, true);
+                                    },
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    widget.file.localFile.linkPassword
+                                                ?.isNotEmpty ==
+                                            true
+                                        ? widget.selectRecipientResult.pgpKey !=
+                                                null
+                                            ? s.encrypted_mail_using_key
+                                            : s.copy_password
+                                        : s.send_email,
+                                    style: theme.textTheme.caption,
+                                  ),
+                                  SizedBox(height: 20),
+                                  SignCheckBox(
+                                    key: signKey,
+                                    checked: useSign,
+                                    enable: widget.userPgpKey != null,
+                                    onCheck: (v) {
+                                      useSign = v;
+                                      setState(() {});
+                                    },
+                                    label: widget.userPgpKey != null
+                                        ? s.sign_with_not_key(s.data)
+                                        : !useSign
+                                            ? s.data_not_signed(s.data)
+                                            : null,
+                                  ),
+                                  SizedBox(height: 20),
+                                ],
+                              ],
+                            ),
+                            if (!Platform.isIOS)
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: actions,
+                              )
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment(0, 0.7),
+                        child: ToastWidget(
+                          key: toastKey,
+                        ),
+                      ),
+                    ],
+                  ));
+
     return Platform.isIOS
         ? CupertinoAlertDialog(
             title: title,
@@ -300,7 +346,16 @@ class _ShareLinkState extends State<ShareLink> {
         : AlertDialog(
             title: title,
             content: content,
-            actions: actions,
           );
+  }
+
+  Widget contentWrap(Widget content) {
+    if (widget.selectRecipientResult != null) {
+      return SingleChildScrollView(
+        child: content,
+      );
+    } else {
+      return content;
+    }
   }
 }

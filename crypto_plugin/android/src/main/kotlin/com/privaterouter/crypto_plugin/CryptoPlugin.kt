@@ -2,6 +2,7 @@ package com.privaterouter.crypto_plugin
 
 import com.privaterouter.crypto_plugin.aes.Aes
 import com.privaterouter.crypto_plugin.pgp.PgpApi
+import com.privaterouter.crypto_plugin.pgp.PgpError
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -48,10 +49,10 @@ class CryptoPlugin : MethodCallHandler {
                     result.success(it)
                 }, {
                     it.printStackTrace()
-                    if (it is NotImplemented) {
-                        result.notImplemented()
-                    } else {
-                        result.error(it.javaClass.toString(), it.message, "")
+                    when (it) {
+                        is NotImplemented -> result.notImplemented()
+                        is PgpError -> result.error(it.case.ordinal.toString(), it.message, "")
+                        else -> result.error(it.javaClass.toString(), it.message, "")
                     }
                 }).let {
                     disposable.add(it)
@@ -129,14 +130,14 @@ class CryptoPlugin : MethodCallHandler {
                     "encryptFile" -> {
                         val inputFile = arguments[0] as String
                         val outputFile = arguments[1] as String
-                        val sign = arguments[2] as Boolean
-                        pgp.encriptFile(inputFile, outputFile, sign)
+                        val passwordForSign = arguments[2] as String?
+                        pgp.encriptFile(inputFile, outputFile, passwordForSign)
                         return ""
                     }
                     "encryptBytes" -> {
                         val text = arguments[0] as ByteArray
-                        val sign = arguments[1] as Boolean
-                        return pgp.encriptBytes(text, sign)
+                        val passwordForSign = arguments[1] as String?
+                        return pgp.encriptBytes(text, passwordForSign)
 
                     }
                     "decryptSymmetricBytes" -> {
@@ -170,6 +171,12 @@ class CryptoPlugin : MethodCallHandler {
                         val email = arguments[1] as String
                         val password = arguments[2] as String
                         return pgp.createKeys(length, email, password)
+                    }
+                    "checkPassword" -> {
+                        val password = arguments[0] as String
+                        val privateKey = arguments[1] as String
+                        privateKey.let { }
+                        return pgp.checkPassword(password, privateKey)
                     }
                 }
             }

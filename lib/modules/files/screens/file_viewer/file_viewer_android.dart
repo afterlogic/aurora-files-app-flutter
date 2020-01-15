@@ -334,6 +334,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             selectRecipientResult,
             widget.filesState,
             _fileViewerState,
+            pgpKeyUtil,
           ),
         );
 
@@ -372,6 +373,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           userPrivateKey,
           selectRecipientResult.recipient,
           selectRecipientResult.pgpKey,
+          pgpKeyUtil,
         ),
       );
       if (selectEncryptMethodResult is SelectEncryptMethodResult) {
@@ -385,6 +387,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             selectRecipientResult.pgpKey,
             selectEncryptMethodResult.useKey,
             selectEncryptMethodResult.useSign,
+            selectEncryptMethodResult.password,
             DI.get(),
             () {
               widget.filesPageState.onGetFiles(

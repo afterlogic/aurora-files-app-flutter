@@ -23,6 +23,8 @@ class S implements WidgetsLocalizations {
 
 //
 
+  String get invalid_password => "Invalid password";
+
   String get sign_email => "Sign the email";
 
   String get sign_file_email => "Sign the file and email";
@@ -35,8 +37,9 @@ class S implements WidgetsLocalizations {
 
   String data_signed(String data) => "The $data will be signed using your private key.";
 
-  String data_not_signed(String data) => "The $data will not be signed, but encrypted.";
+  String data_not_signed_but_enc(String data) => "The $data will not be signed, but encrypted.";
 
+  String data_not_signed(String data) => "The $data will not be signed.";
 //
   String get about => "About";
 

@@ -1,6 +1,5 @@
 package com.privaterouter.crypto_plugin.pgp
 
-import org.bouncycastle.openpgp.PGPException
 import org.bouncycastle.util.io.Streams
 import org.junit.Test
 import java.io.ByteArrayInputStream
@@ -36,7 +35,7 @@ class PgpApiTest {
         pgpHelper.setPublicKey(keys[0])
 
         val message = "message".toByteArray()
-        val messageD = pgpHelper.encriptBytes(message)
+        val messageD = pgpHelper.encriptBytes(message,null)
         val messageE = pgpHelper.decryptBytes(messageD, password)
         assert(String(messageE) == String(message))
     }
@@ -48,7 +47,7 @@ class PgpApiTest {
         pgpHelper.setPublicKey(publicKey)
 
         val message = "message".toByteArray()
-        val messageEncrypted = pgpHelper.encriptBytes(message)
+        val messageEncrypted = pgpHelper.encriptBytes(message, null)
         val messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password)
         assert(String(messageDecrypted) == String(message))
     }
@@ -62,7 +61,7 @@ class PgpApiTest {
         pgpHelper.setPrivateKey(privateKey)
         pgpHelper.setPublicKey(publicKey)
 
-        pgpHelper.encriptFile(testFile, testEncrypt)
+        pgpHelper.encriptFile(testFile, testEncrypt,null)
         pgpHelper.decryptFile(testEncrypt, testFile, password)
         assert(startLength == File(testFile).length())
     }
@@ -74,24 +73,33 @@ class PgpApiTest {
         pgpHelper.setPublicKey(publicKey)
 
         val message = "message".toByteArray()
-        var messageEncrypted = pgpHelper.encriptBytes(message, true, password)
+        var messageEncrypted = pgpHelper.encriptBytes(message, password)
         var messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password, true)
         assert(String(messageDecrypted) == String(message))
 
-        messageEncrypted = pgpHelper.encriptBytes(message, false, password)
+        messageEncrypted = pgpHelper.encriptBytes(message, password)
         messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password, true)
         assert(String(messageDecrypted) == String(message))
 
-        messageEncrypted = pgpHelper.encriptBytes(message, true, password)
+        messageEncrypted = pgpHelper.encriptBytes(message, password)
         messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password, false)
         assert(String(messageDecrypted) == String(message))
 
         try {
-            messageEncrypted = pgpHelper.encriptBytes(message, true, password)
+            messageEncrypted = pgpHelper.encriptBytes(message, password)
             pgpHelper.setPublicKey(otherPublicKey)
             pgpHelper.decryptBytes(messageEncrypted, password, true)
             throw Throwable("failed check Sign")
         } catch (e: SignError) {
+        }
+
+        try {
+            pgpHelper.setPublicKey(publicKey)
+            messageEncrypted = pgpHelper.encriptBytes(message, password + "1")
+            pgpHelper.decryptBytes(messageEncrypted, password, true)
+            throw Throwable("failed check Sign")
+        } catch (e: InputDataError) {
+            e
         }
     }
 
@@ -138,6 +146,12 @@ class PgpApiTest {
         assert(startLength == File(testFile).length())
     }
 
+    @Test
+    fun testPassword() {
+        val pgp = PgpApi()
+        assert(pgp.checkPassword(password, privateKey))
+        assert(!pgp.checkPassword(password + 1, privateKey))
+    }
 
     companion object {
         // past you test file

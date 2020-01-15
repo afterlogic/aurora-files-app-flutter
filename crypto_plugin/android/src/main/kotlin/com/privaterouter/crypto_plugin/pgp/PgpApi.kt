@@ -3,6 +3,7 @@ package com.privaterouter.crypto_plugin.pgp
 import KeyDescription
 import org.bouncycastle.openpgp.PGPPublicKey
 import java.io.*
+import java.security.PrivateKey
 
 open class PgpApi {
     private val pgp = Pgp()
@@ -74,7 +75,8 @@ open class PgpApi {
 
     }
 
-    private fun encrypt(outputStream: OutputStream, inputStream: InputStream, length: Long, password: String, sign: Boolean) {
+    private fun encrypt(outputStream: OutputStream, inputStream: InputStream, length: Long, password: String?) {
+        val sign = password != null
         if (sign) {
             assert(privateKey != null)
         }
@@ -92,7 +94,7 @@ open class PgpApi {
         )
     }
 
-    fun encriptFile(inputFilePath: String, outputFilePath: String, sign: Boolean = false, password: String = "") {
+    fun encriptFile(inputFilePath: String, outputFilePath: String, password: String?) {
         val inputFile = File(inputFilePath)
         val outputFile = File(outputFilePath)
         assert(inputFile.isFile)
@@ -101,12 +103,12 @@ open class PgpApi {
         outputFile.createNewFile()
         assert(outputFile.isFile)
         assert(outputFile.canWrite())
-        encrypt(FileOutputStream(outputFile), FileInputStream(inputFile), inputFile.length(), password, sign)
+        encrypt(FileOutputStream(outputFile), FileInputStream(inputFile), inputFile.length(), password)
     }
 
-    fun encriptBytes(array: ByteArray, sign: Boolean = false, password: String = ""): ByteArray {
+    fun encriptBytes(array: ByteArray, password: String?): ByteArray {
         val outStream = ByteArrayOutputStream()
-        encrypt(outStream, ByteArrayInputStream(array), array.size.toLong(), password, sign)
+        encrypt(outStream, ByteArrayInputStream(array), array.size.toLong(), password)
         return outStream.toByteArray()
     }
 
@@ -177,5 +179,9 @@ open class PgpApi {
         assert(outputFile.isFile)
         assert(outputFile.canWrite())
         decryptSymmetric(FileInputStream(inputFile), FileOutputStream(outputFile), password, checkSign)
+    }
+
+    fun checkPassword(password: String, privateKey: String): Boolean {
+        return pgp.checkPassword(password, privateKey)
     }
 }

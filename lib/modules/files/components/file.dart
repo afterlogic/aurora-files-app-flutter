@@ -215,7 +215,7 @@ class _FileWidgetState extends State<FileWidget> {
         FileViewerRoute.name,
         arguments: FileViewerScreenArguments(
           file: widget.file,
-          offlineFile: widget.file.localPath != null
+          offlineFile: widget.file.localPath?.isNotEmpty == true
               ? new File(widget.file.localPath)
               : null,
           filesState: filesState,

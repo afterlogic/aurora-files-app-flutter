@@ -33,6 +33,7 @@ class EncryptedShareLink extends StatefulWidget {
   final Pgp pgp;
   final PreparedForShare file;
   final Function onLoad;
+  final String privateKeyPassword;
 
   const EncryptedShareLink(
     this._fileViewerState,
@@ -42,6 +43,7 @@ class EncryptedShareLink extends StatefulWidget {
     this.pgpKey,
     this.useKey,
     this.useSign,
+    this.privateKeyPassword,
     this.pgp,
     this.onLoad,
     this.useEncrypt,
@@ -72,8 +74,13 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     if (await temp.exists()) await temp.delete();
 
     if (widget.useKey) {
-      widget.pgp.encryptFile(widget.file.file, output, widget.useSign).then(
-          (_) {
+      widget.pgp
+          .encryptFile(
+        widget.file.file,
+        output,
+        widget.privateKeyPassword,
+      )
+          .then((_) {
         upload();
       }, onError: (e) {
         error = s.encrypt_error;
@@ -218,7 +225,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
           onPressed: sendProgress
               ? null
               : () {
-                  openEmail();
+                  sendEmail();
                 },
         ),
       FlatButton(
@@ -270,7 +277,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
           );
   }
 
-  openEmail() async {
+  sendEmail() async {
     sendProgress = true;
     setState(() {});
     toastKey.currentState.show(s.sending);
@@ -291,7 +298,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     if (widget.pgpKey != null) {
       final encrypt = await widget.pgp.encryptBytes(
         Uint8List.fromList(template.body.codeUnits),
-        widget.useSign,
+        widget.privateKeyPassword,
       );
 
       template.body = String.fromCharCodes(encrypt);

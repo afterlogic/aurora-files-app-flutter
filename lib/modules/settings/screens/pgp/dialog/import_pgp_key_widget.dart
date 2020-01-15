@@ -31,10 +31,10 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
   checkKeys() async {
     final keys = await widget.pgpKeyUtil.checkHasKeys(widget.keys);
     for (LocalPgpKey key in widget.keys) {
-      selected[key.email] = key;
+      selected[key.email + key.isPrivate.toString()] = key;
     }
     for (LocalPgpKey key in keys) {
-      selected.remove(key.email);
+      selected.remove(key.email + key.isPrivate.toString());
     }
     if (keys.isNotEmpty) {
       isHaveKey = true;
@@ -44,9 +44,9 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
 
   changeSelected(bool isSelected, LocalPgpKey key) {
     if (isSelected) {
-      selected[key.email] = key;
+      selected[key.email + key.isPrivate.toString()] = key;
     } else {
-      selected.remove(key.email);
+      selected.remove(key.email + key.isPrivate.toString());
     }
     setState(() {});
   }
@@ -64,12 +64,13 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
           child: ListView.builder(
             itemBuilder: (_, i) {
               final key = widget.keys[i];
-              final isSelected = selected.containsKey(key.email);
+              final isSelected =
+                  selected.containsKey(key.email + key.isPrivate.toString());
               return KeyItem(key, isSelected, (bool, key) {
                 if (bool) {
-                  selected[key.email] = key;
+                  selected[key.email + key.isPrivate.toString()] = key;
                 } else {
-                  selected.remove(key.email);
+                  selected.remove(key.email + key.isPrivate.toString());
                 }
                 setState(() {});
               });

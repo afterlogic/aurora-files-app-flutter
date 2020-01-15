@@ -601,7 +601,7 @@ abstract class _FilesState with Store {
         await launch(uri);
       }
     } else {
-      final accountID = accounts.last.accountID;
+      final accountID = accounts.first.accountID;
       final folders = await _mailApi.getFolder(accountID);
       final sendFolder = folders.folders.firstWhere(
           (item) => item.type == Folder.sendType,

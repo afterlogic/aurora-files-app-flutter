@@ -63,7 +63,7 @@ class PgpKeyUtil {
   }
 
   Future deleteByEmail(List<String> emails) {
-    return pgpKeyDao.deleteByEmail(emails);
+    return pgpKeyDao.deleteByEmails(emails);
   }
 
   Future<List<LocalPgpKey>> importKeyFromFile() async {
@@ -116,6 +116,10 @@ class PgpKeyUtil {
   Future<KeyPair> createKeys(int length, String email, String password) async {
     await pgp.stop();
     return pgp.createKeys(length, email, password);
+  }
+
+  Future<bool> checkPrivateKey(String password, String pgpKey) {
+    return pgp.checkPassword(password, pgpKey);
   }
 
   static const pgpKeyPath = "/pgp_keys/";

@@ -34,7 +34,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   @override
   void initState() {
     useKey = widget.pgpKey != null;
-    useSign = useKey && widget.userPgpKey != null;
+    useSign = useKey && widget.userPgpKey != null && widget.pgpKey != null;
     super.initState();
   }
 
@@ -81,10 +81,13 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
                 useKey ? s.key_will_be_used : s.password_will_be_used,
                 style: theme.textTheme.caption,
               ),
+              SizedBox(height: 20),
               SignCheckBox(
                 key: signKey,
                 checked: useSign,
-                enable: widget.pgpKey != null,
+                enable: useKey &&
+                    widget.userPgpKey != null &&
+                    widget.pgpKey != null,
                 label: !useKey
                     ? s.password_sign
                     : widget.pgpKey == null

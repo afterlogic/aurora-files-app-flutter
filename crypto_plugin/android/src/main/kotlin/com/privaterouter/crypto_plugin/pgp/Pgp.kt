@@ -81,7 +81,7 @@ class Pgp {
     }
 
     @Throws(Exception::class)
-    fun decrypt(inputStream: InputStream, output: OutputStream, privateKey: String?, password: String, fileLength: Long, publicKey: String?) {
+    fun decrypt(inputStream: InputStream, output: OutputStream, privateKey: String?, password: String?, fileLength: Long, publicKey: String?) {
         this.progress?.stop = true
         val progress = Progress()
         this.progress = progress
@@ -92,7 +92,7 @@ class Pgp {
             decryptionStream = DecryptionBuilder()
                     .onInputStream(inputStream)
                     .let {
-                        if (privateKey != null) {
+                        if (privateKey != null && password != null) {
                             val settings = KeyRingProtectionSettings(SymmetricKeyAlgorithm.AES_256, HashAlgorithm.MD5, 0)
                             val secretKeys = KeyRingReader().secretKeyRing(privateKey)
                             val secretKeyDecryptor = PasswordBasedSecretKeyRingProtector(settings, SecretKeyPassphraseProvider { Passphrase(password.toCharArray()) })
@@ -446,7 +446,7 @@ class Pgp {
 
                     it.signWith<Any>(secretKeyDecryptor, secretKeys)
                 }
-                .noArmor()
+                .asciiArmor()
 
 
     }

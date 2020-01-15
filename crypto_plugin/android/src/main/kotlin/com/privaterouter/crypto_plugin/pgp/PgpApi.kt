@@ -43,7 +43,7 @@ open class PgpApi {
         }
     }
 
-    private fun decrypt(inputStream: InputStream, outputStream: OutputStream, password: String, length: Long, checkSign: Boolean) {
+    private fun decrypt(inputStream: InputStream, outputStream: OutputStream, password: String?, length: Long, checkSign: Boolean) {
         if (checkSign) {
             assert(publicKey != null)
         }
@@ -56,14 +56,14 @@ open class PgpApi {
 
     }
 
-    fun decryptBytes(array: ByteArray, password: String, checkSign: Boolean = false): ByteArray {
+    fun decryptBytes(array: ByteArray, password: String?, checkSign: Boolean = false): ByteArray {
         val outStream = ByteArrayOutputStream()
         decrypt(ByteArrayInputStream(array), outStream, password, array.size.toLong(), checkSign)
         return outStream.toByteArray()
     }
 
 
-    fun decryptFile(inputFilePath: String, outputFilePath: String, password: String, checkSign: Boolean = false) {
+    fun decryptFile(inputFilePath: String, outputFilePath: String, password: String?, checkSign: Boolean = false) {
         val inputFile = File(inputFilePath)
         val outputFile = File(outputFilePath)
         assert(inputFile.isFile)

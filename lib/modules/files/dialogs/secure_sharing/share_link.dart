@@ -58,7 +58,8 @@ class _ShareLinkState extends State<ShareLink> {
 
   @override
   void initState() {
-    useSign = widget.userPgpKey != null;
+    useSign = widget.userPgpKey != null &&
+        widget.selectRecipientResult?.pgpKey != null;
     super.initState();
     if (!widget.file.localFile.published) {
       _createLink();
@@ -304,15 +305,22 @@ class _ShareLinkState extends State<ShareLink> {
                                   SignCheckBox(
                                     key: signKey,
                                     checked: useSign,
-                                    enable: widget.userPgpKey != null,
+                                    enable: widget.userPgpKey != null &&
+                                        widget.selectRecipientResult?.pgpKey !=
+                                            null,
                                     onCheck: (v) {
                                       useSign = v;
                                       setState(() {});
                                     },
-                                    label: widget.userPgpKey != null
+                                    label: widget.userPgpKey == null
                                         ? s.sign_with_not_key(s.data)
                                         : !useSign
-                                            ? s.data_not_signed(s.data)
+                                            ? (widget.selectRecipientResult
+                                                        ?.pgpKey !=
+                                                    null)
+                                                ? s.data_not_signed_but_enc(
+                                                    s.data)
+                                                : s.data_not_signed(s.data)
                                             : null,
                                   ),
                                   SizedBox(height: 20),

@@ -35,7 +35,7 @@ class PgpApiTest {
         pgpHelper.setPublicKey(keys[0])
 
         val message = "message".toByteArray()
-        val messageD = pgpHelper.encriptBytes(message,null)
+        val messageD = pgpHelper.encriptBytes(message, null)
         val messageE = pgpHelper.decryptBytes(messageD, password)
         assert(String(messageE) == String(message))
     }
@@ -61,7 +61,7 @@ class PgpApiTest {
         pgpHelper.setPrivateKey(privateKey)
         pgpHelper.setPublicKey(publicKey)
 
-        pgpHelper.encriptFile(testFile, testEncrypt,null)
+        pgpHelper.encriptFile(testFile, testEncrypt, null)
         pgpHelper.decryptFile(testEncrypt, testFile, password)
         assert(startLength == File(testFile).length())
     }
@@ -69,12 +69,19 @@ class PgpApiTest {
     @Test
     fun testSignPgpApi() {
         val pgpHelper = PgpApi()
-        pgpHelper.setPrivateKey(privateKey)
-        pgpHelper.setPublicKey(publicKey)
 
         val message = "message".toByteArray()
+        pgpHelper.setPrivateKey(privateKey)
         var messageEncrypted = pgpHelper.encriptBytes(message, password)
-        var messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password, true)
+        pgpHelper.setPrivateKey(null)
+        pgpHelper.setPublicKey(publicKey)
+        var messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, null, true)
+        assert(String(messageDecrypted) == String(message))
+
+        pgpHelper.setPrivateKey(privateKey)
+
+        messageEncrypted = pgpHelper.encriptBytes(message, password)
+        messageDecrypted = pgpHelper.decryptBytes(messageEncrypted, password, true)
         assert(String(messageDecrypted) == String(message))
 
         messageEncrypted = pgpHelper.encriptBytes(message, password)

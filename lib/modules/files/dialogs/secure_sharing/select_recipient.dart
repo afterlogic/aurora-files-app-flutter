@@ -12,8 +12,9 @@ import 'package:flutter/material.dart';
 
 class SelectRecipient extends StatefulWidget {
   final FileViewerState fileViewerState;
+  final String title;
 
-  SelectRecipient(this.fileViewerState);
+  SelectRecipient(this.fileViewerState, this.title);
 
   @override
   _SelectRecipientState createState() => _SelectRecipientState();
@@ -73,7 +74,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
     s = S.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final title = Text(s.secure_sharing);
+    final title = Text(widget.title);
     final content = SizedBox(
       height: min(size.height / 2, 350),
       width: min(size.width - 40, 300),

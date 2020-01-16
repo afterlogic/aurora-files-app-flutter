@@ -31,15 +31,25 @@ class S implements WidgetsLocalizations {
 
   String get data => "data";
 
-  String sign_with_not_key(String data) => "$data can’t be signed because the private key has not been added.";
+  String sign_data_with_not_key(String data) =>
+      "Will not sign the $data because you don’t have pgp private key.";
 
-  String get password_sign => "For password-based encryption the signin is not supported.";
+  String sign_mail_with_not_key(String data) =>
+      "The $data will not be signed because you don’t have pgp private key.";
 
-  String data_signed(String data) => "The $data will be signed using your private key.";
+  String get password_sign =>
+      "For password-based encryption the pgp-signing is not supported.";
 
-  String data_not_signed_but_enc(String data) => "The $data will not be signed, but encrypted.";
+  String get email_signed => "The email will be signed using your private key.";
+
+  String get data_signed => "Will sign the data with your private key.";
+
 
   String data_not_signed(String data) => "The $data will not be signed.";
+
+  String get protected_public_link => "Protected public link";
+
+  String get send_public_link_to=>"Send public link to";
 //
   String get about => "About";
 
@@ -90,7 +100,9 @@ class S implements WidgetsLocalizations {
   String get copy_or_move => "Copy/Move";
 
   String get copy_password =>
-      "You can send the link via email. The password must be sent using a different channel.";
+      "You can send the link via email. The password must be sent using a different channel.\n\nYou will be able to retrieve the password when need.";
+  String get copy_encrypted_password =>
+      "You can send the link via email. The password must be sent using a different channel.\n\n  Store the password somewhere. You will not be able to recover it otherwise.";
 
   String get copy_public_link => "Copy public link";
 
@@ -403,6 +415,9 @@ class S implements WidgetsLocalizations {
 
   String encrypted_using_key(String user) =>
       "The file is encrypted using $user's PGP public key. You can send the link via encrypted email.";
+
+  String encrypted_sign_using_key(String user) =>
+      "The file is encrypted using $user's PGP public key. You can send the link via digitally signed encrypted email.";
 
   String key_exported_into(String dir) => "The key was exported into: $dir";
 

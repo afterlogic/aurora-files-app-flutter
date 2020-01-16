@@ -1,13 +1,11 @@
 import 'dart:io';
 
 import 'package:aurorafiles/generated/i18n.dart';
-import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SignCheckBox extends StatefulWidget {
   final bool checked;
-  final String label;
   final bool enable;
   final Function(bool check) onCheck;
 
@@ -16,7 +14,6 @@ class SignCheckBox extends StatefulWidget {
     @required this.checked,
     @required this.enable,
     @required this.onCheck,
-    @required this.label,
   }) : super(key: key);
 
   @override
@@ -32,23 +29,26 @@ class SignCheckBoxState extends State<SignCheckBox> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            CheckAnalog(widget.checked, widget.enable ? widget.onCheck : null),
-            Text(
-              s.sign_email,
-              style: !widget.enable ? TextStyle(color: Colors.grey) : null,
-            ),
-          ],
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          onTap: widget.enable ? () => widget.onCheck(!widget.checked) : null,
+          title: Text(
+            s.sign_email,
+            style: !widget.enable ? TextStyle(color: Colors.grey) : null,
+          ),
+          trailing: Switch.adaptive(
+            value: widget.checked,
+            activeColor: Theme.of(context).accentColor,
+            onChanged: widget.enable ? widget.onCheck : null,
+          ),
         ),
         Divider(color: Colors.grey),
         if (widget.enable && Platform.isIOS)
           CupertinoTextField(
+            enabled: widget.checked,
             controller: _passwordController,
             obscureText: _obscure,
             placeholder: s.password,
@@ -65,6 +65,7 @@ class SignCheckBoxState extends State<SignCheckBox> {
           ),
         if (widget.enable && !Platform.isIOS)
           TextFormField(
+            enabled: widget.checked,
             controller: _passwordController,
             obscureText: _obscure,
             decoration: InputDecoration(
@@ -82,14 +83,6 @@ class SignCheckBoxState extends State<SignCheckBox> {
               ),
             ),
           ),
-        SizedBox(height: 10),
-        Text(
-          widget.label ??
-              (widget.checked
-                  ? s.data_signed(s.email.toLowerCase())
-                  : s.data_not_signed_but_enc(s.email.toLowerCase())),
-          style: theme.textTheme.caption,
-        ),
       ],
     );
   }

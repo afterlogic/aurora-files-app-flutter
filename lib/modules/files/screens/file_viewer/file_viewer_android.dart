@@ -346,7 +346,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
         selectRecipientResult = await openDialog(
           context,
-          (context) => SelectRecipient(_fileViewerState),
+          (context) => SelectRecipient(_fileViewerState,s.send_public_link_to),
         );
         if (selectRecipientResult == null) {
           break;
@@ -365,7 +365,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     final userPublicKey = await pgpKeyUtil.userPublicKey();
     final selectRecipientResult = await openDialog(
       context,
-      (context) => SelectRecipient(_fileViewerState),
+      (context) => SelectRecipient(_fileViewerState,s.secure_sharing),
     );
 
     if (selectRecipientResult is RecipientWithKey) {

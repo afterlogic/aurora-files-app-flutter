@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-
+import 'package:aurorafiles/utils/case_util.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/i18n.dart';
@@ -207,7 +207,7 @@ class _ShareLinkState extends State<ShareLink> {
     s = S.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final title = Text(s.secure_sharing);
+    final title = Text(s.protected_public_link);
 
     final actions = <Widget>[
       widget.selectRecipientResult == null
@@ -218,7 +218,7 @@ class _ShareLinkState extends State<ShareLink> {
               },
             )
           : FlatButton(
-              child: Text(widget.selectRecipientResult.pgpKey != null
+              child: Text(widget.selectRecipientResult?.pgpKey != null
                   ? s.send_encrypted
                   : s.send),
               onPressed: sendProgress
@@ -295,48 +295,51 @@ class _ShareLinkState extends State<ShareLink> {
                                     },
                                   ),
                                   SizedBox(height: 10),
+                                  Divider(color: Colors.grey),
+                                  if (widget.selectRecipientResult.pgpKey !=
+                                      null)
+                                    SignCheckBox(
+                                      key: signKey,
+                                      checked: useSign,
+                                      enable: widget.userPrivateKey != null &&
+                                          widget.selectRecipientResult
+                                                  ?.pgpKey !=
+                                              null,
+                                      onCheck: (v) {
+                                        useSign = v;
+                                        setState(() {});
+                                      },
+                                    ),
+                                  SizedBox(height: 10),
                                   Text(
-                                    widget.file.localFile.linkPassword
-                                                ?.isNotEmpty ==
-                                            true
-                                        ? widget.selectRecipientResult.pgpKey !=
-                                                null
-                                            ? s.encrypted_mail_using_key
-                                            : s.copy_password
-                                        : s.send_email,
+                                    widget.selectRecipientResult.pgpKey == null
+                                        ? widget.usePassword
+                                            ? s.copy_password
+                                            : s.send_email
+                                        : widget.userPrivateKey == null
+                                            ? s.sign_mail_with_not_key(
+                                                s.email.firstCharTo(false))
+                                            : useSign
+                                                ? s.email_signed
+                                                : (widget.selectRecipientResult
+                                                            ?.pgpKey !=
+                                                        null)
+                                                    ? s.data_not_signed(s.email
+                                                        .firstCharTo(false))
+                                                    : s.data_not_signed(s.email
+                                                        .firstCharTo(false)),
                                     style: theme.textTheme.caption,
                                   ),
-                                  SizedBox(height: 20),
-                                  SignCheckBox(
-                                    key: signKey,
-                                    checked: useSign,
-                                    enable: widget.userPrivateKey != null &&
-                                        widget.selectRecipientResult?.pgpKey !=
-                                            null,
-                                    onCheck: (v) {
-                                      useSign = v;
-                                      setState(() {});
-                                    },
-                                    label: widget.userPrivateKey == null
-                                        ? s.sign_with_not_key(s.data)
-                                        : !useSign
-                                            ? (widget.selectRecipientResult
-                                                        ?.pgpKey !=
-                                                    null)
-                                                ? s.data_not_signed_but_enc(
-                                                    s.data)
-                                                : s.data_not_signed(s.data)
-                                            : null,
-                                  ),
-                                  SizedBox(height: 20),
+                                  SizedBox(height: 10),
                                 ],
                               ],
                             ),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: actions,
-                            )
+                            if (widget.selectRecipientResult?.pgpKey != null)
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: actions,
+                              )
                           ],
                         ),
                       ),
@@ -353,15 +356,19 @@ class _ShareLinkState extends State<ShareLink> {
         ? CupertinoAlertDialog(
             title: title,
             content: content,
+            actions:
+                widget.selectRecipientResult?.pgpKey != null ? null : actions,
           )
         : AlertDialog(
             title: title,
             content: content,
+            actions:
+                widget.selectRecipientResult?.pgpKey != null ? null : actions,
           );
   }
 
   Widget contentWrap(Widget content) {
-    if (widget.selectRecipientResult != null) {
+    if (widget.selectRecipientResult?.pgpKey != null) {
       return SingleChildScrollView(
         child: content,
       );

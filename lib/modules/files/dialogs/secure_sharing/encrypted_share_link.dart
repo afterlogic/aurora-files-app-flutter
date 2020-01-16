@@ -326,10 +326,13 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
 
   List<Widget> progressLabel() {
     final theme = Theme.of(context);
+    final recipient = widget.recipient?.fullName ??
+        widget.recipient?.email ??
+        widget.pgpKey?.email;
     if (error != null) {
       return [
         SizedBox(
-          height: 20,
+          height: 10,
         ),
         Text(error),
         SizedBox(
@@ -369,12 +372,12 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       if (!widget.useKey) SizedBox(height: 10),
       Text(
         widget.useKey
-            ? s.encrypted_using_key(widget.recipient?.fullName ??
-                widget.recipient?.email ??
-                widget.pgpKey?.email)
+            ? widget.useSign
+                ? s.encrypted_sign_using_key(recipient)
+                : s.encrypted_using_key(recipient)
             : widget.pgpKey != null
                 ? s.encrypted_using_password
-                : s.copy_password,
+                : s.copy_encrypted_password,
         style: theme.textTheme.caption,
       )
     ];

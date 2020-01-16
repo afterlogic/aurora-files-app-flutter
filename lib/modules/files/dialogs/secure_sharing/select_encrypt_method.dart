@@ -63,7 +63,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
                 style: theme.textTheme.caption,
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Text(
                 s.encryption_type,
@@ -81,25 +81,30 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
                 useKey ? s.key_will_be_used : s.password_will_be_used,
                 style: theme.textTheme.caption,
               ),
-              SizedBox(height: 20),
               SignCheckBox(
                 key: signKey,
                 checked: useSign,
                 enable: useKey &&
                     widget.userPgpKey != null &&
                     widget.pgpKey != null,
-                label: !useKey
-                    ? s.password_sign
-                    : widget.pgpKey == null
-                        ? s.sign_with_not_key(s.data)
-                        : useSign
-                            ? s.data_signed(s.data)
-                            : s.data_not_signed_but_enc(s.data),
                 onCheck: (bool check) {
                   useSign = check;
                   setState(() {});
                 },
               ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                !useKey
+                    ? s.password_sign
+                    : widget.pgpKey == null
+                        ? s.sign_data_with_not_key(s.data)
+                        : useSign
+                            ? s.data_signed
+                            : s.data_not_signed(s.data),
+                style: theme.textTheme.caption,
+              )
             ],
           ),
           Align(

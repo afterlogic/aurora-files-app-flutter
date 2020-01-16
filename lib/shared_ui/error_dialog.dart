@@ -14,9 +14,7 @@ class ErrorDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final title = Text(this.title);
-    final content = Center(
-      child: Text(message),
-    );
+    final content = Text(message);
     final action = [
       FlatButton(
         child: Text(s.cancel),

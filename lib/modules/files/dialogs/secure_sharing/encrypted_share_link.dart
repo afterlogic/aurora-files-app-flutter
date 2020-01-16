@@ -92,7 +92,8 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       });
     } else {
       password = PgpUtil.createSymmetricKey();
-      widget.pgp.encryptSymmetricFile(widget.file.file, output, password).then((_) {
+      widget.pgp.encryptSymmetricFile(widget.file.file, output, password).then(
+          (_) {
         upload();
       }, onError: (e) {
         error = s.encrypt_error;
@@ -103,7 +104,8 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     }
     while (isProgress) {
       final pgpProgress = await widget.pgp.getProgress();
-      progress = pgpProgress == null ? null : pgpProgress.current / pgpProgress.total;
+      progress =
+          pgpProgress == null ? null : pgpProgress.current / pgpProgress.total;
       if (isProgress) {
         setState(() {});
       }
@@ -188,7 +190,10 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       await widget.pgp.setTempFile(temp);
     }
     if (widget.pgpKey != null) {
-      await widget.pgp.setPublicKeys([widget.pgpKey.key,widget.userPublicKey?.key].where((item)=>item!=null));
+      await widget.pgp.setPublicKeys([
+        widget.pgpKey.key,
+        widget.userPublicKey?.key
+      ].where((item) => item != null).toList());
     }
     if (widget.useSign == true) {
       await widget.pgp.setPrivateKey(widget.userPrivateKey.key);
@@ -246,7 +251,8 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
               SizedBox(
                 height: 10,
               ),
-              RecipientWidget(RecipientWithKey(widget.recipient, widget.pgpKey)),
+              RecipientWidget(
+                  RecipientWithKey(widget.recipient, widget.pgpKey)),
               SizedBox(
                 height: 10,
               ),
@@ -280,7 +286,9 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     sendProgress = true;
     setState(() {});
     toastKey.currentState.show(s.sending);
-    final recipient = widget.recipient?.fullName ?? widget.recipient?.email ?? widget.pgpKey?.email;
+    final recipient = widget.recipient?.fullName ??
+        widget.recipient?.email ??
+        widget.pgpKey?.email;
 
     var template = MailTemplate.getTemplate(
       widget.useEncrypt,
@@ -301,7 +309,9 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       template.body = String.fromCharCodes(encrypt);
     }
 
-    widget.filesState.sendViaEmail(template, widget.recipient?.email ?? widget.pgpKey?.email).then(
+    widget.filesState
+        .sendViaEmail(template, widget.recipient?.email ?? widget.pgpKey?.email)
+        .then(
       (_) {
         toastKey.currentState.show(s.sending_complete);
       },
@@ -359,9 +369,12 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       if (!widget.useKey) SizedBox(height: 10),
       Text(
         widget.useKey
-            ? s.encrypted_using_key(
-                widget.recipient?.fullName ?? widget.recipient?.email ?? widget.pgpKey?.email)
-            : widget.pgpKey != null ? s.encrypted_using_password : s.copy_password,
+            ? s.encrypted_using_key(widget.recipient?.fullName ??
+                widget.recipient?.email ??
+                widget.pgpKey?.email)
+            : widget.pgpKey != null
+                ? s.encrypted_using_password
+                : s.copy_password,
         style: theme.textTheme.caption,
       )
     ];

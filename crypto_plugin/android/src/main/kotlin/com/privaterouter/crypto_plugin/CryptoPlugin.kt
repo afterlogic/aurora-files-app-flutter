@@ -107,9 +107,9 @@ class CryptoPlugin : MethodCallHandler {
                         pgp.setPrivateKey(privateKey)
                         return ""
                     }
-                    "setPublicKey" -> {
-                        val publicKey = arguments[0] as String?
-                        pgp.setPublicKey(publicKey)
+                    "setPublicKeys" -> {
+                        val publicKey = arguments[0] as List<*>?
+                        pgp.setPublicKeys(publicKey?.map { it as String })
                         return ""
                     }
                     "decryptBytes" -> {
@@ -175,7 +175,6 @@ class CryptoPlugin : MethodCallHandler {
                     "checkPassword" -> {
                         val password = arguments[0] as String
                         val privateKey = arguments[1] as String
-                        privateKey.let { }
                         return pgp.checkPassword(password, privateKey)
                     }
                 }

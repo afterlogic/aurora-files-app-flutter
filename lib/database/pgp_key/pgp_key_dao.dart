@@ -23,18 +23,20 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
   }
 
   Future<List<LocalPgpKey>> getPublicKeys() async {
-    return prepareListToLoad(
-        await (select(pgpKey)..where((item) => item.isPrivate.equals(false))).get());
+    return prepareListToLoad(await (select(pgpKey)
+          ..where((item) => item.isPrivate.equals(false)))
+        .get());
   }
 
   Future<List<LocalPgpKey>> checkHasKeys(List<LocalPgpKey> keys) async {
     final emails = keys.map((item) => item.email);
-    return prepareListToLoad(
-        await (select(pgpKey)..where((item) => isIn(item.email, emails))).get());
+    return prepareListToLoad(await (select(pgpKey)
+          ..where((item) => isIn(item.email, emails)))
+        .get());
   }
 
   Future addKeys(List<LocalPgpKey> keys) async {
-    final validKeys= await prepareListToSave(keys);
+    final validKeys = await prepareListToSave(keys);
     for (var key in validKeys) {
       await (delete(pgpKey)
             ..where((item) => item.email.equals(key.email))
@@ -80,9 +82,10 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
   }
 
   Future<LocalPgpKey> prepareToLoad(LocalPgpKey key) async {
-    if(key.key.isNotEmpty){
+    if (key?.key?.isNotEmpty == true) {
       return key;
     }
-    return key.copyWith(key: await secureStorage.getKey(key.email + key.isPrivate.toString()));
+    return key?.copyWith(
+        key: await secureStorage.getKey(key.email + key.isPrivate.toString()));
   }
 }

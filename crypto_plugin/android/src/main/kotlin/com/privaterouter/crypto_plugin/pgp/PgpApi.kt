@@ -7,7 +7,7 @@ import java.security.PrivateKey
 
 open class PgpApi {
     private val pgp = Pgp()
-    private var publicKey: String? = null
+    private var publicKey: List<String>? = null
     private var privateKey: String? = null
     private var tempFile: File? = null
 
@@ -19,7 +19,7 @@ open class PgpApi {
         privateKey = key
     }
 
-    fun setPublicKey(key: String?) {
+    fun setPublicKeys(key: List<String>?) {
         publicKey = key
     }
 
@@ -48,7 +48,7 @@ open class PgpApi {
             assert(publicKey != null)
         }
         pgp.decrypt(inputStream, outputStream, privateKey, password, length, if (checkSign) {
-            publicKey
+            publicKey!!.firstOrNull()
         } else {
             null
         }
@@ -122,7 +122,7 @@ open class PgpApi {
     fun decryptSymmetric(inputStream: InputStream, outputStream: OutputStream, password: String, sign: Boolean) {
         pgp.symmetricallyDecrypt(inputStream, outputStream, password, if (sign) {
             assert(publicKey != null)
-            publicKey
+            publicKey!!.firstOrNull()
         } else {
             null
         })

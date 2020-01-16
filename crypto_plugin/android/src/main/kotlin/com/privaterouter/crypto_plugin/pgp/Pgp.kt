@@ -147,7 +147,7 @@ class Pgp {
     fun encrypt(
             output: OutputStream,
             input: InputStream,
-            publicKey: String?,
+            publicKeys: List<String>?,
             privateKey: String?,
             password: String?,
             fileLength: Long
@@ -164,10 +164,14 @@ class Pgp {
             encryptionStream = EncryptionBuilder()
                     .onOutputStream(output)
                     .let {
-                        if (publicKey != null) {
-                            val encKey = readPublicKey(ByteArrayInputStream(publicKey.toByteArray()))
+                        if (publicKeys != null) {
+                            val encKey = publicKeys.map { key ->
+                                readPublicKey(ByteArrayInputStream(key.toByteArray()))
+
+                            }
+
                             it
-                                    .toRecipients(encKey)
+                                    .toRecipients(*encKey.toTypedArray())
                                     .usingAlgorithms(
                                             SymmetricKeyAlgorithm.AES_256,
                                             HashAlgorithm.SHA512,
@@ -459,7 +463,6 @@ class Pgp {
             val keys = secretKeyRing.iterator()
             while (keys.hasNext()) {
                 val key = keys.next()
-                key.keyID
                 key.extractPrivateKey(secretKeyRingProtector.getDecryptor(key.keyID))
             }
             true

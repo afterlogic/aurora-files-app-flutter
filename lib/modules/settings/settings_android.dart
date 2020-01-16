@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
@@ -41,7 +42,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               leading: Icon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
             ),
-            if (!Platform.isIOS)
+            if (enablePgp)
               ListTile(
                 title: Text(s.openPGP),
                 leading: Icon(MdiIcons.key),

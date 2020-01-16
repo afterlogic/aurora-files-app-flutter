@@ -24,7 +24,7 @@ dependencies:
   # http
   http:
 
-  # local storage
+  # local storage`
   moor_flutter:
   shared_preferences: 0.5.4
   flutter_secure_storage:

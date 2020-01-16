@@ -480,7 +480,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ),
                 ]
               : [
-                  if (!Platform.isIOS)
+                  if (enablePgp)
                     IconButton(
                       icon: AssetIcon(
                         "lib/assets/svg/insert_link.svg",

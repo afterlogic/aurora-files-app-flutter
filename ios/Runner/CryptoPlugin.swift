@@ -85,12 +85,16 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
                 
             case "setTempFile":
                 
-                let data = arguments[0] as! String
+                let data = arguments[0] as? String
                 self.pgp.setTempFile(data)
                 return ""
             case "setPublicKey":
-                let data = arguments[0] as! String
+                let data = arguments[0] as? String
                 try self.pgp.setPublicKey( data)
+                return ""
+            case "setPrivateKey":
+                let data = arguments[0] as? String
+                try self.pgp.setPrivateKey(data)
                 return ""
             case "decryptBytes":
                 let data = arguments[0] as! FlutterStandardTypedData
@@ -109,22 +113,45 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
             case "encryptBytes":
                 
                 let data = arguments[0] as! FlutterStandardTypedData
-                let result = try self.pgp.encryptBytes(Data.init(data.data))
+                let passwordForSign = arguments[1] as? String
+                let result = try self.pgp.encryptBytes(Data.init(data.data),passwordForSign)
                 return  result.withUnsafeBytes {
                     [UInt8](UnsafeBufferPointer(start: $0, count: result.count))
                 }
             case "encryptFile":
                 let input = arguments[0] as! String
                 let output = arguments[1] as! String
-                
-                try self.pgp.encryptFile(input, output)
+                let passwordForSign = arguments[2] as? String
+                try self.pgp.encryptFile(input, output,passwordForSign)
                 return ""
             case "createKeys":
-                
                 let length = arguments[0] as!   NSNumber
                 let email = arguments[1] as! String
                 let password = arguments[2] as! String
                 return try self.pgp.createKeys(Int32(truncating: length), email, password)
+            case "decryptSymmetricBytes":
+                let data = arguments[0] as! FlutterStandardTypedData
+                let password = arguments[1] as! String
+                return try self.pgp.decryptSymmetricBytes(Data.init(data.data),password)
+            case "decryptSymmetricFile":
+                let input = arguments[1] as! String
+                let output = arguments[1] as! String
+                let password = arguments[1] as! String
+                return try self.pgp.decryptSymmetricFile(input,output, password)
+            case "encryptSymmetricBytes":
+                let data = arguments[0] as! FlutterStandardTypedData
+                let password = arguments[1] as! String
+                return try self.pgp.encryptSymmetricBytes(Data.init(data.data),password)
+            case "encryptSymmetricFile":
+                let input = arguments[1] as! String
+                let output = arguments[1] as! String
+                let password = arguments[1] as! String
+                return try self.pgp.encryptSymmetricFile( input,output, password)
+            case "checkPassword":
+                let password = arguments[0] as! String
+                let privateKey = arguments[1] as! String
+                return try self.pgp.checkPassword(password, privateKey)
+                
             default:
                 break
             }

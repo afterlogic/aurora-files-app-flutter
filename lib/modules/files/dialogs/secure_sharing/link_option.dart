@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -27,9 +28,9 @@ class _LinkOptionWidgetState extends State<LinkOptionWidget> {
           },
           child: Row(
             children: [
-              Checkbox(
-                value: encryptLink,
-                onChanged: (bool value) {
+              CheckAnalog(
+                encryptLink,
+                 (bool value) {
                   encryptLink = value;
                   setState(() {});
                 },

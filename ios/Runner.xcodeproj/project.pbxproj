@@ -23,6 +23,8 @@
 		DBB4A3FE23A7E5BF00B3A649 /* CryptoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A3FD23A7E5BF00B3A649 /* CryptoPlugin.swift */; };
 		DBB4A40123A7E5E000B3A649 /* Pgp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A40023A7E5E000B3A649 /* Pgp.swift */; };
 		DBB4A40423A7E61000B3A649 /* Aes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A40323A7E61000B3A649 /* Aes.swift */; };
+		DBB4BD0F23D0593F00F6E6B7 /* SymmetricPgp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */; };
+		DBB4BD1123D0623D00F6E6B7 /* PgpUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */; };
 		DDC2D6C62301649F00D60A3F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DDC2D6C52301649F00D60A3F /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +68,8 @@
 		DBB4A3FD23A7E5BF00B3A649 /* CryptoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoPlugin.swift; sourceTree = "<group>"; };
 		DBB4A40023A7E5E000B3A649 /* Pgp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pgp.swift; sourceTree = "<group>"; };
 		DBB4A40323A7E61000B3A649 /* Aes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aes.swift; sourceTree = "<group>"; };
+		DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricPgp.swift; sourceTree = "<group>"; };
+		DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PgpUtil.swift; sourceTree = "<group>"; };
 		DDC2D6C52301649F00D60A3F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		DDC97FE623572B4A007336A2 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -175,8 +179,10 @@
 		DBB4A3FF23A7E5C300B3A649 /* pgp */ = {
 			isa = PBXGroup;
 			children = (
+				DBB4BD0923D0590100F6E6B7 /* symmetric */,
 				DBB4A40023A7E5E000B3A649 /* Pgp.swift */,
 				DB2F2AA423B4EA2A0064E88E /* PgpApi.swift */,
+				DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */,
 			);
 			name = pgp;
 			sourceTree = "<group>";
@@ -187,6 +193,14 @@
 				DBB4A40323A7E61000B3A649 /* Aes.swift */,
 			);
 			name = aes;
+			sourceTree = "<group>";
+		};
+		DBB4BD0923D0590100F6E6B7 /* symmetric */ = {
+			isa = PBXGroup;
+			children = (
+				DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */,
+			);
+			name = symmetric;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -343,9 +357,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				DBB4A3FE23A7E5BF00B3A649 /* CryptoPlugin.swift in Sources */,
+				DBB4BD0F23D0593F00F6E6B7 /* SymmetricPgp.swift in Sources */,
 				DBB4A40423A7E61000B3A649 /* Aes.swift in Sources */,
 				DB2F2AA523B4EA2A0064E88E /* PgpApi.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				DBB4BD1123D0623D00F6E6B7 /* PgpUtil.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				DBB4A40123A7E5E000B3A649 /* Pgp.swift in Sources */,
 			);
@@ -429,7 +445,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = K6298N65JA;
@@ -570,7 +586,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = K6298N65JA;
@@ -606,7 +622,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = K6298N65JA;

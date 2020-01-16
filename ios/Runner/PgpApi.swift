@@ -14,19 +14,16 @@ class PgpApi{
     
     let pgp = Pgp()
     var privateKey : String?=nil
-    var publicKey : BCOpenpgpPGPPublicKeyRing?=nil
+    var publicKey : [String]?=nil
     var tempFile : String?=nil
     
     func setPrivateKey(_ data:String?) throws{
-        privateKey=data;
+        privateKey=data
     }
     
-    func setPublicKey(_ data:String?) throws{
-        if data==nil  {
-            publicKey=nil
-            return
-        }
-        publicKey=try DMSPGPKeyRing.publicKeyRing(from: data!)
+    func setPublicKeys(_ data:[String]?) throws{
+        
+        publicKey=data
     }
     
     func decryptBytes(_ data:Data,_ password:String)throws->Data{

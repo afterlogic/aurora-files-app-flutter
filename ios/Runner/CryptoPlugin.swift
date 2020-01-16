@@ -82,15 +82,13 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
                 let data = arguments[0] as! String
                 let info =  try self.pgp.getKeyDescription(  data.data(using: String.Encoding.utf8)!)
                 return [info.emails,info.length,info.isPrivate]
-                
             case "setTempFile":
-                
                 let data = arguments[0] as? String
                 self.pgp.setTempFile(data)
                 return ""
-            case "setPublicKey":
-                let data = arguments[0] as? String
-                try self.pgp.setPublicKey( data)
+            case "setPublicKeys":
+                let data = arguments[0] as? [String]
+                try self.pgp.setPublicKeys( data)
                 return ""
             case "setPrivateKey":
                 let data = arguments[0] as? String

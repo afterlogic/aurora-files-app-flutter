@@ -313,6 +313,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     final prepareForShare = PreparedForShare(null, _file);
     final pgpKeyUtil = PgpKeyUtil(DI.get(), DI.get());
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
+    final userPublicKey = await pgpKeyUtil.userPublicKey();
     bool usePassword = true;
 
     if (!prepareForShare.localFile.published) {
@@ -329,6 +330,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           context,
           (context) => ShareLink(
             userPrivateKey,
+            userPublicKey,
             usePassword,
             prepareForShare,
             selectRecipientResult,
@@ -360,7 +362,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   _secureEncryptSharing(PreparedForShare prepareForShare) async {
     final pgpKeyUtil = PgpKeyUtil(DI.get(), DI.get());
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
-
+    final userPublicKey = await pgpKeyUtil.userPublicKey();
     final selectRecipientResult = await openDialog(
       context,
       (context) => SelectRecipient(_fileViewerState),
@@ -382,6 +384,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           (context) => EncryptedShareLink(
             _fileViewerState,
             userPrivateKey,
+            userPublicKey,
             prepareForShare,
             selectRecipientResult.recipient,
             selectRecipientResult.pgpKey,

@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 initPgpKeys() async {
-  await pgp.setPublicKey("-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
+  await pgp.setPublicKeys("-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
       "Version: OpenPGP.js v4.5.5\n" +
       "Comment: https://openpgpjs.org\n" +
       "\n" +

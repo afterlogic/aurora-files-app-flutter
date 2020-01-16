@@ -24,7 +24,8 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ShareLink extends StatefulWidget {
-  final LocalPgpKey userPgpKey;
+  final LocalPgpKey userPrivateKey;
+  final LocalPgpKey userPublicKey;
   final bool usePassword;
   final PreparedForShare file;
   final RecipientWithKey selectRecipientResult;
@@ -33,8 +34,9 @@ class ShareLink extends StatefulWidget {
   final PgpKeyUtil pgpKeyUtil;
 
   ShareLink(
-    this.userPgpKey,
-    this.usePassword,
+    this.userPrivateKey,
+      this.userPublicKey,
+      this.usePassword,
     this.file,
     this.selectRecipientResult,
     this.filesState,
@@ -58,7 +60,7 @@ class _ShareLinkState extends State<ShareLink> {
 
   @override
   void initState() {
-    useSign = widget.userPgpKey != null && widget.selectRecipientResult?.pgpKey != null;
+    useSign = widget.userPrivateKey != null && widget.selectRecipientResult?.pgpKey != null;
     super.initState();
     if (!widget.file.localFile.published) {
       _createLink();
@@ -118,14 +120,14 @@ class _ShareLinkState extends State<ShareLink> {
 
   Future<bool> checkSign() async {
     String password;
-    if (useSign && widget.userPgpKey != null) {
+    if (useSign && widget.userPrivateKey != null) {
       password = signKey.currentState.password;
       if (password.isEmpty) {
         toastKey.currentState.show(s.password_is_empty);
         return false;
       }
       final isValidPassword =
-          await widget.pgpKeyUtil.checkPrivateKey(password, widget.userPgpKey.key);
+          await widget.pgpKeyUtil.checkPrivateKey(password, widget.userPrivateKey.key);
       if (!isValidPassword) {
         toastKey.currentState.show(s.invalid_password);
         return false;
@@ -161,9 +163,9 @@ class _ShareLinkState extends State<ShareLink> {
 
     if (widget.selectRecipientResult.pgpKey != null) {
       pgp.setTempFile(File((await getTemporaryDirectory()).path + "/temp" + ".temp"));
-      pgp.setPublicKey(widget.selectRecipientResult.pgpKey.key);
+      pgp.setPublicKeys([widget.selectRecipientResult.pgpKey.key,widget.userPublicKey.key].where((item)=>item!=null));
       if (useSign) {
-        pgp.setPrivateKey(widget.userPgpKey.key);
+        pgp.setPrivateKey(widget.userPrivateKey.key);
       }
       final encrypt = await pgp.encryptBytes(
         Uint8List.fromList(template.body.codeUnits),
@@ -288,13 +290,13 @@ class _ShareLinkState extends State<ShareLink> {
                                   SignCheckBox(
                                     key: signKey,
                                     checked: useSign,
-                                    enable: widget.userPgpKey != null &&
+                                    enable: widget.userPrivateKey != null &&
                                         widget.selectRecipientResult?.pgpKey != null,
                                     onCheck: (v) {
                                       useSign = v;
                                       setState(() {});
                                     },
-                                    label: widget.userPgpKey == null
+                                    label: widget.userPrivateKey == null
                                         ? s.sign_with_not_key(s.data)
                                         : !useSign
                                             ? (widget.selectRecipientResult?.pgpKey != null)

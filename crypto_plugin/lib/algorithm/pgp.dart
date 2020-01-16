@@ -43,9 +43,9 @@ class Pgp extends Crypt {
     );
   }
 
-  Future setPublicKey(String key) async {
+  Future setPublicKeys(List<String> key) async {
     await invokeMethod(
-      "$algorithm.setPublicKey",
+      "$algorithm.setPublicKeys",
       [key],
     );
   }

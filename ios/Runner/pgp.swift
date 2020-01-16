@@ -11,7 +11,12 @@ class  Pgp {
         try decryptor.decrypt( privateKey!,  password,output)
     }
     
-    func encrypt(_ input:JavaIoInputStream,_ input2:JavaIoInputStream,_ output:JavaIoOutputStream,_ publicKey: BCOpenpgpPGPPublicKeyRing,_ privateKey:String?,_ passwordForSign:String?) throws  {
+    func encrypt(_ input:JavaIoInputStream,_ input2:JavaIoInputStream,_ output:JavaIoOutputStream,_ publicKey: [String],_ privateKey:String?,_ passwordForSign:String?) throws  {
+        var publicKeys:[BCOpenpgpPGPPublicKeyRing]=[]
+        publicKey.forEach { (key) in
+            publicKeys.append( DMSPGPKeyRing.publicKeyRing(from: data!))
+        }
+
         var secretKeyRing:BCOpenpgpPGPSecretKeyRing?
         var encryptor:DMSPGPEncryptor?
         if(privateKey != nil && passwordForSign != nil){
@@ -20,12 +25,12 @@ class  Pgp {
                 password: passwordForSign!
             )
             encryptor = try DMSPGPEncryptor(
-                publicKeyRings: [publicKey],
+                publicKeyRings: publicKeys,
                 secretKeyRing:secretKeyRing!,
                 password: passwordForSign!
             )
         }else{
-            encryptor = try DMSPGPEncryptor(publicKeyRings: [publicKey] )
+            encryptor = try DMSPGPEncryptor(publicKeyRings: publicKeys )
         }
         
         try encryptor!.encrypt(input,input2,output)

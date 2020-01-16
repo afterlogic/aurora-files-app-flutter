@@ -13,8 +13,9 @@ class  Pgp {
     
     func encrypt(_ input:JavaIoInputStream,_ input2:JavaIoInputStream,_ output:JavaIoOutputStream,_ publicKey: [String],_ privateKey:String?,_ passwordForSign:String?) throws  {
         var publicKeys:[BCOpenpgpPGPPublicKeyRing]=[]
-        publicKey.forEach { (key) in
-            publicKeys.append( DMSPGPKeyRing.publicKeyRing(from: data!))
+       try publicKey.forEach { (key) in
+            let publicKeyRing = try DMSPGPKeyRing.publicKeyRing(from: key)
+            publicKeys.append(publicKeyRing)
         }
 
         var secretKeyRing:BCOpenpgpPGPSecretKeyRing?

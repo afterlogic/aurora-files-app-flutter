@@ -69,7 +69,7 @@ class SettingsLocalStorage {
     // return key names without owner's prefix
     final Map<String, String> userKeys = new Map();
     encryptionKeys.keys.forEach((nameWithOwner) {
-      if (nameWithOwner.startsWith(_getNameWithOwner())) {
+      if (nameWithOwner.startsWith(_getNameWithOwner())&&!nameWithOwner.endsWith("false")&&!nameWithOwner.endsWith("true")) {
         // remove owner's email
         final keyName = nameWithOwner.substring(_getNameWithOwner().length);
         userKeys[keyName] = encryptionKeys[nameWithOwner];

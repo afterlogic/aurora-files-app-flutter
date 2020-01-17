@@ -194,4 +194,8 @@ abstract class S {
   String get copy_encrypted_password;
   String encrypted_sign_using_key(String user);
   String get email_not_signed;
+  String get two_factor_auth;
+  String get pin;
+  String get verify_pin;
+  String get invalid_pin;
 }

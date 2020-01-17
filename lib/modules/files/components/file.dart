@@ -248,7 +248,7 @@ class _FileWidgetState extends State<FileWidget> {
                     image:
                         AssetImage("lib/assets/images/image_placeholder.jpg"))),
             child: Hero(
-              tag: widget.file.localId ?? widget.file.guid,
+              tag: widget.file.localId ?? widget.file.guid ?? widget.file.hash,
               child: filesState.isOfflineMode && widget.file.localPath != null
                   ? Image.file(new File(widget.file.localPath),
                       fit: BoxFit.cover)
@@ -347,65 +347,56 @@ class _FileWidgetState extends State<FileWidget> {
                         ),
                       ),
                       child: _progress != null ||
-                          _processingFile?.processingType ==
-                              ProcessingType.upload
-                          ? Row(children: <Widget>[
-                        Expanded(flex: 1, child: Icon(_getProcessIcon())),
-                        SizedBox(width: 8.0),
-                        Expanded(
-                          flex: 18,
-                          child: SizedBox(
-                            height: 2.0,
-                            child: LinearProgressIndicator(
-                              value: _processingFile?.processingType ==
+                              _processingFile?.processingType ==
                                   ProcessingType.upload
-                                  ? null
-                                  : _progress,
-                              backgroundColor:
-                              Colors.grey.withOpacity(0.3),
-                            ),
-                          ),
-                        ),
-                      ])
-                          : Row(
-                        children: <Widget>[
-                          if (widget.file.published)
-                            Icon(
-                              Icons.link,
-                              semanticLabel: s.has_public_link,
-                            ),
-                          if (widget.file.published)
-                            SizedBox(width: margin),
-                          if (widget.file.localId != null)
-                            Icon(
-                              Icons.airplanemode_active,
-                              semanticLabel: s.available_offline,
-                            ),
-                          if (widget.file.localId != null)
-                            SizedBox(width: margin),
-                          Text(filesize(widget.file.size),
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .caption),
-                          SizedBox(width: margin),
-                          Text("|",
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .caption),
-                          SizedBox(width: margin),
-                          Text(
-                              DateFormatting.formatDateFromSeconds(
-                                timestamp: widget.file.lastModified,
+                          ? Row(children: <Widget>[
+                              Expanded(flex: 1, child: Icon(_getProcessIcon())),
+                              SizedBox(width: 8.0),
+                              Expanded(
+                                flex: 18,
+                                child: SizedBox(
+                                  height: 2.0,
+                                  child: LinearProgressIndicator(
+                                    value: _processingFile?.processingType ==
+                                            ProcessingType.upload
+                                        ? null
+                                        : _progress,
+                                    backgroundColor:
+                                        Colors.grey.withOpacity(0.3),
+                                  ),
+                                ),
                               ),
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .caption),
-                          SizedBox(width: margin),
-                        ],
-                      ),
+                            ])
+                          : Row(
+                              children: <Widget>[
+                                if (widget.file.published)
+                                  Icon(
+                                    Icons.link,
+                                    semanticLabel: s.has_public_link,
+                                  ),
+                                if (widget.file.published)
+                                  SizedBox(width: margin),
+                                if (widget.file.localId != null)
+                                  Icon(
+                                    Icons.airplanemode_active,
+                                    semanticLabel: s.available_offline,
+                                  ),
+                                if (widget.file.localId != null)
+                                  SizedBox(width: margin),
+                                Text(filesize(widget.file.size),
+                                    style: Theme.of(context).textTheme.caption),
+                                SizedBox(width: margin),
+                                Text("|",
+                                    style: Theme.of(context).textTheme.caption),
+                                SizedBox(width: margin),
+                                Text(
+                                    DateFormatting.formatDateFromSeconds(
+                                      timestamp: widget.file.lastModified,
+                                    ),
+                                    style: Theme.of(context).textTheme.caption),
+                                SizedBox(width: margin),
+                              ],
+                            ),
                     )
                   ],
                 ),
@@ -418,30 +409,26 @@ class _FileWidgetState extends State<FileWidget> {
                 right: 4.0,
                 child: _progress != null
                     ? _processingFile?.processingType ==
-                    ProcessingType
-                        .upload // TODO VO: Implement upload cancelling
-                    ? SizedBox()
+                            ProcessingType
+                                .upload // TODO VO: Implement upload cancelling
+                        ? SizedBox()
+                        : IconButton(
+                            icon: Icon(Icons.cancel),
+                            color: Theme.of(context).disabledColor,
+                            iconSize: 22.0,
+                            onPressed: () {
+                              _filesState.deleteFromProcessing(
+                                  _processingFile.guid,
+                                  deleteLocally: true);
+                            },
+                          )
                     : IconButton(
-                  icon: Icon(Icons.cancel),
-                  color: Theme
-                      .of(context)
-                      .disabledColor,
-                  iconSize: 22.0,
-                  onPressed: () {
-                    _filesState.deleteFromProcessing(
-                        _processingFile.guid,
-                        deleteLocally: true);
-                  },
-                )
-                    : IconButton(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: Theme
-                        .of(context)
-                        .disabledColor,
-                  ),
-                  onPressed: () => _showModalBottomSheet(context),
-                ),
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: Theme.of(context).disabledColor,
+                        ),
+                        onPressed: () => _showModalBottomSheet(context),
+                      ),
               ),
           ]),
         );

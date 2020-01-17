@@ -231,4 +231,9 @@ class EnString extends S {
   String encrypted_sign_using_key(String user) =>
       "The file is encrypted using $user's PGP public key. You can send the link via digitally signed encrypted email.";
   final String email_not_signed = "The email will not be signed.";
+  final String two_factor_auth =
+      "Your account is protected with\nTwo Factor Authentication.\nPlease provide the PIN code.";
+  final String pin = "PIN";
+  final String verify_pin = "Verify pin";
+  final String invalid_pin = "Invalid PIN";
 }

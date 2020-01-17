@@ -15,7 +15,7 @@ class AuthApi {
       final res = await http.get(url);
       final resBody = json.decode(res.body);
       return resBody["url"];
-    } catch(err) {
+    } catch (err) {
       return null;
     }
   }
@@ -31,9 +31,33 @@ class AuthApi {
     final res = await http.post(AppStore.authState.apiUrl, body: body);
 
     final resBody = json.decode(res.body);
-    if (resBody['Result'] != null && resBody['Result']['AuthToken'] is String) {
+    if (resBody['Result'] != null) {
       return resBody;
-    } if (resBody["ErrorCode"] == accessDenied) {
+    }
+    if (resBody["ErrorCode"] == accessDenied) {
+      // the app is unavailable for this account, upgrade
+      throw accessDenied;
+    } else {
+      throw CustomException(getErrMsg(resBody));
+    }
+  }
+
+  Future<Map<String, dynamic>> verifyPin(userKey, userValue, String pin) async {
+    final parameters = json.encode({"Pin": pin, userKey: userValue});
+
+    final body = new ApiBody(
+            module: "TwoFactorAuth",
+            method: "VerifyPin",
+            parameters: parameters)
+        .toMap();
+
+    final res = await http.post(AppStore.authState.apiUrl, body: body);
+
+    final resBody = json.decode(res.body);
+    if (resBody['Result'] != null) {
+      return resBody;
+    }
+    if (resBody["ErrorCode"] == accessDenied) {
       // the app is unavailable for this account, upgrade
       throw accessDenied;
     } else {

@@ -64,6 +64,7 @@ abstract class _AuthState with Store {
   Future<bool> onLogin(
       {bool isFormValid,
       Function() onSuccess,
+      Function(List) onTwoFactorAuth,
       Function() onShowUpgrade,
       Function(String) onError}) async {
     if (isFormValid) {
@@ -90,6 +91,16 @@ abstract class _AuthState with Store {
 
       try {
         final Map<String, dynamic> res = await _authApi.login(email, password);
+        if (res["Result"]["TwoFactorAuth"] is Map) {
+          final map = res["Result"]["TwoFactorAuth"] as Map;
+          await _authLocal.setHostToStorage(hostName);
+          await _authLocal.setUserEmailToStorage(email);
+          this.hostName = hostName;
+          this.userEmail = email;
+          onTwoFactorAuth([map.keys.first, map.values.first]);
+          isLoggingIn = false;
+          return false;
+        }
         final String token = res['Result']['AuthToken'];
         final int id = res['AuthenticatedUserId'];
         await _setAuthSharedPrefs(
@@ -116,5 +127,22 @@ abstract class _AuthState with Store {
     _authLocal.deleteUserIdFromStorage();
     authToken = null;
     userId = null;
+  }
+
+  Future<bool> twoFactorAuth(userKey, userValue, String pin) async {
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    final map = await _authApi.verifyPin(userKey, userValue, pin);
+    if (map["Result"] is bool) {
+      return false;
+    }
+    final userId = map['AuthenticatedUserId'];
+    final token = map["Result"]["AuthToken"];
+    await _authLocal.setTokenToStorage(token);
+    await _authLocal.setUserIdToStorage(userId);
+
+    this.authToken = token;
+    this.userId = userId;
+
+    return true;
   }
 }

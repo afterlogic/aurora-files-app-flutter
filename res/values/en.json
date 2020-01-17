@@ -190,5 +190,9 @@
   "copy_password": "You can send the link via email. The password must be sent using a different channel.\n\nYou will be able to retrieve the password when need.",
   "copy_encrypted_password": "You can send the link via email. The password must be sent using a different channel.\n\n  Store the password somewhere. You will not be able to recover it otherwise.",
   "encrypted_sign_using_key": "The file is encrypted using $user's PGP public key. You can send the link via digitally signed encrypted email.",
-  "email_not_signed": "The email will not be signed."
+  "email_not_signed": "The email will not be signed.",
+  "two_factor_auth": "Your account is protected with\nTwo Factor Authentication.\nPlease provide the PIN code.",
+  "pin": "PIN",
+  "verify_pin": "Verify pin",
+  "invalid_pin": "Invalid PIN"
 }

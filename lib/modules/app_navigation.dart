@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/auth/auth_android.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
+import 'package:aurorafiles/modules/auth/screens/two_factor_auth.dart';
+import 'package:aurorafiles/modules/auth/screens/two_factor_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_android.dart';
 import 'package:aurorafiles/modules/files/files_android.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
@@ -16,8 +18,8 @@ import 'package:aurorafiles/modules/settings/screens/encryption/encryption_andro
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/export_pgp_key_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/export_pgp_key_widget.dart';
-import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_model_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_model_route.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_model_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_settings_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.dart';
@@ -105,7 +107,14 @@ class AppNavigation {
             ),
             page: UpgradeAndroid());
         break;
-
+      case TwoFactorAuthRoute.name:
+        final args = settings.arguments as List;
+        return FadeRoute(
+            settings: RouteSettings(
+              name: settings.name,
+            ),
+            page: TwoFactorAuth(args[0], args[1]));
+        break;
       case SettingsRoute.name:
         if (Platform.isIOS) {
           return CupertinoPageRoute(
@@ -248,8 +257,7 @@ class AppNavigation {
             builder: (context) {
               final s = Str.of(context);
               return Scaffold(
-                  body: Center(
-                      child: Text(s.no_route(settings.name))),
+                body: Center(child: Text(s.no_route(settings.name))),
               );
             });
     }

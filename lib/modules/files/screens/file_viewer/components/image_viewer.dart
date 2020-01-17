@@ -38,7 +38,7 @@ class _ImageViewerState extends State<ImageViewer> {
     if (AppStore.filesState.isOfflineMode &&
         _fileViewerState.file.initVector != null) {
       Future.delayed(Duration(milliseconds: 250),
-              () => _fileViewerState.getPreviewImage((err) => showError(err)));
+          () => _fileViewerState.getPreviewImage((err) => showError(err)));
     } else if (_fileViewerState.fileWithContents == null) {
       _fileViewerState.getPreviewImage((err) => showError(err));
     }
@@ -85,7 +85,7 @@ class _ImageViewerState extends State<ImageViewer> {
         );
         precacheImage(image.image, context, onError: (e, stackTrace) {
           Future.delayed(Duration(milliseconds: 100),
-                  () => setState(() => _isError = true));
+              () => setState(() => _isError = true));
         });
         return ConstrainedBox(
           constraints: BoxConstraints(minHeight: 60.0),
@@ -116,7 +116,7 @@ class _ImageViewerState extends State<ImageViewer> {
         );
         precacheImage(image.image, context, onError: (e, stack) {
           Future.delayed(Duration(milliseconds: 100),
-                  () => setState(() => _isError = true));
+              () => setState(() => _isError = true));
         });
         return ConstrainedBox(
           constraints: BoxConstraints(minHeight: 60.0),
@@ -141,7 +141,7 @@ class _ImageViewerState extends State<ImageViewer> {
     } else {
       placeholder = CachedNetworkImage(
         imageUrl:
-        '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
+            '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
         fit: BoxFit.cover,
         httpHeaders: getHeader(),
       );
@@ -149,45 +149,47 @@ class _ImageViewerState extends State<ImageViewer> {
 
     if (_fileViewerState.file.viewUrl != null) {
       return Hero(
-          tag: _fileViewerState.file.localId ?? _fileViewerState.file.guid,
+          tag: _fileViewerState.file.localId ??
+              _fileViewerState.file.guid ??
+              _fileViewerState.file.hash,
           child: SizedBox(
             width: double.infinity,
             child: AppStore.filesState.isOfflineMode &&
-                _fileViewerState.fileWithContents != null
+                    _fileViewerState.fileWithContents != null
                 ? Image.file(
-              _fileViewerState.fileWithContents,
-              fit: BoxFit.cover,
-            )
+                    _fileViewerState.fileWithContents,
+                    fit: BoxFit.cover,
+                  )
                 : Stack(
-              fit: StackFit.passthrough,
-              children: <Widget>[
-                if (!_isError)
-                  ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: 60.0),
-                    child: placeholder,
-                  ),
-                Positioned.fill(
-                  child: ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: 8.0,
-                        sigmaY: 8.0,
+                    fit: StackFit.passthrough,
+                    children: <Widget>[
+                      if (!_isError)
+                        ConstrainedBox(
+                          constraints: BoxConstraints(minHeight: 60.0),
+                          child: placeholder,
+                        ),
+                      Positioned.fill(
+                        child: ClipRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 8.0,
+                              sigmaY: 8.0,
+                            ),
+                            child: Container(
+                              color: Colors.transparent,
+                            ),
+                          ),
+                        ),
                       ),
-                      child: Container(
-                        color: Colors.transparent,
-                      ),
-                    ),
+                      Observer(builder: (_) {
+                        if (prevProgress != _fileViewerState.downloadProgress) {
+                          builtImage = _buildImage();
+                          prevProgress = _fileViewerState.downloadProgress;
+                        }
+                        return builtImage;
+                      }),
+                    ],
                   ),
-                ),
-                Observer(builder: (_) {
-                  if (prevProgress != _fileViewerState.downloadProgress) {
-                    builtImage = _buildImage();
-                    prevProgress = _fileViewerState.downloadProgress;
-                  }
-                  return builtImage;
-                }),
-              ],
-            ),
           ));
     } else {
       return SizedBox();

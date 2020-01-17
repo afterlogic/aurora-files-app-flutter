@@ -321,13 +321,7 @@ class _ShareLinkState extends State<ShareLink> {
                                                 s.email.firstCharTo(false))
                                             : useSign
                                                 ? s.email_signed
-                                                : (widget.selectRecipientResult
-                                                            ?.pgpKey !=
-                                                        null)
-                                                    ? s.data_not_signed(s.email
-                                                        .firstCharTo(false))
-                                                    : s.data_not_signed(s.email
-                                                        .firstCharTo(false)),
+                                                    : s.email_not_signed,
                                     style: theme.textTheme.caption,
                                   ),
                                   SizedBox(height: 10),
@@ -357,7 +351,7 @@ class _ShareLinkState extends State<ShareLink> {
             title: title,
             content: content,
             actions:
-                widget.selectRecipientResult?.pgpKey != null ? null : actions,
+                widget.selectRecipientResult?.pgpKey != null ? [] : actions,
           )
         : AlertDialog(
             title: title,

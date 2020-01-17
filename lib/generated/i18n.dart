@@ -13,8 +13,7 @@ class S implements WidgetsLocalizations {
 
   static S current;
 
-  static const GeneratedLocalizationsDelegate delegate =
-      GeneratedLocalizationsDelegate();
+  static const GeneratedLocalizationsDelegate delegate = GeneratedLocalizationsDelegate();
 
   static S of(BuildContext context) => Localizations.of<S>(context, S);
 
@@ -37,19 +36,20 @@ class S implements WidgetsLocalizations {
   String sign_mail_with_not_key(String data) =>
       "The $data will not be signed because you don’t have pgp private key.";
 
-  String get password_sign =>
-      "For password-based encryption the pgp-signing is not supported.";
+  String get password_sign => "For password-based encryption the pgp-signing is not supported.";
 
   String get email_signed => "The email will be signed using your private key.";
 
   String get data_signed => "Will sign the data with your private key.";
 
+  String get email_not_signed => "The email will not be signed.";
 
-  String data_not_signed(String data) => "The $data will not be signed.";
+  String get data_not_signed => "Will not sign the data.";
 
   String get protected_public_link => "Protected public link";
 
-  String get send_public_link_to=>"Send public link to";
+  String get send_public_link_to => "Send public link to";
+
 //
   String get about => "About";
 
@@ -65,8 +65,7 @@ class S implements WidgetsLocalizations {
 
   String get already_have_key => "You already have the key(s) for this email";
 
-  String get already_have_keys =>
-      "Keys which are already in the system are greyed out.";
+  String get already_have_keys => "Keys which are already in the system are greyed out.";
 
   String get available_offline => "Available offline";
 
@@ -101,6 +100,7 @@ class S implements WidgetsLocalizations {
 
   String get copy_password =>
       "You can send the link via email. The password must be sent using a different channel.\n\nYou will be able to retrieve the password when need.";
+
   String get copy_encrypted_password =>
       "You can send the link via email. The password must be sent using a different channel.\n\n  Store the password somewhere. You will not be able to recover it otherwise.";
 
@@ -119,8 +119,7 @@ class S implements WidgetsLocalizations {
 
   String get delete => "Delete";
 
-  String get delete_encryption_key_success =>
-      "The encryption key was successfully deleted.";
+  String get delete_encryption_key_success => "The encryption key was successfully deleted.";
 
   String get delete_file => "Delete file";
 
@@ -153,8 +152,7 @@ class S implements WidgetsLocalizations {
 
   String get encrypted_file_password => "Encrypted file password";
 
-  String get encrypted_mail_using_key =>
-      "You can send the link and the password via email.";
+  String get encrypted_mail_using_key => "You can send the link and the password via email.";
 
   String get encrypted_using_password =>
       "If you don't send email now, store the password somewhere. You will not be able to recover it otherwise.";
@@ -222,8 +220,7 @@ class S implements WidgetsLocalizations {
 
   String get import => "Import";
 
-  String get import_encryption_key_success =>
-      "The encryption key was successfully imported";
+  String get import_encryption_key_success => "The encryption key was successfully imported";
 
   String get import_key => "Import key";
 
@@ -239,8 +236,7 @@ class S implements WidgetsLocalizations {
 
   String get import_selected_keys => "Import selected keys";
 
-  String get information_is_not_available =>
-      "This information is not available at the moment.";
+  String get information_is_not_available => "This information is not available at the moment.";
 
   String get key_based => "Key based";
 
@@ -268,8 +264,7 @@ class S implements WidgetsLocalizations {
 
   String get move_file_or_folder => "Move files/folders";
 
-  String get need_an_encryption_to_share =>
-      "You need an encryption key to share files.";
+  String get need_an_encryption_to_share => "You need an encryption key to share files.";
 
   String get need_an_encryption_to_uploading =>
       "You need to set an encryption key before uploading files.";
@@ -306,8 +301,7 @@ class S implements WidgetsLocalizations {
 
   String get password_is_empty => "password is empty";
 
-  String get password_will_be_used =>
-      "The Password based encryption will be used";
+  String get password_will_be_used => "The Password based encryption will be used";
 
   String get please_enter_email => "Please enter email";
 
@@ -318,8 +312,7 @@ class S implements WidgetsLocalizations {
   String get please_upgrade_your_plan =>
       "Mobile apps are not allowed in your billing plan.\nPlease upgrade your plan.";
 
-  String get please_wait_until_loading =>
-      "Please wait until the file finishes loading";
+  String get please_wait_until_loading => "Please wait until the file finishes loading";
 
   String get privacy_policy => "Privacy policy";
 
@@ -400,8 +393,7 @@ class S implements WidgetsLocalizations {
 
   String available_space(String format) => "Available space: $format";
 
-  String confirm_delete_file(String file) =>
-      "Are you sure you want to delete $file";
+  String confirm_delete_file(String file) => "Are you sure you want to delete $file";
 
   String confirm_delete_pgp_key(String email) =>
       "Are you sure you want to delete OpenPGP key for $email?";
@@ -423,8 +415,7 @@ class S implements WidgetsLocalizations {
 
   String no_route(String name) => "No route defined for $name";
 
-  String quota_using(String progress, String limit) =>
-      "You are using $progress% of your $limit";
+  String quota_using(String progress, String limit) => "You are using $progress% of your $limit";
 
   String renaming_to(String name) => "Renaming to $name";
 
@@ -432,8 +423,7 @@ class S implements WidgetsLocalizations {
 
   String this_file(String name) => "this $name?";
 
-  String used_space(String used, String limit) =>
-      "Used space: $used out of $limit";
+  String used_space(String used, String limit) => "Used space: $used out of $limit";
 
   String version(String version) => "Version $version";
 }
@@ -451,8 +441,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
     ];
   }
 
-  LocaleListResolutionCallback listResolution(
-      {Locale fallback, bool withCountry = true}) {
+  LocaleListResolutionCallback listResolution({Locale fallback, bool withCountry = true}) {
     return (List<Locale> locales, Iterable<Locale> supported) {
       if (locales == null || locales.isEmpty) {
         return fallback ?? supported.first;
@@ -462,8 +451,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
     };
   }
 
-  LocaleResolutionCallback resolution(
-      {Locale fallback, bool withCountry = true}) {
+  LocaleResolutionCallback resolution({Locale fallback, bool withCountry = true}) {
     return (Locale locale, Iterable<Locale> supported) {
       return _resolve(locale, fallback, supported, withCountry);
     };
@@ -494,8 +482,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
   ///
   /// Internal method to resolve a locale from a list of locales.
   ///
-  Locale _resolve(Locale locale, Locale fallback, Iterable<Locale> supported,
-      bool withCountry) {
+  Locale _resolve(Locale locale, Locale fallback, Iterable<Locale> supported, bool withCountry) {
     if (locale == null || !_isSupported(locale, withCountry)) {
       return fallback ?? supported.first;
     }
@@ -529,8 +516,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
 
         // If no country requirement is requested, check if this locale has no country.
         if (true != withCountry &&
-            (supportedLocale.countryCode == null ||
-                supportedLocale.countryCode.isEmpty)) {
+            (supportedLocale.countryCode == null || supportedLocale.countryCode.isEmpty)) {
           return true;
         }
       }
@@ -541,6 +527,4 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
 
 String getLang(Locale l) => l == null
     ? null
-    : l.countryCode != null && l.countryCode.isEmpty
-        ? l.languageCode
-        : l.toString();
+    : l.countryCode != null && l.countryCode.isEmpty ? l.languageCode : l.toString();

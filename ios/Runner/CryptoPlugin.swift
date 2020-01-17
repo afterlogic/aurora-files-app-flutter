@@ -132,19 +132,21 @@ public class CryptoPlugin: NSObject, FlutterPlugin {
                 let password = arguments[1] as! String
                 return try self.pgp.decryptSymmetricBytes(Data.init(data.data),password)
             case "decryptSymmetricFile":
-                let input = arguments[1] as! String
+                let input = arguments[0] as! String
                 let output = arguments[1] as! String
-                let password = arguments[1] as! String
-                return try self.pgp.decryptSymmetricFile(input,output, password)
+                let password = arguments[2] as! String
+                 try self.pgp.decryptSymmetricFile(input,output, password)
+                return ""
             case "encryptSymmetricBytes":
                 let data = arguments[0] as! FlutterStandardTypedData
                 let password = arguments[1] as! String
                 return try self.pgp.encryptSymmetricBytes(Data.init(data.data),password)
             case "encryptSymmetricFile":
-                let input = arguments[1] as! String
+                let input = arguments[0] as! String
                 let output = arguments[1] as! String
-                let password = arguments[1] as! String
-                return try self.pgp.encryptSymmetricFile( input,output, password)
+                let password = arguments[2] as! String
+                try self.pgp.encryptSymmetricFile( input,output, password)
+                return ""
             case "checkPassword":
                 let password = arguments[0] as! String
                 let privateKey = arguments[1] as! String

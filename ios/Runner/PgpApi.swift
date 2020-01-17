@@ -35,8 +35,13 @@ class PgpApi{
     }
     
     func decryptFile(_ inputFile:String,_ outputFile:String,_ password:String)throws{
-        let input = JavaIoFileInputStream(  javaIoFile: JavaIoFile(nsString: inputFile))
-        let output = JavaIoFileOutputStream(  javaIoFile: JavaIoFile(nsString: outputFile))
+        let outfile=JavaIoFile(nsString: outputFile)
+        let infile=JavaIoFile(nsString: inputFile)
+        
+        outfile.createNewFile()
+        
+        let input = JavaIoFileInputStream(  javaIoFile:infile)
+        let output = JavaIoFileOutputStream(  javaIoFile: outfile)
         try decrypt(input,output,password)
     }
     
@@ -50,9 +55,15 @@ class PgpApi{
     }
     
     func encryptFile(_ inputFile:String,_ outputFile:String,_ passwordForSign:String?)throws{
-        let input = JavaIoFileInputStream(  javaIoFile: JavaIoFile(nsString: inputFile))
-        let input2 = JavaIoFileInputStream(  javaIoFile: JavaIoFile(nsString: inputFile))
-        let output = JavaIoFileOutputStream(  javaIoFile: JavaIoFile(nsString: outputFile))
+        
+        let outfile=JavaIoFile(nsString: outputFile)
+        let infile=JavaIoFile(nsString: inputFile)
+        
+        outfile.createNewFile()
+        
+        let input = JavaIoFileInputStream(  javaIoFile: infile)
+        let input2 = JavaIoFileInputStream(  javaIoFile: infile)
+        let output = JavaIoFileOutputStream(  javaIoFile: outfile)
         try encrypt(input,input2,output,passwordForSign)
     }
     
@@ -76,7 +87,6 @@ class PgpApi{
     
     func setTempFile(_ file:String?){
         tempFile=file
-        
     }
     
     func encryptSymmetricBytes(_ data:Data,_ password:String)throws ->Data {
@@ -87,10 +97,14 @@ class PgpApi{
         return output.toByteArray().toNSData()
     }
     func encryptSymmetricFile(_ inputFile:String,_ outputFile:String,_ password:String) throws {
-        let file=JavaIoFile(nsString: inputFile)
-        let input = JavaIoFileInputStream(  javaIoFile: file)
-        let output = JavaIoFileOutputStream(  javaIoFile: JavaIoFile(nsString: outputFile))
-        try encryptSymmetric(input,output,password,file.length())
+        let outfile=JavaIoFile(nsString: outputFile)
+        let infile=JavaIoFile(nsString: inputFile)
+        
+        outfile.createNewFile()
+        
+        let input = JavaIoFileInputStream(  javaIoFile: infile)
+        let output = JavaIoFileOutputStream(  javaIoFile: outfile)
+        try encryptSymmetric(input,output,password,infile.length())
     }
     func encryptSymmetric(
         _ input:JavaIoInputStream,
@@ -98,7 +112,9 @@ class PgpApi{
         _ password:String,
         _ length:jlong
     ) throws{
-        pgp.encryptSymetric(input,output,password,length)
+        assert(tempFile != nil)
+        let temp=JavaIoFile(nsString: tempFile)
+        pgp.encryptSymetric(input,output,temp,password,length)
     }
     
     func decryptSymmetricBytes(_ data:Data,_ password:String) throws->Data{
@@ -109,10 +125,14 @@ class PgpApi{
         return output.toByteArray().toNSData()
     }
     func decryptSymmetricFile(_ inputFile:String,_ outputFile:String,_ password:String) throws{
-        let file=JavaIoFile(nsString: inputFile)
-        let input = JavaIoFileInputStream(  javaIoFile: file)
-        let output = JavaIoFileOutputStream(  javaIoFile: JavaIoFile(nsString: outputFile))
-        try decryptSymmetric(input,output,password,file.length())
+        let outfile=JavaIoFile(nsString: outputFile)
+        let infile=JavaIoFile(nsString: inputFile)
+        
+        outfile.createNewFile()
+        
+        let input = JavaIoFileInputStream(  javaIoFile: infile)
+        let output = JavaIoFileOutputStream(  javaIoFile: outfile)
+        try decryptSymmetric(input,output,password,infile.length())
     }
     func decryptSymmetric(
         _ input:JavaIoInputStream,
@@ -120,7 +140,9 @@ class PgpApi{
         _ password:String,
         _ length:Int64
     ) throws {
-        pgp.decryptSymmetric(input,output,password,length)
+        assert(tempFile != nil)
+        let temp=JavaIoFile(nsString: tempFile)
+        pgp.decryptSymmetric(input,output,temp,password,length)
     }
     
     func checkPassword(_ password:String,_ privateKey:String)throws -> Bool {

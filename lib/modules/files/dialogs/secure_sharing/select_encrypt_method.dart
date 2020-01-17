@@ -102,7 +102,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
                         ? s.sign_data_with_not_key(s.data)
                         : useSign
                             ? s.data_signed
-                            : s.data_not_signed(s.data),
+                            : s.data_not_signed,
                 style: theme.textTheme.caption,
               )
             ],

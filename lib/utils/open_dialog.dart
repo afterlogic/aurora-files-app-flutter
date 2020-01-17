@@ -9,15 +9,18 @@ Future openDialog(BuildContext context, Widget Function(BuildContext) builder) {
   return Platform.isIOS
       ? showCupertinoDialog(
           context: context,
-          builder: (context) => Theme(
-            data: ThemeData(
-              brightness: Brightness.light
-            ),
-            child: CupertinoTheme(
-              data: cupertinoTheme.copyWith(
+          builder: (context) => Material(
+            type: MaterialType.transparency,
+            child: Theme(
+              data: ThemeData(
                 brightness: Brightness.light
               ),
-              child: builder(context),
+              child: CupertinoTheme(
+                data: cupertinoTheme.copyWith(
+                  brightness: Brightness.light
+                ),
+                child: builder(context),
+              ),
             ),
           ),
         )

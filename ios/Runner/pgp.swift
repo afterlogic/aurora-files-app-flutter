@@ -13,11 +13,11 @@ class  Pgp {
     
     func encrypt(_ input:JavaIoInputStream,_ input2:JavaIoInputStream,_ output:JavaIoOutputStream,_ publicKey: [String],_ privateKey:String?,_ passwordForSign:String?) throws  {
         var publicKeys:[BCOpenpgpPGPPublicKeyRing]=[]
-       try publicKey.forEach { (key) in
+        try publicKey.forEach { (key) in
             let publicKeyRing = try DMSPGPKeyRing.publicKeyRing(from: key)
             publicKeys.append(publicKeyRing)
         }
-
+        
         var secretKeyRing:BCOpenpgpPGPSecretKeyRing?
         var encryptor:DMSPGPEncryptor?
         if(privateKey != nil && passwordForSign != nil){
@@ -100,6 +100,7 @@ class  Pgp {
     func decryptSymmetric(
         _ input:JavaIoInputStream,
         _ output:JavaIoOutputStream,
+        _ temp:JavaIoFile,
         _ password:String,
         _ length:jlong){
         SymmetricPgp.decrypt(input,output,password,length)
@@ -107,9 +108,10 @@ class  Pgp {
     func encryptSymetric(
         _ input:JavaIoInputStream,
         _ output:JavaIoOutputStream,
+        _ temp:JavaIoFile,
         _ password:String,
         _ length:jlong ){
-          SymmetricPgp.encrypt(input,output,password,length)
+        SymmetricPgp.encrypt(input,output,temp,password,length)
     }
 }
 

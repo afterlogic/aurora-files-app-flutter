@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -71,7 +71,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(widget.title);
@@ -190,7 +190,7 @@ class RecipientWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     final theme = Theme.of(context);
     var name = recipient.recipient?.fullName;
     final hasName = !(name?.isNotEmpty != true);

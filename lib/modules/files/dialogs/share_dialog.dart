@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,7 +48,7 @@ class _ShareDialogState extends State<ShareDialog> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
         title: Text(s.share_file),

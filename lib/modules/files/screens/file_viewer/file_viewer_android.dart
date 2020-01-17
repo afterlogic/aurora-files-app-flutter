@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -445,7 +445,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     final theme = Theme.of(context);
     return MultiProvider(
       providers: [

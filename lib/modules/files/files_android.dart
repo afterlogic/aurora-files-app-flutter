@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
@@ -248,7 +248,7 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     return MultiProvider(
       providers: [
         Provider<FilesState>(

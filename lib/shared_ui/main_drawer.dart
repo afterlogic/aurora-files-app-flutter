@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -23,7 +23,7 @@ class MainDrawer extends StatelessWidget {
     final authState = AppStore.authState;
     final filesState = AppStore.filesState;
     final settingsState = AppStore.settingsState;
-    final s = S.of(context);
+    final s = Str.of(context);
     return Drawer(
       child: SafeArea(
         top: false,

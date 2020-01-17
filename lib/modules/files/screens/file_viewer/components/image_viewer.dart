@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/progress_loader.dart';
@@ -128,7 +128,7 @@ class _ImageViewerState extends State<ImageViewer> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     double prevProgress = 999;
     Widget placeholder;
     if (AppStore.filesState.isOfflineMode) {

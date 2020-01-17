@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
@@ -47,7 +47,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(s.about),

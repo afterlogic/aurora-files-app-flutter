@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
@@ -37,7 +37,7 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
         title: Text(widget.isImport ? s.import_key : s.generate_key),

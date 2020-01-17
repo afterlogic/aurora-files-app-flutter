@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
@@ -308,7 +308,7 @@ class _FileWidgetState extends State<FileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
     final margin = 5.0;

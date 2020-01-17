@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
@@ -373,7 +373,7 @@ class _FilesAppBarState extends State<FilesAppBar>
   Widget build(BuildContext context) {
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
-    s = S.of(context);
+    s = Str.of(context);
     return Observer(
       builder: (_) => _getAppBar(context),
     );

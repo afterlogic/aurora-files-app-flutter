@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -62,7 +62,7 @@ class _InfoListTileState extends State<InfoListTile> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     _rightPaddingForStatusIcons = 0.0;
     if (widget.isOffline) _rightPaddingForStatusIcons += 35.0;
     if (widget.isPublic) _rightPaddingForStatusIcons += 35.0;

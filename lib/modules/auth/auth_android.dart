@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_data.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
@@ -225,7 +225,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     final mq = MediaQuery.of(context);
     return Provider(
       create: (_) => _authState,

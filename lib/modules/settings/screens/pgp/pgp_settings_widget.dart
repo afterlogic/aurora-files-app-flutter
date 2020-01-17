@@ -1,6 +1,6 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/create_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
@@ -42,7 +42,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     final theme = Theme.of(context);
     return Scaffold(
         key: _scaffoldKey,

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
@@ -76,7 +76,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     final offline = widget.filesState.isOfflineMode;
     return Column(
       mainAxisSize: MainAxisSize.min,

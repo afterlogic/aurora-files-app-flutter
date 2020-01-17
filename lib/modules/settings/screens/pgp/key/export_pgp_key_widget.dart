@@ -1,5 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -21,7 +21,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   S s;
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     var keysText = "";
     for (LocalPgpKey key in widget._pgpKeys) {
       if(key.key!=null)

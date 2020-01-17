@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,7 +23,7 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
         title: Text(widget.settingsState.selectedKeyName),

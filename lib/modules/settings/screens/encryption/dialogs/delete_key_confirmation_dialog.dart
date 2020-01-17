@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     final title = Text(s.delete_key);
     final content = Text(s.delete_key_description);
     if (Platform.isIOS) {

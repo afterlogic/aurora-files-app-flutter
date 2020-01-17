@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/confirmation_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -34,7 +34,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(

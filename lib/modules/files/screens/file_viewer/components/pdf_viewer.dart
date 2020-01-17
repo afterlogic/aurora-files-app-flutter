@@ -1,5 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
@@ -35,7 +35,7 @@ class _PdfViewerState extends State<PdfViewer> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     return Observer(
       builder: (_) => _fileViewerState.downloadProgress != null &&
           _fileViewerState.downloadProgress < 1.0

@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:aurorafiles/utils/case_util.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
@@ -204,7 +204,7 @@ class _ShareLinkState extends State<ShareLink> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(s.protected_public_link);

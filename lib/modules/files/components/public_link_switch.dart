@@ -1,5 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -108,7 +108,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
     filesState = widget.filesState ?? Provider.of<FilesState>(context);
     filesPageState =
         widget.filesPageState ?? Provider.of<FilesPageState>(context);
-    s = S.of(context);
+    s = Str.of(context);
     return Column(
       children: <Widget>[
         InkWell(

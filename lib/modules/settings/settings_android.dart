@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
@@ -21,7 +21,7 @@ class SettingsAndroid extends StatefulWidget {
 class _SettingsAndroidState extends State<SettingsAndroid> {
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     return Provider<SettingsState>(
       create: (_) => AppStore.settingsState,
       child: Scaffold(

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
@@ -58,7 +58,7 @@ class _RenameDialogState extends State<RenameDialog> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
         title: Text("${s.rename} ${widget.file.name}"),

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
 import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
@@ -40,7 +40,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(s.secure_sharing);
@@ -179,7 +179,7 @@ class RadioEncryptMethod extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -161,7 +161,6 @@
   "upload": "Upload",
   "encrypt_error": "Encrypt error",
   "encrypted_file_password": "Encrypted file password",
-  "copy_password": "You can send the link via email. The password must be sent using a different channel.",
   "create_link": "Create public link",
   "create_encrypt_link": "Create protected public link",
   "encrypt_link": "Protect public link with password",
@@ -175,11 +174,21 @@
   "sending_complete": "Sending complete",
   "failed": "Failed",
   "keys_not_found": "Keys not found",
-  "password_sign": "For password-based encryption the signin is not supported.",
   "sign_with_not_key": "$data can’t be signed because the private key has not been added.",
-  "data_signed": "The $data will be signed using your private key.",
-  "data_not_signed": "The $data will not be signed, but encrypted.",
-  "sign_file_email": "Sign file and email",
-  "sign_email": "Sign email",
-  "data": "data"
+  "invalid_password": "Invalid password",
+  "sign_email": "Sign the email",
+  "sign_file_email": "Sign the file and email",
+  "data": "data",
+  "sign_data_with_not_key": "Will not sign the $data because you don’t have pgp private key.",
+  "sign_mail_with_not_key": "The $data will not be signed because you don’t have pgp private key.",
+  "password_sign": "For password-based encryption the pgp-signing is not supported.",
+  "email_signed": "The email will be signed using your private key.",
+  "data_signed": "Will sign the data with your private key.",
+  "data_not_signed": "The $data will not be signed.",
+  "protected_public_link": "Protected public link",
+  "send_public_link_to": "Send public link to",
+  "copy_password": "You can send the link via email. The password must be sent using a different channel.\n\nYou will be able to retrieve the password when need.",
+  "copy_encrypted_password": "You can send the link via email. The password must be sent using a different channel.\n\n  Store the password somewhere. You will not be able to recover it otherwise.",
+  "encrypted_sign_using_key": "The file is encrypted using $user's PGP public key. You can send the link via digitally signed encrypted email.",
+  "email_not_signed": "The email will not be signed."
 }

@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -221,7 +220,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     final size = MediaQuery.of(context).size;
     final actions = <Widget>[
       if (link != null)

@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/localization_string_widget.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
@@ -65,10 +66,10 @@ class _AppState extends State<App> {
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,
-                  S.delegate,
+                  LocalizationStringWidget.delegate,
                 ],
-                supportedLocales: S.delegate.supportedLocales,
-                localeResolutionCallback: S.delegate.resolution(
+                supportedLocales: LocalizationStringWidget.delegate.supportedLocales,
+                localeResolutionCallback: LocalizationStringWidget.delegate.resolution(
                     fallback: new Locale("en", ""), withCountry: false),
                 initialRoute: _canEnterMainApp(snapshot.data)
                     ? FilesRoute.name

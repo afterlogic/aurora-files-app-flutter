@@ -1,5 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -31,7 +31,7 @@ class FolderWidget extends StatelessWidget {
     final filesState = Provider.of<FilesState>(context);
     final filesPageState = Provider.of<FilesPageState>(context);
     final margin = 5.0;
-    final s = S.of(context);
+    final s = Str.of(context);
     return Observer(
       builder: (_) => SelectableFilesItemTile(
         file: folder,

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_key_confirmation_dialog.dart';
@@ -182,7 +182,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     return Provider<SettingsState>(
       create: (_) => _settingsState,
       child: Observer(

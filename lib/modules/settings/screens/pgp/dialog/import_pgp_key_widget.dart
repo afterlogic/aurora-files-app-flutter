@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,7 +53,7 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text("Import keys");
     final content = Flex(

@@ -1,5 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
@@ -24,7 +24,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    s = S.of(context);
+    s = Str.of(context);
     final theme = Theme.of(context);
     return Scaffold(
       key: _scaffoldKey,

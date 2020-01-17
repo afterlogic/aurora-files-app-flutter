@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/auth/auth_android.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_android.dart';
@@ -246,7 +246,7 @@ class AppNavigation {
               name: settings.name,
             ),
             builder: (context) {
-              final s = S.of(context);
+              final s = Str.of(context);
               return Scaffold(
                   body: Center(
                       child: Text(s.no_route(settings.name))),

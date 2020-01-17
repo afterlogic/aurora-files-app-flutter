@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -51,7 +51,7 @@ class _MoveOptionsState extends State<MoveOptions> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     return Container(
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: Colors.grey)),

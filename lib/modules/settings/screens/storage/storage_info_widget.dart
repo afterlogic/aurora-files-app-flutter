@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ class StorageInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final s = S.of(context);
+    final s = Str.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(s.storage_info),

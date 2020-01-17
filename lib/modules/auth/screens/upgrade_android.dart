@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 class UpgradeAndroid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     final mq = MediaQuery.of(context);
     return Scaffold(
       body: MainGradient(

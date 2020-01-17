@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/i18n.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -12,7 +12,7 @@ class _AppBottomAppBarState extends State<AppBottomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final s = Str.of(context);
     return BottomNavigationBar(
       currentIndex: _navItem,
       onTap: (int item) => setState(() => _navItem = item),

@@ -74,9 +74,9 @@ class _AuthAndroidState extends State<AuthAndroid> {
     if (errMsg.isEmpty) {
       final showHost = await _authState.onLogin(
         isFormValid: _authFormKey.currentState.validate(),
-        onTwoFactorAuth: (userValue) => Navigator.pushNamed(
+        onTwoFactorAuth: (key, value) => Navigator.pushNamed(
             context, TwoFactorAuthRoute.name,
-            arguments: userValue),
+            arguments: [key, value]),
         onSuccess: () async {
           await AppStore.settingsState.getUserEncryptionKeys();
           Navigator.pushReplacementNamed(context, FilesRoute.name,

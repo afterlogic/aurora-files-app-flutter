@@ -42,8 +42,19 @@ class AuthApi {
     }
   }
 
-  Future<Map<String, dynamic>> verifyPin(userKey, userValue, String pin) async {
-    final parameters = json.encode({"Pin": pin, userKey: userValue});
+  Future<Map<String, dynamic>> verifyPin(
+    userKey,
+    userValue,
+    String pin,
+    String login,
+    String password,
+  ) async {
+    final parameters = json.encode({
+      "Pin": pin,
+      userKey: userValue,
+      "Login": login,
+      "Password": password,
+    });
 
     final body = new ApiBody(
             module: "TwoFactorAuth",

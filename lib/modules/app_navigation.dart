@@ -108,12 +108,11 @@ class AppNavigation {
             page: UpgradeAndroid());
         break;
       case TwoFactorAuthRoute.name:
-        final args = settings.arguments as List;
         return FadeRoute(
             settings: RouteSettings(
               name: settings.name,
             ),
-            page: TwoFactorAuth(args[0], args[1]));
+            page: TwoFactorAuth());
         break;
       case SettingsRoute.name:
         if (Platform.isIOS) {

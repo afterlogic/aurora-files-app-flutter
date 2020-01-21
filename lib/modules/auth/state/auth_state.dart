@@ -64,7 +64,7 @@ abstract class _AuthState with Store {
   Future<bool> onLogin(
       {bool isFormValid,
       Function() onSuccess,
-      Function(dynamic, dynamic) onTwoFactorAuth,
+      Function() onTwoFactorAuth,
       Function() onShowUpgrade,
       Function(String) onError}) async {
     if (isFormValid) {
@@ -91,9 +91,8 @@ abstract class _AuthState with Store {
 
       try {
         final Map<String, dynamic> res = await _authApi.login(email, password);
-        if (res["Result"]["TwoFactorAuth"] is Map) {
-          final map = res["Result"]["TwoFactorAuth"] as Map;
-          onTwoFactorAuth(map.keys.first, map.values.first);
+        if (res["Result"].containsKey("TwoFactorAuth")) {
+          onTwoFactorAuth();
           isLoggingIn = false;
           return false;
         }
@@ -125,18 +124,16 @@ abstract class _AuthState with Store {
     userId = null;
   }
 
-  Future<bool> twoFactorAuth(userKey, userValue, String pin) async {
+  Future<bool> twoFactorAuth(String pin) async {
     String email = emailCtrl.text;
     String password = passwordCtrl.text;
     SystemChannels.textInput.invokeMethod('TextInput.hide');
     final map = await _authApi.verifyPin(
-      userKey,
-      userValue,
       pin,
       email,
       password,
     );
-    if (map["Result"] is bool) {
+    if (map["Result"] is! Map || !map["Result"].containsKey("AuthToken")) {
       return false;
     }
     final userId = map['AuthenticatedUserId'];

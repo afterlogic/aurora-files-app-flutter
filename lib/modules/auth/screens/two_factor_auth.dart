@@ -9,11 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TwoFactorAuth extends StatefulWidget {
-  final dynamic userKey;
-  final dynamic userValue;
-
-  TwoFactorAuth(this.userKey, this.userValue);
-
   @override
   _TwoFactorAuthState createState() => _TwoFactorAuthState();
 }
@@ -101,7 +96,7 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
     error = "";
     setState(() {});
     final pin = pinCtrl.text;
-    authState.twoFactorAuth(widget.userKey, widget.userValue, pin).then(
+    authState.twoFactorAuth(pin).then(
       (success) async {
         if (!success) {
           error = s.invalid_pin;

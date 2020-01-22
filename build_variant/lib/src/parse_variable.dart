@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'variable_map.dart';
+import 'package:build_variant/src/variable_map.dart';
 import 'package:yaml/yaml.dart';
 
 class ParseVariable {

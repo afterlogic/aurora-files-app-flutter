@@ -1,9 +1,7 @@
-#config
+
 _files:
   - pubspec.yaml
   - lib/dependency.dart
-  -
 _buildPropertyPath: lib/build_const.dart
 
-#variables
-enable_share: true
+enable_share: false

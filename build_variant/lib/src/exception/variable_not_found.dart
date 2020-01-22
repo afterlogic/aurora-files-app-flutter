@@ -1,12 +1,17 @@
 class VariableNotFound {
-  final String variable;
-  final String path;
-  final int line;
+  final String message;
 
-  VariableNotFound(this.variable, this.path, this.line);
+  VariableNotFound(this.message);
+
+  VariableNotFound.inTemplate(String variable, String path, int line)
+      : message =
+            "\tVariable $variable not found\n\tLine number $line\n\tIn file $path";
+
+  VariableNotFound.inVariable(String variable, String inVariable)
+      : message = "\tVariable $variable not found\n\tIn Variable $inVariable";
 
   @override
   String toString() {
-    return "\tVariable $variable not found\n\tLine number $line\n\tIn file $path";
+    return message;
   }
 }

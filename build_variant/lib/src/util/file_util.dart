@@ -5,6 +5,16 @@ String getFileExtension(File file) {
   return fileName.split(".").last;
 }
 
-Future deleteIfExist(File file) async {
-  if (await file.exists()) await file.delete();
+String getFileDir(String path) {
+  final index = path.lastIndexOf(RegExp("\/|\\\\"));
+  if (index == -1) {
+    return "";
+  } else {
+    return path.substring(0, index );
+  }
+}
+
+File fileFromPath(String directory, String path) {
+  return File((directory + Platform.pathSeparator + path)
+      .replaceAll(RegExp("\/|\\\\"), Platform.pathSeparator));
 }

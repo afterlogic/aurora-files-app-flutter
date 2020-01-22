@@ -3,7 +3,11 @@ import 'dart:io';
 import '../lib/build_variant.dart';
 
 main(List<String> args) async {
-  String variable = "build_variant.yaml";
+  String variable;
+
+  if (args.isNotEmpty) {
+    variable = args.first;
+  }
 
   await buildVariant(
     Directory.current,

@@ -8,7 +8,7 @@ void main() {
   test('main test', () async {
     await buildVariant(
       Directory.current.parent,
-      "variable.yaml",
+      null,
     );
   });
 }

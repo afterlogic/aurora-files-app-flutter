@@ -1,37 +1,40 @@
+import 'package:build_variant/src/mask.dart';
 import 'package:yaml/yaml.dart';
 
+import 'exception/variable_not_found.dart';
+
 class VariableMap {
-  final List<Variable<bool>> boolVariable = [];
-  final List<Variable<num>> numVariable = [];
-  final List<Variable<String>> stringVariable = [];
-  final List<Variable<List>> listVariable = [];
-  final List<Variable<dynamic>> otherVariable = [];
+  final List<Variable> variables = [];
+
+  List<Variable> get boolVariable =>
+      variables.where((item) => item is Variable<bool>).toList();
+
+  List<Variable> get numVariable =>
+      variables.where((item) => item is Variable<num>).toList();
+
+  List<Variable> get stringVariable =>
+      variables.where((item) => item is Variable<String>).toList();
+
+  List<Variable> get listVariable =>
+      variables.where((item) => item is Variable<List>).toList();
+
+  List<Variable> get publicVariable =>
+      variables.where((item) => item.isPublic).toList();
 
   VariableMap();
 
   add(String key, value) {
     if (value is bool) {
-      boolVariable.add(Variable(key, value));
+      variables.add(Variable<bool>(key, value, this));
     } else if (value is num) {
-      numVariable.add(Variable(key, value));
+      variables.add(Variable<num>(key, value, this));
     } else if (value is String) {
-      stringVariable.add(Variable(key, value));
+      variables.add(Variable<String>(key, value, this));
     } else if (value is List) {
-      listVariable.add(Variable(key, value));
+      variables.add(Variable<List>(key, value, this));
     } else {
-      otherVariable.add(Variable(key, value));
+      variables.add(Variable(key, value, this));
     }
-  }
-
-  List<Variable> getPublic() {
-    final outList = <Variable>[];
-
-    outList.addAll(boolVariable.where((item) => item.isPublic));
-    outList.addAll(numVariable.where((item) => item.isPublic));
-    outList.addAll(stringVariable.where((item) => item.isPublic));
-    outList.addAll(otherVariable.where((item) => item.isPublic));
-
-    return outList;
   }
 
   static VariableMap fromMap(YamlMap map) {
@@ -41,18 +44,60 @@ class VariableMap {
     });
     return variableMap;
   }
+
+  merge(VariableMap variableMap) {
+    final to = this.variables;
+    final from = variableMap.variables;
+    for (var variable in from) {
+      final index = to.indexWhere((item) => variable.key == item.key);
+      if (index != -1) {
+        to.removeAt(index);
+      }
+      variable.parent = this;
+      to.add(variable);
+    }
+  }
 }
 
 class Variable<T> {
+  VariableMap parent;
   final bool isPublic;
   final T value;
   final String key;
 
-  Variable(String key, T value)
+  Variable(String key, T value, this.parent)
       : value = value,
         key = key,
         isPublic = !key.startsWith("_");
 
-  String get valueString =>
-      value is num || value is bool ? "$value" : "\"$value\"";
+  T get formatValue {
+    if (value is num || value is bool) {
+      return value;
+    }
+    if (value is String) {
+      return Mask.replaceVariable(
+        value as String,
+        parent,
+        (variableKey) => throw VariableNotFound.inVariable(variableKey, key),
+      ) as T;
+    }
+    if (value is List) {
+      return (value as List).map((item) {
+        if (item is String) {
+          return Mask.replaceVariable(
+            item,
+            parent,
+            (variableKey) =>
+                throw VariableNotFound.inVariable(variableKey, key),
+          );
+        } else {
+          return item;
+        }
+      }).toList() as T;
+    }
+    return value;
+  }
+
+  String get textValue =>
+      value is num || value is bool ? "$value" : "\"$formatValue\"";
 }

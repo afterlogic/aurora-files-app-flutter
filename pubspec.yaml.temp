@@ -15,8 +15,10 @@ dependencies:
 
   secure_sharing:
     path: modules/secure_sharing/secure_sharing
+  # if : secureSharingEnable
   secure_sharing_impl:
     path: modules/secure_sharing/secure_sharing_impl
+  # end : if
 
   flutter_cupertino_localizations:
 
@@ -133,7 +135,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
 
 
 

@@ -93,10 +93,15 @@ dev_dependencies:
   moor_generator: ^1.6.0+2
   build_variant:
     path: build_variant
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+  flutter_launcher_icons: ^0.7.4
 
-# The following section is specific to Flutter.
+flutter_icons:
+  ios: true
+  android: true
+  image_path: {{icon}}
+  adaptive_icon_background: "{{_background_color}}"
+  adaptive_icon_foreground: {{_foreground_icon}}
+
 flutter:
 
   # The following line ensures that the Material Icons font is

@@ -1,9 +1,3 @@
-#config
-_files:
-  - pubspec.yaml.temp
-  - lib/di/di.dart.temp
-_buildPropertyPath: lib/build_const.dart
-
 #variables
 secureSharingEnable: true
 icon: "{{_dir}}/icon.png"

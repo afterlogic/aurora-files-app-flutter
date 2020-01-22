@@ -13,6 +13,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  secure_sharing:
+    path: modules/secure_sharing/secure_sharing
+  # if : secureSharingEnable
+  secure_sharing_impl:
+    path: modules/secure_sharing/secure_sharing_impl
+  # end : if
+
   flutter_cupertino_localizations:
 
   meta:
@@ -84,7 +91,8 @@ dev_dependencies:
   mobx_codegen: ^0.3.3+1
   chopper_generator: ^3.0.0
   moor_generator: ^1.6.0+2
-
+  build_variant:
+    path: build_variant
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -127,3 +135,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+

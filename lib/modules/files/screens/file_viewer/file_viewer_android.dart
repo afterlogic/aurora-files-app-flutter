@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/build_const.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -10,11 +11,6 @@ import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
-import 'package:aurorafiles/modules/files/dialogs/secure_sharing/link_option.dart';
-import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_encrypt_method.dart';
-import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
-import 'package:aurorafiles/modules/files/dialogs/secure_sharing/share_link.dart';
-import 'package:aurorafiles/modules/files/dialogs/secure_sharing/encrypted_share_link.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
@@ -26,13 +22,13 @@ import 'package:aurorafiles/shared_ui/asset_icon.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
-import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:secure_sharing/secure_sharing.dart';
 
 import 'components/image_viewer.dart';
 import 'components/info_list_tile.dart';
@@ -58,7 +54,7 @@ class FileViewerAndroid extends StatefulWidget {
 
 class _FileViewerAndroidState extends State<FileViewerAndroid> {
   final _fileViewerScaffoldKey = GlobalKey<ScaffoldState>();
-
+  SecureSharing secureSharing = DI.get();
   final _fileViewerState = FileViewerState();
   S s;
   LocalFile _file;
@@ -310,100 +306,47 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     if (widget.filesState.selectedStorage.type == "encrypted") {
       return _prepareShareFile(_secureEncryptSharing);
     }
-    final prepareForShare = PreparedForShare(null, _file);
+    final preparedForShare = PreparedForShare(null, _file);
     final pgpKeyUtil = PgpKeyUtil(DI.get(), DI.get());
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
-    bool usePassword = true;
-
-    if (!prepareForShare.localFile.published) {
-      usePassword = await openDialog(
-        context,
-        (context) => LinkOptionWidget(),
-      );
-    }
-
-    RecipientWithKey selectRecipientResult;
-    if (usePassword != null) {
-      while (true) {
-        final needRecipient = await openDialog(
-          context,
-          (context) => ShareLink(
-            userPrivateKey,
-            userPublicKey,
-            usePassword,
-            prepareForShare,
-            selectRecipientResult,
-            widget.filesState,
-            _fileViewerState,
-            pgpKeyUtil,
-          ),
-        );
-
-        if (needRecipient == null) {
-          break;
-        }
-
-        selectRecipientResult = await openDialog(
-          context,
-          (context) => SelectRecipient(_fileViewerState,s.send_public_link_to),
-        );
-        if (selectRecipientResult == null) {
-          break;
-        }
-      }
-    }
-    _file = prepareForShare.localFile;
+    await secureSharing.sharing(
+      context,
+      widget.filesState,
+      _fileViewerState,
+      userPrivateKey,
+      userPublicKey,
+      pgpKeyUtil,
+      preparedForShare,
+      s,
+    );
+    _file = preparedForShare.localFile;
     await widget.filesState
-        .updateFile(getCompanionFromLocalFile(prepareForShare.localFile));
+        .updateFile(getCompanionFromLocalFile(preparedForShare.localFile));
     setState(() {});
   }
 
-  _secureEncryptSharing(PreparedForShare prepareForShare) async {
+  _secureEncryptSharing(PreparedForShare preparedForShare) async {
     final pgpKeyUtil = PgpKeyUtil(DI.get(), DI.get());
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
-    final selectRecipientResult = await openDialog(
+    secureSharing.encryptSharing(
       context,
-      (context) => SelectRecipient(_fileViewerState,s.secure_sharing),
-    );
-
-    if (selectRecipientResult is RecipientWithKey) {
-      final selectEncryptMethodResult = await openDialog(
-        context,
-        (context) => SelectEncryptMethod(
-          userPrivateKey,
-          selectRecipientResult.recipient,
-          selectRecipientResult.pgpKey,
-          pgpKeyUtil,
-        ),
-      );
-      if (selectEncryptMethodResult is SelectEncryptMethodResult) {
-        await openDialog(
-          context,
-          (context) => EncryptedShareLink(
-            _fileViewerState,
-            userPrivateKey,
-            userPublicKey,
-            prepareForShare,
-            selectRecipientResult.recipient,
-            selectRecipientResult.pgpKey,
-            selectEncryptMethodResult.useKey,
-            selectEncryptMethodResult.useSign,
-            selectEncryptMethodResult.password,
-            DI.get(),
-            () {
-              widget.filesPageState.onGetFiles(
-                showLoading: FilesLoadingType.filesVisible,
-              );
-            },
-            true,
-            widget.filesState,
-          ),
+      widget.filesState,
+      _fileViewerState,
+      userPrivateKey,
+      userPublicKey,
+      pgpKeyUtil,
+      preparedForShare,
+      () {
+        widget.filesPageState.onGetFiles(
+          showLoading: FilesLoadingType.filesVisible,
         );
-      }
-    }
-    _file = prepareForShare.localFile;
+      },
+      DI.get(),
+      s,
+    );
+    _file = preparedForShare.localFile;
     setState(() {});
   }
 
@@ -483,7 +426,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ),
                 ]
               : [
-                  if (enablePgp)
+                  if (BuildProperty.secureSharingEnable)
                     IconButton(
                       icon: AssetIcon(
                         "lib/assets/svg/insert_link.svg",
@@ -556,7 +499,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 label: s.location,
                 content: _file.path == "" ? "/" : _file.path),
             InfoListTile(label: s.owner, content: _file.owner),
-            if (!widget.filesState.isOfflineMode && useCommonLinkShare)
+            if (!widget.filesState.isOfflineMode &&
+                !BuildProperty.secureSharingEnable)
               PublicLinkSwitch(
                 file: _file,
                 isFileViewer: true,

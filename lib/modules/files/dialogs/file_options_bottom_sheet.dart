@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
@@ -13,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import '../../../build_const.dart';
 import 'delete_confirmation_dialog.dart';
 import 'rename_dialog_android.dart';
 import 'share_dialog.dart';
@@ -98,7 +98,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             children: <Widget>[
               if (widget.file.initVector == null &&
                   !offline &&
-                  useCommonLinkShare)
+                  !BuildProperty.secureSharingEnable)
                 PublicLinkSwitch(
                   file: widget.file,
                   filesState: widget.filesState,

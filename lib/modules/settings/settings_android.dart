@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -12,6 +10,8 @@ import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../../build_const.dart';
 
 class SettingsAndroid extends StatefulWidget {
   @override
@@ -42,7 +42,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               leading: Icon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
             ),
-            if (enablePgp)
+            if (BuildProperty.secureSharingEnable)
               ListTile(
                 title: Text(s.openPGP),
                 leading: Icon(MdiIcons.key),

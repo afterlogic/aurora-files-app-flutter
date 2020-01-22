@@ -1,0 +1,8 @@
+#config
+_files:
+  - pubspec.yaml
+  - lib/di/di.dart
+_buildPropertyPath: lib/build_const.dart
+
+#variables
+secureSharingEnable: true

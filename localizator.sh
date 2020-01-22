@@ -1,0 +1,1 @@
+flutter pub run localizator generate -from res/values -to lib/generated/string -baseLocale en

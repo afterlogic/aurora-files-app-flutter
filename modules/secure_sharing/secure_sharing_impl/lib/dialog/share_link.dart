@@ -1,20 +1,19 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:aurorafiles/utils/case_util.dart';
+
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
-import 'package:aurorafiles/modules/files/dialogs/secure_sharing/select_recipient.dart';
-import 'package:aurorafiles/modules/files/dialogs/secure_sharing/encrypted_share_link.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
+import 'package:aurorafiles/utils/case_util.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
@@ -22,6 +21,9 @@ import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'encrypted_share_link.dart';
+import 'select_recipient.dart';
 
 class ShareLink extends StatefulWidget {
   final LocalPgpKey userPrivateKey;
@@ -321,7 +323,7 @@ class _ShareLinkState extends State<ShareLink> {
                                                 s.email.firstCharTo(false))
                                             : useSign
                                                 ? s.email_signed
-                                                    : s.email_not_signed,
+                                                : s.email_not_signed,
                                     style: theme.textTheme.caption,
                                   ),
                                   SizedBox(height: 10),

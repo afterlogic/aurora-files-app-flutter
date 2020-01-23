@@ -7,6 +7,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:share_extend/share_extend.dart';
 
 part 'settings_state.g.dart';
 
@@ -49,7 +50,7 @@ abstract class _SettingsState with Store {
         selectedKeyName = null;
       }
       return true;
-    } catch(err) {
+    } catch (err) {
       print("getUserEncryptionKeys ERRORR: $err");
       selectedKeyName = null;
       return true;
@@ -94,7 +95,8 @@ abstract class _SettingsState with Store {
     }
   }
 
-  Future<void> onImportKeyFromFile({Function() onSuccess, Function(String) onError}) async {
+  Future<void> onImportKeyFromFile(
+      {Function() onSuccess, Function(String) onError}) async {
     try {
       final Map<String, String> encryptionKeyFromFile =
           await _settingsLocal.importKeyFromFile();
@@ -115,14 +117,17 @@ abstract class _SettingsState with Store {
     }
   }
 
+  onShareEncryptionKey() {
+    ShareExtend.share(encryptionKeys[selectedKeyName], "text");
+  }
+
   Future<void> onExportEncryptionKey({
-    String name,
     Function(String) onSuccess,
     Function(String) onError,
   }) async {
     String exportedFileDir;
     try {
-      final keyName = name == null ? selectedKeyName : name;
+      final keyName = selectedKeyName;
       exportedFileDir =
           await _settingsLocal.exportKey(keyName, encryptionKeys[keyName]);
       if (exportedFileDir == null) {

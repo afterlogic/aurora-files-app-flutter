@@ -33,7 +33,7 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
                 context, DeleteKeyConfirmationDialogResult.cancel),
           ),
           CupertinoButton(
-            child: Text(s.export),
+            child: Text(s.download),
             onPressed: () {
               Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
             },
@@ -62,7 +62,7 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
                 context, DeleteKeyConfirmationDialogResult.cancel),
           ),
           FlatButton(
-            child: Text(s.export.toUpperCase()),
+            child: Text(s.download.toUpperCase()),
             onPressed: () {
               Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
             },

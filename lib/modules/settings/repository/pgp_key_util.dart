@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PgpKeyUtil {
@@ -26,18 +26,22 @@ class PgpKeyUtil {
       final description = await pgp.getKeyDescription(key);
 
       for (String email in description.email) {
-        final groups = RegExp("(?:\\D|\\d)*<((?:\\D|\\d)*)>").firstMatch(email);
+        final groups = RegExp("(\\D|\\d)*<((?:\\D|\\d)*)>").firstMatch(email);
         String validEmail;
-        if (groups.groupCount == 1) {
-          validEmail = groups.group(1);
+        String name = "";
+        if (groups?.groupCount == 2) {
+          name = groups.group(1);
+          validEmail = groups.group(2);
         } else {
           validEmail = email;
         }
         final localPgpKey = LocalPgpKey(
-            email: validEmail,
-            key: key,
-            isPrivate: description.isPrivate,
-            length: description.length);
+          email: validEmail,
+          key: key,
+          isPrivate: description.isPrivate,
+          length: description.length,
+          name: name,
+        );
 
         localKeys.add(localPgpKey);
       }
@@ -49,6 +53,7 @@ class PgpKeyUtil {
   Future<LocalPgpKey> userPrivateKey() {
     return pgpKeyDao.getKey(AppStore.authState.userEmail, true);
   }
+
   Future<LocalPgpKey> userPublicKey() {
     return pgpKeyDao.getKey(AppStore.authState.userEmail, false);
   }
@@ -81,15 +86,17 @@ class PgpKeyUtil {
   }
 
   Future<String> keysFolder() async {
-    final Directory dir =
-        (await getExternalStorageDirectories(type: StorageDirectory.downloads))
-            .first;
+    final Directory dir = await getDownloadDirectory();
     return dir.path + pgpKeyPath;
   }
 
-  Future<File> downloadKey(LocalPgpKey key, [String addedPath = ""]) async {
+  Future<File> downloadKey(LocalPgpKey key) async {
     if (!Platform.isIOS) await getStoragePermissions();
-    final file = File(await keysFolder() + addedPath + key.email + ".asc");
+
+    final file = File(await keysFolder() +
+        Platform.pathSeparator +
+        "${key.name ?? ""} ${key.email} PGP ${key.isPrivate ? "private" : "public"} key" +
+        ".asc");
     if (await file.exists()) {
       await file.delete();
     }
@@ -98,15 +105,18 @@ class PgpKeyUtil {
     return file;
   }
 
-  Future<File> downloadKeys(List<LocalPgpKey> keys,
-      [String addedPath = ""]) async {
+  Future<File> downloadPublicKeys(List<LocalPgpKey> keys) async {
+    final publicKeys = keys.where((item) => !item.isPrivate);
     if (!Platform.isIOS) await getStoragePermissions();
-    final file = File(await keysFolder() + addedPath + "export_keys" + ".asc");
+    final file = File(await keysFolder() +
+        Platform.pathSeparator +
+        "PGP public keys" +
+        ".asc");
     if (await file.exists()) {
       await file.delete();
     }
     await file.create(recursive: true);
-    for (LocalPgpKey key in keys) {
+    for (LocalPgpKey key in publicKeys) {
       await file.writeAsString(key.key, mode: FileMode.append);
     }
     return file;
@@ -125,7 +135,7 @@ class PgpKeyUtil {
     return pgp.checkPassword(password, pgpKey);
   }
 
-  static const pgpKeyPath = "/pgp_keys/";
+  static const pgpKeyPath = "/pgp_keys";
   static const keyStart = "-----BEGIN PGP \\w* KEY BLOCK-----";
   static const keyEnd = "-----END PGP \\w* KEY BLOCK-----";
 

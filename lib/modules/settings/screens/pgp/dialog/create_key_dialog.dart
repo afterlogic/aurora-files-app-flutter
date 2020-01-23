@@ -23,9 +23,8 @@ class CreateKeyDialog extends StatefulWidget {
 
 class _CreateKeyDialogState extends State<CreateKeyDialog> {
   final _emailController =
-  TextEditingController(text: AppStore.authState.userEmail);
-  final _lengthController =
-   TextEditingController(text: lengths[1].toString());
+      TextEditingController(text: AppStore.authState.userEmail);
+  final _lengthController = TextEditingController(text: lengths[1].toString());
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   S s;
@@ -50,7 +49,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
               CupertinoTextField(
                 enabled: false,
                 prefix: Padding(
-                  padding: const EdgeInsets.only(left:8.0),
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Text("${s.email}:"),
                 ),
                 controller: _emailController,
@@ -60,14 +59,14 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
               CupertinoTextField(
                 autofocus: true,
                 prefix: Padding(
-                  padding: const EdgeInsets.only(left:8.0),
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Text("${s.password}:"),
                 ),
                 suffix: GestureDetector(
-                  child:
-                  Padding(
-                    padding: const EdgeInsets.only(right:8.0),
-                    child: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Icon(
+                        _obscure ? Icons.visibility : Icons.visibility_off),
                   ),
                   onTap: () {
                     _obscure = !_obscure;
@@ -88,16 +87,15 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                         return CupertinoActionSheet(
                             title: Text(s.select_length),
                             actions: lengths
-                                .map((length) =>
-                                CupertinoActionSheetAction(
-                                  onPressed: () =>
-                                      Navigator.pop(context, length),
-                                  child: Text(length.toString()),
-                                ))
+                                .map((length) => CupertinoActionSheetAction(
+                                      onPressed: () =>
+                                          Navigator.pop(context, length),
+                                      child: Text(length.toString()),
+                                    ))
                                 .toList());
                       }).then((result) {
                     if (result is int) {
-                      _lengthController.text=result.toString();
+                      _lengthController.text = result.toString();
                       length = result;
                       setState(() {});
                     }
@@ -106,7 +104,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                 child: CupertinoTextField(
                   enabled: false,
                   prefix: Text(" ${s.length}: "),
-                  controller:_lengthController,
+                  controller: _lengthController,
                 ),
               ),
               SizedBox(height: 10),
@@ -185,9 +183,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                       }).toList(),
                       onChanged: (v) {
                         length = v;
-                        setState(() {
-
-                        });
+                        setState(() {});
                       },
                     ),
                   ],
@@ -239,7 +235,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     if (hasKey) {
       final result = await openDialog(
         context,
-            (_) => ConfirmDeleteKeyWidget(s.already_have_key),
+        (_) => ConfirmDeleteKeyWidget(s.already_have_key),
       );
       if (result != true) {
         return;
@@ -248,7 +244,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     }
 
     final future = widget.pgpKeyUtil.createKeys(length, email, password);
-    Navigator.pop(context, CreateKeyResult(email, length, future, hasKey));
+    Navigator.pop(context, CreateKeyResult(email, length, future, hasKey,""));
   }
 
   _pop() {
@@ -258,9 +254,11 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
 
 class CreateKeyResult {
   final String email;
+  final String name;
   final int length;
   final Future<KeyPair> keyBuilder;
   final bool needUpdate;
 
-  CreateKeyResult(this.email, this.length, this.keyBuilder, this.needUpdate);
+  CreateKeyResult(
+      this.email, this.length, this.keyBuilder, this.needUpdate, this.name);
 }

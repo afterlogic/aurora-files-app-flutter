@@ -14,4 +14,6 @@ class PgpKey extends Table {
   BoolColumn get isPrivate => boolean()();
 
   IntColumn get length => integer().nullable()();
+
+  TextColumn get name => text()();
 }

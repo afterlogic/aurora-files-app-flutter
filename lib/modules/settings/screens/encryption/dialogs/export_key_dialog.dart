@@ -29,36 +29,34 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
         title: Text(widget.settingsState.selectedKeyName),
         content: _isExporting
             ? Row(
-          children: <Widget>[
-            CupertinoActivityIndicator(),
-            SizedBox(width: 20.0),
-            Text(s.export_key_progress)
-          ],
-        )
-            : Text(s.export_confirm),
+                children: <Widget>[
+                  CupertinoActivityIndicator(),
+                  SizedBox(width: 20.0),
+                  Text(s.download_key_progress)
+                ],
+              )
+            : Text(s.download_confirm),
         actions: <Widget>[
           CupertinoButton(
-              child: Text(s.cancel), onPressed: Navigator
-              .of(context)
-              .pop),
+              child: Text(s.cancel), onPressed: Navigator.of(context).pop),
           CupertinoButton(
-            child: Text(s.export),
+            child: Text(s.download),
             onPressed: _isExporting
                 ? null
                 : () {
-              setState(() => _isExporting = true);
-              widget.settingsState.onExportEncryptionKey(
-                onSuccess: (String exportedDir) =>
-                    Navigator.pop(context, exportedDir),
-                onError: (String err) {
-                  Navigator.pop(context);
-                  showSnack(
-                      context: context,
-                      scaffoldState: widget.scaffoldState,
-                      msg: err);
-                },
-              );
-            },
+                    setState(() => _isExporting = true);
+                    widget.settingsState.onExportEncryptionKey(
+                      onSuccess: (String exportedDir) =>
+                          Navigator.pop(context, exportedDir),
+                      onError: (String err) {
+                        Navigator.pop(context);
+                        showSnack(
+                            context: context,
+                            scaffoldState: widget.scaffoldState,
+                            msg: err);
+                      },
+                    );
+                  },
           )
         ],
       );
@@ -67,36 +65,35 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
         title: Text(widget.settingsState.selectedKeyName),
         content: _isExporting
             ? Row(
-          children: <Widget>[
-            CircularProgressIndicator(),
-            SizedBox(width: 20.0),
-            Text(s.export_key_progress)
-          ],
-        )
-            : Text(s.export_confirm),
+                children: <Widget>[
+                  CircularProgressIndicator(),
+                  SizedBox(width: 20.0),
+                  Text(s.download_key_progress)
+                ],
+              )
+            : Text(s.download_confirm),
         actions: <Widget>[
           FlatButton(
-              child: Text(s.cancel.toUpperCase()), onPressed: Navigator
-              .of(context)
-              .pop),
+              child: Text(s.cancel.toUpperCase()),
+              onPressed: Navigator.of(context).pop),
           FlatButton(
-            child: Text(s.export.toUpperCase()),
+            child: Text(s.download.toUpperCase()),
             onPressed: _isExporting
                 ? null
                 : () {
-              setState(() => _isExporting = true);
-              widget.settingsState.onExportEncryptionKey(
-                onSuccess: (String exportedDir) =>
-                    Navigator.pop(context, exportedDir),
-                onError: (String err) {
-                  Navigator.pop(context);
-                  showSnack(
-                      context: context,
-                      scaffoldState: widget.scaffoldState,
-                      msg: err);
-                },
-              );
-            },
+                    setState(() => _isExporting = true);
+                    widget.settingsState.onExportEncryptionKey(
+                      onSuccess: (String exportedDir) =>
+                          Navigator.pop(context, exportedDir),
+                      onError: (String err) {
+                        Navigator.pop(context);
+                        showSnack(
+                            context: context,
+                            scaffoldState: widget.scaffoldState,
+                            msg: err);
+                      },
+                    );
+                  },
           )
         ],
       );

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
@@ -66,11 +68,12 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
                       text: s.share.toUpperCase(),
                       onPressed: share,
                     ),
-                    AppButton(
-                      width: double.infinity,
-                      text: s.download.toUpperCase(),
-                      onPressed: download,
-                    ),
+                    if (!Platform.isIOS)
+                      AppButton(
+                        width: double.infinity,
+                        text: s.download.toUpperCase(),
+                        onPressed: download,
+                      ),
                     AppButton(
                       width: double.infinity,
                       text: s.delete.toUpperCase(),
@@ -103,11 +106,10 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
 
   delete() async {
     final result = await openDialog(
-        context,
-          (_) {
+      context,
+      (_) {
         return ConfirmDeleteKeyWidget(
-            s.confirm_delete_pgp_key(widget._pgpKey.email)
-        );
+            s.confirm_delete_pgp_key(widget._pgpKey.email));
       },
     );
     if (result == true) {

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:encrypt/encrypt.dart';
@@ -21,9 +22,7 @@ class SettingsLocalStorage {
 
   Future<String> exportKey(String keyName, String encryptionKey) async {
     await getStoragePermissions();
-    Directory dir =
-        (await getExternalStorageDirectories(type: StorageDirectory.downloads))
-            .first;
+    Directory dir = await getDownloadDirectory();
     if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
     if (!dir.existsSync())
       throw CustomException("Could not resolve save directory");
@@ -32,7 +31,7 @@ class SettingsLocalStorage {
 
     final String filePath = dir.path +
         (dir.path.endsWith("/") ? "" : "/") +
-        "$formattedKeyName.txt";
+        "$formattedKeyName key.txt";
 
     final exportedTextFile = new File(filePath);
     await exportedTextFile.create(recursive: true);
@@ -69,7 +68,9 @@ class SettingsLocalStorage {
     // return key names without owner's prefix
     final Map<String, String> userKeys = new Map();
     encryptionKeys.keys.forEach((nameWithOwner) {
-      if (nameWithOwner.startsWith(_getNameWithOwner())&&!nameWithOwner.endsWith("false")&&!nameWithOwner.endsWith("true")) {
+      if (nameWithOwner.startsWith(_getNameWithOwner()) &&
+          !nameWithOwner.endsWith("false") &&
+          !nameWithOwner.endsWith("true")) {
         // remove owner's email
         final keyName = nameWithOwner.substring(_getNameWithOwner().length);
         userKeys[keyName] = encryptionKeys[nameWithOwner];

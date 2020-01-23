@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
@@ -19,13 +21,13 @@ class ExportPgpKeyWidget extends StatefulWidget {
 class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   S s;
+
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
     var keysText = "";
     for (LocalPgpKey key in widget._pgpKeys) {
-      if(key.key!=null)
-      keysText += key.key + "\n\n";
+      if (key.key != null) keysText += key.key + "\n\n";
     }
     return Scaffold(
       key: _scaffoldKey,
@@ -63,11 +65,12 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
                       text: s.send_all.toUpperCase(),
                       onPressed: () => share(keysText),
                     ),
-                    AppButton(
-                      width: double.infinity,
-                      text: s.download_all.toUpperCase(),
-                      onPressed: download,
-                    ),
+                    if (!Platform.isIOS)
+                      AppButton(
+                        width: double.infinity,
+                        text: s.download_all.toUpperCase(),
+                        onPressed: download,
+                      ),
                   ],
                 ),
               ),
@@ -83,7 +86,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   }
 
   download() async {
-    final result = await widget._pgpKeyUtil.downloadKeys(widget._pgpKeys);
+    final result = await widget._pgpKeyUtil.downloadPublicKeys(widget._pgpKeys);
 
     showSnack(
       context: context,

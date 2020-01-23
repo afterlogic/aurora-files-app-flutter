@@ -1237,12 +1237,14 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   final String key;
   final bool isPrivate;
   final int length;
+  final String name;
   LocalPgpKey(
       {@required this.id,
       @required this.email,
       @required this.key,
       @required this.isPrivate,
-      this.length});
+      this.length,
+      @required this.name});
   factory LocalPgpKey.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1257,6 +1259,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
       isPrivate: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_private']),
       length: intType.mapFromDatabaseResponse(data['${effectivePrefix}length']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
     );
   }
   factory LocalPgpKey.fromJson(Map<String, dynamic> json,
@@ -1267,6 +1270,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
       key: serializer.fromJson<String>(json['key']),
       isPrivate: serializer.fromJson<bool>(json['isPrivate']),
       length: serializer.fromJson<int>(json['length']),
+      name: serializer.fromJson<String>(json['name']),
     );
   }
   @override
@@ -1278,6 +1282,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
       'key': serializer.toJson<String>(key),
       'isPrivate': serializer.toJson<bool>(isPrivate),
       'length': serializer.toJson<int>(length),
+      'name': serializer.toJson<String>(name),
     };
   }
 
@@ -1293,17 +1298,24 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
           : Value(isPrivate),
       length:
           length == null && nullToAbsent ? const Value.absent() : Value(length),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
     ) as T;
   }
 
   LocalPgpKey copyWith(
-          {int id, String email, String key, bool isPrivate, int length}) =>
+          {int id,
+          String email,
+          String key,
+          bool isPrivate,
+          int length,
+          String name}) =>
       LocalPgpKey(
         id: id ?? this.id,
         email: email ?? this.email,
         key: key ?? this.key,
         isPrivate: isPrivate ?? this.isPrivate,
         length: length ?? this.length,
+        name: name ?? this.name,
       );
   @override
   String toString() {
@@ -1312,7 +1324,8 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
           ..write('email: $email, ')
           ..write('key: $key, ')
           ..write('isPrivate: $isPrivate, ')
-          ..write('length: $length')
+          ..write('length: $length, ')
+          ..write('name: $name')
           ..write(')'))
         .toString();
   }
@@ -1320,8 +1333,12 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   @override
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
-      $mrjc(email.hashCode,
-          $mrjc(key.hashCode, $mrjc(isPrivate.hashCode, length.hashCode)))));
+      $mrjc(
+          email.hashCode,
+          $mrjc(
+              key.hashCode,
+              $mrjc(isPrivate.hashCode,
+                  $mrjc(length.hashCode, name.hashCode))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
@@ -1330,7 +1347,8 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
           other.email == email &&
           other.key == key &&
           other.isPrivate == isPrivate &&
-          other.length == length);
+          other.length == length &&
+          other.name == name);
 }
 
 class PgpKeyCompanion extends UpdateCompanion<LocalPgpKey> {
@@ -1339,25 +1357,29 @@ class PgpKeyCompanion extends UpdateCompanion<LocalPgpKey> {
   final Value<String> key;
   final Value<bool> isPrivate;
   final Value<int> length;
+  final Value<String> name;
   const PgpKeyCompanion({
     this.id = const Value.absent(),
     this.email = const Value.absent(),
     this.key = const Value.absent(),
     this.isPrivate = const Value.absent(),
     this.length = const Value.absent(),
+    this.name = const Value.absent(),
   });
   PgpKeyCompanion copyWith(
       {Value<int> id,
       Value<String> email,
       Value<String> key,
       Value<bool> isPrivate,
-      Value<int> length}) {
+      Value<int> length,
+      Value<String> name}) {
     return PgpKeyCompanion(
       id: id ?? this.id,
       email: email ?? this.email,
       key: key ?? this.key,
       isPrivate: isPrivate ?? this.isPrivate,
       length: length ?? this.length,
+      name: name ?? this.name,
     );
   }
 }
@@ -1423,8 +1445,21 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
     );
   }
 
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
   @override
-  List<GeneratedColumn> get $columns => [id, email, key, isPrivate, length];
+  GeneratedTextColumn get name => _name ??= _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn(
+      'name',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, email, key, isPrivate, length, name];
   @override
   $PgpKeyTable get asDslTable => this;
   @override
@@ -1463,6 +1498,12 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
     } else if (length.isRequired && isInserting) {
       context.missing(_lengthMeta);
     }
+    if (d.name.present) {
+      context.handle(
+          _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
+    } else if (name.isRequired && isInserting) {
+      context.missing(_nameMeta);
+    }
     return context;
   }
 
@@ -1491,6 +1532,9 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
     }
     if (d.length.present) {
       map['length'] = Variable<int, IntType>(d.length.value);
+    }
+    if (d.name.present) {
+      map['name'] = Variable<String, StringType>(d.name.value);
     }
     return map;
   }

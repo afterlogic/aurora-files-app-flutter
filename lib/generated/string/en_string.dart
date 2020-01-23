@@ -34,7 +34,8 @@ class EnString extends S {
   final String delete_encryption_key_success =
       "The encryption key was successfully deleted.";
   final String delete_key = "Delete key";
-  final String export_key = "Export key";
+  final String share_key = "Share key";
+  final String download_key = "Download key";
   final String encryption_export_description =
       "To access encrypted files on other devices/browsers, export the key and then import it on another device/browser.";
   final String encryption_keys = "Encryption key:";
@@ -47,7 +48,7 @@ class EnString extends S {
   final String need_to_set_encryption_key =
       "To start using encryption of uploaded files your need to set any encryption key.";
   final String oK = "OK";
-  String key_exported_into(String dir) => "The key was exported into: $dir";
+  String key_downloaded_into(String dir) => "The key was downloaded into: $dir";
   final String import_key = "Import key";
   final String generate_key = "Generate key";
   final String add_key_progress = "Adding encryption key...";
@@ -57,10 +58,9 @@ class EnString extends S {
   final String generate = "Generate";
   final String delete_key_description =
       "Attention! You'll no longer be able to decrypt encrypted files on this device unless you import this key again.";
-  final String export = "Export";
   final String delete = "Delete";
-  final String export_key_progress = "Exporting the key...";
-  final String export_confirm = "Are you sure you want to export this key?";
+  final String download_key_progress = "Downloading the key...";
+  final String download_confirm = "Are you sure you want to download this key?";
   final String email = "Email";
   final String password = "Password";
   final String select_length = "Select length";

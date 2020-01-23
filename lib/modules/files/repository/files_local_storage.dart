@@ -7,6 +7,7 @@ import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:encrypt/encrypt.dart';
@@ -57,9 +58,7 @@ class FilesLocalStorage {
   Future<File> createFileForDownloadAndroid(LocalFile file) async {
     if (!Platform.isIOS) await getStoragePermissions();
 
-    final Directory dir =
-        (await getExternalStorageDirectories(type: StorageDirectory.downloads))
-            .first;
+    final Directory dir =await getDownloadDirectory();
     File dartFile = new File("${dir.path}/${file.name}");
 
     // if name exists add suffix (name_0.png)

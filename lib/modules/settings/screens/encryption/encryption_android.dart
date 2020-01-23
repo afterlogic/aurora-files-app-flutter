@@ -22,10 +22,15 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   final _settingsState = AppStore.settingsState;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   S s;
-  void _exportKey() async {
+
+  void _shareKey() async {
+    _settingsState.onShareEncryptionKey();
+  }
+
+  void _downloadKey() async {
     var exportedDir;
     if (Platform.isIOS) {
-      exportedDir =  await showCupertinoDialog(
+      exportedDir = await showCupertinoDialog(
           context: context,
           builder: (_) => ExportKeyDialog(
                 settingsState: _settingsState,
@@ -43,7 +48,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       showSnack(
           context: context,
           scaffoldState: _scaffoldKey.currentState,
-          msg: s.key_exported_into(exportedDir),
+          msg: s.key_downloaded_into(exportedDir),
           isError: false,
           duration: Duration(minutes: 10),
           action: SnackBarAction(
@@ -100,7 +105,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
                 onError: (err) => showSnack(
                       context: context,
                       scaffoldState: _scaffoldKey.currentState,
-                  msg: s.key_not_found_in_file,
+                      msg: s.key_not_found_in_file,
                     )),
           ),
         ),
@@ -148,8 +153,14 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AppButton(text: s.export_key, onPressed: _exportKey),
+          child: AppButton(text: s.share_key, onPressed: _shareKey),
         ),
+        if (!Platform.isIOS)
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
+            child: AppButton(text: s.download_key, onPressed: _downloadKey),
+          ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
@@ -169,7 +180,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
                   isError: false,
                 );
               } else if (result == DeleteKeyConfirmationDialogResult.export) {
-                _exportKey();
+                _downloadKey();
               }
             },
           ),
@@ -215,10 +226,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
                 padding: EdgeInsets.all(16.0),
                 child: Text(
                   s.encryption_description,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .caption,
+                  style: Theme.of(context).textTheme.caption,
                 ),
               ),
               ..._buildAddingKey(),

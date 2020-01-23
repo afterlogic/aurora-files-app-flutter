@@ -29,7 +29,8 @@ abstract class S {
   String get encryption_description;
   String get delete_encryption_key_success;
   String get delete_key;
-  String get export_key;
+  String get share_key;
+  String get download_key;
   String get encryption_export_description;
   String get encryption_keys;
   String get generate_keys;
@@ -39,7 +40,7 @@ abstract class S {
   String get import_key_from_text;
   String get need_to_set_encryption_key;
   String get oK;
-  String key_exported_into(String dir);
+  String key_downloaded_into(String dir);
   String get import_key;
   String get generate_key;
   String get add_key_progress;
@@ -48,10 +49,9 @@ abstract class S {
   String get import;
   String get generate;
   String get delete_key_description;
-  String get export;
   String get delete;
-  String get export_key_progress;
-  String get export_confirm;
+  String get download_key_progress;
+  String get download_confirm;
   String get email;
   String get password;
   String get select_length;

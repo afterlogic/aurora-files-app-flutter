@@ -36,6 +36,11 @@ class AppDatabase extends _$AppDatabase {
                 await m.addColumn(files, files.linkPassword);
                 break;
               }
+            case 3:
+              {
+                await m.addColumn(pgpKey, pgpKey.name);
+                break;
+              }
           }
         }
       });
@@ -43,5 +48,5 @@ class AppDatabase extends _$AppDatabase {
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 }

@@ -99,7 +99,7 @@ flutter_icons:
   ios: true
   android: true
   image_path: {{icon}}
-  adaptive_icon_background: "{{_background_color}}"
+  adaptive_icon_background: {{_background_color}}
   adaptive_icon_foreground: {{_foreground_icon}}
 
 flutter:
@@ -113,6 +113,7 @@ flutter:
   assets:
     - lib/assets/images/
     - lib/assets/svg/
+    - {{icon}}
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

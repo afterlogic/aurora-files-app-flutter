@@ -147,6 +147,7 @@
   "go_offline": "Go offline",
   "no_results": "No results",
   "empty_here": "Empty here",
+  "upgrade_your_plan": "Mobile apps are not allowed in your billing plan.",
   "please_upgrade_your_plan": "Mobile apps are not allowed in your billing plan.\nPlease upgrade your plan.",
   "back_to_login": "Back to login",
   "please_enter_hostname": "Please enter hostname",

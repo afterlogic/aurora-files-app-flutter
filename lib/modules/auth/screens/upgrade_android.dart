@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
@@ -23,16 +25,17 @@ class UpgradeAndroid extends StatelessWidget {
                     tag: "logo",
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child:
-                      Image.asset("lib/assets/images/private-mail-logo.png"),
+                      child: Image.asset(
+                          "lib/assets/images/private-mail-logo.png"),
                     ),
                   ),
                   SizedBox(height: 90.0),
                   Text(
-                    s.please_upgrade_your_plan,
+                    Platform.isIOS
+                        ? s.upgrade_your_plan
+                        : s.please_upgrade_your_plan,
                     style: TextStyle(fontSize: 20.0),
                     textAlign: TextAlign.center,
-
                   ),
                   SizedBox(height: 70.0),
                   SizedBox(
@@ -40,13 +43,14 @@ class UpgradeAndroid extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        AppButton(
-                          text: s.upgrade_now,
-                          buttonColor: Theme.of(context).accentColor,
-                          textColor: Colors.white,
-                          onPressed: () => launch(
-                              "https://privatemail.com/members/clientarea.php?action=services"),
-                        ),
+                        if (!Platform.isIOS)
+                          AppButton(
+                            text: s.upgrade_now,
+                            buttonColor: Theme.of(context).accentColor,
+                            textColor: Colors.white,
+                            onPressed: () => launch(
+                                "https://privatemail.com/members/clientarea.php?action=services"),
+                          ),
                         SizedBox(height: 6.0),
                         AppButton(
                           text: s.back_to_login,

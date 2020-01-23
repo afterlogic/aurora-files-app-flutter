@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/build_const.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,7 +77,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
             child: SizedBox(
               width: 120.0,
               height: 120.0,
-              child: Image.asset("lib/assets/images/files-logo.png"),
+              child: Image.asset(BuildProperty.icon),
             ),
           ),
           SizedBox(height: 42.0),

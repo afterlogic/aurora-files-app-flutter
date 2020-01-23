@@ -96,9 +96,9 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path: private_mail/icon.png
+  image_path: build_res/afterlogic/icon.png
   adaptive_icon_background: "#34113C"
-  adaptive_icon_foreground: private_mail/icon_foreground.png
+  adaptive_icon_foreground: build_res/afterlogic/icon_foreground.png
 
 flutter:
 
@@ -111,6 +111,7 @@ flutter:
   assets:
     - lib/assets/images/
     - lib/assets/svg/
+    - build_res/afterlogic/icon.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

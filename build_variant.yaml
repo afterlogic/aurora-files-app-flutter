@@ -6,6 +6,7 @@ _buildPropertyPath: lib/build_const.dart
 
 #variables
 secureSharingEnable: true
-icon: "{{_dir}}/icon.png"
-_foreground_icon: "{{_dir}}/icon_foreground.png"
-_background_color: "#34113C"
+_base_dir: "build_res/afterlogic"
+icon: "{{_base_dir}}/icon.png"
+_foreground_icon: "{{_base_dir}}/icon_foreground.png"
+_background_color: "\"#34113C\""

@@ -34,7 +34,7 @@ class UpgradeAndroid extends StatelessWidget {
                     Platform.isIOS
                         ? s.upgrade_your_plan
                         : s.please_upgrade_your_plan,
-                    style: TextStyle(fontSize: 20.0),
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 70.0),
@@ -53,7 +53,7 @@ class UpgradeAndroid extends StatelessWidget {
                           ),
                         SizedBox(height: 6.0),
                         AppButton(
-                          text: s.back_to_login,
+                          text: s.cancel,
                           buttonColor: Color(0xFF54618d),
                           textColor: Colors.white,
                           onPressed: () => Navigator.of(context).pop(),

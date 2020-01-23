@@ -1,0 +1,5 @@
+#variables
+secureSharingEnable: true
+icon: "{{_dir}}/icon.png"
+_foreground_icon: "{{_dir}}/icon_foreground.png"
+_background_color: "\"#34113C\""

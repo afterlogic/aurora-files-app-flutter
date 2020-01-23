@@ -50,12 +50,21 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
                     child: Text(
                       s.two_factor_auth,
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.subhead.copyWith(fontSize: 20),
+                      style: theme.textTheme.subhead.copyWith(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   SizedBox(height: 40.0),
                   if (Platform.isIOS)
                     CupertinoTextField(
+                      style: TextStyle(color: Colors.white),
+                      cursorColor: Theme.of(context).accentColor,
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.white38))),
+                      placeholderStyle: TextStyle(color: Colors.white70),
                       placeholder: s.pin,
                       controller: pinCtrl,
                     ),

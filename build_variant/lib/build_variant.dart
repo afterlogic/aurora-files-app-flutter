@@ -28,7 +28,7 @@ buildVariant(
       orElse: () => null,
     );
 
-    variablePath ??= buildVariantPath.formatValue;
+    variablePath ??= buildVariantPath?.formatValue;
 
     final variableDir = variablePath != null ? getFileDir(variablePath) : "";
 

@@ -663,14 +663,14 @@ packages:
   secure_sharing:
     dependency: "direct main"
     description:
-      path: "modules\\secure_sharing\\secure_sharing"
+      path: "modules/secure_sharing/secure_sharing"
       relative: true
     source: path
     version: "0.0.1"
   secure_sharing_impl:
     dependency: "direct main"
     description:
-      path: "modules\\secure_sharing\\secure_sharing_impl"
+      path: "modules/secure_sharing/secure_sharing_impl"
       relative: true
     source: path
     version: "0.0.1"

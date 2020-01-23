@@ -150,6 +150,7 @@ abstract class S {
   String get go_offline;
   String get no_results;
   String get empty_here;
+  String get upgrade_your_plan;
   String get please_upgrade_your_plan;
   String get back_to_login;
   String get please_enter_hostname;

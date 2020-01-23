@@ -9,19 +9,28 @@ import 'src/parse_variable.dart';
 
 buildVariant(
   Directory directory,
-  String variablePath,
+  String _variablePath,
 ) async {
   try {
+    String variablePath = _variablePath;
     print("from: $variablePath\n");
 
     final List filesPath = [];
-    final variableDir = variablePath != null ? getFileDir(variablePath) : "";
 
     //variable
     final defaultVariableFile =
         fileFromPath(directory.path, "build_variant.yaml");
 
     VariableMap variableMap = await ParseVariable(defaultVariableFile).parse();
+
+    final buildVariantPath = variableMap.stringVariable.firstWhere(
+      (item) => item.key == "_build_variant",
+      orElse: () => null,
+    );
+
+    variablePath ??= buildVariantPath.formatValue;
+
+    final variableDir = variablePath != null ? getFileDir(variablePath) : "";
 
     variableMap.add("_dir", variableDir);
 

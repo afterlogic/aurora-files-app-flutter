@@ -176,6 +176,8 @@ class EnString extends S {
   final String go_offline = "Go offline";
   final String no_results = "No results";
   final String empty_here = "Empty here";
+  final String upgrade_your_plan =
+      "Mobile apps are not allowed in your billing plan.";
   final String please_upgrade_your_plan =
       "Mobile apps are not allowed in your billing plan.\nPlease upgrade your plan.";
   final String back_to_login = "Back to login";

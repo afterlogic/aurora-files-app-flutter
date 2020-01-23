@@ -39,7 +39,6 @@ class _FileWidgetState extends State<FileWidget> {
   double _progress;
   ProcessingFile _processingFile;
   S s;
-
   @override
   void initState() {
     super.initState();
@@ -48,6 +47,7 @@ class _FileWidgetState extends State<FileWidget> {
           .firstWhere((process) => process.guid == widget.file.guid);
       _subscribeToProgress(processingFile);
     } catch (err) {}
+
   }
 
   void _subscribeToProgress(ProcessingFile processingFile) {
@@ -197,8 +197,6 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _openFile(BuildContext context) {
-    final filesState = Provider.of<FilesState>(context);
-    final filesPageState = Provider.of<FilesPageState>(context);
     // TODO enable opening ZIP files for Aurora
     if (false && widget.file.isOpenable) {
       Navigator.pushNamed(
@@ -218,8 +216,8 @@ class _FileWidgetState extends State<FileWidget> {
           offlineFile: widget.file.localPath?.isNotEmpty == true
               ? new File(widget.file.localPath)
               : null,
-          filesState: filesState,
-          filesPageState: filesPageState,
+          filesState: _filesState,
+          filesPageState: _filesPageState,
         ),
       );
     }

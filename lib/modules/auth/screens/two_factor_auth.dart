@@ -78,16 +78,20 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
                     error,
                     style: TextStyle(color: Colors.red),
                   ),
-                  SizedBox(height: 40.0),
+                  SizedBox(height: 20.0),
                   AppButton(
                     isLoading: isProgress,
+                    buttonColor: Theme.of(context).accentColor,
+                    textColor: Colors.white,
                     width: double.infinity,
                     text: s.verify_pin,
                     onPressed: checkCode,
                   ),
+                  SizedBox(height: 20),
                   AppButton(
                     buttonColor: Color.fromARGB(255, 85, 97, 140),
                     width: double.infinity,
+                    textColor: Colors.white,
                     text: s.cancel,
                     onPressed: isProgress ? null : () => Navigator.pop(context),
                   )

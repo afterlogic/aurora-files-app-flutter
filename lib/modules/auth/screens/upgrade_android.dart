@@ -11,6 +11,7 @@ class UpgradeAndroid extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = Str.of(context);
     final mq = MediaQuery.of(context);
+    final theme = Theme.of(context);
     return Scaffold(
       body: MainGradient(
         child: SizedBox(
@@ -34,7 +35,10 @@ class UpgradeAndroid extends StatelessWidget {
                     Platform.isIOS
                         ? s.upgrade_your_plan
                         : s.please_upgrade_your_plan,
-                    style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    style: theme.textTheme.subhead.copyWith(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 70.0),
@@ -53,7 +57,7 @@ class UpgradeAndroid extends StatelessWidget {
                           ),
                         SizedBox(height: 6.0),
                         AppButton(
-                          text: s.cancel,
+                          text: s.back_to_login,
                           buttonColor: Color(0xFF54618d),
                           textColor: Colors.white,
                           onPressed: () => Navigator.of(context).pop(),

@@ -87,7 +87,6 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
                     text: s.verify_pin,
                     onPressed: checkCode,
                   ),
-                  SizedBox(height: 20),
                   AppButton(
                     buttonColor: Color.fromARGB(255, 85, 97, 140),
                     width: double.infinity,

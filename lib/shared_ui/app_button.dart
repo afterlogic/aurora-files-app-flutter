@@ -27,6 +27,7 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (Platform.isIOS) {
       return Container(
+        padding: EdgeInsets.symmetric(vertical: buttonColor != null ? 10 : 0),
         width: width,
         height: 55.0,
         child: CupertinoButton(

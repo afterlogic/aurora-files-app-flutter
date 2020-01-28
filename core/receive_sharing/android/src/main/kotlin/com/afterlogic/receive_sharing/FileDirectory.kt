@@ -39,10 +39,14 @@ object FileDirectory {
             } else if (isDownloadsDocument(uri)) {
 
                 val id = DocumentsContract.getDocumentId(uri)
-                val contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id))
+                try {
+                    val contentUri = ContentUris.withAppendedId(
+                            Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id))
 
-                return getDataColumn(context, contentUri, null, null)
+                    return getDataColumn(context, contentUri, null, null)
+                } catch (e: Throwable) {
+                    return id.split(":").last()
+                }
             } else if (isMediaDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -82,22 +86,26 @@ object FileDirectory {
     private fun getDataColumn(context: Context, uri: Uri, selection: String?,
                               selectionArgs: Array<String>?): String? {
 
-        if (uri.authority != null) {
-            val mimeType = context.contentResolver.getType(uri)
-            val isImage = mimeType?.startsWith("image") == true
-            val prefix = if (isImage) "IMG" else "VID"
-            val type = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
-            val targetFile = File(context.cacheDir, "${prefix}_${Date().time}.$type")
-            context.contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(targetFile).use { fileOut ->
-                    input.copyTo(fileOut)
+        try {
+            if (uri.authority != null) {
+                val mimeType = context.contentResolver.getType(uri)
+                val isImage = mimeType?.startsWith("image") == true
+                val prefix = if (isImage) "IMG" else "VID"
+                val type = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
+                val targetFile = File(context.cacheDir, "${prefix}_${Date().time}.$type")
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    FileOutputStream(targetFile).use { fileOut ->
+                        input.copyTo(fileOut)
+                    }
                 }
+                return targetFile.path
             }
-            return targetFile.path
+        } catch (e: Throwable) {
+
         }
 
         var cursor: Cursor? = null
-        val column = "_data"
+        val column = MediaStore.Images.Media.DATA
         val projection = arrayOf(column)
 
         try {

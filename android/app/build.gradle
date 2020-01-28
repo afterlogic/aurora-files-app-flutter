@@ -50,6 +50,7 @@ android {
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 //        setProperty("archivesBaseName", applicationId + "-v" + versionName  + "+" + versionCode)
+        //com.PrivateRouter.PrivateMailFiles-v1.0.0+19.apk
         multiDexEnabled true
     }
 

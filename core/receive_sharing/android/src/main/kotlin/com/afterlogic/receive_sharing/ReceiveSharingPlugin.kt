@@ -104,26 +104,48 @@ class ReceiveSharingPlugin(val registrar: Registrar) :
             if (intent.action == Intent.ACTION_SEND || intent.action == Intent.ACTION_SEND_MULTIPLE) {
                 val value = getMediaUris(context, intent)
                 latestMedia = value
-                eventSinkMedia?.success(latestMedia?.toString())
+                latestMedia?.let {
+                    eventSinkMedia?.success(it.toString())
+                }
             }
         } catch (e: Throwable) {
             e.printStackTrace()
         }
     }
 
-    private fun getMediaUris(context: Context, intent: Intent): JSONArray? {
+    private fun getTextJson(intent: Intent): JSONArray? {
+        var subject = intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: "text"
+        if (subject.isEmpty()) {
+            subject = "text"
+        }
+        val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: return null
+        return JSONArray().put(
+                JSONObject()
+                        .put("name", subject)
+                        .put("text", text)
+                        .put("type", MimeType.Text.ordinal)
+        )
+    }
 
-        val uris = intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)
-        val value = uris?.mapNotNull { uri ->
-            val path = FileDirectory.getAbsolutePath(context, uri) ?: return@mapNotNull null
-            val name = uri.path?.split("/")?.last() ?: ""
+    private fun getMediaUris(context: Context, intent: Intent): JSONArray? {
+        if (intent.type?.startsWith("text") == true) {
+            getTextJson(intent)?.let {
+                return it
+            }
+        }
+        val uri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+        val uris = intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM) ?: arrayListOf()
+        uri?.let { uris.add(it) }
+        val value = uris.mapNotNull { item ->
+            val path = FileDirectory.getAbsolutePath(context, item) ?: return@mapNotNull null
+            val name = path.split("/").last()
             val type = getMediaType(path)
-            return@mapNotNull JSONObject()
+            JSONObject()
                     .put("name", name)
                     .put("path", path)
                     .put("type", type.ordinal)
-        }?.toList()
-        return if (value != null) JSONArray(value) else null
+        }.toList()
+        return JSONArray(value)
     }
 
     private fun getMediaType(path: String?): MimeType {

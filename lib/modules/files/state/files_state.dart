@@ -154,9 +154,24 @@ abstract class _FilesState with Store {
   }) async {
     try {
       for (var item in filesToShareUpload) {
+        File file;
+        String name = item.name;
+
+        if (item.isText) {
+          name += ".txt";
+          final dir = await getTemporaryDirectory();
+          file = File(dir.path + Platform.pathSeparator + name);
+          if (await file.exists()) {
+            await file.delete();
+          }
+          await file.create();
+          await file.writeAsString(item.text);
+        } else {
+          file = File(item.path);
+        }
         await uploadFile(
-          file: File(item.path),
-          name: item.name,
+          file: file,
+          name: name,
           path: toPath,
           onUploadStart: (_) {},
           onSuccess: onSuccess,

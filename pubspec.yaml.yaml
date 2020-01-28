@@ -76,14 +76,14 @@ dependencies:
   #async util
   rxdart:
 
-  receive_sharing_intent: ^1.3.2
-
   #crashlytics
   #  firebase_crashlytics:
   #  firebase_core:
 
   crypto_plugin:
-    path: crypto_plugin
+    path: core/crypto_plugin
+  receive_sharing:
+    path: core/receive_sharing
 
 dev_dependencies:
   flutter_test:
@@ -94,7 +94,7 @@ dev_dependencies:
   chopper_generator: ^3.0.0
   moor_generator: ^1.6.0+2
   build_variant:
-    path: build_variant
+    path: tools/build_variant
   flutter_launcher_icons: ^0.7.4
 
 flutter_icons:

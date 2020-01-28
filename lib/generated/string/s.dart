@@ -204,4 +204,5 @@ abstract class S {
   String get verify_pin;
   String get invalid_pin;
   String get upload_file;
+  String upload_files(String count);
 }

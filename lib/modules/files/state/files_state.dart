@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:receive_sharing/recive_sharing.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
@@ -65,7 +66,7 @@ abstract class _FilesState with Store {
   @observable
   bool isShareUpload = false;
 
-  List<File> filesToShareUpload = List();
+  List<SharedMediaFile> filesToShareUpload = List();
   List<LocalFile> filesToMoveCopy = new List();
 
   // after moving files, both current page and the page files were moved from have to be updated
@@ -136,7 +137,7 @@ abstract class _FilesState with Store {
     }
   }
 
-  onUploadShared(List<File> files) {
+  onUploadShared(List<SharedMediaFile> files) {
     isShareUpload = true;
     filesToShareUpload = files;
   }
@@ -151,19 +152,19 @@ abstract class _FilesState with Store {
     Function onSuccess,
     Function(String) onError,
   }) async {
-    try{
-    for (var item in filesToShareUpload) {
-      await uploadFile(
-        file: item,
-        path: toPath,
-        onUploadStart: (_) {},
-        onSuccess: onSuccess,
-        onError: onError,
-        shouldEncrypt: selectedStorage.type == "encrypted",
-      );
-    }}catch(e){
-
-    }
+    try {
+      for (var item in filesToShareUpload) {
+        await uploadFile(
+          file: File(item.path),
+          name: item.name,
+          path: toPath,
+          onUploadStart: (_) {},
+          onSuccess: onSuccess,
+          onError: onError,
+          shouldEncrypt: selectedStorage.type == "encrypted",
+        );
+      }
+    } catch (e) {}
     onSuccess();
   }
 

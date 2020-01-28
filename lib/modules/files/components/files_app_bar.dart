@@ -124,7 +124,10 @@ class _FilesAppBarState extends State<FilesAppBar>
           children: <Widget>[
             Text(_filesState.isMoveModeEnabled
                 ? s.move_file_or_folder
-                : s.upload_file),
+                : _filesState.filesToShareUpload.length > 1
+                    ? s.upload_files(
+                        _filesState.filesToShareUpload.length.toString())
+                    : s.upload_file),
             SizedBox(height: 2),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,

@@ -244,4 +244,5 @@ class EnString extends S {
   final String verify_pin = "Verify pin";
   final String invalid_pin = "Invalid PIN";
   final String upload_file = "Upload file";
+  String upload_files(String count) => "Upload $count files";
 }

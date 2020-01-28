@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:receive_sharing/recive_sharing.dart';
 
 import 'components/files_app_bar.dart';
 import 'components/files_list.dart';
@@ -81,10 +81,10 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   listenShare() {
-    ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> files) {
+    ReceiveSharing.getMediaStream().listen((List<SharedMediaFile> files) {
       Navigator.popUntil(
           context, (item) => item.settings.name == FilesRoute.name);
-      _filesState.onUploadShared(files.map((item) => File(item.path)).toList());
+      _filesState.onUploadShared(files);
     });
   }
 

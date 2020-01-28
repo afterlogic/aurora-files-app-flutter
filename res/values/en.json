@@ -196,5 +196,6 @@
   "pin": "PIN",
   "verify_pin": "Verify pin",
   "invalid_pin": "Invalid PIN",
-  "upload_file": "Upload file"
+  "upload_file": "Upload file",
+  "upload_files": "Upload $count files"
 }

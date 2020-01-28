@@ -76,6 +76,8 @@ dependencies:
   #async util
   rxdart:
 
+  receive_sharing_intent: ^1.3.2
+
   #crashlytics
   #  firebase_crashlytics:
   #  firebase_core:

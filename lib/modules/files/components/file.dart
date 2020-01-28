@@ -39,6 +39,7 @@ class _FileWidgetState extends State<FileWidget> {
   double _progress;
   ProcessingFile _processingFile;
   S s;
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +48,6 @@ class _FileWidgetState extends State<FileWidget> {
           .firstWhere((process) => process.guid == widget.file.guid);
       _subscribeToProgress(processingFile);
     } catch (err) {}
-
   }
 
   void _subscribeToProgress(ProcessingFile processingFile) {
@@ -313,6 +313,7 @@ class _FileWidgetState extends State<FileWidget> {
     return Observer(
       builder: (_) {
         final isMenuVisible = !_filesState.isMoveModeEnabled &&
+            !_filesState.isShareUpload   &&
             _filesPageState.selectedFilesIds.length <= 0 &&
             !_filesPageState.isInsideZip;
         return SelectableFilesItemTile(

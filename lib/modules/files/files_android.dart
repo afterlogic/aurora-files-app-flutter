@@ -5,6 +5,7 @@ import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
+import 'package:aurorafiles/modules/files/components/upload_options.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
@@ -17,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'components/files_app_bar.dart';
 import 'components/files_list.dart';
@@ -54,6 +56,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     _filesState.folderNavStack.add(widget.path);
     _settingsState = AppStore.settingsState;
     _initFiles();
+    listenShare();
     Connectivity().onConnectivityChanged.listen((res) async {
       if (!_filesState.isOfflineMode && res != ConnectivityResult.none) {
         if (_filesState.currentStorages.length <= 0) {
@@ -75,6 +78,14 @@ class _FilesAndroidState extends State<FilesAndroid>
     });
 
     _settingsState.setAppTheme(context);
+  }
+
+  listenShare() {
+    ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> files) {
+      Navigator.popUntil(
+          context, (item) => item.settings.name == FilesRoute.name);
+      _filesState.onUploadShared(files.map((item) => File(item.path)).toList());
+    });
   }
 
   @override
@@ -268,111 +279,123 @@ class _FilesAndroidState extends State<FilesAndroid>
               : () async => !Navigator.of(context).userGestureInProgress,
           child: Scaffold(
             key: _filesPageState.scaffoldKey,
-            drawer: _filesState.isMoveModeEnabled ? null : MainDrawer(),
+            drawer: (_filesState.isMoveModeEnabled || _filesState.isShareUpload)
+                ? null
+                : MainDrawer(),
             appBar: PreferredSize(
                 preferredSize: Size.fromHeight(AppBar().preferredSize.height *
                     (_filesPageState.isSearchMode &&
-                        !_filesState.isMoveModeEnabled &&
-                        _filesPageState.selectedFilesIds.isEmpty
+                            !_filesState.isMoveModeEnabled &&
+                            !_filesState.isShareUpload &&
+                            _filesPageState.selectedFilesIds.isEmpty
                         ? 2.3
                         : 1)),
                 child: FilesAppBar(onDeleteFiles: _deleteSelected)),
             body: Observer(
                 builder: (_) => RefreshIndicator(
-                  onRefresh: () async {
-                    if (_filesState.currentStorages.length <= 0) {
-                      await _filesState.onGetStorages();
-                    }
-                    return _getFiles(context, FilesLoadingType.none);
-                  },
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: <Widget>[
-                      Positioned.fill(
-                        child: _buildFiles(context),
-                      ),
-                      // LOADER
-                      Positioned(
-                        top: 0.0,
-                        left: 0.0,
-                        right: 0.0,
-                        height: 6.0,
-                        child: AnimatedOpacity(
-                          duration: Duration(milliseconds: 150),
-                          opacity: _filesPageState.filesLoading ==
-                              FilesLoadingType.filesVisible
-                              ? 1.0
-                              : 0.0,
-                          child: LinearProgressIndicator(
-                              backgroundColor: Theme
-                                  .of(context)
-                                  .disabledColor
-                                  .withOpacity(0.1)),
-                        ),
-                      ),
-                      if (_filesState.isMoveModeEnabled)
-                        Positioned(
-                          bottom: 0.0,
-                          left: 0.0,
-                          right: 0.0,
-                          child: MoveOptions(
-                            filesState: _filesState,
-                            filesPageState: _filesPageState,
+                      onRefresh: () async {
+                        if (_filesState.currentStorages.length <= 0) {
+                          await _filesState.onGetStorages();
+                        }
+                        return _getFiles(context, FilesLoadingType.none);
+                      },
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          Positioned.fill(
+                            child: _buildFiles(context),
                           ),
-                        )
-                    ],
-                  ),
-                )),
+                          // LOADER
+                          Positioned(
+                            top: 0.0,
+                            left: 0.0,
+                            right: 0.0,
+                            height: 6.0,
+                            child: AnimatedOpacity(
+                              duration: Duration(milliseconds: 150),
+                              opacity: _filesPageState.filesLoading ==
+                                      FilesLoadingType.filesVisible
+                                  ? 1.0
+                                  : 0.0,
+                              child: LinearProgressIndicator(
+                                  backgroundColor: Theme.of(context)
+                                      .disabledColor
+                                      .withOpacity(0.1)),
+                            ),
+                          ),
+                          if (_filesState.isShareUpload)
+                            Positioned(
+                              bottom: 0.0,
+                              left: 0.0,
+                              right: 0.0,
+                              child: UploadOptions(
+                                filesState: _filesState,
+                                filesPageState: _filesPageState,
+                              ),
+                            ),
+                          if (_filesState.isMoveModeEnabled)
+                            Positioned(
+                              bottom: 0.0,
+                              left: 0.0,
+                              right: 0.0,
+                              child: MoveOptions(
+                                filesState: _filesState,
+                                filesPageState: _filesPageState,
+                              ),
+                            )
+                        ],
+                      ),
+                    )),
             floatingActionButton: Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).padding.bottom),
               child: Observer(
-                builder: (_) => _filesState.isMoveModeEnabled ||
-                    _filesState.isOfflineMode ||
-                    (_settingsState.internetConnection ==
-                        ConnectivityResult.none &&
-                        _filesPageState.currentFiles.isEmpty) ||
-                    _filesPageState.isSearchMode ||
-                    _filesState.selectedStorage.type == "shared" ||
-                    _filesPageState.isInsideZip
+                builder: (_) => _filesState.isShareUpload ||
+                        _filesState.isMoveModeEnabled ||
+                        _filesState.isOfflineMode ||
+                        (_settingsState.internetConnection ==
+                                ConnectivityResult.none &&
+                            _filesPageState.currentFiles.isEmpty) ||
+                        _filesPageState.isSearchMode ||
+                        _filesState.selectedStorage.type == "shared" ||
+                        _filesPageState.isInsideZip
                     ? SizedBox()
                     : FloatingActionButton(
-                  heroTag: widget.path,
-                  child: Icon(Icons.add),
-                  onPressed: () {
-                    _filesPageState.scaffoldKey.currentState
-                        .removeCurrentSnackBar();
-                    Navigator.push(
-                        context,
-                        CustomSpeedDial(tag: widget.path, children: [
-                          MiniFab(
-                            icon: Icon(Icons.create_new_folder),
-                            onPressed: () =>
-                            Platform.isIOS
-                                ? showCupertinoDialog(
-                              context: context,
-                              builder: (_) =>
-                                  AddFolderDialogAndroid(
-                                    filesState: _filesState,
-                                    filesPageState: _filesPageState,
-                                  ),
-                            )
-                                : showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (_) =>
-                                  AddFolderDialogAndroid(
-                                    filesState: _filesState,
-                                    filesPageState: _filesPageState,
-                                  ),
-                            ),
-                          ),
-                          MiniFab(
-                              icon: Icon(MdiIcons.filePlus),
-                              onPressed: _uploadFile),
-                        ]));
-                  },
-                ),
+                        heroTag: widget.path,
+                        child: Icon(Icons.add),
+                        onPressed: () {
+                          _filesPageState.scaffoldKey.currentState
+                              .removeCurrentSnackBar();
+                          Navigator.push(
+                              context,
+                              CustomSpeedDial(tag: widget.path, children: [
+                                MiniFab(
+                                  icon: Icon(Icons.create_new_folder),
+                                  onPressed: () => Platform.isIOS
+                                      ? showCupertinoDialog(
+                                          context: context,
+                                          builder: (_) =>
+                                              AddFolderDialogAndroid(
+                                            filesState: _filesState,
+                                            filesPageState: _filesPageState,
+                                          ),
+                                        )
+                                      : showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (_) =>
+                                              AddFolderDialogAndroid(
+                                            filesState: _filesState,
+                                            filesPageState: _filesPageState,
+                                          ),
+                                        ),
+                                ),
+                                MiniFab(
+                                    icon: Icon(MdiIcons.filePlus),
+                                    onPressed: _uploadFile),
+                              ]));
+                        },
+                      ),
               ),
             ),
           ),

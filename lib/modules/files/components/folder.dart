@@ -94,6 +94,7 @@ class FolderWidget extends StatelessWidget {
           ),
           if (!filesState.isOfflineMode &&
               !filesState.isMoveModeEnabled &&
+              !filesState.isShareUpload &&
               filesPageState.selectedFilesIds.length <= 0 &&
               !filesPageState.isInsideZip)
             Positioned(

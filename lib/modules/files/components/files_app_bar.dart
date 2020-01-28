@@ -72,33 +72,35 @@ class _FilesAppBarState extends State<FilesAppBar>
         ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
         centerTitle: Platform.isIOS,
-        actions: _filesState.isOfflineMode ? [
+        actions: _filesState.isOfflineMode
+            ? [
 //          IconButton(
 //            icon: Icon(Icons.airplanemode_inactive),
 //            tooltip: "Delete files from offline",
 //            onPressed: () {},
 //          ),
-        ] : [
-          IconButton(
-            icon: Icon(MdiIcons.fileMove),
-            tooltip: "Move/Copy files",
-            onPressed: () {
-              _filesState.updateFilesCb = _filesPageState.onGetFiles;
-              _filesState.enableMoveMode(
-                selectedFileIds: _filesPageState.selectedFilesIds,
-                currentFiles: _filesPageState.currentFiles,
-              );
-              _filesPageState.quitSelectMode();
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_outline),
-            tooltip: "Delete files",
-            onPressed: () => widget.onDeleteFiles(context),
-          ),
-        ],
+              ]
+            : [
+                IconButton(
+                  icon: Icon(MdiIcons.fileMove),
+                  tooltip: "Move/Copy files",
+                  onPressed: () {
+                    _filesState.updateFilesCb = _filesPageState.onGetFiles;
+                    _filesState.enableMoveMode(
+                      selectedFileIds: _filesPageState.selectedFilesIds,
+                      currentFiles: _filesPageState.currentFiles,
+                    );
+                    _filesPageState.quitSelectMode();
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_outline),
+                  tooltip: "Delete files",
+                  onPressed: () => widget.onDeleteFiles(context),
+                ),
+              ],
       );
-    } else if (_filesState.isMoveModeEnabled) {
+    } else if (_filesState.isMoveModeEnabled || _filesState.isShareUpload) {
       return AppBar(
         key: Key("move"),
         backgroundColor: Theme.of(context).accentColor,
@@ -110,7 +112,9 @@ class _FilesAppBarState extends State<FilesAppBar>
               )
             : IconButton(
                 icon: Icon(Icons.close),
-                onPressed: _filesState.disableMoveMode,
+                onPressed: _filesState.isMoveModeEnabled
+                    ? _filesState.disableMoveMode
+                    : _filesState.disableUploadShared,
               ),
         title: Column(
           crossAxisAlignment: Platform.isIOS
@@ -118,7 +122,9 @@ class _FilesAppBarState extends State<FilesAppBar>
               : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(s.move_file_or_folder),
+            Text(_filesState.isMoveModeEnabled
+                ? s.move_file_or_folder
+                : s.upload_file),
             SizedBox(height: 2),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -224,13 +230,13 @@ class _FilesAppBarState extends State<FilesAppBar>
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: Container(
-            padding:  const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(12.0),
             child: Platform.isIOS
                 ? CupertinoTextField(
                     onSubmitted: (_) => _search(),
                     autofocus: true,
-              controller: _searchInputCtrl,
-              placeholder: s.search,
+                    controller: _searchInputCtrl,
+                    placeholder: s.search,
                     suffix: IconButton(
                         icon: Icon(Icons.search),
                         color: Colors.white,

@@ -19,7 +19,7 @@
             android:name="com.PrivateRouter.PrivateMailFiles.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize">
             <!-- This keeps the window background of the activity showing
@@ -29,10 +29,33 @@
             <meta-data
                 android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
                 android:value="true" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.SEND" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <data android:mimeType="image/*" />-->
+<!--            </intent-filter>-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.SEND_MULTIPLE" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <data android:mimeType="image/*" />-->
+<!--            </intent-filter>-->
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.SEND" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <data android:mimeType="video/*" />-->
+<!--            </intent-filter>-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.SEND_MULTIPLE" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <data android:mimeType="video/*" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <provider
@@ -40,29 +63,5 @@
             android:authorities="${applicationId}.workmanager-init"
             android:enabled="false"
             android:exported="false" />
-
-<!--        <provider-->
-<!--            android:name="com.bluechilli.flutteruploader.FlutterUploaderInitializer"-->
-<!--            android:authorities="${applicationId}.flutter-upload-init"-->
-<!--            android:exported="false">-->
-<!--            &lt;!&ndash; changes this number to configure the maximum number of concurrent tasks &ndash;&gt;-->
-<!--            <meta-data-->
-<!--                android:name="com.bluechilli.flutterupload.MAX_CONCURRENT_TASKS"-->
-<!--                android:value="3" />-->
-
-<!--            &lt;!&ndash; changes this number to configure connection timeout for the upload http request &ndash;&gt;-->
-<!--            <meta-data-->
-<!--                android:name="com.bluechilli.flutteruploader.UPLOAD_CONNECTION_TIMEOUT_IN_SECONDS"-->
-<!--                android:value="3600" />-->
-<!--        </provider>-->
-<!--        <provider-->
-<!--            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"-->
-<!--            android:authorities="${applicationId}.flutter_downloader.provider"-->
-<!--            android:exported="false"-->
-<!--            android:grantUriPermissions="true">-->
-<!--            <meta-data-->
-<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/provider_paths" />-->
-<!--        </provider>-->
     </application>
 </manifest>

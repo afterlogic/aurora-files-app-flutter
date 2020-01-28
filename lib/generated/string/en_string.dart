@@ -1,4 +1,9 @@
 import 'dart:ui';
+
+//// ignore_for_file: non_constant_identifier_names
+//// ignore_for_file: camel_case_types
+//// ignore_for_file: prefer_single_quotes
+
 import 's.dart';
 
 class EnString extends S {
@@ -238,4 +243,5 @@ class EnString extends S {
   final String pin = "PIN";
   final String verify_pin = "Verify pin";
   final String invalid_pin = "Invalid PIN";
+  final String upload_file = "Upload file";
 }

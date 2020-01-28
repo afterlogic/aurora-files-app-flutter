@@ -41,7 +41,7 @@ class AppButton extends StatelessWidget {
                       child: CupertinoActivityIndicator())
                   : child is Widget
                       ? child
-                      : Text(
+                      : Text( 
                           text,
                           style: TextStyle(
                               color: textColor == null

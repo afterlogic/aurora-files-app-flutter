@@ -76,4 +76,21 @@ mixin _$FilesState on _FilesState, Store {
       _$isMoveModeEnabledAtom.reportChanged();
     }, _$isMoveModeEnabledAtom, name: '${_$isMoveModeEnabledAtom.name}_set');
   }
+
+  final _$isShareUploadAtom = Atom(name: '_FilesState.isShareUpload');
+
+  @override
+  bool get isShareUpload {
+    _$isShareUploadAtom.context.enforceReadPolicy(_$isShareUploadAtom);
+    _$isShareUploadAtom.reportObserved();
+    return super.isShareUpload;
+  }
+
+  @override
+  set isShareUpload(bool value) {
+    _$isShareUploadAtom.context.conditionallyRunInAction(() {
+      super.isShareUpload = value;
+      _$isShareUploadAtom.reportChanged();
+    }, _$isShareUploadAtom, name: '${_$isShareUploadAtom.name}_set');
+  }
 }

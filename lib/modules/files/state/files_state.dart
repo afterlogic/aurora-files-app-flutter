@@ -62,6 +62,10 @@ abstract class _FilesState with Store {
   @observable
   bool isMoveModeEnabled = false;
 
+  @observable
+  bool isShareUpload = false;
+
+  List<File> filesToShareUpload = List();
   List<LocalFile> filesToMoveCopy = new List();
 
   // after moving files, both current page and the page files were moved from have to be updated
@@ -130,6 +134,37 @@ abstract class _FilesState with Store {
     } catch (err) {
       onError(err.toString());
     }
+  }
+
+  onUploadShared(List<File> files) {
+    isShareUpload = true;
+    filesToShareUpload = files;
+  }
+
+  disableUploadShared() {
+    filesToShareUpload = new List();
+    isShareUpload = false;
+  }
+
+  uploadShared({
+    String toPath,
+    Function onSuccess,
+    Function(String) onError,
+  }) async {
+    try{
+    for (var item in filesToShareUpload) {
+      await uploadFile(
+        file: item,
+        path: toPath,
+        onUploadStart: (_) {},
+        onSuccess: onSuccess,
+        onError: onError,
+        shouldEncrypt: selectedStorage.type == "encrypted",
+      );
+    }}catch(e){
+
+    }
+    onSuccess();
   }
 
 //  void onLevelUp(Function getNewFiles) {

@@ -1,9 +1,9 @@
 #config
 _files:
-  - pubspec.yaml.temp
+  - pubspec.yaml.yaml
   - lib/di/di.dart.temp
 _buildPropertyPath: lib/build_const.dart
 
 #variables
 secureSharingEnable: true
-_base_dir: "build_res/afterlogic"
+_build_variant: "build_res/afterlogic/build_variant.yaml"

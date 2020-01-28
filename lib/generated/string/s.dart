@@ -1,5 +1,9 @@
 import 'dart:ui';
 
+//// ignore_for_file: non_constant_identifier_names
+//// ignore_for_file: camel_case_types
+//// ignore_for_file: prefer_single_quotes
+
 abstract class S {
   Locale get locale;
   String get mail;
@@ -199,4 +203,5 @@ abstract class S {
   String get pin;
   String get verify_pin;
   String get invalid_pin;
+  String get upload_file;
 }

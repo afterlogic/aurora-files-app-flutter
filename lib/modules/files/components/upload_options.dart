@@ -3,6 +3,7 @@ import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class UploadOptions extends StatefulWidget {
   final FilesState filesState;
@@ -36,6 +37,8 @@ class _UploadOptionsState extends State<UploadOptions> {
           );
           setState(() => _buttonsDisabled = false);
           widget.filesState.disableUploadShared();
+          //todo
+          SystemNavigator.pop();
         },
         onError: (err) {
           setState(() => _buttonsDisabled = false);

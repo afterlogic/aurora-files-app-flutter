@@ -224,7 +224,7 @@ class _FileWidgetState extends State<FileWidget> {
   Widget _getThumbnail(BuildContext context) {
     final filesState = _filesState;
     final thumbnailSize = filesState.filesTileLeadingSize;
-    final hostName = _filesPageState;
+    final hostName = Provider.of<AuthState>(context).hostName;
 
     if (widget.file.initVector != null) {
       return Icon(MdiIcons.fileLockOutline,

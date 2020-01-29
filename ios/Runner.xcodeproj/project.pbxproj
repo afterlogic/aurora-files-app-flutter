@@ -158,7 +158,9 @@
 				80C8D7BF7CC4AE3211DEBC1B /* Pods */,
 				AAEC7929F8D07C19E968580F /* Frameworks */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		97C146EF1CF9000F007C117D /* Products */ = {
 			isa = PBXGroup;
@@ -771,7 +773,9 @@
 				CODE_SIGN_ENTITLEMENTS = AppShareExtension/AppShareExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = K6298N65JA;
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = AppShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
@@ -799,7 +803,9 @@
 				CODE_SIGN_ENTITLEMENTS = AppShareExtension/AppShareExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = K6298N65JA;
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = AppShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
@@ -824,7 +830,9 @@
 				CODE_SIGN_ENTITLEMENTS = AppShareExtension/AppShareExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = K6298N65JA;
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = AppShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;

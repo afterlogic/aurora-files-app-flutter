@@ -84,8 +84,8 @@ class _FileWidgetState extends State<FileWidget> {
         CustomBottomSheet(
           child: FileOptionsBottomSheet(
             file: widget.file,
-            filesState: Provider.of<FilesState>(context),
-            filesPageState: Provider.of<FilesPageState>(context),
+            filesState: _filesState,
+            filesPageState: _filesPageState,
           ),
         ));
 
@@ -103,10 +103,9 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _cantShareMessage() {
-    final filesPageState = Provider.of<FilesPageState>(context);
     showSnack(
       context: context,
-      scaffoldState: filesPageState.scaffoldKey.currentState,
+      scaffoldState: _filesPageState.scaffoldKey.currentState,
       msg: s.need_an_encryption_to_share,
     );
   }
@@ -115,8 +114,7 @@ class _FileWidgetState extends State<FileWidget> {
     if (AppStore.settingsState.selectedKeyName == null) {
       showSnack(
           context: context,
-          scaffoldState:
-              Provider.of<FilesPageState>(context).scaffoldKey.currentState,
+          scaffoldState:_filesPageState.scaffoldKey.currentState,
           msg: s.set_any_encryption_key);
     } else {
       _openFile(context);
@@ -124,8 +122,8 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _downloadFile() {
-    final filesState = Provider.of<FilesState>(context);
-    final filesPageState = Provider.of<FilesPageState>(context);
+    final filesState = _filesState;
+    final filesPageState = _filesPageState;
     filesState.onDownloadFile(
       file: widget.file,
       onStart: (ProcessingFile process) {
@@ -157,8 +155,8 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   Future _setFileForOffline() async {
-    final filesState = Provider.of<FilesState>(context);
-    final filesPageState = Provider.of<FilesPageState>(context);
+    final filesState = _filesState;
+    final filesPageState = _filesPageState;
     try {
       if (widget.file.localId == null) {
         showSnack(
@@ -224,9 +222,9 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   Widget _getThumbnail(BuildContext context) {
-    final filesState = Provider.of<FilesState>(context);
+    final filesState = _filesState;
     final thumbnailSize = filesState.filesTileLeadingSize;
-    final hostName = Provider.of<AuthState>(context).hostName;
+    final hostName = _filesPageState;
 
     if (widget.file.initVector != null) {
       return Icon(MdiIcons.fileLockOutline,

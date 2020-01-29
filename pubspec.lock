@@ -95,7 +95,7 @@ packages:
   build_variant:
     dependency: "direct dev"
     description:
-      path: "tools\\build_variant"
+      path: "tools/build_variant"
       relative: true
     source: path
     version: "0.0.1"
@@ -200,7 +200,7 @@ packages:
   crypto_plugin:
     dependency: "direct main"
     description:
-      path: "core\\crypto_plugin"
+      path: "core/crypto_plugin"
       relative: true
     source: path
     version: "0.0.1"
@@ -656,7 +656,7 @@ packages:
   receive_sharing:
     dependency: "direct main"
     description:
-      path: "core\\receive_sharing"
+      path: "core/receive_sharing"
       relative: true
     source: path
     version: "0.0.1"
@@ -670,14 +670,14 @@ packages:
   secure_sharing:
     dependency: "direct main"
     description:
-      path: "modules\\secure_sharing\\secure_sharing"
+      path: "modules/secure_sharing/secure_sharing"
       relative: true
     source: path
     version: "0.0.1"
   secure_sharing_impl:
     dependency: "direct main"
     description:
-      path: "modules\\secure_sharing\\secure_sharing_impl"
+      path: "modules/secure_sharing/secure_sharing_impl"
       relative: true
     source: path
     version: "0.0.1"

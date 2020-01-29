@@ -2,6 +2,7 @@ import UIKit
 import Flutter
 import CommonCrypto
 import Foundation
+import receive_sharing
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -12,7 +13,7 @@ import Foundation
 
     
     CryptoPlugin.register(with: self.registrar(forPlugin: "crypto_plugin"))
-
+    UserDefaults().set("group.privatemail.files",forKey: SwiftReceiveSharingPlugin.shareGroupKey)
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

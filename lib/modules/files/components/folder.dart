@@ -16,12 +16,12 @@ class FolderWidget extends StatelessWidget {
 
   const FolderWidget({Key key, @required this.folder}) : super(key: key);
 
-  Future _showModalBottomSheet(context) async {
+  Future _showModalBottomSheet(context,FilesState filesState,FilesPageState filesPageState) async {
     Navigator.of(context).push(CustomBottomSheet(
       child: FileOptionsBottomSheet(
         file: folder,
-        filesState: Provider.of<FilesState>(context),
-        filesPageState: Provider.of<FilesPageState>(context),
+        filesState: filesState,
+        filesPageState: filesPageState,
       ),
     ));
   }
@@ -106,7 +106,7 @@ class FolderWidget extends StatelessWidget {
                   Icons.more_vert,
                   color: Theme.of(context).disabledColor,
                 ),
-                onPressed: () => _showModalBottomSheet(context),
+                onPressed: () => _showModalBottomSheet(context,filesState,filesPageState),
               ),
             ),
         ]),

@@ -1,4 +1,4 @@
-#import "receiveSharingPlugin.h"
+#import "ReceiveSharingPlugin.h"
 #if __has_include(<receive_sharing/receive_sharing-Swift.h>)
 #import <receive_sharing/receive_sharing-Swift.h>
 #else
@@ -8,8 +8,8 @@
 #import "receive_sharing-Swift.h"
 #endif
 
-@implementation receiveSharingPlugin
+@implementation ReceiveSharingPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftreceiveSharingPlugin registerWithRegistrar:registrar];
+  [SwiftReceiveSharingPlugin registerWithRegistrar:registrar];
 }
 @end

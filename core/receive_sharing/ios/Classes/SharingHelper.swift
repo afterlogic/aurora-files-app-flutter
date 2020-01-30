@@ -12,12 +12,9 @@ import MobileCoreServices
 import Photos
 
 open class SharingHelper : SLComposeServiceViewController {
+    static let sharedKey = "SharedKey"
     
     open func shareUrl()->String{
-        return ""
-    }
-    
-    open func sharedKey()->String{
         return ""
     }
     
@@ -31,9 +28,7 @@ open class SharingHelper : SLComposeServiceViewController {
     
     override open func viewDidLoad() {
         // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
-        extensionContext?.inputItems.forEach({ (item) in
-            item
-        })
+
         if let content = extensionContext!.inputItems[0] as? NSExtensionItem {
             if content.attachments != nil{
                 handleAttachment(content: content, attachment: content.attachments!, onComplete:{
@@ -83,7 +78,7 @@ open class SharingHelper : SLComposeServiceViewController {
                 if index == count {
                     if !sharedMedia.isEmpty, let this = self {
                         let userDefaults = UserDefaults(suiteName: this.sharedGroupName())
-                        userDefaults?.set(this.toData(data: sharedMedia), forKey: this.sharedKey())
+                        userDefaults?.set(this.toData(data: sharedMedia), forKey: SharingHelper.sharedKey)
                         userDefaults?.synchronize()
                         this.redirectToHostApp()
                     }
@@ -147,7 +142,7 @@ open class SharingHelper : SLComposeServiceViewController {
     }
     
     private func redirectToHostApp() {
-        let url = URL(string: "\(shareUrl())://dataUrl=\(sharedKey())")
+        let url = URL(string: "\(shareUrl())://dataUrl=\(SharingHelper.sharedKey)")
         var responder = self as UIResponder?
         let selectorOpenURL = sel_registerName("openURL:")
         

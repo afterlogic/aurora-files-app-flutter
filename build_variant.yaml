@@ -2,8 +2,23 @@
 _files:
   - pubspec.yaml.yaml
   - lib/di/di.dart.temp
+  - android/app/src/main/res/values/.app_name.xml.temp
+  - android/build_variable.properties.temp
 _buildPropertyPath: lib/build_const.dart
-
+#default config
+_buildVariant: "build_res/afterlogic/build_variant.yaml"
 #variables
+appName: ""
+appId: ""
+
+icon: "path"
+_foreground_icon: "path"
+_background_color: "#3b3b3b"
+
 secureSharingEnable: true
-_build_variant: "build_res/afterlogic/build_variant.yaml"
+
+accentColor: "#3b3b3b"
+primaryColor: "#3b3b3b"
+primaryColorDark: "#3b3b3b"
+primaryColorLight: "#3b3b3b"
+selectedRowColor: "#3b3b3b"

@@ -24,7 +24,7 @@ buildVariant(
     VariableMap variableMap = await ParseVariable(defaultVariableFile).parse();
 
     final buildVariantPath = variableMap.stringVariable.firstWhere(
-      (item) => item.key == "_build_variant",
+      (item) => item.key == "_buildVariant",
       orElse: () => null,
     );
 

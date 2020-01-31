@@ -15,8 +15,6 @@ dependencies:
 
   secure_sharing:
     path: modules/secure_sharing/secure_sharing
-  secure_sharing_impl:
-    path: modules/secure_sharing/secure_sharing_impl
 
   flutter_cupertino_localizations:
 
@@ -99,7 +97,7 @@ flutter_icons:
   ios: true
   android: true
   image_path: build_res/afterlogic/icon.png
-  adaptive_icon_background: "#34113C"
+  adaptive_icon_background: "#75B8F3"
   adaptive_icon_foreground: build_res/afterlogic/icon_foreground.png
 
 flutter:

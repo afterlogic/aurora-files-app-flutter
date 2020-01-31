@@ -181,6 +181,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
       return [
         if (_showHostField)
           TextFormField(
+            style: TextStyle(color: Colors.white),
             cursorColor: Theme.of(context).accentColor,
             controller: _authState.hostCtrl,
             keyboardType: TextInputType.url,
@@ -194,6 +195,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           ),
         SizedBox(height: 10),
         TextFormField(
+          style: TextStyle(color: Colors.white),
           cursorColor: Theme.of(context).accentColor,
           controller: _authState.emailCtrl,
           keyboardType: TextInputType.emailAddress,
@@ -206,6 +208,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
         SizedBox(height: 10),
         TextFormField(
+          style: TextStyle(color: Colors.white),
           cursorColor: Theme.of(context).accentColor,
           controller: _authState.passwordCtrl,
           validator: (value) => validateInput(value, [ValidationTypes.empty]),

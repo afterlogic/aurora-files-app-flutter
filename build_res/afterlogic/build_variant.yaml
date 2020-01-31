@@ -1,5 +1,9 @@
 #variables
-secureSharingEnable: true
+appName: "Aurora Files"
+appId: "com.afterlogic.aurora.files"
+
 icon: "{{_dir}}/icon.png"
 _foreground_icon: "{{_dir}}/icon_foreground.png"
-_background_color: "\"#34113C\""
+_background_color: "#75B8F3"
+
+secureSharingEnable: false

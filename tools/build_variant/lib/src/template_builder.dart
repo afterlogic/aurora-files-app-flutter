@@ -17,7 +17,10 @@ class TemplateBuilder {
 
   static File _trimExtension(String path) {
     final dir = getFileDir(path);
-    final name = path.split(Platform.pathSeparator).last;
+    var name = path.split(Platform.pathSeparator).last;
+    if (name.startsWith(".")) {
+      name = name.substring(1);
+    }
     final parts = name.split(".");
     if (parts.length < 3) {
       return fileFromPath(dir, parts.first + ".g");

@@ -6,6 +6,14 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def buildVariableProperties = new Properties()
+def buildVariableFile = rootProject.file('build_variable.properties')
+if (buildVariableFile.exists()) {
+    buildVariableFile.withReader('UTF-8') { reader ->
+        buildVariableProperties.load(reader)
+    }
+}
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -43,14 +51,12 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.PrivateRouter.PrivateMailFiles"
+        applicationId buildVariableProperties["packageName"]
         minSdkVersion 18
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-//        setProperty("archivesBaseName", applicationId + "-v" + versionName  + "+" + versionCode)
-        //com.PrivateRouter.PrivateMailFiles-v1.0.0+19.apk
         multiDexEnabled true
     }
 

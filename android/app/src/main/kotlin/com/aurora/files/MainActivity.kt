@@ -1,4 +1,4 @@
-package com.PrivateRouter.PrivateMailFiles
+package com.aurora.files
 
 import android.os.Bundle
 import android.os.Environment

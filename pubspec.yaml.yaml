@@ -101,7 +101,7 @@ flutter_icons:
   ios: true
   android: true
   image_path: {{icon}}
-  adaptive_icon_background: {{_background_color}}
+  adaptive_icon_background: "{{_background_color}}"
   adaptive_icon_foreground: {{_foreground_icon}}
 
 flutter:

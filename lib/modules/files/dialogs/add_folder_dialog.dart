@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,7 +39,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       return CupertinoAlertDialog(
         title: Text(s.add_new_folder),
         content: isAdding

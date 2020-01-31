@@ -44,7 +44,7 @@ class FilesLocalStorage {
 
 //  Future<String> saveFileInDownloads(
 //      List<int> fileBytes, LocalFile file) async {
-//    if (!Platform.isIOS) await getStoragePermissions();
+//    if (!PlatformOverride.isIOS) await getStoragePermissions();
 //    Directory dir = await DownloadsPathProvider.downloadsDirectory;
 //
 //    final fileToDownload = new File("${dir.path}/${file.name}");

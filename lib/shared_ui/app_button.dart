@@ -1,53 +1,99 @@
-import 'dart:io';
-
+import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppButton extends StatelessWidget {
-  final bool isLoading;
   final Function onPressed;
-  final Widget child;
   final String text;
-  final Color buttonColor;
-  final Color textColor;
+  final bool isLoading;
+  final ButtonCase buttonCase;
   final double width;
 
-  const AppButton(
-      {Key key,
-      this.isLoading,
-      @required this.onPressed,
-      this.child,
-      this.buttonColor,
-      this.text,
-      this.textColor,
-      this.width})
-      : super(key: key);
+  const AppButton({
+    Key key,
+    this.isLoading,
+    this.onPressed,
+    this.text,
+    this.width,
+    this.buttonCase = ButtonCase.Default,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    final isIOS = PlatformOverride.isIOS;
+    final theme = Theme.of(context);
+
+    Color selectFillColor() {
+      switch (buttonCase) {
+        case ButtonCase.Default:
+          if (isIOS) {
+            return null;
+          } else {
+            return theme.accentColor;
+          }
+          break;
+        case ButtonCase.Filled:
+          return theme.accentColor;
+          break;
+        case ButtonCase.Cancel:
+          return theme.colorScheme.surface;
+          break;
+        case ButtonCase.Warning:
+          if (isIOS) {
+            return null;
+          } else {
+            return theme.errorColor;
+          }
+          break;
+      }
+      return null;
+    }
+
+    Color selectTextColor(Color fillColor) {
+      switch (buttonCase) {
+        case ButtonCase.Default:
+          return theme.accentColor;
+          break;
+        case ButtonCase.Filled:
+          return null;
+          break;
+        case ButtonCase.Cancel:
+          return null;
+          break;
+        case ButtonCase.Warning:
+          if (isIOS) {
+            return theme.errorColor;
+          } else {
+            return null;
+          }
+          break;
+      }
+      return null;
+    }
+
+    final fillColor = selectFillColor();
+
+    final textColor = selectTextColor(fillColor);
+
+    if (PlatformOverride.isIOS) {
       return Container(
-        margin: EdgeInsets.symmetric(vertical: buttonColor != null ? 10 : 0),
+        margin: EdgeInsets.symmetric(vertical: fillColor != null ? 10 : 0),
         width: width,
-        height: 55.0,
+        height: fillColor != null ? 45.0 : 55.0,
         child: CupertinoButton(
-            color: buttonColor,
+            color: fillColor,
             child: AnimatedSwitcher(
               duration: Duration(milliseconds: 100),
-              child: isLoading != null && isLoading
+              child: isLoading == true
                   ? SizedBox(
                       height: 24.0,
                       width: 24.0,
                       child: CupertinoActivityIndicator())
-                  : child is Widget
-                      ? child
-                      : Text( 
-                          text,
-                          style: TextStyle(
-                              color: textColor == null
-                                  ? Theme.of(context).accentColor
-                                  : textColor),
-                        ),
+                  : Text(text,
+                      style: TextStyle(
+                          color: onPressed != null
+                              ? textColor
+                              : theme.disabledColor)),
             ),
             onPressed: isLoading != null && isLoading ? null : onPressed),
       );
@@ -55,7 +101,7 @@ class AppButton extends StatelessWidget {
       return Container(
         width: width,
         child: RaisedButton(
-            color: buttonColor,
+            color: fillColor,
             child: AnimatedSwitcher(
               duration: Duration(milliseconds: 100),
               child: isLoading != null && isLoading
@@ -67,10 +113,12 @@ class AppButton extends StatelessWidget {
                           valueColor:
                               AlwaysStoppedAnimation<Color>(Colors.white)),
                     )
-                  : child is Widget ? child : Text(text.toUpperCase()),
+                  : Text(text.toUpperCase()),
             ),
             onPressed: isLoading == true ? null : onPressed),
       );
     }
   }
 }
+
+enum ButtonCase { Default, Filled, Cancel, Warning }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
     else
       itemName = "${s.file}/${s.folder}";
 
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       return CupertinoAlertDialog(
         title: Text(itemsNumber != null && itemsNumber > 1
             ? s.delete_files

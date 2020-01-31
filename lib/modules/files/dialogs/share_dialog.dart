@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
@@ -49,7 +50,7 @@ class _ShareDialogState extends State<ShareDialog> {
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       return CupertinoAlertDialog(
         title: Text(s.share_file),
         content: Column(children: [

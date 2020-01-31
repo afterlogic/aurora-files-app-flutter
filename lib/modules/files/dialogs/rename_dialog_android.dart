@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
@@ -59,7 +60,7 @@ class _RenameDialogState extends State<RenameDialog> {
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       return CupertinoAlertDialog(
         title: Text("${s.rename} ${widget.file.name}"),
         content: isRenaming

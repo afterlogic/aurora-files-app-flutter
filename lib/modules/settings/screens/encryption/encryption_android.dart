@@ -6,6 +6,7 @@ import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_key_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/export_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,7 +30,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
 
   void _downloadKey() async {
     var exportedDir;
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       exportedDir = await showCupertinoDialog(
           context: context,
           builder: (_) => ExportKeyDialog(
@@ -78,7 +79,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
             text: s.import_key_from_text,
-            onPressed: () => Platform.isIOS
+            onPressed: () => PlatformOverride.isIOS
                 ? showCupertinoDialog(
                     context: context,
                     builder: (_) => AddKeyDialog(
@@ -155,7 +156,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(text: s.share_key, onPressed: _shareKey),
         ),
-        if (!Platform.isIOS)
+        if (!PlatformOverride.isIOS)
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
@@ -164,8 +165,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AppButton(
-            buttonColor: !Platform.isIOS ? Theme.of(context).errorColor : null,
-            textColor: Platform.isIOS ? Theme.of(context).errorColor : null,
+            buttonCase: ButtonCase.Warning,
             text: s.delete_key,
             onPressed: () async {
               final result = await showDialog(

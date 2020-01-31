@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,7 +58,7 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
                     ),
                   ),
                   SizedBox(height: 40.0),
-                  if (Platform.isIOS)
+                  if (PlatformOverride.isIOS)
                     CupertinoTextField(
                       style: TextStyle(color: Colors.white),
                       cursorColor: Theme.of(context).accentColor,
@@ -68,7 +69,7 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
                       placeholder: s.pin,
                       controller: pinCtrl,
                     ),
-                  if (!Platform.isIOS)
+                  if (!PlatformOverride.isIOS)
                     TextFormField(
                       decoration: InputDecoration(labelText: s.pin),
                       controller: pinCtrl,
@@ -81,16 +82,14 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
                   SizedBox(height: 20.0),
                   AppButton(
                     isLoading: isProgress,
-                    buttonColor: Theme.of(context).accentColor,
-                    textColor: Colors.white,
+                    buttonCase: ButtonCase.Filled,
                     width: double.infinity,
                     text: s.verify_pin,
                     onPressed: checkCode,
                   ),
                   AppButton(
-                    buttonColor: Color.fromARGB(255, 85, 97, 140),
+                    buttonCase: ButtonCase.Cancel,
                     width: double.infinity,
-                    textColor: Colors.white,
                     text: s.cancel,
                     onPressed: isProgress ? null : () => Navigator.pop(context),
                   )

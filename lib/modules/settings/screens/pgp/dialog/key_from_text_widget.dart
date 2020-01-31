@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,7 +29,7 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
     final s = Str.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    return Platform.isIOS
+    return PlatformOverride.isIOS
         ? CupertinoAlertDialog(
             title: Text(
               s.import_keys,

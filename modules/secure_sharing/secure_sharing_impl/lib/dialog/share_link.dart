@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -244,7 +245,7 @@ class _ShareLinkState extends State<ShareLink> {
     ];
 
     final content = SizedBox(
-        height: Platform.isIOS ? size.height / 2 : size.height / 1.5,
+        height: PlatformOverride.isIOS ? size.height / 2 : size.height / 1.5,
         width: min(size.width - 40, 300),
         child: progress
             ? Center(
@@ -348,7 +349,7 @@ class _ShareLinkState extends State<ShareLink> {
                     ],
                   ));
 
-    return Platform.isIOS
+    return PlatformOverride.isIOS
         ? CupertinoAlertDialog(
             title: title,
             content: content,

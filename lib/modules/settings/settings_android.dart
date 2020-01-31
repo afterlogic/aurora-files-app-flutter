@@ -1,3 +1,4 @@
+import 'package:aurorafiles/example_widget/example_widget.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -7,6 +8,7 @@ import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -57,6 +59,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             ListTile(
               title: Text(s.about),
               leading: Icon(Icons.info_outline),
+              onLongPress: kDebugMode ? () => openExample(context) : null,
               onTap: () => Navigator.pushNamed(context, AboutRoute.name),
             ),
           ],

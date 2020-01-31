@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
   @override
   Widget build(BuildContext context) {
     final s = Str.of(context);
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       return CupertinoAlertDialog(
         title: Text(widget.settingsState.selectedKeyName),
         content: _isExporting

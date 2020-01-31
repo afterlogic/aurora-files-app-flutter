@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
@@ -93,7 +94,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
       )
     ];
 
-    return Platform.isIOS
+    return PlatformOverride.isIOS
         ? CupertinoAlertDialog(
             title: title,
             content: content,
@@ -119,7 +120,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
       }
 
       return [
-        if (Platform.isIOS)
+        if (PlatformOverride.isIOS)
           SizedBox(
             height: 10,
           ),

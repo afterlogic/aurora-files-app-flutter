@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class UpgradeAndroid extends StatelessWidget {
                   ),
                   SizedBox(height: 90.0),
                   Text(
-                    Platform.isIOS
+                    PlatformOverride.isIOS
                         ? s.upgrade_your_plan
                         : s.please_upgrade_your_plan,
                     style: theme.textTheme.subhead.copyWith(
@@ -47,19 +48,17 @@ class UpgradeAndroid extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        if (!Platform.isIOS)
+                        if (!PlatformOverride.isIOS)
                           AppButton(
                             text: s.upgrade_now,
-                            buttonColor: Theme.of(context).accentColor,
-                            textColor: Colors.white,
+                            buttonCase: ButtonCase.Filled,
                             onPressed: () => launch(
                                 "https://privatemail.com/members/clientarea.php?action=services"),
                           ),
                         SizedBox(height: 6.0),
                         AppButton(
                           text: s.back_to_login,
-                          buttonColor: Color(0xFF54618d),
-                          textColor: Colors.white,
+                          buttonCase: ButtonCase.Cancel,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                       ],

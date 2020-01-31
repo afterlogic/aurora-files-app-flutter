@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -60,7 +61,7 @@ class _LinkOptionWidgetState extends State<LinkOptionWidget> {
       )
     ];
 
-    return Platform.isIOS
+    return PlatformOverride.isIOS
         ? CupertinoAlertDialog(
             title: title,
             content: content,

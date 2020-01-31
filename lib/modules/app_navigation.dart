@@ -26,6 +26,7 @@ import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_android.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/fade_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class AppNavigation {
   static Route onGenerateRoute(RouteSettings settings) {
     if (settings.name.startsWith(FilesRoute.name)) {
       final FilesScreenArguments args = settings.arguments;
-      if (Platform.isIOS && false) {
+      if (PlatformOverride.isIOS && false) {
         return CupertinoPageRoute(
             settings: RouteSettings(
               name: FilesRoute.name + (args == null ? "" : args.path),
@@ -75,7 +76,7 @@ class AppNavigation {
 
       case FileViewerRoute.name:
         final FileViewerScreenArguments args = settings.arguments;
-        if (Platform.isIOS && false) {
+        if (PlatformOverride.isIOS && false) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
@@ -115,7 +116,7 @@ class AppNavigation {
             page: TwoFactorAuth());
         break;
       case SettingsRoute.name:
-        if (Platform.isIOS) {
+        if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
@@ -132,7 +133,7 @@ class AppNavigation {
         break;
 
       case EncryptionRoute.name:
-        if (Platform.isIOS) {
+        if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
@@ -148,7 +149,7 @@ class AppNavigation {
         }
         break;
       case PgpSettingsRoute.name:
-        if (Platform.isIOS) {
+        if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
@@ -164,7 +165,7 @@ class AppNavigation {
         }
         break;
       case StorageInfoRoute.name:
-        if (Platform.isIOS) {
+        if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
@@ -181,7 +182,7 @@ class AppNavigation {
         break;
       case PgpKeyModelRoute.name:
         final arguments = settings.arguments as List;
-        if (Platform.isIOS) {
+        if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
@@ -199,7 +200,7 @@ class AppNavigation {
         break;
       case PgpKeyExportRoute.name:
         final arguments = settings.arguments as List;
-        if (Platform.isIOS) {
+        if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
@@ -216,7 +217,7 @@ class AppNavigation {
         }
         break;
       case CommonSettingsRoute.name:
-        if (Platform.isIOS) {
+        if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
@@ -233,7 +234,7 @@ class AppNavigation {
         break;
 
       case AboutRoute.name:
-        if (Platform.isIOS) {
+        if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,

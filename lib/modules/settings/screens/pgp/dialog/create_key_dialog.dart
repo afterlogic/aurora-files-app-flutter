@@ -4,6 +4,7 @@ import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
@@ -37,7 +38,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   Widget build(BuildContext context) {
     s = Str.of(context);
     final title = Text(s.generate_keys);
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       return CupertinoAlertDialog(
         title: title,
         content: SizedBox(
@@ -244,7 +245,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     }
 
     final future = widget.pgpKeyUtil.createKeys(length, email, password);
-    Navigator.pop(context, CreateKeyResult(email, length, future, hasKey,""));
+    Navigator.pop(context, CreateKeyResult(email, length, future, hasKey, ""));
   }
 
   _pop() {

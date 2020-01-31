@@ -18,6 +18,7 @@ import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/asset_icon.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
@@ -125,7 +126,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         isError: false,
       );
     } else {
-      final result = await (Platform.isIOS
+      final result = await (PlatformOverride.isIOS
           ? showCupertinoDialog(
               context: context,
               builder: (_) => ShareDialog(
@@ -146,7 +147,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _renameFile() async {
-    final result = Platform.isIOS
+    final result = PlatformOverride.isIOS
         ? await showCupertinoDialog(
             context: context,
             builder: (_) => RenameDialog(
@@ -171,7 +172,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   void _deleteFile() async {
     bool shouldDelete;
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       shouldDelete = await showCupertinoDialog(
           context: context,
           builder: (_) => DeleteConfirmationDialog(
@@ -409,11 +410,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               ? [
                   IconButton(
                     icon: Icon(
-                        Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+                        PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
                     tooltip: s.share,
                     onPressed: () => _prepareShareFile(_shareFile),
                   ),
-                  if (!Platform.isIOS)
+                  if (!PlatformOverride.isIOS)
                     IconButton(
                       icon: Icon(Icons.file_download),
                       tooltip: s.download,
@@ -442,11 +443,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ),
                   IconButton(
                     icon: Icon(
-                        Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+                        PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
                     tooltip: s.share,
                     onPressed: () => _prepareShareFile(_shareFile),
                   ),
-                  if (_file.downloadUrl != null && !Platform.isIOS)
+                  if (_file.downloadUrl != null && !PlatformOverride.isIOS)
                     IconButton(
                       icon: Icon(Icons.file_download),
                       tooltip: s.download,

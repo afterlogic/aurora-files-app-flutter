@@ -7,6 +7,7 @@ import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final canDownload = !(hasVector && !hasDecryptKey);
     if (canDownload) {
       Navigator.pop(context);
-      final result = await (Platform.isIOS
+      final result = await (PlatformOverride.isIOS
           ? showCupertinoDialog(
               context: context,
               builder: (_) => ShareDialog(
@@ -136,11 +137,11 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               if (!widget.file.isFolder)
                 ListTile(
                   leading: Icon(
-                      Platform.isIOS ? MdiIcons.exportVariant : Icons.share),
+                      PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
                   title: Text(s.share),
                   onTap: _shareFile,
                 ),
-              if (!Platform.isIOS && !widget.file.isFolder)
+              if (!PlatformOverride.isIOS && !widget.file.isFolder)
                 ListTile(
                   leading: Icon(Icons.file_download),
                   title: Text(s.download),
@@ -153,7 +154,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   title: Text(s.rename),
                   onTap: () async {
                     Navigator.pop(context);
-                    final result = Platform.isIOS
+                    final result = PlatformOverride.isIOS
                         ? await showCupertinoDialog(
                             context: context,
                             builder: (_) => RenameDialog(
@@ -182,7 +183,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   onTap: () async {
                     Navigator.pop(context);
                     bool shouldDelete;
-                    if (Platform.isIOS) {
+                    if (PlatformOverride.isIOS) {
                       shouldDelete = await showCupertinoDialog(
                           context: context,
                           builder: (_) =>

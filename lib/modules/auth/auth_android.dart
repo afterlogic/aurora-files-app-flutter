@@ -7,9 +7,11 @@ import 'package:aurorafiles/modules/auth/screens/two_factor_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
-import 'package:aurorafiles/themimg/material_theme.dart';
+import 'package:aurorafiles/theming/material_theme.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,7 +64,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   Future _login(BuildContext context) async {
     String errMsg = "";
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       if (_showHostField && _authState.hostCtrl.text.isEmpty) {
         errMsg = s.please_enter_hostname;
       } else if (_authState.emailCtrl.text.isEmpty) {
@@ -108,128 +110,135 @@ class _AuthAndroidState extends State<AuthAndroid> {
   }
 
   List<Widget> _buildTextFields() {
-    if (Platform.isIOS) {
-      return [
-        if (_showHostField)
-          CupertinoTextField(
-            style: TextStyle(color: Colors.white),
-            cursorColor: Theme.of(context).accentColor,
-            controller: _authState.hostCtrl,
-            keyboardType: TextInputType.url,
-            decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.white38))),
-            placeholder: s.host,
-            placeholderStyle: TextStyle(color: Colors.white70),
-            autocorrect: false,
-            prefix: Opacity(
-              opacity: 0.6,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-                child: Icon(MdiIcons.web),
-              ),
-            ),
-          ),
-        SizedBox(height: 20),
+    final isIOS = PlatformOverride.isIOS;
+    [
+      if (_showHostField)
         CupertinoTextField(
-          cursorColor: Theme.of(context).accentColor,
-          controller: _authState.emailCtrl,
-          keyboardType: TextInputType.emailAddress,
           style: TextStyle(color: Colors.white),
+          cursorColor: Theme.of(context).accentColor,
+          controller: _authState.hostCtrl,
+          keyboardType: TextInputType.url,
           decoration: BoxDecoration(
-              border: Border(bottom: const BorderSide(color: Colors.white38))),
-          placeholder: s.email,
+              border: Border(bottom: BorderSide(color: Colors.white38))),
+          placeholder: s.host,
           placeholderStyle: TextStyle(color: Colors.white70),
           autocorrect: false,
           prefix: Opacity(
             opacity: 0.6,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-              child: Icon(Icons.email),
+              child: Icon(MdiIcons.web),
             ),
           ),
         ),
-        SizedBox(height: 20),
-        CupertinoTextField(
-          style: TextStyle(color: Colors.white),
-          cursorColor: Theme.of(context).accentColor,
-          controller: _authState.passwordCtrl,
-          decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.white38))),
-          placeholder: s.password,
-          placeholderStyle: TextStyle(color: Colors.white70),
-          obscureText: _obscureText,
-          autocorrect: false,
-          prefix: Opacity(
-            opacity: 0.6,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-              child: Icon(
-                Icons.lock,
-              ),
+      SizedBox(height: 20),
+      CupertinoTextField(
+        cursorColor: Theme.of(context).accentColor,
+        controller: _authState.emailCtrl,
+        keyboardType: TextInputType.emailAddress,
+        style: TextStyle(color: Colors.white),
+        decoration: BoxDecoration(
+            border: Border(bottom: const BorderSide(color: Colors.white38))),
+        placeholder: s.email,
+        placeholderStyle: TextStyle(color: Colors.white70),
+        autocorrect: false,
+        prefix: Opacity(
+          opacity: 0.6,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
+            child: Icon(Icons.email),
+          ),
+        ),
+      ),
+      SizedBox(height: 20),
+      CupertinoTextField(
+        style: TextStyle(color: Colors.white),
+        cursorColor: Theme.of(context).accentColor,
+        controller: _authState.passwordCtrl,
+        decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: Colors.white38))),
+        placeholder: s.password,
+        placeholderStyle: TextStyle(color: Colors.white70),
+        obscureText: _obscureText,
+        autocorrect: false,
+        prefix: Opacity(
+          opacity: 0.6,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
+            child: Icon(
+              Icons.lock,
             ),
           ),
-          suffix: IconButton(
-            icon: Icon(
+        ),
+        suffix: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility : Icons.visibility_off,
+            color: Colors.white70,
+          ),
+          onPressed: () => setState(() => _obscureText = !_obscureText),
+        ),
+      ),
+    ];
+
+    return [
+      if (_showHostField)
+        AppInput(
+          style: TextStyle(color: Colors.white),
+          controller: _authState.hostCtrl,
+          keyboardType: TextInputType.url,
+          validator: (value) => _showHostField
+              ? validateInput(value, [ValidationTypes.empty])
+              : "",
+          labelText: s.host,
+        ),
+      SizedBox(height: 10),
+      AppInput(
+        style: TextStyle(color: Colors.white),
+        controller: _authState.emailCtrl,
+        prefix: isIOS
+            ? Opacity(
+                opacity: 0.6,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
+                  child: Icon(Icons.email),
+                ),
+              )
+            : null,
+        keyboardType: TextInputType.emailAddress,
+        validator: (value) => validateInput(
+            value, [ValidationTypes.empty, ValidationTypes.email]),
+        labelText: s.email,
+      ),
+      SizedBox(height: 10),
+      AppInput(
+        style: TextStyle(color: Colors.white),
+        controller: _authState.passwordCtrl,
+        validator: (value) => validateInput(value, [ValidationTypes.empty]),
+        obscureText: _obscureText,
+        labelText: s.password,
+        prefix: isIOS
+            ? Opacity(
+                opacity: 0.6,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
+                  child: Icon(
+                    Icons.lock,
+                  ),
+                ),
+              )
+            : null,
+        suffix: GestureDetector(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Icon(
               _obscureText ? Icons.visibility : Icons.visibility_off,
               color: Colors.white70,
             ),
-            onPressed: () => setState(() => _obscureText = !_obscureText),
           ),
+          onTap: () => setState(() => _obscureText = !_obscureText),
         ),
-      ];
-    } else {
-      return [
-        if (_showHostField)
-          TextFormField(
-            style: TextStyle(color: Colors.white),
-            cursorColor: Theme.of(context).accentColor,
-            controller: _authState.hostCtrl,
-            keyboardType: TextInputType.url,
-            validator: (value) => _showHostField
-                ? validateInput(value, [ValidationTypes.empty])
-                : "",
-            decoration: InputDecoration(
-              alignLabelWithHint: true,
-              labelText: s.host,
-            ),
-          ),
-        SizedBox(height: 10),
-        TextFormField(
-          style: TextStyle(color: Colors.white),
-          cursorColor: Theme.of(context).accentColor,
-          controller: _authState.emailCtrl,
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) => validateInput(
-              value, [ValidationTypes.empty, ValidationTypes.email]),
-          decoration: InputDecoration(
-            labelText: s.email,
-            alignLabelWithHint: true,
-          ),
-        ),
-        SizedBox(height: 10),
-        TextFormField(
-          style: TextStyle(color: Colors.white),
-          cursorColor: Theme.of(context).accentColor,
-          controller: _authState.passwordCtrl,
-          validator: (value) => validateInput(value, [ValidationTypes.empty]),
-          obscureText: _obscureText,
-          decoration: InputDecoration(
-            labelText: s.password,
-            alignLabelWithHint: true,
-            suffixIcon: GestureDetector(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Icon(
-                  _obscureText ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.white70,
-                ),
-              ),
-              onTap: () => setState(() => _obscureText = !_obscureText),
-            ),
-          ),
-        ),
-      ];
-    }
+      ),
+    ];
   }
 
   @override
@@ -269,8 +278,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                           child: Observer(
                             builder: (BuildContext context) => AppButton(
                               text: s.login,
-                              buttonColor: Theme.of(context).accentColor,
-                              textColor: Colors.white,
+                              buttonCase: ButtonCase.Filled,
                               isLoading: _authState.isLoggingIn,
                               onPressed: () => _login(context),
                             ),

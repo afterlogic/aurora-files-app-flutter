@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
@@ -269,7 +269,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       ),
     );
 
-    return Platform.isIOS
+    return PlatformOverride.isIOS
         ? CupertinoAlertDialog(
             title: title,
             content: content,
@@ -354,7 +354,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       return [
         Text(isDownload ? s.upload : s.encryption),
         LinearProgressIndicator(
-          value: Platform.isIOS && !isDownload ? null : progress,
+          value: PlatformOverride.isIOS && !isDownload ? null : progress,
         ),
       ];
     }

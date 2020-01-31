@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ abstract class _SettingsState with Store {
   ConnectivityResult internetConnection;
 
   @observable
-  bool isDarkTheme = !Platform.isIOS;
+  bool isDarkTheme = !PlatformOverride.isIOS;
 
   @observable
   bool isParanoidEncryptionEnabled = true;

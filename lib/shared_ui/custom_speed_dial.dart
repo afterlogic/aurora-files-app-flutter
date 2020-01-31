@@ -44,7 +44,7 @@ class CustomSpeedDial extends ModalRoute<void> {
   Widget _buildOverlayContent(
       BuildContext context, Animation<double> animation) {
     final double part = 1.0 / children.length;
-
+    final theme = Theme.of(context);
     final fabAnimation = Tween<double>(
       begin: 0.0,
       end: 0.62,
@@ -94,6 +94,7 @@ class CustomSpeedDial extends ModalRoute<void> {
               }),
               SizedBox(height: 14.0),
               FloatingActionButton(
+                backgroundColor: theme.accentColor,
                 heroTag: tag,
                 elevation: 0.0,
                 child: RotationTransition(
@@ -143,10 +144,12 @@ class MiniFab extends StatelessWidget {
       backgroundColor: Theme.of(context).cardColor,
       foregroundColor: Theme.of(context).iconTheme.color.withOpacity(0.5),
       mini: true,
-      onPressed: () {
-        Navigator.pop(context);
-        onPressed();
-      },
+      onPressed: onPressed == null
+          ? null
+          : () {
+              Navigator.pop(context);
+              onPressed();
+            },
     );
   }
 }

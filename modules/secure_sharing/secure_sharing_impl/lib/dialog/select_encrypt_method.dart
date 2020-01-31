@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
@@ -132,7 +133,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
         },
       )
     ];
-    return Platform.isIOS
+    return PlatformOverride.isIOS
         ? CupertinoAlertDialog(
             title: title,
             content: content,
@@ -238,7 +239,7 @@ class RadioAnalog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
+    return PlatformOverride.isIOS
         ? Padding(
             padding: EdgeInsets.all(10),
             child: Icon(isCheck

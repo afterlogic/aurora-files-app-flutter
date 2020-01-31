@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
                       text: s.send_all.toUpperCase(),
                       onPressed: () => share(keysText),
                     ),
-                    if (!Platform.isIOS)
+                    if (!PlatformOverride.isIOS)
                       AppButton(
                         width: double.infinity,
                         text: s.download_all.toUpperCase(),

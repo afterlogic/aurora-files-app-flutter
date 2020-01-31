@@ -5,6 +5,7 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -71,7 +72,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           onPressed: () => _filesPageState.quitSelectMode(),
         ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
-        centerTitle: Platform.isIOS,
+        centerTitle: PlatformOverride.isIOS,
         actions: _filesState.isOfflineMode
             ? [
 //          IconButton(
@@ -107,7 +108,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
                 icon: Icon(
-                    Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+                    PlatformOverride.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
                 onPressed: Navigator.of(context).pop,
               )
             : IconButton(
@@ -117,7 +118,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                     : _filesState.disableUploadShared,
               ),
         title: Column(
-          crossAxisAlignment: Platform.isIOS
+          crossAxisAlignment: PlatformOverride.isIOS
               ? CrossAxisAlignment.center
               : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -139,12 +140,12 @@ class _FilesAppBarState extends State<FilesAppBar>
             )
           ],
         ),
-        centerTitle: Platform.isIOS,
+        centerTitle: PlatformOverride.isIOS,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.create_new_folder),
             tooltip: s.add_folder,
-            onPressed: () => Platform.isIOS
+            onPressed: () => PlatformOverride.isIOS
                 ? showCupertinoDialog(
                     context: context,
                     builder: (_) => AddFolderDialogAndroid(
@@ -210,7 +211,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           },
         ),
         title: Column(
-          crossAxisAlignment: Platform.isIOS
+          crossAxisAlignment: PlatformOverride.isIOS
               ? CrossAxisAlignment.center
               : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -229,12 +230,12 @@ class _FilesAppBarState extends State<FilesAppBar>
               )
           ],
         ),
-        centerTitle: Platform.isIOS,
+        centerTitle: PlatformOverride.isIOS,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: Container(
             padding: const EdgeInsets.all(12.0),
-            child: Platform.isIOS
+            child: PlatformOverride.isIOS
                 ? CupertinoTextField(
                     onSubmitted: (_) => _search(),
                     autofocus: true,
@@ -278,12 +279,12 @@ class _FilesAppBarState extends State<FilesAppBar>
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
                 icon: Icon(
-                    Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+                    PlatformOverride.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
                 onPressed: Navigator.of(context).pop,
               )
             : null,
         title: Column(
-          crossAxisAlignment: Platform.isIOS
+          crossAxisAlignment: PlatformOverride.isIOS
               ? CrossAxisAlignment.center
               : CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -292,7 +293,7 @@ class _FilesAppBarState extends State<FilesAppBar>
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  mainAxisAlignment: Platform.isIOS
+                  mainAxisAlignment: PlatformOverride.isIOS
                       ? MainAxisAlignment.center
                       : MainAxisAlignment.start,
                   children: <Widget>[
@@ -361,7 +362,7 @@ class _FilesAppBarState extends State<FilesAppBar>
               )
           ],
         ),
-        centerTitle: Platform.isIOS,
+        centerTitle: PlatformOverride.isIOS,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),

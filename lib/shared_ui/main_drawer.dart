@@ -44,7 +44,10 @@ class MainDrawer extends StatelessWidget {
                     height: 60,
                     width: 60,
                     child: CircleAvatar(
-                      child: Text(authState.userEmail[0].toUpperCase(),
+                      child: Text(
+                          authState?.userEmail?.isNotEmpty == true
+                              ? authState.userEmail[0].toUpperCase()
+                              : "",
                           style: TextStyle(
                             fontSize: 25.0,
                             fontWeight: FontWeight.w600,
@@ -55,7 +58,7 @@ class MainDrawer extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(0.0),
                     child: Text(
-                      authState.userEmail,
+                      authState.userEmail ?? "",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: TextStyle(color: Colors.white, fontSize: 16.0),
@@ -72,9 +75,10 @@ class MainDrawer extends StatelessWidget {
                   onTap: () => _showAvailableSpaceInfo(context, quota),
                   child: Tooltip(
                     showDuration: Duration(seconds: 2),
-                    message: s.quota_using((quota.progress * 100)
-                        .round()
-                        .toString(), quota.limitFormatted,),
+                    message: s.quota_using(
+                      (quota.progress * 100).round().toString(),
+                      quota.limitFormatted,
+                    ),
                     child: LinearProgressIndicator(value: quota.progress),
                   ),
                 );
@@ -100,7 +104,7 @@ class MainDrawer extends StatelessWidget {
                               : null,
                           child: ListTile(
                             selected:
-                            filesState.selectedStorage.type == storage.type,
+                                filesState.selectedStorage.type == storage.type,
                             leading: Icon(Icons.storage),
                             title: Text(storage.displayName),
                             onTap: () async {

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +92,7 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
       ],
     );
 
-    return Platform.isIOS
+    return PlatformOverride.isIOS
         ? CupertinoAlertDialog(
             title: title,
             content: SizedBox(
@@ -176,7 +177,7 @@ class CheckAnalog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
+    return PlatformOverride.isIOS
         ? GestureDetector(
             onTap: () => onChange(!isCheck),
             child: Padding(

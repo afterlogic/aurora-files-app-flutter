@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,7 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
     final s = Str.of(context);
     final title = Text(s.delete_key);
     final content = Text(s.delete_key_description);
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       return CupertinoAlertDialog(
         title: title,
         content: content,

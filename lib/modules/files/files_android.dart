@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/upload_options.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -144,7 +145,7 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   void _deleteSelected(context) async {
     bool shouldDelete;
-    if (Platform.isIOS) {
+    if (PlatformOverride.isIOS) {
       shouldDelete = await showCupertinoDialog(
           context: context,
           builder: (_) => DeleteConfirmationDialog(
@@ -261,6 +262,7 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   @override
   Widget build(BuildContext context) {
+    final theme=Theme.of(context);
     s = Str.of(context);
     return MultiProvider(
       providers: [
@@ -276,7 +278,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       ],
       child: Observer(
         builder: (_) => WillPopScope(
-          onWillPop: !Platform.isIOS
+          onWillPop: !PlatformOverride.isIOS
               ? null
               : () async => !Navigator.of(context).userGestureInProgress,
           child: Scaffold(
@@ -363,6 +365,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                         _filesPageState.isInsideZip
                     ? SizedBox()
                     : FloatingActionButton(
+                        backgroundColor: theme.accentColor,
                         heroTag: widget.path,
                         child: Icon(Icons.add),
                         onPressed: () {
@@ -373,7 +376,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                               CustomSpeedDial(tag: widget.path, children: [
                                 MiniFab(
                                   icon: Icon(Icons.create_new_folder),
-                                  onPressed: () => Platform.isIOS
+                                  onPressed: () => PlatformOverride.isIOS
                                       ? showCupertinoDialog(
                                           context: context,
                                           builder: (_) =>

@@ -1,3 +1,4 @@
+import 'package:aurorafiles/theming/app_color.dart';
 import 'package:flutter/material.dart';
 
 class MainGradient extends StatelessWidget {
@@ -15,8 +16,8 @@ class MainGradient extends StatelessWidget {
           end: Alignment.bottomLeft,
           stops: [0, 1],
           colors: [
-            Color(0xFF420324),
-            Color(0xFF252352),
+            AppColor.primaryVariant,
+            AppColor.secondary,
           ],
         ),
       ),

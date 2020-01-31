@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +47,7 @@ class SignCheckBoxState extends State<SignCheckBox> {
           ),
         ),
         Divider(color: Colors.grey),
-        if (widget.enable && Platform.isIOS)
+        if (widget.enable && PlatformOverride.isIOS)
           CupertinoTextField(
             enabled: widget.checked,
             controller: _passwordController,
@@ -63,7 +64,7 @@ class SignCheckBoxState extends State<SignCheckBox> {
               },
             ),
           ),
-        if (widget.enable && !Platform.isIOS)
+        if (widget.enable && !PlatformOverride.isIOS)
           TextFormField(
             enabled: widget.checked,
             controller: _passwordController,

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/build_const.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
@@ -93,7 +94,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
               ),
             ),
             onTap: () =>
-                launch(Platform.isIOS
+                launch(PlatformOverride.isIOS
                     ? "https://privatemail.com/terms.php"
                     : "https://privatemail.com/terms.php"),
           ),

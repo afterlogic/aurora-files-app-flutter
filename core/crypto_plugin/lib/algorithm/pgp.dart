@@ -67,7 +67,8 @@ class Pgp extends Crypt {
     );
   }
 
-  Future<List<int>> encryptBytes(Uint8List messageBytes, String passwordForSign) async {
+  Future<List<int>> encryptBytes(
+      Uint8List messageBytes, String passwordForSign) async {
     final result = await invokeMethod(
       "$algorithm.encryptBytes",
       [messageBytes, passwordForSign],
@@ -75,7 +76,8 @@ class Pgp extends Crypt {
     return List<int>.from(result);
   }
 
-  Future<void> encryptFile(File inputFile, File outputFile, String passwordForSign) async {
+  Future<void> encryptFile(
+      File inputFile, File outputFile, String passwordForSign) async {
     await invokeMethod(
       "$algorithm.encryptFile",
       [inputFile.path, outputFile.path, passwordForSign],

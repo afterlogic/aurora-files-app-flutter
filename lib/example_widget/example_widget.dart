@@ -76,7 +76,10 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
       child: wrapTheme(
         Scaffold(
           appBar: AppBar(
+
             actions: <Widget>[
+              BackButton(onPressed: ()=>Navigator.pop(context),),
+              Expanded(child: SizedBox.shrink(),),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[

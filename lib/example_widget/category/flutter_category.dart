@@ -1,5 +1,6 @@
 import 'package:aurorafiles/example_widget/test_widget/category_widget.dart';
 import 'package:aurorafiles/example_widget/test_widget/group_label.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FlutterCategory extends StatelessWidget {
@@ -34,6 +35,10 @@ class FlutterCategory extends StatelessWidget {
         ),
         Switch(value: false, onChanged: (_) {}),
         Switch(value: true, onChanged: (_) {}),
+        CupertinoSwitch(onChanged: (bool value) {}, value: false,),
+        CupertinoSwitch(onChanged: (bool value) {}, value: true,),
+        Checkbox(onChanged: (bool value) {}, value: false,),
+        Checkbox(onChanged: (bool value) {}, value: true,),
       ],
     );
   }

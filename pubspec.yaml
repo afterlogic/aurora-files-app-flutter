@@ -15,6 +15,8 @@ dependencies:
 
   secure_sharing:
     path: modules/secure_sharing/secure_sharing
+  secure_sharing_impl:
+    path: modules/secure_sharing/secure_sharing_impl
 
   flutter_cupertino_localizations:
 
@@ -77,7 +79,7 @@ dependencies:
   #  firebase_core:
 
   theme:
-    path: build_res/afterlogic/theme
+    path: build_res/private_mail/theme
 
   crypto_plugin:
     path: core/crypto_plugin
@@ -99,9 +101,9 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path: build_res/afterlogic/icon.png
-  adaptive_icon_background: "#75B8F3"
-  adaptive_icon_foreground: build_res/afterlogic/icon_foreground.png
+  image_path: build_res/private_mail/icon.png
+  adaptive_icon_background: "#34113C"
+  adaptive_icon_foreground: build_res/private_mail/icon_foreground.png
 
 flutter:
 
@@ -114,8 +116,8 @@ flutter:
   assets:
     - lib/assets/images/
     - lib/assets/svg/
-    - build_res/afterlogic/icon.png
-    - build_res/afterlogic/main_logo.png
+    - build_res/private_mail/icon.png
+    - build_res/private_mail/main_logo.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

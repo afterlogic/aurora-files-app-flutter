@@ -11,8 +11,6 @@ import receive_sharing
     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
   ) -> Bool {
 
-    
-    CryptoPlugin.register(with: self.registrar(forPlugin: "crypto_plugin"))
     UserDefaults().set("group.privatemail.files",forKey: SwiftReceiveSharingPlugin.shareGroupKey)
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

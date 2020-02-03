@@ -183,6 +183,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     return [
       if (_showHostField)
         AppInput(
+          inputCase: InputCase.Underline,
           style: TextStyle(color: Colors.white),
           controller: _authState.hostCtrl,
           keyboardType: TextInputType.url,
@@ -208,9 +209,11 @@ class _AuthAndroidState extends State<AuthAndroid> {
         validator: (value) => validateInput(
             value, [ValidationTypes.empty, ValidationTypes.email]),
         labelText: s.email,
+        inputCase: InputCase.Underline,
       ),
       SizedBox(height: 10),
       AppInput(
+        inputCase: InputCase.Underline,
         style: TextStyle(color: Colors.white),
         controller: _authState.passwordCtrl,
         validator: (value) => validateInput(value, [ValidationTypes.empty]),

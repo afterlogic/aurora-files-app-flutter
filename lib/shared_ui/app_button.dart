@@ -55,10 +55,10 @@ class AppButton extends StatelessWidget {
           return theme.accentColor;
           break;
         case ButtonCase.Filled:
-          return null;
+          return Colors.white;
           break;
         case ButtonCase.Cancel:
-          return null;
+          return Colors.white;
           break;
         case ButtonCase.Warning:
           if (isIOS) {

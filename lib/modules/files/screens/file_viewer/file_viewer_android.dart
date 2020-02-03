@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:aurorafiles/build_const.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
@@ -409,8 +408,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           actions: widget.filesState.isOfflineMode
               ? [
                   IconButton(
-                    icon: Icon(
-                        PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
+                    icon: Icon(PlatformOverride.isIOS
+                        ? MdiIcons.exportVariant
+                        : Icons.share),
                     tooltip: s.share,
                     onPressed: () => _prepareShareFile(_shareFile),
                   ),
@@ -442,8 +442,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     onPressed: _moveFile,
                   ),
                   IconButton(
-                    icon: Icon(
-                        PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
+                    icon: Icon(PlatformOverride.isIOS
+                        ? MdiIcons.exportVariant
+                        : Icons.share),
                     tooltip: s.share,
                     onPressed: () => _prepareShareFile(_shareFile),
                   ),

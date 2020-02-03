@@ -1,4 +1,5 @@
-import 'package:aurorafiles/theming/app_color.dart';
+import 'package:aurorafiles/build_property.dart';
+import 'package:theme/app_color.dart';
 import 'package:flutter/material.dart';
 
 class MainGradient extends StatelessWidget {
@@ -16,12 +17,19 @@ class MainGradient extends StatelessWidget {
           end: Alignment.bottomLeft,
           stops: [0, 1],
           colors: [
-            AppColor.primaryVariant,
-            AppColor.secondary,
+            _fromHex(BuildProperty.splashGradientTop),
+            _fromHex(BuildProperty.splashGradientBottom),
           ],
         ),
       ),
       child: child,
     );
+  }
+
+  Color _fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
   }
 }

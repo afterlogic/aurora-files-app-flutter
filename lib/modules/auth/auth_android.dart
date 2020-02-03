@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_data.dart';
@@ -11,7 +12,7 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
-import 'package:aurorafiles/theming/material_theme.dart';
+import 'package:theme/app_theme.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
@@ -111,75 +112,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   List<Widget> _buildTextFields() {
     final isIOS = PlatformOverride.isIOS;
-    [
-      if (_showHostField)
-        CupertinoTextField(
-          style: TextStyle(color: Colors.white),
-          cursorColor: Theme.of(context).accentColor,
-          controller: _authState.hostCtrl,
-          keyboardType: TextInputType.url,
-          decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.white38))),
-          placeholder: s.host,
-          placeholderStyle: TextStyle(color: Colors.white70),
-          autocorrect: false,
-          prefix: Opacity(
-            opacity: 0.6,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-              child: Icon(MdiIcons.web),
-            ),
-          ),
-        ),
-      SizedBox(height: 20),
-      CupertinoTextField(
-        cursorColor: Theme.of(context).accentColor,
-        controller: _authState.emailCtrl,
-        keyboardType: TextInputType.emailAddress,
-        style: TextStyle(color: Colors.white),
-        decoration: BoxDecoration(
-            border: Border(bottom: const BorderSide(color: Colors.white38))),
-        placeholder: s.email,
-        placeholderStyle: TextStyle(color: Colors.white70),
-        autocorrect: false,
-        prefix: Opacity(
-          opacity: 0.6,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-            child: Icon(Icons.email),
-          ),
-        ),
-      ),
-      SizedBox(height: 20),
-      CupertinoTextField(
-        style: TextStyle(color: Colors.white),
-        cursorColor: Theme.of(context).accentColor,
-        controller: _authState.passwordCtrl,
-        decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.white38))),
-        placeholder: s.password,
-        placeholderStyle: TextStyle(color: Colors.white70),
-        obscureText: _obscureText,
-        autocorrect: false,
-        prefix: Opacity(
-          opacity: 0.6,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-            child: Icon(
-              Icons.lock,
-            ),
-          ),
-        ),
-        suffix: IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility : Icons.visibility_off,
-            color: Colors.white70,
-          ),
-          onPressed: () => setState(() => _obscureText = !_obscureText),
-        ),
-      ),
-    ];
-
     return [
       if (_showHostField)
         AppInput(
@@ -251,7 +183,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     return Provider(
       create: (_) => _authState,
       child: Theme(
-        data: AppMaterialTheme.darkTheme,
+        data: AppTheme.darkTheme,
         child: Scaffold(
           body: MainGradient(
             child: SizedBox(
@@ -269,8 +201,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 32.0),
-                            child: Image.asset(
-                                "lib/assets/images/private-mail-logo.png"),
+                            child: Image.asset(BuildProperty.main_logo),
                           ),
                         ),
                         SizedBox(height: 30.0),

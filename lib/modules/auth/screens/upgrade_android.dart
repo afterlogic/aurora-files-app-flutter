@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
@@ -27,8 +28,7 @@ class UpgradeAndroid extends StatelessWidget {
                     tag: "logo",
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Image.asset(
-                          "lib/assets/images/private-mail-logo.png"),
+                      child: Image.asset(BuildProperty.main_logo),
                     ),
                   ),
                   SizedBox(height: 90.0),

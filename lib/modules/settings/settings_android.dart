@@ -1,6 +1,6 @@
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/example_widget/example_widget.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/main.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
@@ -12,8 +12,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-
-import '../../build_const.dart';
 
 class SettingsAndroid extends StatefulWidget {
   @override

@@ -5,11 +5,10 @@ import 'package:aurorafiles/example_widget/category/text_category.dart';
 import 'package:aurorafiles/example_widget/test_widget/category_widget.dart';
 import 'package:aurorafiles/generated/localization_string_widget.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/theming/material_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-
+import 'package:theme/app_theme.dart';
 import 'category/flutter_category.dart';
 
 main() {
@@ -66,7 +65,7 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
       scrollController =
           ScrollController(initialScrollOffset: scrollController.offset);
     }
-    theme = isDarkTheme ? AppMaterialTheme.darkTheme : AppMaterialTheme.theme;
+    theme = isDarkTheme ? AppTheme.darkTheme : AppTheme.theme;
     return MultiProvider(
       providers: [
         Provider(
@@ -76,10 +75,13 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
       child: wrapTheme(
         Scaffold(
           appBar: AppBar(
-
             actions: <Widget>[
-              BackButton(onPressed: ()=>Navigator.pop(context),),
-              Expanded(child: SizedBox.shrink(),),
+              BackButton(
+                onPressed: () => Navigator.pop(context),
+              ),
+              Expanded(
+                child: SizedBox.shrink(),
+              ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[

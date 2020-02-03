@@ -2,8 +2,7 @@
 appName: "Aurora Files"
 appId: "com.afterlogic.aurora.files"
 
-icon: "{{_dir}}/icon.png"
-_foreground_icon: "{{_dir}}/icon_foreground.png"
-_background_color: "#75B8F3"
-
+background_color: "#75B8F3"
+splashGradientTop: "#75B8F3"
+splashGradientBottom: "#1A7396"
 secureSharingEnable: false

@@ -37,7 +37,7 @@ dependencies:
   flutter_secure_storage:
   sqflite:
 
-  # file downloading/uploading
+  # file downloading/uploading+
   file_picker:
   #  flutter_uploader: ^1.0.3+1
   #  flutter_downloader: ^1.1.9
@@ -80,6 +80,9 @@ dependencies:
   #  firebase_crashlytics:
   #  firebase_core:
 
+  theme:
+    path: {{_theme_module}}
+
   crypto_plugin:
     path: core/crypto_plugin
   receive_sharing:
@@ -101,8 +104,8 @@ flutter_icons:
   ios: true
   android: true
   image_path: {{icon}}
-  adaptive_icon_background: "{{_background_color}}"
-  adaptive_icon_foreground: {{_foreground_icon}}
+  adaptive_icon_background: "{{background_color}}"
+  adaptive_icon_foreground: {{foreground_icon}}
 
 flutter:
 
@@ -116,6 +119,7 @@ flutter:
     - lib/assets/images/
     - lib/assets/svg/
     - {{icon}}
+    - {{main_logo}}
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

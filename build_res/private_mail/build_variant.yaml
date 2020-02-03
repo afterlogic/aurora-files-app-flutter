@@ -2,8 +2,6 @@
 appName: "PrivateMail Files"
 appId: "com.PrivateRouter.PrivateMailFiles"
 
-icon: "{{_dir}}/icon.png"
-_foreground_icon: "{{_dir}}/icon_foreground.png"
-_background_color: "#34113C"
+background_color: "#34113C"
 
 secureSharingEnable: true

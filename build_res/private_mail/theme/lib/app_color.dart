@@ -5,7 +5,7 @@ class AppColor {
   static final primaryVariant = Color(0xFF420324);
 
   static final secondary = Color(0xFF252352);
-  static final secondaryVariant = Color(0xFF252352);
+  static final secondaryVariant = Color(0x99252352);
 
   static final accent = Color(0xFFbc4799);
   static final accentVariant = Color(0xFFCE93D8);

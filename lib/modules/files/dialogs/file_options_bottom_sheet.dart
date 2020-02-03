@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -12,8 +13,6 @@ import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
-import '../../../build_const.dart';
 import 'delete_confirmation_dialog.dart';
 import 'rename_dialog_android.dart';
 import 'share_dialog.dart';
@@ -136,8 +135,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 ),
               if (!widget.file.isFolder)
                 ListTile(
-                  leading: Icon(
-                      PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
+                  leading: Icon(PlatformOverride.isIOS
+                      ? MdiIcons.exportVariant
+                      : Icons.share),
                   title: Text(s.share),
                   onTap: _shareFile,
                 ),

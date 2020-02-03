@@ -33,7 +33,7 @@ dependencies:
   flutter_secure_storage:
   sqflite:
 
-  # file downloading/uploading
+  # file downloading/uploading+
   file_picker:
   #  flutter_uploader: ^1.0.3+1
   #  flutter_downloader: ^1.1.9
@@ -76,6 +76,9 @@ dependencies:
   #  firebase_crashlytics:
   #  firebase_core:
 
+  theme:
+    path: build_res/afterlogic/theme
+
   crypto_plugin:
     path: core/crypto_plugin
   receive_sharing:
@@ -112,6 +115,7 @@ flutter:
     - lib/assets/images/
     - lib/assets/svg/
     - build_res/afterlogic/icon.png
+    - build_res/afterlogic/main_logo.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

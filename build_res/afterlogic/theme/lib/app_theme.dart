@@ -1,8 +1,9 @@
-import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/theming/app_color.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class AppMaterialTheme {
+import 'package:flutter/material.dart';
+import 'app_color.dart';
+
+class AppTheme {
   static ThemeData get theme => ThemeData(
         brightness: Brightness.light,
         primaryColor: AppColor.primary,
@@ -12,8 +13,8 @@ class AppMaterialTheme {
         toggleableActiveColor: AppColor.accent,
         textSelectionHandleColor: AppColor.accent,
         cursorColor: AppColor.accent,
-        highlightColor: PlatformOverride.isIOS ? Colors.transparent : null,
-        splashColor: PlatformOverride.isIOS ? Colors.transparent : null,
+        highlightColor: Platform.isIOS ? Colors.transparent : null,
+        splashColor: Platform.isIOS ? Colors.transparent : null,
         splashFactory: InkRipple.splashFactory,
         buttonTheme: _buttonTheme,
         selectedRowColor: Colors.black12,
@@ -29,8 +30,8 @@ class AppMaterialTheme {
         toggleableActiveColor: AppColor.accent,
         textSelectionHandleColor: AppColor.accent,
         cursorColor: AppColor.accent,
-        highlightColor: PlatformOverride.isIOS ? Colors.transparent : null,
-        splashColor: PlatformOverride.isIOS ? Colors.transparent : null,
+        highlightColor: Platform.isIOS ? Colors.transparent : null,
+        splashColor: Platform.isIOS ? Colors.transparent : null,
         splashFactory: InkRipple.splashFactory,
         buttonTheme: _buttonTheme,
         selectedRowColor: Colors.white10,

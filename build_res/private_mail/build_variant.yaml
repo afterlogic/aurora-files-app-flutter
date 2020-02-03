@@ -4,4 +4,6 @@ appId: "com.PrivateRouter.PrivateMailFiles"
 
 background_color: "#34113C"
 
+splashGradientTop: "#420324"
+splashGradientBottom: "#252352"
 secureSharingEnable: true

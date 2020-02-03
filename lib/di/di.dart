@@ -4,6 +4,8 @@ import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:crypto_plugin/crypto_plugin.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:secure_sharing/secure_sharing.dart';
+import 'package:secure_sharing_impl/secure_sharing.dart';
 
 class DI {
   static GetIt instance;
@@ -26,8 +28,6 @@ class DI {
     instance.registerSingleton<PgpKeyDao>(PgpKeyDao(_get()));
     instance.registerSingleton<Pgp>(Pgp());
     instance.registerSingleton<Aes>(Aes());
+    instance.registerSingleton<SecureSharing>(SecureSharingImpl());
   }
 }
-
-
-

@@ -4,6 +4,7 @@ _files:
   - lib/di/di.dart.temp
   - android/app/src/main/res/values/.build_res.xml.temp
   - android/build_variable.properties.temp
+  - ios/BuildVariable.xcconfig.temp
 _copy:
   "{{main_logo}}": "android/app/src/main/res/drawable/main_logo.png"
 _buildPropertyPath: lib/build_property.dart

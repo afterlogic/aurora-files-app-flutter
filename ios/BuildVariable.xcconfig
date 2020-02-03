@@ -1,2 +1,3 @@
-PRODUCT_ID = com.PrivateRouter.PrivateMailFiles
-PRODUCT_NAME = PrivateMail Files
+PRODUCT_ID = com.afterlogic.aurora.files
+PRODUCT_NAME = Aurora Files
+

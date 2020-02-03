@@ -69,8 +69,17 @@ class AppCategory extends StatelessWidget {
               key: Key((this.hashCode + 0).toString()),
             ),
             AppInput(
+              labelText: "Password",
+              suffix: Icon(Icons.visibility),
+              obscureText: true,
               controller: TextEditingController(text: "text"),
               key: Key((this.hashCode + 1).toString()),
+            ),
+            AppInput(
+              inputCase: InputCase.Underline,
+              labelText: "Label",
+              controller: TextEditingController(text: "Static color"),
+              key: Key((this.hashCode + 2).toString()),
             ),
           ],
         ),

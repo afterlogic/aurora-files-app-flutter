@@ -1,4 +1,14 @@
 class BuildProperty {
+  static const accentColor = "#3b3b3b";
+
+  static const primaryColor = "#3b3b3b";
+
+  static const primaryColorDark = "#3b3b3b";
+
+  static const primaryColorLight = "#3b3b3b";
+
+  static const selectedRowColor = "#3b3b3b";
+
   static const appName = "Aurora Files";
 
   static const appId = "com.afterlogic.aurora.files";
@@ -6,14 +16,4 @@ class BuildProperty {
   static const icon = "build_res/afterlogic/icon.png";
 
   static const secureSharingEnable = false;
-
-  static const accentColor = "#324975";
-
-  static const primaryColor = "#1982C4";
-
-  static const primaryColorDark = "#035882";
-
-  static const primaryColorLight = "#8FB8ED";
-
-  static const selectedRowColor = "#C2BBF0";
 }

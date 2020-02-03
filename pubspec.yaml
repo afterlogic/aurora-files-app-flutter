@@ -90,7 +90,7 @@ dev_dependencies:
   chopper_generator: ^3.0.0
   moor_generator: ^1.6.0+2
   build_variant:
-    path: tools/build_variant
+    git: "https://github.com/afterlogic/build_variant"
   flutter_launcher_icons: ^0.7.4
 
 flutter_icons:

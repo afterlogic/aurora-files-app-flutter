@@ -95,9 +95,11 @@ packages:
   build_variant:
     dependency: "direct dev"
     description:
-      path: "tools\\build_variant"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "13eb6d70c6eac2c0ced35d3409c4b1ed53ee7c3e"
+      url: "https://github.com/afterlogic/build_variant"
+    source: git
     version: "0.0.1"
   built_collection:
     dependency: transitive

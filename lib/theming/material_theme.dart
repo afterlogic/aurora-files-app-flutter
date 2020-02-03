@@ -15,7 +15,6 @@ class AppMaterialTheme {
         highlightColor: PlatformOverride.isIOS ? Colors.transparent : null,
         splashColor: PlatformOverride.isIOS ? Colors.transparent : null,
         splashFactory: InkRipple.splashFactory,
-        inputDecorationTheme: _inputTheme,
         buttonTheme: _buttonTheme,
         selectedRowColor: Colors.black12,
         colorScheme: colorScheme,
@@ -33,7 +32,6 @@ class AppMaterialTheme {
         highlightColor: PlatformOverride.isIOS ? Colors.transparent : null,
         splashColor: PlatformOverride.isIOS ? Colors.transparent : null,
         splashFactory: InkRipple.splashFactory,
-        inputDecorationTheme: _inputTheme,
         buttonTheme: _buttonTheme,
         selectedRowColor: Colors.white10,
         colorScheme: colorScheme.copyWith(brightness: Brightness.dark),
@@ -53,10 +51,6 @@ class AppMaterialTheme {
     background: Color.alphaBlend(Colors.white70, Colors.grey),
     onBackground: Color.alphaBlend(Colors.white54, Colors.grey),
     brightness: Brightness.light,
-  );
-
-  static final _inputTheme = InputDecorationTheme(
-    labelStyle: TextStyle(color: Colors.white70),
   );
 
   static final _buttonTheme = ButtonThemeData(

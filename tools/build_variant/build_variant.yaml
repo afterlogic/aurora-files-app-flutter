@@ -1,4 +1,0 @@
-
-variable: false
-enable_share: false
-enable_share_text: share {{enable_share}}

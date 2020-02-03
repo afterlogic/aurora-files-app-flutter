@@ -1,7 +1,0 @@
-
-_files:
-  - pubspec.yaml
-  - lib/dependency.dart
-_buildPropertyPath: lib/build_const.dart
-
-enable_share: false

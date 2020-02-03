@@ -10,7 +10,7 @@ class AppColor {
   static final accent = Color(0xFFE55046);
   static final accentVariant = Color(0xFFE55046);
 
-  static final surface = Color(0xFFF9EEBF);
+  static final surface = Color(0xFF55618C);
 
   static final warning = Color(0xFFF44336);
 }

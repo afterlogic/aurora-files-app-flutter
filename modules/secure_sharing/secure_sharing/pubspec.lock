@@ -32,10 +32,10 @@ packages:
   aurorafiles:
     dependency: "direct main"
     description:
-      path: "..\\..\\.."
+      path: "../../.."
       relative: true
     source: path
-    version: "1.0.0+18"
+    version: "1.0.0+19"
   boolean_selector:
     dependency: transitive
     description:
@@ -95,7 +95,7 @@ packages:
   crypto_plugin:
     dependency: "direct main"
     description:
-      path: "..\\..\\..\\core\\crypto_plugin"
+      path: "../../../core/crypto_plugin"
       relative: true
     source: path
     version: "0.0.1"
@@ -366,17 +366,10 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  receive_sharing_intent:
-    dependency: transitive
-    description:
-      name: receive_sharing_intent
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.3.2"
   receive_sharing:
     dependency: transitive
     description:
-      path: "..\\..\\..\\core\\receive_sharing"
+      path: "../../../core/receive_sharing"
       relative: true
     source: path
     version: "0.0.1"
@@ -387,13 +380,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.23.1"
-  secure_sharing_impl:
-    dependency: transitive
-    description:
-      path: "..\\secure_sharing_impl"
-      relative: true
-    source: path
-    version: "0.0.1"
   share_extend:
     dependency: transitive
     description:
@@ -476,6 +462,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.11"
+  theme:
+    dependency: transitive
+    description:
+      path: "../../../build_res/afterlogic/theme"
+      relative: true
+    source: path
+    version: "0.0.1"
   typed_data:
     dependency: transitive
     description:

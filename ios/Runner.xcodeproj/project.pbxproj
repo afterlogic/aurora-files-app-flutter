@@ -312,7 +312,7 @@
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = K6298N65JA;
+						DevelopmentTeam = J7AW6VHJK4;
 						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -323,7 +323,7 @@
 					};
 					DBEB4DF323E081F200E957F6 = {
 						CreatedOnToolsVersion = 11.3;
-						DevelopmentTeam = K6298N65JA;
+						DevelopmentTeam = J7AW6VHJK4;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -561,7 +561,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = K6298N65JA;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_ID)";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -706,7 +706,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = K6298N65JA;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_ID)";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -744,7 +744,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = K6298N65JA;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_ID)";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -782,7 +782,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = K6298N65JA;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_ID)";
 				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = AppShareExtension/Info.plist;
@@ -814,7 +814,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = K6298N65JA;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_ID)";
 				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = AppShareExtension/Info.plist;
@@ -843,7 +843,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = K6298N65JA;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_ID)";
 				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = AppShareExtension/Info.plist;

@@ -7,8 +7,6 @@ class BuildProperty {
 
   static const appName = "Aurora Files";
 
-  static const appId = "com.afterlogic.aurora.files";
-
   static const background_color = "#75B8F3";
 
   static const splashGradientTop = "#75B8F3";

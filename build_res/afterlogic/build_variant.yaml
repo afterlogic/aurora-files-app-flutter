@@ -1,8 +1,11 @@
 #variables
 appName: "Aurora Files"
-appId: "com.afterlogic.aurora.files"
+_appId: "com.afterlogic.aurora.files"
+_iosDeveloperId: "J7AW6VHJK4"
+_appleGroupId: "group.com.afterlogic.aurora"
 
 background_color: "#75B8F3"
 splashGradientTop: "#75B8F3"
 splashGradientBottom: "#1A7396"
+
 secureSharingEnable: false

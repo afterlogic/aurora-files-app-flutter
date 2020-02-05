@@ -5,6 +5,8 @@ _files:
   - android/app/src/main/res/values/.build_res.xml.temp
   - android/build_variable.properties.temp
   - ios/BuildVariable.xcconfig.temp
+  - ios/Runner/Runner.entitlements.temp
+  - ios/AppShareExtension/AppShareExtension.entitlements.temp
 _copy:
   "{{main_logo}}": "android/app/src/main/res/drawable/main_logo.png"
 _buildPropertyPath: lib/build_property.dart
@@ -12,13 +14,19 @@ _buildPropertyPath: lib/build_property.dart
 _buildVariant: "build_res/afterlogic/build_variant.yaml"
 #variables
 appName: ""
-appId: ""
+_appId: ""
+_iosDeveloperId: ""
+_appleGroupId: ""
 
 icon: "{{_dir}}/icon.png"
 main_logo: "{{_dir}}/main_logo.png"
 foreground_icon: "{{_dir}}/icon_foreground.png"
-background_color: "#3b3b3b"
+
 _theme_module: "{{_dir}}/theme"
+
+background_color: ""
+splashGradientTop: ""
+splashGradientBottom: ""
 
 secureSharingEnable: true
 

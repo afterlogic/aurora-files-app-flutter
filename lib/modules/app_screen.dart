@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/localization_string_widget.dart';
 import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -55,7 +56,7 @@ class _AppState extends State<App> {
               snapshot.hasData) {
             return Observer(
               builder: (_) => MaterialApp(
-                title: "PrivateMail Files",
+                title: BuildProperty.appName,
                 theme: _settingsState.isDarkTheme == true
                     ? AppTheme.darkTheme
                     : AppTheme.theme,

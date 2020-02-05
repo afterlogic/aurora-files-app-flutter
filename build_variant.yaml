@@ -9,24 +9,33 @@ _files:
   - ios/AppShareExtension/AppShareExtension.entitlements.temp
 _copy:
   "{{main_logo}}": "android/app/src/main/res/drawable/main_logo.png"
+  "{{_dir}}/sign/key.properties": "android/key.properties"
+  "{{_dir}}/sign/{{_jks_name}}": "android/app/key.jks"
 _buildPropertyPath: lib/build_property.dart
 #default config
 _buildVariant: "build_res/afterlogic/build_variant.yaml"
 #variables
+
+#app
 appName: ""
 _appId: ""
 _iosDeveloperId: ""
 _appleGroupId: ""
 
-icon: "{{_dir}}/icon.png"
-main_logo: "{{_dir}}/main_logo.png"
-foreground_icon: "{{_dir}}/icon_foreground.png"
+#android sign
+_jks_name: ""
 
+#style
+#image
+icon: "{{_dir}}/image/icon.png"
+main_logo: "{{_dir}}/image/main_logo.png"
+foreground_icon: "{{_dir}}/image/icon_foreground.png"
+#theme module
 _theme_module: "{{_dir}}/theme"
-
+#color
 background_color: ""
 splashGradientTop: ""
 splashGradientBottom: ""
-
+#module
 secureSharingEnable: true
 

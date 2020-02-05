@@ -1,5 +1,5 @@
 name: aurorafiles
-description: File management system for PrivateMail.
+description: File management system for ...
 
 version: 1.0.0+19
 
@@ -99,9 +99,9 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path: build_res/afterlogic/icon.png
+  image_path: build_res/afterlogic/image/icon.png
   adaptive_icon_background: "#75B8F3"
-  adaptive_icon_foreground: build_res/afterlogic/icon_foreground.png
+  adaptive_icon_foreground: build_res/afterlogic/image/icon_foreground.png
 
 flutter:
 
@@ -114,8 +114,8 @@ flutter:
   assets:
     - lib/assets/images/
     - lib/assets/svg/
-    - build_res/afterlogic/icon.png
-    - build_res/afterlogic/main_logo.png
+    - build_res/afterlogic/image/icon.png
+    - build_res/afterlogic/image/main_logo.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

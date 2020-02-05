@@ -1,9 +1,10 @@
 class BuildProperty {
-  static const icon = "build_res/afterlogic/icon.png";
+  static const icon = "build_res/afterlogic/image/icon.png";
 
-  static const main_logo = "build_res/afterlogic/main_logo.png";
+  static const main_logo = "build_res/afterlogic/image/main_logo.png";
 
-  static const foreground_icon = "build_res/afterlogic/icon_foreground.png";
+  static const foreground_icon =
+      "build_res/afterlogic/image/icon_foreground.png";
 
   static const appName = "Aurora Files";
 

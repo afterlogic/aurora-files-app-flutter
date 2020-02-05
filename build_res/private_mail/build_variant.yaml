@@ -4,6 +4,8 @@ _appId: "com.PrivateRouter.PrivateMailFiles"
 _iosDeveloperId: "K6298N65JA"
 _appleGroupId: "group.privatemail.files"
 
+_jks_name: "privatemail.jks"
+
 background_color: "#34113C"
 splashGradientTop: "#420324"
 splashGradientBottom: "#252352"

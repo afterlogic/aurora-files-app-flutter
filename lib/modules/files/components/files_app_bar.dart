@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
@@ -52,7 +53,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       fullPath = fullPath.substring(0, fullPath.length - 1);
     }
     final splitPath = fullPath.split(RegExp(r"/|\$ZIP:"));
-    return splitPath.last.isNotEmpty ? splitPath.last : "PrivateMail Files";
+    return splitPath.last.isNotEmpty ? splitPath.last : BuildProperty.appName;
   }
 
   void _search() {
@@ -107,8 +108,9 @@ class _FilesAppBarState extends State<FilesAppBar>
         backgroundColor: Theme.of(context).accentColor,
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
-                icon: Icon(
-                    PlatformOverride.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+                icon: Icon(PlatformOverride.isIOS
+                    ? Icons.arrow_back_ios
+                    : Icons.arrow_back),
                 onPressed: Navigator.of(context).pop,
               )
             : IconButton(
@@ -278,8 +280,9 @@ class _FilesAppBarState extends State<FilesAppBar>
         key: Key("default"),
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
-                icon: Icon(
-                    PlatformOverride.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+                icon: Icon(PlatformOverride.isIOS
+                    ? Icons.arrow_back_ios
+                    : Icons.arrow_back),
                 onPressed: Navigator.of(context).pop,
               )
             : null,

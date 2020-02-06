@@ -25,6 +25,7 @@
 		DBB4A40423A7E61000B3A649 /* Aes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A40323A7E61000B3A649 /* Aes.swift */; };
 		DBB4BD0F23D0593F00F6E6B7 /* SymmetricPgp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */; };
 		DBB4BD1123D0623D00F6E6B7 /* PgpUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */; };
+		DBBC121523EC178700AD22CE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DBBC121423EC178600AD22CE /* GoogleService-Info.plist */; };
 		DBEB4DF723E081F200E957F6 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBEB4DF623E081F200E957F6 /* ShareViewController.swift */; };
 		DBEB4DFA23E081F200E957F6 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBEB4DF823E081F200E957F6 /* MainInterface.storyboard */; };
 		DBEB4DFE23E081F200E957F6 /* AppShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DBEB4DF423E081F200E957F6 /* AppShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -95,6 +96,7 @@
 		DBB4A40323A7E61000B3A649 /* Aes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aes.swift; sourceTree = "<group>"; };
 		DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricPgp.swift; sourceTree = "<group>"; };
 		DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PgpUtil.swift; sourceTree = "<group>"; };
+		DBBC121423EC178600AD22CE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DBEB4DF423E081F200E957F6 /* AppShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AppShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBEB4DF623E081F200E957F6 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		DBEB4DF923E081F200E957F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				DBBC121423EC178600AD22CE /* GoogleService-Info.plist */,
 				DB49062D23E30ED40098DFE2 /* BuildVariable.xcconfig */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
@@ -272,6 +275,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				FEE43B49E5D3BEAF225CD6C9 /* [CP] Embed Pods Frameworks */,
 				DBEB4DFF23E081F200E957F6 /* Embed App Extensions */,
+				DBBC121323EC16EE00AD22CE /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -356,6 +360,7 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
+				DBBC121523EC178700AD22CE /* GoogleService-Info.plist in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -419,7 +424,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
+		};
+		DBBC121323EC16EE00AD22CE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
 		};
 		FEE43B49E5D3BEAF225CD6C9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

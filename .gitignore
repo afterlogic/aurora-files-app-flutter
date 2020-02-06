@@ -122,3 +122,6 @@ crypto_plugin/ios/Classes/
 /lib/build_property.dart
 /android/app/google-services.json
 **/build_res/**/sign/
+/ios/GoogleService-Info.plist
+/ios/AppShareExtension/AppShareExtension.entitlements
+/ios/Runner/Runner.entitlements

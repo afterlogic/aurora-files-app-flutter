@@ -15,6 +15,7 @@ import java.io.*
 import org.bouncycastle.openpgp.PGPPublicKey
 import org.bouncycastle.openpgp.bc.BcPGPObjectFactory
 import org.bouncycastle.openpgp.operator.bc.BcPBEDataDecryptorFactory
+import org.bouncycastle.openpgp.operator.bc.BcPBEKeyEncryptionMethodGenerator
 import org.bouncycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider
 import org.bouncycastle.util.io.Streams
 import org.pgpainless.PGPainless
@@ -297,10 +298,11 @@ class Pgp {
                             .setSecureRandom(SecureRandom())
 
             )
-
+            //BcPBEKeyEncryptionMethodGenerator
+            //JcePBEKeyEncryptionMethodGenerator
             encGen.addMethod(
-                    JcePBEKeyEncryptionMethodGenerator(passphrase.chars)
-                            .setProvider(provider)
+                    BcPBEKeyEncryptionMethodGenerator(passphrase.chars)
+                            .setSecureRandom(SecureRandom())
             )
 
             encOut = if (privateKey != null && privateKeyPassword != null) {

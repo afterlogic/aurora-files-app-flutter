@@ -1,5 +1,6 @@
 package com.afterlogic.crypto_plugin.pgp
 
+import org.bouncycastle.openpgp.operator.jcajce.JcePBEKeyEncryptionMethodGenerator
 import org.bouncycastle.util.io.Streams
 import org.junit.Test
 import java.io.ByteArrayInputStream

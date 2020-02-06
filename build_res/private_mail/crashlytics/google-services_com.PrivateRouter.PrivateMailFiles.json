@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "405048374750",
+    "firebase_url": "https://privatemail-files.firebaseio.com",
+    "project_id": "privatemail-files",
+    "storage_bucket": "privatemail-files.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405048374750:android:a3c9c28d02b195a033594f",
+        "android_client_info": {
+          "package_name": "com.PrivateRouter.PrivateMailFiles"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405048374750-datpbg5hrq3jl4cr44ho2dehogdq8fhn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1eaovYetrIhvp5FmBZVDN1ucsLmQeD8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405048374750-datpbg5hrq3jl4cr44ho2dehogdq8fhn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

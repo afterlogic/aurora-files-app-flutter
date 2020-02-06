@@ -20,12 +20,12 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		DB2F2AA523B4EA2A0064E88E /* PgpApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2F2AA423B4EA2A0064E88E /* PgpApi.swift */; };
+		DBB2978223EC410400FAC526 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DBB2978123EC410400FAC526 /* GoogleService-Info.plist */; };
 		DBB4A3FE23A7E5BF00B3A649 /* CryptoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A3FD23A7E5BF00B3A649 /* CryptoPlugin.swift */; };
 		DBB4A40123A7E5E000B3A649 /* Pgp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A40023A7E5E000B3A649 /* Pgp.swift */; };
 		DBB4A40423A7E61000B3A649 /* Aes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A40323A7E61000B3A649 /* Aes.swift */; };
 		DBB4BD0F23D0593F00F6E6B7 /* SymmetricPgp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */; };
 		DBB4BD1123D0623D00F6E6B7 /* PgpUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */; };
-		DBBC121523EC178700AD22CE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DBBC121423EC178600AD22CE /* GoogleService-Info.plist */; };
 		DBEB4DF723E081F200E957F6 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBEB4DF623E081F200E957F6 /* ShareViewController.swift */; };
 		DBEB4DFA23E081F200E957F6 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBEB4DF823E081F200E957F6 /* MainInterface.storyboard */; };
 		DBEB4DFE23E081F200E957F6 /* AppShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DBEB4DF423E081F200E957F6 /* AppShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -91,12 +91,12 @@
 		DB156FB023A7C5AF0045651F /* DMSOpenPGP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = DMSOpenPGP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB2F2AA423B4EA2A0064E88E /* PgpApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PgpApi.swift; sourceTree = "<group>"; };
 		DB49062D23E30ED40098DFE2 /* BuildVariable.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BuildVariable.xcconfig; sourceTree = "<group>"; };
+		DBB2978123EC410400FAC526 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DBB4A3FD23A7E5BF00B3A649 /* CryptoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoPlugin.swift; sourceTree = "<group>"; };
 		DBB4A40023A7E5E000B3A649 /* Pgp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pgp.swift; sourceTree = "<group>"; };
 		DBB4A40323A7E61000B3A649 /* Aes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aes.swift; sourceTree = "<group>"; };
 		DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricPgp.swift; sourceTree = "<group>"; };
 		DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PgpUtil.swift; sourceTree = "<group>"; };
-		DBBC121423EC178600AD22CE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DBEB4DF423E081F200E957F6 /* AppShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AppShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBEB4DF623E081F200E957F6 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		DBEB4DF923E081F200E957F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
-				DBBC121423EC178600AD22CE /* GoogleService-Info.plist */,
+				DBB2978123EC410400FAC526 /* GoogleService-Info.plist */,
 				DB49062D23E30ED40098DFE2 /* BuildVariable.xcconfig */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
@@ -360,8 +360,8 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
-				DBBC121523EC178700AD22CE /* GoogleService-Info.plist in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				DBB2978223EC410400FAC526 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

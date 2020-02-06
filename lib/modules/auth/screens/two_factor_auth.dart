@@ -43,7 +43,7 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
                     tag: "logo",
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Image.asset(BuildProperty.main_logo),
+                      child: Image.asset(BuildProperty.mainLogo),
                     ),
                   ),
                   SizedBox(height: 70.0),

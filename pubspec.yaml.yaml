@@ -81,7 +81,7 @@ dependencies:
   firebase_core:
 
   theme:
-    path: {{_theme_module}}
+    path: {{_themeModule}}
 
   crypto_plugin:
     path: core/crypto_plugin
@@ -104,8 +104,8 @@ flutter_icons:
   ios: true
   android: true
   image_path: {{icon}}
-  adaptive_icon_background: "{{background_color}}"
-  adaptive_icon_foreground: {{foreground_icon}}
+  adaptive_icon_background: "{{backgroundColor}}"
+  adaptive_icon_foreground: {{foregroundIcon}}
 
 flutter:
 
@@ -119,7 +119,7 @@ flutter:
     - lib/assets/images/
     - lib/assets/svg/
     - {{icon}}
-    - {{main_logo}}
+    - {{mainLogo}}
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

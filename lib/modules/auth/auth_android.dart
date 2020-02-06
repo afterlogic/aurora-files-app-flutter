@@ -201,7 +201,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 32.0),
-                            child: Image.asset(BuildProperty.main_logo),
+                            child: Image.asset(BuildProperty.mainLogo),
                           ),
                         ),
                         SizedBox(height: 30.0),

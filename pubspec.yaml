@@ -72,7 +72,7 @@ dependencies:
   #async util
   rxdart:
 
-
+  #crashlytics
   firebase_crashlytics:
   firebase_core:
 

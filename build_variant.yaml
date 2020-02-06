@@ -8,10 +8,11 @@ _files:
   - ios/Runner/Runner.entitlements.temp
   - ios/AppShareExtension/AppShareExtension.entitlements.temp
 _copy:
-  "{{main_logo}}": "android/app/src/main/res/drawable/main_logo.png"
+  "{{mainLogo}}": "android/app/src/main/res/drawable/main_logo.png"
   "{{_dir}}/sign/key.properties": "android/key.properties"
-  "{{_dir}}/sign/{{_jks_name}}": "android/app/key.jks"
-  "{{_dir}}/crashlytics/{{_google_service_name}}": "android/app/google_services.json"
+  "{{_dir}}/sign/{{_jksName}}": "android/app/key.jks"
+  "{{_dir}}/crashlytics/{{_androidGoogleService}}": "android/app/google_services.json"
+  "{{_dir}}/crashlytics/{{_iosGoogleService}}": "ios/GoogleService-Info.plist"
 _buildPropertyPath: lib/build_property.dart
 #default config
 _buildVariant: "build_res/afterlogic/build_variant.yaml"
@@ -24,20 +25,21 @@ _iosDeveloperId: ""
 _appleGroupId: ""
 
 #android sign
-_jks_name: ""
+_jksName: ""
 
 #google service
-_google_service_name: ""
+_androidGoogleService: ""
+_iosGoogleService: ""
 
 #style
 #image
 icon: "{{_dir}}/image/icon.png"
-main_logo: "{{_dir}}/image/main_logo.png"
-foreground_icon: "{{_dir}}/image/icon_foreground.png"
+mainLogo: "{{_dir}}/image/main_logo.png"
+foregroundIcon: "{{_dir}}/image/icon_foreground.png"
 #theme module
-_theme_module: "{{_dir}}/theme"
+_themeModule: "{{_dir}}/theme"
 #color
-background_color: ""
+backgroundColor: ""
 splashGradientTop: ""
 splashGradientBottom: ""
 #module

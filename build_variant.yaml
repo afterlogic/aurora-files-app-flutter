@@ -11,7 +11,7 @@ _copy:
   "{{mainLogo}}": "android/app/src/main/res/drawable/main_logo.png"
   "{{_dir}}/sign/key.properties": "android/key.properties"
   "{{_dir}}/sign/{{_jksName}}": "android/app/key.jks"
-  "{{_dir}}/crashlytics/{{_androidGoogleService}}": "android/app/google_services.json"
+  "{{_dir}}/crashlytics/{{_androidGoogleService}}": "android/app/google-services.json"
   "{{_dir}}/crashlytics/{{_iosGoogleService}}": "ios/GoogleService-Info.plist"
 _buildPropertyPath: lib/build_property.dart
 #default config

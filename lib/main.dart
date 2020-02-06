@@ -11,10 +11,12 @@ import 'modules/app_screen.dart';
 import 'override_platform.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   if (!kDebugMode) {
     Crashlytics.instance.enableInDevMode = true;
     FlutterError.onError = Crashlytics.instance.recordFlutterError;
   }
+
   PlatformOverride.setPlatform(Platform.isIOS);
   DI.init();
 

@@ -12,7 +12,6 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GeneratedPluginRegistrant.registerWith(this)
-        
         MethodChannel(flutterView, "DIRECTORY_DOWNLOADS").setMethodCallHandler { call, result ->
             result.success(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path)
         }

@@ -10,9 +10,9 @@ class BuildProperty {
 
   static const background_color = "#75B8F3";
 
-  static const splashGradientTop = "#75B8F3";
+  static const splashGradientTop = "#E18F84";
 
-  static const splashGradientBottom = "#1A7396";
+  static const splashGradientBottom = "#43D0BF";
 
   static const secureSharingEnable = false;
 }

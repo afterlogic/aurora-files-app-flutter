@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class AppColor {
   static final primary = Color(0xFF6b0b3f);
   static final primaryVariant = Color(0xFF420324);
@@ -13,4 +15,6 @@ class AppColor {
   static final surface = Color(0xFF55618C);
 
   static final warning = Color(0xFFF44336);
+
+  static final buttonTextColor = Colors.white;
 }

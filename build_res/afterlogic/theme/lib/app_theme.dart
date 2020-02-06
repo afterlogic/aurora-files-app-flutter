@@ -20,6 +20,7 @@ class AppTheme {
     selectedRowColor: Colors.black12,
     colorScheme: colorScheme,
     appBarTheme: _appBarTheme,
+    floatingActionButtonTheme: _floatingActionButtonTheme,
     primaryTextTheme: _textTheme,
   );
 
@@ -39,6 +40,7 @@ class AppTheme {
     selectedRowColor: Colors.white10,
     colorScheme: colorScheme.copyWith(brightness: Brightness.dark),
     appBarTheme: _appBarTheme,
+    floatingActionButtonTheme: _floatingActionButtonTheme,
     primaryTextTheme: _textTheme,
   );
 
@@ -67,7 +69,12 @@ class AppTheme {
   static final _textTheme = TextTheme(title: TextStyle(color: Colors.white));
 
   static final _appBarTheme = AppBarTheme(
+    color: AppColor.secondary,
     iconTheme: IconThemeData(color: Colors.white),
     actionsIconTheme: IconThemeData(color: Colors.white),
+  );
+  static final _floatingActionButtonTheme = FloatingActionButtonThemeData(
+    splashColor: AppColor.accent,
+    foregroundColor: Colors.white,
   );
 }

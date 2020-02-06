@@ -34,7 +34,7 @@ class MainDrawer extends StatelessWidget {
             DrawerHeader(
               margin: EdgeInsets.zero,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).appBarTheme.color,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,

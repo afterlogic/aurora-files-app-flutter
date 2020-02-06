@@ -11,6 +11,7 @@ _copy:
   "{{main_logo}}": "android/app/src/main/res/drawable/main_logo.png"
   "{{_dir}}/sign/key.properties": "android/key.properties"
   "{{_dir}}/sign/{{_jks_name}}": "android/app/key.jks"
+  "{{_dir}}/crashlytics/{{_google_service_name}}": "android/app/google_services.json"
 _buildPropertyPath: lib/build_property.dart
 #default config
 _buildVariant: "build_res/afterlogic/build_variant.yaml"
@@ -24,6 +25,9 @@ _appleGroupId: ""
 
 #android sign
 _jks_name: ""
+
+#google service
+_google_service_name: ""
 
 #style
 #image

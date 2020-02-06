@@ -5,9 +5,11 @@ _iosDeveloperId: "J7AW6VHJK4"
 _appleGroupId: "group.com.afterlogic.aurora"
 
 _jks_name: "afterlogic.jks"
+_google_service_name: "google-services_com.afterlogic.aurora.files.json"
+
 
 background_color: "#75B8F3"
-splashGradientTop: "#75B8F3"
-splashGradientBottom: "#1A7396"
+splashGradientTop: "#E18F84"
+splashGradientBottom: "#43D0BF"
 
 secureSharingEnable: false

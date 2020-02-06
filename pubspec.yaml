@@ -72,9 +72,9 @@ dependencies:
   #async util
   rxdart:
 
-  #crashlytics
-  #  firebase_crashlytics:
-  #  firebase_core:
+
+  firebase_crashlytics:
+  firebase_core:
 
   theme:
     path: build_res/afterlogic/theme

@@ -77,8 +77,8 @@ dependencies:
   rxdart:
 
   #crashlytics
-  #  firebase_crashlytics:
-  #  firebase_core:
+  firebase_crashlytics:
+  firebase_core:
 
   theme:
     path: {{_theme_module}}

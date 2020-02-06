@@ -1,6 +1,7 @@
 import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:theme/app_color.dart';
 
 class AppButton extends StatelessWidget {
   final Function onPressed;
@@ -49,31 +50,9 @@ class AppButton extends StatelessWidget {
       return null;
     }
 
-    Color selectTextColor(Color fillColor) {
-      switch (buttonCase) {
-        case ButtonCase.Default:
-          return theme.accentColor;
-          break;
-        case ButtonCase.Filled:
-          return Colors.white;
-          break;
-        case ButtonCase.Cancel:
-          return Colors.white;
-          break;
-        case ButtonCase.Warning:
-          if (isIOS) {
-            return theme.errorColor;
-          } else {
-            return null;
-          }
-          break;
-      }
-      return null;
-    }
-
     final fillColor = selectFillColor();
 
-    final textColor = selectTextColor(fillColor);
+    final textColor = AppColor.buttonTextColor;
 
     if (PlatformOverride.isIOS) {
       return Container(
@@ -113,7 +92,13 @@ class AppButton extends StatelessWidget {
                           valueColor:
                               AlwaysStoppedAnimation<Color>(Colors.white)),
                     )
-                  : Text(text.toUpperCase()),
+                  : Text(
+                      text.toUpperCase(),
+                      style: TextStyle(
+                          color: onPressed != null
+                              ? textColor
+                              : theme.disabledColor),
+                    ),
             ),
             onPressed: isLoading == true ? null : onPressed),
       );

@@ -19,6 +19,7 @@ class AppTheme {
         buttonTheme: _buttonTheme,
         selectedRowColor: Colors.black12,
         colorScheme: colorScheme,
+        appBarTheme: _appBarTheme,
       );
 
   static ThemeData get darkTheme => ThemeData(
@@ -35,6 +36,7 @@ class AppTheme {
         splashFactory: InkRipple.splashFactory,
         buttonTheme: _buttonTheme,
         selectedRowColor: Colors.white10,
+        appBarTheme: _appBarTheme,
         colorScheme: colorScheme.copyWith(brightness: Brightness.dark),
       );
 
@@ -58,5 +60,8 @@ class AppTheme {
     buttonColor: AppColor.accent,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
     textTheme: ButtonTextTheme.primary,
+  );
+  static final _appBarTheme = AppBarTheme(
+    color: AppColor.primary,
   );
 }

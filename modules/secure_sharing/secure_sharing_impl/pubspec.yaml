@@ -13,7 +13,7 @@ dependencies:
   aurorafiles:
     path: ../../..
   crypto_plugin:
-    path: ../../../core/crypto_plugin
+    git: https://github.com/afterlogic/flutter_crypto_plugin
   secure_sharing:
     path: ../secure_sharing
 dev_dependencies:

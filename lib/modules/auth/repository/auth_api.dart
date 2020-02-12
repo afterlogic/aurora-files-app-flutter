@@ -24,9 +24,11 @@ class AuthApi {
     final parameters =
         json.encode({"Login": email, "Password": password, "Pattern": ""});
 
-    final body =
-        new ApiBody(module: "Core", method: "Login", parameters: parameters)
-            .toMap();
+    final body = ApiBody(
+      module: "Core",
+      method: "Login",
+      parameters: parameters,
+    ).toMap();
 
     final res = await http.post(AppStore.authState.apiUrl, body: body);
 

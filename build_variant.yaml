@@ -7,6 +7,8 @@ _files:
   - ios/BuildVariable.xcconfig.temp
   - ios/Runner/Runner.entitlements.temp
   - ios/AppShareExtension/AppShareExtension.entitlements.temp
+  - sh/build_apk.sh.temp
+  - sh/build_appbundle.sh.temp
 _copy:
   "{{mainLogo}}": "android/app/src/main/res/drawable/main_logo.png"
   "{{_dir}}/sign/key.properties": "android/key.properties"
@@ -23,6 +25,8 @@ appName: ""
 _appId: ""
 _iosDeveloperId: ""
 _appleGroupId: ""
+
+version: "1.0.0+20"
 
 #android sign
 _jksName: "key.jks"
@@ -42,6 +46,9 @@ _themeModule: "{{_dir}}/theme"
 backgroundColor: ""
 splashGradientTop: ""
 splashGradientBottom: ""
+
+useMainLogo: false
+
 #url
 privacyPolicy: ""
 termsOfService: ""

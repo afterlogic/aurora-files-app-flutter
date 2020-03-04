@@ -1,10 +1,8 @@
-import 'dart:io';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
@@ -32,7 +30,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
     }
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
+      appBar: AMAppBar(
         title: Text(s.all_public_keys),
       ),
       body: OrientationBuilder(
@@ -61,16 +59,20 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    AppButton(
+                    SizedBox(
                       width: double.infinity,
-                      text: s.send_all.toUpperCase(),
-                      onPressed: () => share(keysText),
+                      child: AMButton(
+                        child: Text(s.send_all),
+                        onPressed: () => share(keysText),
+                      ),
                     ),
                     if (!PlatformOverride.isIOS)
-                      AppButton(
+                      SizedBox(
                         width: double.infinity,
-                        text: s.download_all.toUpperCase(),
-                        onPressed: download,
+                        child: AMButton(
+                          child: Text(s.download_all),
+                          onPressed: download,
+                        ),
                       ),
                   ],
                 ),

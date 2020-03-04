@@ -1,7 +1,7 @@
 name: aurorafiles
 description: File management system for ...
 
-version: 1.0.0+20
+version: {{version}}
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -82,7 +82,8 @@ dependencies:
 
   theme:
     path: {{_themeModule}}
-
+  aurora_ui_kit:
+    path: core/aurora_ui_kit
   crypto_plugin:
     git: https://github.com/afterlogic/flutter_crypto_plugin
   receive_sharing:

@@ -1,11 +1,9 @@
-import 'dart:io';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +29,8 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
     final theme = Theme.of(context);
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
+      appBar: AMAppBar(
+        titleSpacing: NavigationToolbar.kMiddleSpacing,
         title: Text(widget._pgpKey.isPrivate ? s.private_key : s.public_key),
       ),
       body: OrientationBuilder(
@@ -64,21 +63,27 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    AppButton(
+                    SizedBox(
                       width: double.infinity,
-                      text: s.share.toUpperCase(),
-                      onPressed: share,
+                      child: AMButton(
+                        child: Text(s.share),
+                        onPressed: share,
+                      ),
                     ),
                     if (!PlatformOverride.isIOS)
-                      AppButton(
+                      SizedBox(
                         width: double.infinity,
-                        text: s.download.toUpperCase(),
-                        onPressed: download,
+                        child: AMButton(
+                          child: Text(s.download),
+                          onPressed: download,
+                        ),
                       ),
-                    AppButton(
+                    SizedBox(
                       width: double.infinity,
-                      text: s.delete.toUpperCase(),
-                      onPressed: delete,
+                      child: AMButton(
+                        child: Text(s.delete),
+                        onPressed: delete,
+                      ),
                     ),
                   ],
                 ),

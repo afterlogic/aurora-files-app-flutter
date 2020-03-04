@@ -1,11 +1,12 @@
-import 'dart:io';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/modules/auth/component/mail_logo.dart';
+import 'package:aurorafiles/modules/auth/component/presentation_header.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/material.dart';
+import 'package:theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UpgradeAndroid extends StatelessWidget {
@@ -14,59 +15,62 @@ class UpgradeAndroid extends StatelessWidget {
     final s = Str.of(context);
     final mq = MediaQuery.of(context);
     final theme = Theme.of(context);
-    return Scaffold(
-      body: MainGradient(
-        child: SizedBox(
-          height: mq.size.height - mq.viewInsets.bottom,
-          width: mq.size.width,
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 22.0),
-              child: Column(
-                children: <Widget>[
-                  Hero(
-                    tag: "logo",
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Image.asset(BuildProperty.mainLogo),
+    return Theme(
+      data: AppTheme.login,
+      child: Scaffold(
+        body: MainGradient(
+          child: Stack(
+            children: <Widget>[
+              if (!BuildProperty.useMainLogo)
+                Positioned(
+                  top: -70.0,
+                  left: -70.0,
+                  child: MailLogo(isBackground: true),
+                ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 22.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    PresentationHeader(
+                      message: "",
                     ),
-                  ),
-                  SizedBox(height: 90.0),
-                  Text(
-                    PlatformOverride.isIOS
-                        ? s.upgrade_your_plan
-                        : s.please_upgrade_your_plan,
-                    style: theme.textTheme.subhead.copyWith(
-                      fontSize: 20,
-                      color: Colors.white,
+                    Text(
+                      PlatformOverride.isIOS
+                          ? s.upgrade_your_plan
+                          : s.please_upgrade_your_plan,
+                      style: theme.textTheme.subhead.copyWith(
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 70.0),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                    Column(
                       children: <Widget>[
                         if (!PlatformOverride.isIOS)
-                          AppButton(
-                            text: s.upgrade_now,
-                            buttonCase: ButtonCase.Filled,
-                            onPressed: () => launch(
-                                "https://privatemail.com/members/clientarea.php?action=services"),
+                          SizedBox(
+                            width: double.infinity,
+                            child: AMButton(
+                              child: Text(s.upgrade_now),
+                              onPressed: () => launch(
+                                  "https://privatemail.com/members/clientarea.php?action=services"),
+                            ),
                           ),
                         SizedBox(height: 6.0),
-                        AppButton(
-                          text: s.back_to_login,
-                          buttonCase: ButtonCase.Cancel,
-                          onPressed: () => Navigator.of(context).pop(),
+                        SizedBox(
+                          width: double.infinity,
+                          child: AMButton(
+                            child: Text(s.back_to_login),
+                            color: theme.colorScheme.surface,
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),

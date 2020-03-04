@@ -205,4 +205,7 @@ abstract class S {
   String get invalid_pin;
   String get upload_file;
   String upload_files(String count);
+  String get login_to_continue;
+  String get confirm_exit;
+  String get exit;
 }

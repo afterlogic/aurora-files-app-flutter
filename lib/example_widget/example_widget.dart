@@ -75,6 +75,7 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
       child: wrapTheme(
         Scaffold(
           appBar: AppBar(
+            titleSpacing: NavigationToolbar.kMiddleSpacing,
             actions: <Widget>[
               BackButton(
                 onPressed: () => Navigator.pop(context),

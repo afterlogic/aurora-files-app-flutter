@@ -12,6 +12,7 @@ class FlutterCategory extends StatelessWidget {
       "Flutter widgets",
       [
         AppBar(
+          titleSpacing: NavigationToolbar.kMiddleSpacing,
           title: Text("Title"),
         ),
         Card(

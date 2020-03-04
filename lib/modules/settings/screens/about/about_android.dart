@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 class AboutAndroid extends StatefulWidget {
   @override
   _AboutAndroidState createState() => _AboutAndroidState();
@@ -49,7 +49,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
   Widget build(BuildContext context) {
     final s = Str.of(context);
     return Scaffold(
-      appBar: AppBar(
+      appBar: AMAppBar(
         title: Text(s.about),
       ),
       body: loading

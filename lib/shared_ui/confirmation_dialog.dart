@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,8 +24,7 @@ class ConfirmationDialog extends StatelessWidget {
     if (PlatformOverride.isIOS) {
       return showCupertinoDialog(
           context: context,
-          builder: (_) =>
-              ConfirmationDialog(
+          builder: (_) => ConfirmationDialog(
                 title: title,
                 description: description,
                 actionText: actionText,
@@ -35,8 +32,7 @@ class ConfirmationDialog extends StatelessWidget {
     } else {
       return showDialog(
           context: context,
-          builder: (_) =>
-              ConfirmationDialog(
+          builder: (_) => ConfirmationDialog(
                 title: title,
                 description: description,
                 actionText: actionText,
@@ -49,7 +45,7 @@ class ConfirmationDialog extends StatelessWidget {
     final s = Str.of(context);
     if (PlatformOverride.isIOS) {
       return CupertinoAlertDialog(
-        title: Text(title),
+        title: title == null ? null : Text(title),
         content: Text(description),
         actions: <Widget>[
           CupertinoButton(
@@ -64,7 +60,7 @@ class ConfirmationDialog extends StatelessWidget {
       );
     } else {
       return AlertDialog(
-        title: Text(title),
+        title:  title == null ? null : Text(title),
         content: Text(description),
         actions: <Widget>[
           FlatButton(

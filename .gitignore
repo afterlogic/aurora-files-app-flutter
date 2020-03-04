@@ -126,3 +126,5 @@ crypto_plugin/ios/Classes/
 /ios/AppShareExtension/AppShareExtension.entitlements
 /ios/Runner/Runner.entitlements
 **/build_res/**/crashlytics/
+sh/build_appbundle.sh
+sh/build_apk.sh

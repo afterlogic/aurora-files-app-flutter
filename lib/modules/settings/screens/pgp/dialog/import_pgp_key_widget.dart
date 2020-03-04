@@ -1,11 +1,10 @@
-import 'dart:io';
 import 'dart:math';
 
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -79,16 +78,19 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
             itemCount: widget.keys.length,
           ),
         ),
-        AppButton(
-            width: double.infinity,
-            text: s.import_selected_keys.toUpperCase(),
-            onPressed: () {
-              Navigator.pop(context, selected.values.toList());
-            }),
-        AppButton(
-            width: double.infinity,
-            text: s.cancel.toUpperCase(),
-            onPressed: () => Navigator.pop(context)),
+        SizedBox(
+          width: double.infinity,
+          child: AMButton(
+              child: Text(s.import_selected_keys),
+              onPressed: () {
+                Navigator.pop(context, selected.values.toList());
+              }),
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: AMButton(
+              child: Text(s.cancel), onPressed: () => Navigator.pop(context)),
+        ),
       ],
     );
 

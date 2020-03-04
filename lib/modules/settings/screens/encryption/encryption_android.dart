@@ -1,5 +1,5 @@
-import 'dart:io';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_dialog.dart';
@@ -7,7 +7,6 @@ import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_k
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/export_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -77,8 +76,8 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         SizedBox(height: 8.0),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AppButton(
-            text: s.import_key_from_text,
+          child: AMButton(
+            child: Text(s.import_key_from_text),
             onPressed: () => PlatformOverride.isIOS
                 ? showCupertinoDialog(
                     context: context,
@@ -95,8 +94,8 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AppButton(
-            text: s.import_key_from_file,
+          child: AMButton(
+            child: Text(s.import_key_from_file),
             onPressed: () => _settingsState.onImportKeyFromFile(
                 onSuccess: () => showSnack(
                     context: context,
@@ -112,8 +111,8 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AppButton(
-            text: s.generate_key,
+          child: AMButton(
+            child: Text(s.generate_key),
             onPressed: () => showDialog(
               context: context,
               barrierDismissible: false,
@@ -128,6 +127,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   }
 
   List<Widget> _buildKeyOptions() {
+    final theme = Theme.of(context);
     if (_settingsState.selectedKeyName != null) {
       return [
         Padding(
@@ -154,19 +154,20 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AppButton(text: s.share_key, onPressed: _shareKey),
+          child: AMButton(child: Text(s.share_key), onPressed: _shareKey),
         ),
         if (!PlatformOverride.isIOS)
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-            child: AppButton(text: s.download_key, onPressed: _downloadKey),
+            child:
+                AMButton(child: Text(s.download_key), onPressed: _downloadKey),
           ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AppButton(
-            buttonCase: ButtonCase.Warning,
-            text: s.delete_key,
+          child: AMButton(
+            color: theme.errorColor,
+            child: Text(s.delete_key),
             onPressed: () async {
               final result = await showDialog(
                   context: context,
@@ -199,7 +200,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       child: Observer(
         builder: (_) => Scaffold(
           key: _scaffoldKey,
-          appBar: AppBar(
+          appBar: AMAppBar(
             title: Text(s.encryption),
           ),
           body: ListView(

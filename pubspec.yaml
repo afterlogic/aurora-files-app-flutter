@@ -15,8 +15,6 @@ dependencies:
 
   secure_sharing:
     path: module/secure_sharing/secure_sharing
-  secure_sharing_impl:
-    path: module/secure_sharing/secure_sharing_impl
 
   flutter_cupertino_localizations:
 
@@ -80,7 +78,8 @@ dependencies:
 
   theme:
     path: build_res/afterlogic/theme
-
+  aurora_ui_kit:
+    path: core/aurora_ui_kit
   crypto_plugin:
     git: https://github.com/afterlogic/flutter_crypto_plugin
   receive_sharing:

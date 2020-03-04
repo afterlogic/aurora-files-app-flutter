@@ -9,7 +9,7 @@ import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 class MainDrawer extends StatelessWidget {
   void _showAvailableSpaceInfo(BuildContext context, Quota quota) {
     Navigator.push(
@@ -27,48 +27,32 @@ class MainDrawer extends StatelessWidget {
     final theme = Theme.of(context);
     return Drawer(
       child: SafeArea(
-        top: false,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            DrawerHeader(
-              margin: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                color: theme.appBarTheme.color,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 60,
-                    width: 60,
-                    child: CircleAvatar(
-                      child: Text(
-                          authState?.userEmail?.isNotEmpty == true
-                              ? authState.userEmail[0].toUpperCase()
-                              : "",
-                          style: TextStyle(
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.w600,
-                          )),
-                    ),
+            InkWell(
+              onTap: null,
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "", //todo friendlyName
+                        style: theme.textTheme.title,
+                      ),
+                      SizedBox(height: 8.0),
+                      Row(
+                        children: <Widget>[
+                          Text(authState.userEmail),
+                        ],
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Text(
-                      authState.userEmail ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: TextStyle(
-                          color: theme.appBarTheme.iconTheme.color,
-                          fontSize: 16.0),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                ],
+                ),
               ),
             ),
             Observer(builder: (_) {
@@ -166,19 +150,11 @@ class MainDrawer extends StatelessWidget {
               height: 0,
             ),
             ListTile(
-              leading: Icon(Icons.settings),
+              leading: AMCircleIcon(Icons.settings),
               title: Text(s.settings),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, SettingsRoute.name);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text(s.log_out),
-              onTap: () {
-                authState.onLogout();
-                Navigator.pushReplacementNamed(context, AuthRoute.name);
               },
             ),
           ],

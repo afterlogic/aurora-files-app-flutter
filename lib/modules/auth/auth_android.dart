@@ -1,3 +1,4 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -7,7 +8,6 @@ import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
@@ -19,6 +19,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:theme/app_theme.dart';
+
+import 'component/mail_logo.dart';
+import 'component/presentation_header.dart';
 
 class AuthAndroid extends StatefulWidget {
   @override
@@ -172,44 +175,40 @@ class _AuthAndroidState extends State<AuthAndroid> {
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
-    final mq = MediaQuery.of(context);
     return Provider(
       create: (_) => _authState,
       child: Theme(
         data: AppTheme.login,
         child: Scaffold(
           body: MainGradient(
-            child: SizedBox(
-              height: mq.size.height - mq.viewInsets.bottom,
-              width: mq.size.width,
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 22.0),
+            child: Stack(
+              children: <Widget>[
+                if (!BuildProperty.useMainLogo)
+                  Positioned(
+                    top: -70.0,
+                    left: -70.0,
+                    child: MailLogo(isBackground: true),
+                  ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 22.0),
                   child: Form(
                     key: _authFormKey,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Hero(
-                          tag: "logo",
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 32.0),
-                            child: Image.asset(BuildProperty.mainLogo),
-                          ),
+                        PresentationHeader(),
+                        Column(
+                          children: _buildTextFields(),
                         ),
-                        SizedBox(height: 30.0),
-                        ..._buildTextFields(),
-                        SizedBox(height: 40.0),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Observer(
-                            builder: (BuildContext context) =>
-                                _debugRouteToTwoFactor(
-                              AppButton(
-                                text: s.login,
-                                buttonCase: ButtonCase.Filled,
+                        Observer(
+                          builder: (BuildContext context) => SizedBox(
+                            width: double.infinity,
+                            child: _debugRouteToTwoFactor(
+                              AMButton(
                                 isLoading: _authState.isLoggingIn,
                                 onPressed: () => _login(context),
+                                child: Text(s.login),
                               ),
                             ),
                           ),
@@ -218,7 +217,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
@@ -229,6 +228,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
   Widget _debugRouteToTwoFactor(Widget child) {
     if (kDebugMode) {
       return GestureDetector(
+        onLongPress: ()=>Navigator.pushNamed(
+          context,
+          UpgradeRoute.name,
+        ),
         onDoubleTap: () => Navigator.pushNamed(
           context,
           TwoFactorAuthRoute.name,

@@ -11,4 +11,6 @@ splashGradientBottom: "#252352"
 privacyPolicy: "https://privatemail.com/privacy.php"
 termsOfService: "https://privatemail.com/terms.php"
 
+useMainLogo: true
+
 secureSharingEnable: true

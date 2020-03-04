@@ -87,6 +87,9 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
               }),
         ),
         SizedBox(
+          height: 8,
+        ),
+        SizedBox(
           width: double.infinity,
           child: AMButton(
               child: Text(s.cancel), onPressed: () => Navigator.pop(context)),

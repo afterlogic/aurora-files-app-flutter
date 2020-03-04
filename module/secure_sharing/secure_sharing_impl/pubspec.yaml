@@ -16,6 +16,8 @@ dependencies:
     git: https://github.com/afterlogic/flutter_crypto_plugin
   secure_sharing:
     path: ../secure_sharing
+  aurora_ui_kit:
+    path: ../../../core/aurora_ui_kit
 dev_dependencies:
   flutter_test:
     sdk: flutter

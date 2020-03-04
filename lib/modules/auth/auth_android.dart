@@ -201,10 +201,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
                         Column(
                           children: _buildTextFields(),
                         ),
-                        Observer(
-                          builder: (BuildContext context) => SizedBox(
-                            width: double.infinity,
-                            child: _debugRouteToTwoFactor(
+                        SizedBox(
+                          width: double.infinity,
+                          child: Observer(
+                            builder: (BuildContext context) => _debugRouteToTwoFactor(
                               AMButton(
                                 isLoading: _authState.isLoggingIn,
                                 onPressed: () => _login(context),

@@ -20,7 +20,8 @@ class AppTheme {
     buttonTheme: _buttonTheme,
     selectedRowColor: Colors.black12,
     colorScheme: colorScheme,
-    appBarTheme:  AppBarTheme(
+    floatingActionButtonTheme: _floatTheme,
+    appBarTheme: AppBarTheme(
       color: AppColor.primary,
       iconTheme: IconThemeData(
         color: Colors.white,
@@ -29,6 +30,7 @@ class AppTheme {
   );
 
   static ThemeData dark = ThemeData(
+    floatingActionButtonTheme: _floatTheme,
     brightness: Brightness.dark,
     primaryColor: AppColor.primary,
     primaryColorDark: AppColor.primaryVariant,
@@ -73,5 +75,8 @@ class AppTheme {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
     textTheme: ButtonTextTheme.primary,
   );
-
+  static final _floatTheme = FloatingActionButtonThemeData(
+    hoverColor: AppColor.accent.withOpacity(0.5),
+    backgroundColor: AppColor.accent,
+  );
 }

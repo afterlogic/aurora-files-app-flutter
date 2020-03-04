@@ -10,7 +10,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
@@ -339,13 +339,13 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
           height: 10,
         ),
         Center(
-          child: AppButton(
+          child: AMButton(
             onPressed: () {
               error = null;
 
               share();
             },
-            text: s.try_again,
+            child: Text(s.try_again),
           ),
         )
       ];

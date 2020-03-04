@@ -153,18 +153,18 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
           child: AMButton(child: Text(s.share_key), onPressed: _shareKey),
         ),
         if (!PlatformOverride.isIOS)
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
             child:
                 AMButton(child: Text(s.download_key), onPressed: _downloadKey),
           ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
           child: AMButton(
             color: theme.errorColor,
             child: Text(s.delete_key),

@@ -60,11 +60,18 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
+                      height: 8,
+                    ),
+                    SizedBox(
                       width: double.infinity,
                       child: AMButton(
                         child: Text(s.send_all),
                         onPressed: () => share(keysText),
                       ),
+                    ),
+                    if (!PlatformOverride.isIOS)
+                    SizedBox(
+                      height: 8,
                     ),
                     if (!PlatformOverride.isIOS)
                       SizedBox(

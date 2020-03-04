@@ -64,11 +64,17 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
+                      height: 8,
+                    ),
+                    SizedBox(
                       width: double.infinity,
                       child: AMButton(
                         child: Text(s.share),
                         onPressed: share,
                       ),
+                    ),
+                    SizedBox(
+                      height: 8,
                     ),
                     if (!PlatformOverride.isIOS)
                       SizedBox(
@@ -78,6 +84,10 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
                           onPressed: download,
                         ),
                       ),
+                    if (!PlatformOverride.isIOS)
+                    SizedBox(
+                      height: 8,
+                    ),
                     SizedBox(
                       width: double.infinity,
                       child: AMButton(

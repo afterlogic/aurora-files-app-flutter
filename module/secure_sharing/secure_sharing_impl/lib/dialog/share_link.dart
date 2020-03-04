@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:aurorafiles/override_platform.dart';
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -12,7 +12,7 @@ import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/case_util.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
@@ -258,8 +258,8 @@ class _ShareLinkState extends State<ShareLink> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(error),
-                      AppButton(
-                        text: s.try_again,
+                      AMButton(
+                        child: Text(s.try_again),
                         onPressed: _createLink,
                       )
                     ],

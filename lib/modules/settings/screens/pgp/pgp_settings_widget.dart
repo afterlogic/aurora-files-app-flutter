@@ -105,6 +105,10 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                       ),
                     ),
                   ),
+                if (publicKeys.isNotEmpty)
+                SizedBox(
+                  height: 8,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: SizedBox(
@@ -115,6 +119,9 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 8,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: SizedBox(
@@ -124,6 +131,9 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                       onPressed: _presenter.getKeysFromFile,
                     ),
                   ),
+                ),
+                SizedBox(
+                  height: 8,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),

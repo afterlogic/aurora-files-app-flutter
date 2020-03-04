@@ -52,6 +52,7 @@ useMainLogo: false
 #url
 privacyPolicy: ""
 termsOfService: ""
+autodiscover_url: ""
 #module
 secureSharingEnable: true
 

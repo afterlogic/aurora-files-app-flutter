@@ -8,4 +8,8 @@ backgroundColor: "#FFFFFF"
 splashGradientTop: "#FFFFFF"
 splashGradientBottom: "#FFFFFF"
 
+privacyPolicy: "https://afterlogic.com/products/webmail-pro-licensing"
+termsOfService: "https://afterlogic.com/privacy-policy"
+autodiscover_url: "https://test.afterlogic.com/autodiscover.php"
+
 secureSharingEnable: false

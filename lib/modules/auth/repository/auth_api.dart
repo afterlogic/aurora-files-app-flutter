@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aurorafiles/config.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 class AuthApi {
   Future<String> autoDiscoverHostname(String domain) async {
     try {
-      final url = "$AUTO_DISCOVER_URL?domain=$domain";
+      final url = "${BuildProperty.autodiscover_url}?domain=$domain";
       final res = await http.get(url);
       final resBody = json.decode(res.body);
       return resBody["url"];

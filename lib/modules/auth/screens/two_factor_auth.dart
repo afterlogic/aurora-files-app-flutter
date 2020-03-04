@@ -117,16 +117,15 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
           error = s.invalid_pin;
           return;
         }
-        await AppStore.settingsState.getUserEncryptionKeys();
+        await authState.setAccount();
         Navigator.pushReplacementNamed(context, FilesRoute.name,
             arguments: FilesScreenArguments(path: ""));
       },
       onError: (e) {
+        isProgress = false;
         error = e.toString();
+        setState(() {});
       },
-    ).whenComplete(() {
-      isProgress = false;
-      setState(() {});
-    });
+    );
   }
 }

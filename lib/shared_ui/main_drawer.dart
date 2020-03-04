@@ -1,15 +1,15 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+
 class MainDrawer extends StatelessWidget {
   void _showAvailableSpaceInfo(BuildContext context, Quota quota) {
     Navigator.push(
@@ -41,7 +41,7 @@ class MainDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "", //todo friendlyName
+                        AppStore.authState.friendlyName ?? "",
                         style: theme.textTheme.title,
                       ),
                       SizedBox(height: 8.0),

@@ -4,6 +4,7 @@ import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_local_storage.dart';
+import 'package:aurorafiles/modules/files/repository/mail_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
@@ -14,6 +15,7 @@ class AuthState = _AuthState with _$AuthState;
 
 abstract class _AuthState with Store {
   final _authApi = AuthApi();
+  final _mailApi = MailApi();
   final _authLocal = AuthLocalStorage();
 
   String hostName;
@@ -23,6 +25,7 @@ abstract class _AuthState with Store {
   String authToken;
   int userId;
   String userEmail;
+  String friendlyName;
 
   @observable
   bool isLoggingIn = false;
@@ -36,6 +39,8 @@ abstract class _AuthState with Store {
     authToken = await _authLocal.getTokenFromStorage();
     userId = await _authLocal.getUserIdFromStorage();
     hostName = await _authLocal.getHostFromStorage();
+    friendlyName = await _authLocal.getFriendlyName();
+
     return hostName is String &&
         authToken is String &&
         userEmail is String &&
@@ -58,6 +63,14 @@ abstract class _AuthState with Store {
     authToken = token;
     userEmail = email;
     userId = id;
+  }
+
+  Future setAccount() async {
+    final account = await _mailApi.getAccounts();
+    if (account.isNotEmpty) {
+      await _authLocal.setFriendlyName(account.first.friendlyName);
+      friendlyName = account.first.friendlyName;
+    }
   }
 
   // returns true the host field needs to be revealed because auto discover was unsuccessful
@@ -100,6 +113,7 @@ abstract class _AuthState with Store {
         final int id = res['AuthenticatedUserId'];
         await _setAuthSharedPrefs(
             host: hostName, token: token, email: email, id: id);
+        await setAccount();
         onSuccess();
       } catch (err) {
         isLoggingIn = false;

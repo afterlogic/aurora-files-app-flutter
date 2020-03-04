@@ -125,3 +125,4 @@ crypto_plugin/ios/Classes/
 /ios/GoogleService-Info.plist
 /ios/AppShareExtension/AppShareExtension.entitlements
 /ios/Runner/Runner.entitlements
+**/build_res/**/crashlytics/

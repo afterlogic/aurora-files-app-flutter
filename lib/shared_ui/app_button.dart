@@ -52,7 +52,7 @@ class AppButton extends StatelessWidget {
 
     final fillColor = selectFillColor();
 
-    final textColor = AppColor.buttonTextColor;
+
 
     if (PlatformOverride.isIOS) {
       return Container(
@@ -71,7 +71,7 @@ class AppButton extends StatelessWidget {
                   : Text(text,
                       style: TextStyle(
                           color: onPressed != null
-                              ? textColor
+                              ? null
                               : theme.disabledColor)),
             ),
             onPressed: isLoading != null && isLoading ? null : onPressed),
@@ -96,7 +96,7 @@ class AppButton extends StatelessWidget {
                       text.toUpperCase(),
                       style: TextStyle(
                           color: onPressed != null
-                              ? textColor
+                              ? null
                               : theme.disabledColor),
                     ),
             ),

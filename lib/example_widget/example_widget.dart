@@ -65,7 +65,7 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
       scrollController =
           ScrollController(initialScrollOffset: scrollController.offset);
     }
-    theme = isDarkTheme ? AppTheme.darkTheme : AppTheme.theme;
+    theme = isDarkTheme ? AppTheme.dark : AppTheme.light;
     return MultiProvider(
       providers: [
         Provider(

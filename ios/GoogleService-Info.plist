@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>405048374750-npj2kumftle34a5jiqnbj9p8359ftbc0.apps.googleusercontent.com</string>
+	<string>382503298046-0thng0rkn06a3k0uubbcitd80p6h6l6f.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.405048374750-npj2kumftle34a5jiqnbj9p8359ftbc0</string>
+	<string>com.googleusercontent.apps.382503298046-0thng0rkn06a3k0uubbcitd80p6h6l6f</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAkzLRHEvGAEFW2s6P3oq58BR0czlBD-Aw</string>
+	<string>AIzaSyBVmjZ_RME2thcdAn-Q-nns-v4Df6dWF8Q</string>
 	<key>GCM_SENDER_ID</key>
-	<string>405048374750</string>
+	<string>382503298046</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.PrivateRouter.PrivateMailFiles</string>
+	<string>com.afterlogic.aurora.files</string>
 	<key>PROJECT_ID</key>
-	<string>privatemail-files</string>
+	<string>afterlogic-aurora-files-e0b8d</string>
 	<key>STORAGE_BUCKET</key>
-	<string>privatemail-files.appspot.com</string>
+	<string>afterlogic-aurora-files-e0b8d.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:405048374750:ios:69c8dae5d434933a33594f</string>
+	<string>1:382503298046:ios:f7894139d89635fa2cd6af</string>
 	<key>DATABASE_URL</key>
-	<string>https://privatemail-files.firebaseio.com</string>
+	<string>https://afterlogic-aurora-files-e0b8d.firebaseio.com</string>
 </dict>
 </plist>

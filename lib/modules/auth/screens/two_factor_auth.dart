@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
@@ -31,7 +28,7 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
     final mq = MediaQuery.of(context);
 
     return Theme(
-      data: AppTheme.darkTheme,
+      data: AppTheme.login,
       child: Scaffold(
         body: MainGradient(
           child: SizedBox(
@@ -57,14 +54,12 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
                         textAlign: TextAlign.center,
                         style: theme.textTheme.subhead.copyWith(
                           fontSize: 20,
-                          color: Colors.white,
                         ),
                       ),
                     ),
                     SizedBox(height: 40.0),
                     AppInput(
                       labelText: s.pin,
-                      style: TextStyle(color: Colors.white),
                       inputCase: InputCase.Underline,
                       controller: pinCtrl,
                     ),

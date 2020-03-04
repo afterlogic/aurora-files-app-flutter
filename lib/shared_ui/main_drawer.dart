@@ -24,6 +24,7 @@ class MainDrawer extends StatelessWidget {
     final filesState = AppStore.filesState;
     final settingsState = AppStore.settingsState;
     final s = Str.of(context);
+    final theme = Theme.of(context);
     return Drawer(
       child: SafeArea(
         top: false,
@@ -34,7 +35,7 @@ class MainDrawer extends StatelessWidget {
             DrawerHeader(
               margin: EdgeInsets.zero,
               decoration: BoxDecoration(
-                color: Theme.of(context).appBarTheme.color,
+                color: theme.appBarTheme.color,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -61,7 +62,9 @@ class MainDrawer extends StatelessWidget {
                       authState.userEmail ?? "",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
+                      style: TextStyle(
+                          color: theme.appBarTheme.iconTheme.color,
+                          fontSize: 16.0),
                     ),
                   ),
                   SizedBox(height: 10),
@@ -99,9 +102,6 @@ class MainDrawer extends StatelessWidget {
                           return SizedBox();
                         }
                         return Container(
-                          color: filesState.selectedStorage.type == storage.type
-                              ? Theme.of(context).selectedRowColor
-                              : null,
                           child: ListTile(
                             selected:
                                 filesState.selectedStorage.type == storage.type,

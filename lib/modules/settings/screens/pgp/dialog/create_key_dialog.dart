@@ -172,7 +172,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     ),
                     DropdownButtonFormField(
                       hint: Text(length.toString()),
-                      decoration: InputDecoration(labelText: s.email),
+                      decoration: InputDecoration(labelText: s.length),
                       value: length,
                       items: lengths.map((value) {
                         return DropdownMenuItem<int>(

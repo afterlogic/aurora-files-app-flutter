@@ -25,11 +25,11 @@ _iosDeveloperId: ""
 _appleGroupId: ""
 
 #android sign
-_jksName: ""
+_jksName: "key.jks"
 
 #google service
-_androidGoogleService: ""
-_iosGoogleService: ""
+_androidGoogleService: "google-services.json"
+_iosGoogleService: "GoogleService-Info.plist"
 
 #style
 #image
@@ -42,6 +42,9 @@ _themeModule: "{{_dir}}/theme"
 backgroundColor: ""
 splashGradientTop: ""
 splashGradientBottom: ""
+#url
+privacyPolicy: ""
+termsOfService: ""
 #module
 secureSharingEnable: true
 

@@ -58,8 +58,8 @@ class _AppState extends State<App> {
               builder: (_) => MaterialApp(
                 title: BuildProperty.appName,
                 theme: _settingsState.isDarkTheme == true
-                    ? AppTheme.darkTheme
-                    : AppTheme.theme,
+                    ? AppTheme.dark
+                    : AppTheme.light,
                 onGenerateRoute: AppNavigation.onGenerateRoute,
                 localizationsDelegates: [
                   GlobalMaterialLocalizations.delegate,

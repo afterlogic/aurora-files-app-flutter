@@ -4,13 +4,11 @@ _appId: "com.PrivateRouter.PrivateMailFiles"
 _iosDeveloperId: "K6298N65JA"
 _appleGroupId: "group.privatemail.files"
 
-_jksName: "privatemail.jks"
-
-_androidGoogleService: "google-services_com.PrivateRouter.PrivateMailFiles.json"
-_iosGoogleService: "GoogleService-Info_com.PrivateRouter.PrivateMailFiles.plist"
-
 backgroundColor: "#34113C"
 splashGradientTop: "#420324"
 splashGradientBottom: "#252352"
+
+privacyPolicy: "https://privatemail.com/privacy.php"
+termsOfService: "https://privatemail.com/terms.php"
 
 secureSharingEnable: true

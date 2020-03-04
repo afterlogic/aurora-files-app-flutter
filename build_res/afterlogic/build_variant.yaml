@@ -4,13 +4,8 @@ _appId: "com.afterlogic.aurora.files"
 _iosDeveloperId: "J7AW6VHJK4"
 _appleGroupId: "group.com.afterlogic.aurora"
 
-_jksName: "afterlogic.jks"
-
-_androidGoogleService: "google-services_com.afterlogic.aurora.files.json"
-_iosGoogleService: "GoogleService-Info_com.afterlogic.aurora.files.plist"
-
-backgroundColor: "#75B8F3"
-splashGradientTop: "#E18F84"
-splashGradientBottom: "#43D0BF"
+backgroundColor: "#FFFFFF"
+splashGradientTop: "#FFFFFF"
+splashGradientBottom: "#FFFFFF"
 
 secureSharingEnable: false

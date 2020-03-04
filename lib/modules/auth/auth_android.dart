@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -12,7 +10,6 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
-import 'package:theme/app_theme.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,8 +17,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:theme/app_theme.dart';
 
 class AuthAndroid extends StatefulWidget {
   @override
@@ -116,7 +113,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
       if (_showHostField)
         AppInput(
           inputCase: InputCase.Underline,
-          style: TextStyle(color: Colors.white),
           controller: _authState.hostCtrl,
           keyboardType: TextInputType.url,
           validator: (value) => _showHostField
@@ -126,7 +122,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
       SizedBox(height: 10),
       AppInput(
-        style: TextStyle(color: Colors.white),
         controller: _authState.emailCtrl,
         prefix: isIOS
             ? Opacity(
@@ -146,7 +141,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
       SizedBox(height: 10),
       AppInput(
         inputCase: InputCase.Underline,
-        style: TextStyle(color: Colors.white),
         controller: _authState.passwordCtrl,
         validator: (value) => validateInput(value, [ValidationTypes.empty]),
         obscureText: _obscureText,
@@ -167,7 +161,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
             padding: const EdgeInsets.only(top: 16.0),
             child: Icon(
               _obscureText ? Icons.visibility : Icons.visibility_off,
-              color: Colors.white70,
             ),
           ),
           onTap: () => setState(() => _obscureText = !_obscureText),
@@ -183,7 +176,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     return Provider(
       create: (_) => _authState,
       child: Theme(
-        data: AppTheme.darkTheme,
+        data: AppTheme.login,
         child: Scaffold(
           body: MainGradient(
             child: SizedBox(
@@ -210,11 +203,14 @@ class _AuthAndroidState extends State<AuthAndroid> {
                         SizedBox(
                           width: double.infinity,
                           child: Observer(
-                            builder: (BuildContext context) => AppButton(
-                              text: s.login,
-                              buttonCase: ButtonCase.Filled,
-                              isLoading: _authState.isLoggingIn,
-                              onPressed: () => _login(context),
+                            builder: (BuildContext context) =>
+                                _debugRouteToTwoFactor(
+                              AppButton(
+                                text: s.login,
+                                buttonCase: ButtonCase.Filled,
+                                isLoading: _authState.isLoggingIn,
+                                onPressed: () => _login(context),
+                              ),
                             ),
                           ),
                         ),
@@ -228,5 +224,19 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
       ),
     );
+  }
+
+  Widget _debugRouteToTwoFactor(Widget child) {
+    if (kDebugMode) {
+      return GestureDetector(
+        onDoubleTap: () => Navigator.pushNamed(
+          context,
+          TwoFactorAuthRoute.name,
+        ),
+        child: child,
+      );
+    } else {
+      return child;
+    }
   }
 }

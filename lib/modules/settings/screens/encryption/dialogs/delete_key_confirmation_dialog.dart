@@ -58,19 +58,19 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
         content: content,
         actions: <Widget>[
           FlatButton(
-            child: Text(s.cancel.toUpperCase()),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(
                 context, DeleteKeyConfirmationDialogResult.cancel),
           ),
           FlatButton(
-            child: Text(s.download.toUpperCase()),
+            child: Text(s.download),
             onPressed: () {
               Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
             },
           ),
           FlatButton(
             child: Text(
-              s.delete.toUpperCase(),
+              s.delete,
               style: TextStyle(color: Theme.of(context).errorColor),
             ),
             onPressed: () async {

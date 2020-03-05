@@ -152,12 +152,11 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text(s.cancel.toUpperCase()),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(context),
           ),
           FlatButton(
-              child: Text(widget.isImport ? s.import.toUpperCase() : s.generate
-                  .toUpperCase()),
+              child: Text(widget.isImport ? s.import : s.generate),
               onPressed: _isAdding
                   ? null
                   : () async {

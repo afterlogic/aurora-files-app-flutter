@@ -142,11 +142,11 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text(s.cancel.toUpperCase()),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(context),
           ),
           FlatButton(
-              child: Text(s.add.toUpperCase()),
+              child: Text(s.add),
               onPressed: isAdding
                   ? null
                   : () {

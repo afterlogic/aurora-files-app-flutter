@@ -21,6 +21,7 @@ class AppTheme {
     selectedRowColor: Colors.black12,
     colorScheme: colorScheme,
     floatingActionButtonTheme: _floatTheme,
+    dialogTheme: _dialogTheme,
     appBarTheme: AppBarTheme(
       color: AppColor.primary,
       iconTheme: IconThemeData(
@@ -44,6 +45,7 @@ class AppTheme {
     splashFactory: InkRipple.splashFactory,
     buttonTheme: _buttonTheme,
     selectedRowColor: Colors.white10,
+    dialogTheme: _dialogTheme,
     appBarTheme: AppBarTheme(
       color: AppColor.primary,
       iconTheme: IconThemeData(
@@ -67,6 +69,10 @@ class AppTheme {
     background: Color.alphaBlend(Colors.white70, Colors.grey),
     onBackground: Color.alphaBlend(Colors.white54, Colors.grey),
     brightness: Brightness.light,
+  );
+
+  static final _dialogTheme = DialogTheme(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
   );
 
   static final login = dark;

@@ -64,11 +64,11 @@ class ConfirmationDialog extends StatelessWidget {
         content: Text(description),
         actions: <Widget>[
           FlatButton(
-            child: Text(s.cancel.toUpperCase()),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(context, false),
           ),
           FlatButton(
-            child: Text(actionText.toUpperCase()),
+            child: Text(actionText),
             onPressed: () => Navigator.pop(context, true),
           ),
         ],

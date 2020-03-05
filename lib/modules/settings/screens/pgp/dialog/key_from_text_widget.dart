@@ -43,6 +43,7 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
                     maxLines: null,
                     autofocus: true,
                     controller: _textController,
+                    placeholder: s.key_text,
                   ),
                 ),
                 SizedBox(
@@ -88,26 +89,22 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: AMButton(
-                        child: Text(s.check_keys),
-                        onPressed: () {
-                          if (formKey.currentState.validate()) {
-                            Navigator.pop(context, _textController.text);
-                          }
-                        }),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: AMButton(
-                      child: Text(s.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
                 ],
               ),
             ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(s.close),
+                onPressed: () => Navigator.pop(context),
+              ),
+              FlatButton(
+                  child: Text(s.check_keys),
+                  onPressed: () {
+                    if (formKey.currentState.validate()) {
+                      Navigator.pop(context, _textController.text);
+                    }
+                  }),
+            ],
           );
   }
 }

@@ -149,11 +149,11 @@ class _RenameDialogState extends State<RenameDialog> {
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text(s.cancel.toUpperCase()),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(context),
           ),
           FlatButton(
-              child: Text(s.rename.toUpperCase()),
+              child: Text(s.rename),
               onPressed: isRenaming
                   ? null
                   : () {

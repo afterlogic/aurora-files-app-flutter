@@ -148,7 +148,10 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                   children: <Widget>[
                     TextFormField(
                       enabled: false,
-                      decoration: InputDecoration(labelText: s.email),
+                      decoration: InputDecoration(
+                        labelText: s.email,
+                        alignLabelWithHint: true,
+                      ),
                       validator: (v) =>
                           validateInput(v, [ValidationTypes.email]),
                       controller: _emailController,
@@ -157,6 +160,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: s.password,
+                        alignLabelWithHint: true,
                         suffix: GestureDetector(
                           child: Icon(
                             _obscure ? Icons.visibility : Icons.visibility_off,
@@ -174,7 +178,10 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     ),
                     DropdownButtonFormField(
                       hint: Text(length.toString()),
-                      decoration: InputDecoration(labelText: s.length),
+                      decoration: InputDecoration(
+                        labelText: s.length,
+                        alignLabelWithHint: true,
+                      ),
                       value: length,
                       items: lengths.map((value) {
                         return DropdownMenuItem<int>(
@@ -192,33 +199,23 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: AMButton(
-                  child: Text(s.generate),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      _generate();
-                    }
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: AMButton(
-                  child: Text(s.close),
-                  onPressed: _pop,
-                ),
-              ),
             ],
           ),
         ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(s.close),
+            onPressed: _pop,
+          ),
+          FlatButton(
+            child: Text(s.generate),
+            onPressed: () {
+              if (_formKey.currentState.validate()) {
+                _generate();
+              }
+            },
+          ),
+        ],
       );
     }
   }

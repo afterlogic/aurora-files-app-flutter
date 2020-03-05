@@ -75,10 +75,10 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
             : Text(s.download_confirm),
         actions: <Widget>[
           FlatButton(
-              child: Text(s.cancel.toUpperCase()),
+              child: Text(s.cancel),
               onPressed: Navigator.of(context).pop),
           FlatButton(
-            child: Text(s.download.toUpperCase()),
+            child: Text(s.download),
             onPressed: _isExporting
                 ? null
                 : () {

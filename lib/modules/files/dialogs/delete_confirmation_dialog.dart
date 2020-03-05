@@ -61,12 +61,12 @@ class DeleteConfirmationDialog extends StatelessWidget {
                 : s.these_files(itemName))),
         actions: <Widget>[
           FlatButton(
-            child: Text(s.cancel.toUpperCase()),
+            child: Text(s.cancel),
             onPressed: () => Navigator.pop(context, false),
           ),
           FlatButton(
             child: Text(
-              s.delete.toUpperCase(),
+              s.delete,
               style: TextStyle(color: Theme
                   .of(context)
                   .errorColor),

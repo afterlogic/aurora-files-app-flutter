@@ -44,6 +44,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
         children: <Widget>[
           Observer(
             builder: (_) => SwitchListTile.adaptive(
+              contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
               value: _settingsState.isDarkTheme,
               activeColor: Theme.of(context).accentColor,
               onChanged: (bool val) => _settingsState.toggleDarkTheme(val),

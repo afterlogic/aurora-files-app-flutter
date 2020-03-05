@@ -55,4 +55,5 @@ termsOfService: ""
 autodiscover_url: ""
 #module
 secureSharingEnable: true
+canUpgradePlan: false
 

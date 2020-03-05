@@ -83,7 +83,7 @@ dependencies:
   theme:
     path: {{_themeModule}}
   aurora_ui_kit:
-    path: core/aurora_ui_kit
+    git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
   crypto_plugin:
     git: https://github.com/afterlogic/flutter_crypto_plugin
   receive_sharing:

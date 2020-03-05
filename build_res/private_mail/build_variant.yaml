@@ -16,3 +16,4 @@ autodiscover_url: "https://torguard.tv/pm/autodiscover.php"
 useMainLogo: true
 
 secureSharingEnable: true
+canUpgradePlan: true

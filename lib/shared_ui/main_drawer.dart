@@ -66,7 +66,10 @@ class MainDrawer extends StatelessWidget {
                       (quota.progress * 100).round().toString(),
                       quota.limitFormatted,
                     ),
-                    child: LinearProgressIndicator(value: quota.progress),
+                    child: LinearProgressIndicator(
+                      value: quota.progress,
+                      backgroundColor: theme.disabledColor.withOpacity(0.15),
+                    ),
                   ),
                 );
               } else {

@@ -1,5 +1,6 @@
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -54,14 +55,15 @@ class StorageInfoWidget extends StatelessWidget {
                 Text(s.used_space(_quota.usedFormatted, _quota.limitFormatted),
                     style: theme.textTheme.subhead),
                 SizedBox(height: 46.0),
-                SizedBox(
-                  width: double.infinity,
-                  child: AMButton(
-                    child: Text(s.upgrade_now),
-                    onPressed: () => launch(
-                        "https://privatemail.com/members/supporttickets.php"),
-                  ),
-                )
+                if (BuildProperty.canUpgradePlan)
+                  SizedBox(
+                    width: double.infinity,
+                    child: AMButton(
+                      child: Text(s.upgrade_now),
+                      onPressed: () => launch(
+                          "https://privatemail.com/members/supporttickets.php"),
+                    ),
+                  )
               ],
             ),
     );

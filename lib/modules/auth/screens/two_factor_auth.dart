@@ -84,16 +84,16 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
                           ),
                         ),
                         SizedBox(height: 6.0),
-                        SizedBox(
-                          width: double.infinity,
-                          child: AMButton(
-                            color: theme.colorScheme.surface,
-                            child: Text(s.cancel),
-                            onPressed: isProgress
-                                ? null
-                                : () => Navigator.pop(context),
-                          ),
-                        ),
+//                        SizedBox(
+//                          width: double.infinity,
+//                          child: AMButton(
+//                            color: theme.colorScheme.surface,
+//                            child: Text(s.cancel),
+//                            onPressed: isProgress
+//                                ? null
+//                                : () => Navigator.pop(context),
+//                          ),
+//                        ),
                       ],
                     ),
                   ],

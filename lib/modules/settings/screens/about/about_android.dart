@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+
 class AboutAndroid extends StatefulWidget {
   @override
   _AboutAndroidState createState() => _AboutAndroidState();
@@ -76,6 +77,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                   ),
                 ),
                 SizedBox(height: 42.0),
+                if (BuildProperty.termsOfService.isNotEmpty)
                 GestureDetector(
                   child: Text(
                     s.terms,
@@ -85,22 +87,21 @@ class _AboutAndroidState extends State<AboutAndroid> {
                       fontSize: 18.0,
                     ),
                   ),
-                  onTap: () => launch(PlatformOverride.isIOS
-                      ? "https://privatemail.com/terms.php"
-                      : "https://privatemail.com/terms.php"),
+                  onTap: () => launch(BuildProperty.termsOfService),
                 ),
                 SizedBox(height: 22.0),
-                GestureDetector(
-                  child: Text(
-                    s.privacy_policy,
-                    style: TextStyle(
-                      color: Theme.of(context).accentColor,
-                      decoration: TextDecoration.underline,
-                      fontSize: 18.0,
+                if (BuildProperty.privacyPolicy.isNotEmpty)
+                  GestureDetector(
+                    child: Text(
+                      s.privacy_policy,
+                      style: TextStyle(
+                        color: Theme.of(context).accentColor,
+                        decoration: TextDecoration.underline,
+                        fontSize: 18.0,
+                      ),
                     ),
+                    onTap: () => launch(BuildProperty.privacyPolicy),
                   ),
-                  onTap: () => launch("https://privatemail.com/privacy.php"),
-                ),
                 SizedBox(height: 42.0),
               ],
             ),

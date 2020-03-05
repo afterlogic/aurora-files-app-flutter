@@ -128,3 +128,4 @@ crypto_plugin/ios/Classes/
 **/build_res/**/crashlytics/
 sh/build_appbundle.sh
 sh/build_apk.sh
+ios/GoogleService-Info.plist

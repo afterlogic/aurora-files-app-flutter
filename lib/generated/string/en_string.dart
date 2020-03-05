@@ -245,4 +245,7 @@ class EnString extends S {
   final String invalid_pin = "Invalid PIN";
   final String upload_file = "Upload file";
   String upload_files(String count) => "Upload $count files";
+  final String login_to_continue = "Log in to continue";
+  final String confirm_exit = "Are you sure want to exit";
+  final String exit = "Exit";
 }

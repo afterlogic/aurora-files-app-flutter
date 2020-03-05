@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/storage.dart';
@@ -63,9 +62,9 @@ class _FilesAppBarState extends State<FilesAppBar>
     );
   }
 
-  AppBar _getAppBar(BuildContext context) {
+  AMAppBar _getAppBar(BuildContext context) {
     if (_filesPageState.selectedFilesIds.length > 0) {
-      return AppBar(
+      return AMAppBar(
         key: Key("select"),
         backgroundColor: Theme.of(context).primaryColorDark,
         leading: IconButton(
@@ -73,7 +72,6 @@ class _FilesAppBarState extends State<FilesAppBar>
           onPressed: () => _filesPageState.quitSelectMode(),
         ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
-        centerTitle: PlatformOverride.isIOS,
         actions: _filesState.isOfflineMode
             ? [
 //          IconButton(
@@ -103,14 +101,12 @@ class _FilesAppBarState extends State<FilesAppBar>
               ],
       );
     } else if (_filesState.isMoveModeEnabled || _filesState.isShareUpload) {
-      return AppBar(
+      return AMAppBar(
         key: Key("move"),
         backgroundColor: Theme.of(context).accentColor,
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
-                icon: Icon(PlatformOverride.isIOS
-                    ? Icons.arrow_back_ios
-                    : Icons.arrow_back),
+                icon: Icon(Icons.arrow_back_ios),
                 onPressed: Navigator.of(context).pop,
               )
             : IconButton(
@@ -120,9 +116,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                     : _filesState.disableUploadShared,
               ),
         title: Column(
-          crossAxisAlignment: PlatformOverride.isIOS
-              ? CrossAxisAlignment.center
-              : CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(_filesState.isMoveModeEnabled
@@ -142,7 +136,6 @@ class _FilesAppBarState extends State<FilesAppBar>
             )
           ],
         ),
-        centerTitle: PlatformOverride.isIOS,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.create_new_folder),
@@ -200,7 +193,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         ],
       );
     } else if (_filesPageState.isSearchMode) {
-      return AppBar(
+      return AMAppBar(
         key: Key("defaault"),
         leading: IconButton(
           icon: Icon(Icons.close),
@@ -213,9 +206,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           },
         ),
         title: Column(
-          crossAxisAlignment: PlatformOverride.isIOS
-              ? CrossAxisAlignment.center
-              : CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(s.search),
@@ -232,7 +223,6 @@ class _FilesAppBarState extends State<FilesAppBar>
               )
           ],
         ),
-        centerTitle: PlatformOverride.isIOS,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: Container(
@@ -276,20 +266,16 @@ class _FilesAppBarState extends State<FilesAppBar>
         ),
       );
     } else {
-      return AppBar(
+      return AMAppBar(
         key: Key("default"),
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
-                icon: Icon(PlatformOverride.isIOS
-                    ? Icons.arrow_back_ios
-                    : Icons.arrow_back),
+                icon: Icon(Icons.arrow_back_ios),
                 onPressed: Navigator.of(context).pop,
               )
             : null,
         title: Column(
-          crossAxisAlignment: PlatformOverride.isIOS
-              ? CrossAxisAlignment.center
-              : CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             PopupMenuButton<String>(
@@ -365,7 +351,6 @@ class _FilesAppBarState extends State<FilesAppBar>
               )
           ],
         ),
-        centerTitle: PlatformOverride.isIOS,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),

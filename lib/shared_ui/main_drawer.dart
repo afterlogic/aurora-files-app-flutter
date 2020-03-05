@@ -1,8 +1,8 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
@@ -24,48 +24,35 @@ class MainDrawer extends StatelessWidget {
     final filesState = AppStore.filesState;
     final settingsState = AppStore.settingsState;
     final s = Str.of(context);
+    final theme = Theme.of(context);
     return Drawer(
       child: SafeArea(
-        top: false,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            DrawerHeader(
-              margin: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                color: Theme.of(context).appBarTheme.color,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 60,
-                    width: 60,
-                    child: CircleAvatar(
-                      child: Text(
-                          authState?.userEmail?.isNotEmpty == true
-                              ? authState.userEmail[0].toUpperCase()
-                              : "",
-                          style: TextStyle(
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.w600,
-                          )),
-                    ),
+            InkWell(
+              onTap: null,
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        AppStore.authState.friendlyName ?? "",
+                        style: theme.textTheme.title,
+                      ),
+                      SizedBox(height: 8.0),
+                      Row(
+                        children: <Widget>[
+                          Text(authState.userEmail),
+                        ],
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Text(
-                      authState.userEmail ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                ],
+                ),
               ),
             ),
             Observer(builder: (_) {
@@ -79,7 +66,10 @@ class MainDrawer extends StatelessWidget {
                       (quota.progress * 100).round().toString(),
                       quota.limitFormatted,
                     ),
-                    child: LinearProgressIndicator(value: quota.progress),
+                    child: LinearProgressIndicator(
+                      value: quota.progress,
+                      backgroundColor: theme.disabledColor.withOpacity(0.15),
+                    ),
                   ),
                 );
               } else {
@@ -99,9 +89,6 @@ class MainDrawer extends StatelessWidget {
                           return SizedBox();
                         }
                         return Container(
-                          color: filesState.selectedStorage.type == storage.type
-                              ? Theme.of(context).selectedRowColor
-                              : null,
                           child: ListTile(
                             selected:
                                 filesState.selectedStorage.type == storage.type,
@@ -166,19 +153,11 @@ class MainDrawer extends StatelessWidget {
               height: 0,
             ),
             ListTile(
-              leading: Icon(Icons.settings),
+              leading: AMCircleIcon(Icons.settings),
               title: Text(s.settings),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, SettingsRoute.name);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text(s.log_out),
-              onTap: () {
-                authState.onLogout();
-                Navigator.pushReplacementNamed(context, AuthRoute.name);
               },
             ),
           ],

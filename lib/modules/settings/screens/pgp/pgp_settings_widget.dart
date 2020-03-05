@@ -1,14 +1,13 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/create_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_pgp_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/key_from_text_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/error_dialog.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/stream_widget.dart';
@@ -22,7 +21,8 @@ class PgpSettingWidget extends StatefulWidget {
   _PgpSettingWidgetState createState() => _PgpSettingWidgetState();
 }
 
-class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView {
+class _PgpSettingWidgetState extends State<PgpSettingWidget>
+    with PgpSettingView {
   PgpSettingPresenter _presenter;
   S s;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -46,7 +46,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
     final theme = Theme.of(context);
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(
+        appBar: AMAppBar(
           title: Text(s.openPGP),
         ),
         body: StreamWidget<KeysState>(
@@ -56,9 +56,11 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
               return SizedBox.shrink();
             }
 
-            final publicKeys = state.public.map((item) => KeyWidget(item, openKey)).toList();
+            final publicKeys =
+                state.public.map((item) => KeyWidget(item, openKey)).toList();
 
-            final privateKeys = state.private.map((item) => KeyWidget(item, openKey)).toList();
+            final privateKeys =
+                state.private.map((item) => KeyWidget(item, openKey)).toList();
 
             return ListView(
               padding: const EdgeInsets.only(left: 16, bottom: 25),
@@ -93,32 +95,54 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
                 if (publicKeys.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
-                    child: AppButton(
-                      text: s.export_all_public_keys,
-                      onPressed: () {
-                        exportAll(state.public);
-                      },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: AMButton(
+                        child: Text(s.export_all_public_keys),
+                        onPressed: () {
+                          exportAll(state.public);
+                        },
+                      ),
                     ),
                   ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: AppButton(
-                    text: s.import_keys_from_text,
-                    onPressed: importKeyDialog,
-                  ),
+                if (publicKeys.isNotEmpty)
+                SizedBox(
+                  height: 8,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: AppButton(
-                    text: s.import_keys_from_file,
-                    onPressed: _presenter.getKeysFromFile,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: AMButton(
+                      child: Text(s.import_keys_from_text),
+                      onPressed: importKeyDialog,
+                    ),
                   ),
+                ),
+                SizedBox(
+                  height: 8,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: AppButton(
-                    text: s.generate_keys,
-                    onPressed: generateKeyDialog,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: AMButton(
+                      child: Text(s.import_keys_from_file),
+                      onPressed: _presenter.getKeysFromFile,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: AMButton(
+                      child: Text(s.generate_keys),
+                      onPressed: generateKeyDialog,
+                    ),
                   ),
                 ),
               ],
@@ -142,7 +166,8 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
   }
 
   exportAll(List<LocalPgpKey> keys) async {
-    Navigator.pushNamed(context, PgpKeyExportRoute.name, arguments: [keys, _presenter.pgpKeyUtil]);
+    Navigator.pushNamed(context, PgpKeyExportRoute.name,
+        arguments: [keys, _presenter.pgpKeyUtil]);
   }
 
   @override
@@ -155,8 +180,8 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
 
   @override
   showImportDialog(List<LocalPgpKey> keys) async {
-    final result =
-        await openDialog(context, (_) => ImportPgpKeyWidget(keys, _presenter.pgpKeyUtil));
+    final result = await openDialog(
+        context, (_) => ImportPgpKeyWidget(keys, _presenter.pgpKeyUtil));
     if (result is List<LocalPgpKey>) {
       _presenter.saveKeys(result);
     }
@@ -167,7 +192,8 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget> with PgpSettingView
   }
 
   generateKeyDialog() async {
-    final result = await openDialog(context, (_) => CreateKeyDialog(_presenter.pgpKeyUtil));
+    final result = await openDialog(
+        context, (_) => CreateKeyDialog(_presenter.pgpKeyUtil));
     if (result is CreateKeyResult) {
       _presenter.addPrivateKey(result);
     }

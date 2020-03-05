@@ -29,7 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:secure_sharing/secure_sharing.dart';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'components/image_viewer.dart';
 import 'components/info_list_tile.dart';
 import 'components/text_viewer.dart';
@@ -404,7 +404,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       ],
       child: Scaffold(
         key: _fileViewerScaffoldKey,
-        appBar: AppBar(
+        appBar: AMAppBar(
           actions: widget.filesState.isOfflineMode
               ? [
                   IconButton(

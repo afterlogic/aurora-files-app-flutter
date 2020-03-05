@@ -1,7 +1,7 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/example_widget/test_widget/category_widget.dart';
 import 'package:aurorafiles/example_widget/test_widget/group_label.dart';
 import 'package:aurorafiles/example_widget/test_widget/label_widget.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
@@ -23,41 +23,32 @@ class AppCategory extends StatelessWidget {
           ),
         ),
         GroupLabel(
-          name: "AppButton",
+          name: "AMButton",
           children: <Widget>[
-            AppButton(
-              width: double.infinity,
+            AMButton(
               onPressed: null,
-              text: "Disabled",
+              child: Text("Disabled"),
             ),
-            AppButton(
-              width: double.infinity,
+            AMButton(
               onPressed: () {},
-              text: "enabled",
+              child: Text("enabled"),
             ),
-            AppButton(
-              width: double.infinity,
+            AMButton(
               onPressed: () {},
               isLoading: true,
-              text: "Loading",
+              child: Text("Loading"),
             ),
-            AppButton(
-              width: double.infinity,
+            AMButton(
               onPressed: () {},
-              buttonCase: ButtonCase.Cancel,
-              text: "Cancel",
+              child: Text("Cancel"),
             ),
-            AppButton(
-              width: double.infinity,
+            AMButton(
               onPressed: () {},
-              buttonCase: ButtonCase.Warning,
-              text: "Warning",
+              child: Text("Warning"),
             ),
-            AppButton(
-              width: double.infinity,
+            AMButton(
               onPressed: () {},
-              buttonCase: ButtonCase.Filled,
-              text: "Filled",
+              child: Text("Filled"),
             ),
           ],
         ),
@@ -112,7 +103,9 @@ class AppCategory extends StatelessWidget {
               width: double.infinity,
               height: 400,
               child: Scaffold(
-                appBar: AppBar(),
+                appBar: AppBar(
+                  titleSpacing: NavigationToolbar.kMiddleSpacing,
+                ),
                 drawer: MainDrawer(),
               )),
           name: "Drawer",

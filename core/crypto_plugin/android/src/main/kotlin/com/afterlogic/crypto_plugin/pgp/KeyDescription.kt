@@ -1,1 +1,0 @@
-class KeyDescription(val emails: List<String>, val length: Int, val isPrivate: Boolean)

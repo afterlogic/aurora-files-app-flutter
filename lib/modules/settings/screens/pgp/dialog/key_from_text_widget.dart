@@ -1,8 +1,6 @@
-import 'dart:io';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,16 +45,20 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
                     controller: _textController,
                   ),
                 ),
-                AppButton(
-                    width: double.infinity,
-                    text: s.check_keys.toUpperCase(),
-                    onPressed: () {
-                      Navigator.pop(context, _textController.text);
-                    }),
-                AppButton(
+                SizedBox(
                   width: double.infinity,
-                  text: s.close.toUpperCase(),
-                  onPressed: () => Navigator.pop(context),
+                  child: AMButton(
+                      child: Text(s.check_keys),
+                      onPressed: () {
+                        Navigator.pop(context, _textController.text);
+                      }),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: AMButton(
+                    child: Text(s.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                 ),
               ],
             ),
@@ -86,18 +88,22 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
                       ),
                     ),
                   ),
-                  AppButton(
-                      width: double.infinity,
-                      text: s.check_keys.toUpperCase(),
-                      onPressed: () {
-                        if (formKey.currentState.validate()) {
-                          Navigator.pop(context, _textController.text);
-                        }
-                      }),
-                  AppButton(
+                  SizedBox(
                     width: double.infinity,
-                    text: s.close.toUpperCase(),
-                    onPressed: () => Navigator.pop(context),
+                    child: AMButton(
+                        child: Text(s.check_keys),
+                        onPressed: () {
+                          if (formKey.currentState.validate()) {
+                            Navigator.pop(context, _textController.text);
+                          }
+                        }),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: AMButton(
+                      child: Text(s.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
                   ),
                 ],
               ),

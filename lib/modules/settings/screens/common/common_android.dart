@@ -5,7 +5,7 @@ import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 class CommonSettingsAndroid extends StatefulWidget {
   @override
   _CommonSettingsAndroidState createState() => _CommonSettingsAndroidState();
@@ -37,25 +37,26 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
     s = Str.of(context);
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
+      appBar: AMAppBar(
         title: Text(s.common),
       ),
       body: ListView(
         children: <Widget>[
           Observer(
             builder: (_) => SwitchListTile.adaptive(
+              contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
               value: _settingsState.isDarkTheme,
               activeColor: Theme.of(context).accentColor,
               onChanged: (bool val) => _settingsState.toggleDarkTheme(val),
               title: ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: Icon(MdiIcons.themeLightDark),
+                leading: AMCircleIcon(MdiIcons.themeLightDark),
                 title: Text(s.dark_theme),
               ),
             ),
           ),
           ListTile(
-            leading: Icon(MdiIcons.broom),
+            leading: AMCircleIcon(MdiIcons.broom),
             title: Text(s.clear_cache),
             onTap: _clearCache,
           ),

@@ -1,11 +1,9 @@
-import 'dart:io';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:crypto_plugin/algorithm/pgp.dart';
@@ -113,20 +111,24 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                 _error ?? "",
                 style: TextStyle(color: Colors.red),
               ),
-              AppButton(
+              SizedBox(
                 width: double.infinity,
-                text: s.generate.toUpperCase(),
-                onPressed: () {
-                  if (_validateInput() == null) {
-                    _generate();
-                  }
-                  setState(() {});
-                },
+                child: AMButton(
+                  child: Text(s.generate),
+                  onPressed: () {
+                    if (_validateInput() == null) {
+                      _generate();
+                    }
+                    setState(() {});
+                  },
+                ),
               ),
-              AppButton(
+              SizedBox(
                 width: double.infinity,
-                text: s.close.toUpperCase(),
-                onPressed: _pop,
+                child: AMButton(
+                  child: Text(s.close),
+                  onPressed: _pop,
+                ),
               ),
             ],
           ),
@@ -172,7 +174,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     ),
                     DropdownButtonFormField(
                       hint: Text(length.toString()),
-                      decoration: InputDecoration(labelText: s.email),
+                      decoration: InputDecoration(labelText: s.length),
                       value: length,
                       items: lengths.map((value) {
                         return DropdownMenuItem<int>(
@@ -193,19 +195,26 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
               SizedBox(
                 height: 20,
               ),
-              AppButton(
+              SizedBox(
                 width: double.infinity,
-                text: s.generate.toUpperCase(),
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    _generate();
-                  }
-                },
+                child: AMButton(
+                  child: Text(s.generate),
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      _generate();
+                    }
+                  },
+                ),
               ),
-              AppButton(
+              SizedBox(
+                height: 8,
+              ),
+              SizedBox(
                 width: double.infinity,
-                text: s.close.toUpperCase(),
-                onPressed: _pop,
+                child: AMButton(
+                  child: Text(s.close),
+                  onPressed: _pop,
+                ),
               ),
             ],
           ),

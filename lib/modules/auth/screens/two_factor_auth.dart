@@ -1,14 +1,15 @@
-import 'dart:io';
-
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/auth/component/mail_logo.dart';
+import 'package:aurorafiles/modules/auth/component/presentation_header.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
-import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_button.dart';
+import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:theme/app_theme.dart';
 
 class TwoFactorAuth extends StatefulWidget {
   @override
@@ -28,74 +29,77 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
     final theme = Theme.of(context);
     final mq = MediaQuery.of(context);
 
-    return Scaffold(
-      body: MainGradient(
-        child: SizedBox(
-          height: mq.size.height - mq.viewInsets.bottom,
-          width: mq.size.width,
-          child: Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 22.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Hero(
-                    tag: "logo",
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Image.asset(BuildProperty.mainLogo),
+    return Theme(
+      data: AppTheme.login,
+      child: Scaffold(
+        body: MainGradient(
+          child: Stack(
+            children: <Widget>[
+              if (!BuildProperty.useMainLogo)
+                Positioned(
+                  top: -70.0,
+                  left: -70.0,
+                  child: MailLogo(isBackground: true),
+                ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 22.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    PresentationHeader(
+                      message: "",
                     ),
-                  ),
-                  SizedBox(height: 70.0),
-                  Center(
-                    child: Text(
-                      s.two_factor_auth,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.subhead.copyWith(
-                        fontSize: 20,
-                        color: Colors.white,
+                    Center(
+                      child: Text(
+                        s.two_factor_auth,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.subhead.copyWith(
+                          fontSize: 20,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 40.0),
-                  if (PlatformOverride.isIOS)
-                    CupertinoTextField(
-                      style: TextStyle(color: Colors.white),
-                      cursorColor: Theme.of(context).accentColor,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Colors.white38))),
-                      placeholderStyle: TextStyle(color: Colors.white70),
-                      placeholder: s.pin,
-                      controller: pinCtrl,
+                    Column(
+                      children: <Widget>[
+                        AppInput(
+                          labelText: s.pin,
+                          inputCase: InputCase.Underline,
+                          controller: pinCtrl,
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          error,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
                     ),
-                  if (!PlatformOverride.isIOS)
-                    TextFormField(
-                      decoration: InputDecoration(labelText: s.pin),
-                      controller: pinCtrl,
+                    Column(
+                      children: <Widget>[
+                        SizedBox(
+                          width: double.infinity,
+                          child: AMButton(
+                            isLoading: isProgress,
+                            child: Text(s.verify_pin),
+                            onPressed: checkCode,
+                          ),
+                        ),
+                        SizedBox(height: 6.0),
+//                        SizedBox(
+//                          width: double.infinity,
+//                          child: AMButton(
+//                            color: theme.colorScheme.surface,
+//                            child: Text(s.cancel),
+//                            onPressed: isProgress
+//                                ? null
+//                                : () => Navigator.pop(context),
+//                          ),
+//                        ),
+                      ],
                     ),
-                  SizedBox(height: 10),
-                  Text(
-                    error,
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  SizedBox(height: 20.0),
-                  AppButton(
-                    isLoading: isProgress,
-                    buttonCase: ButtonCase.Filled,
-                    width: double.infinity,
-                    text: s.verify_pin,
-                    onPressed: checkCode,
-                  ),
-                  AppButton(
-                    buttonCase: ButtonCase.Cancel,
-                    width: double.infinity,
-                    text: s.cancel,
-                    onPressed: isProgress ? null : () => Navigator.pop(context),
-                  )
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -113,16 +117,15 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
           error = s.invalid_pin;
           return;
         }
-        await AppStore.settingsState.getUserEncryptionKeys();
+        await authState.setAccount();
         Navigator.pushReplacementNamed(context, FilesRoute.name,
             arguments: FilesScreenArguments(path: ""));
       },
       onError: (e) {
+        isProgress = false;
         error = e.toString();
+        setState(() {});
       },
-    ).whenComplete(() {
-      isProgress = false;
-      setState(() {});
-    });
+    );
   }
 }

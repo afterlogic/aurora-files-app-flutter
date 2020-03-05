@@ -1,7 +1,7 @@
 name: aurorafiles
 description: File management system for ...
 
-version: 1.0.0+19
+version: 1.0.0+21
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -14,7 +14,7 @@ dependencies:
     sdk: flutter
 
   secure_sharing:
-    path: modules/secure_sharing/secure_sharing
+    path: module/secure_sharing/secure_sharing
 
   flutter_cupertino_localizations:
 
@@ -78,9 +78,10 @@ dependencies:
 
   theme:
     path: build_res/afterlogic/theme
-
+  aurora_ui_kit:
+    git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
   crypto_plugin:
-    path: core/crypto_plugin
+    git: https://github.com/afterlogic/flutter_crypto_plugin
   receive_sharing:
     path: core/receive_sharing
 
@@ -100,7 +101,7 @@ flutter_icons:
   ios: true
   android: true
   image_path: build_res/afterlogic/image/icon.png
-  adaptive_icon_background: "#75B8F3"
+  adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: build_res/afterlogic/image/icon_foreground.png
 
 flutter:
@@ -143,7 +144,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
 
 
 

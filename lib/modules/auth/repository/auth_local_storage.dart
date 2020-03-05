@@ -64,4 +64,13 @@ class AuthLocalStorage {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.remove("userId");
   }
+  Future<String> getFriendlyName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("friendlyName");
+  }
+
+  Future<bool> setFriendlyName(String value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString("friendlyName", value);
+  }
 }

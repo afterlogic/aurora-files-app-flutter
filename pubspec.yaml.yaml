@@ -1,7 +1,7 @@
 name: aurorafiles
 description: File management system for ...
 
-version: 1.0.0+19
+version: {{version}}
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -14,10 +14,10 @@ dependencies:
     sdk: flutter
 
   secure_sharing:
-    path: modules/secure_sharing/secure_sharing
+    path: module/secure_sharing/secure_sharing
   # if : secureSharingEnable
   secure_sharing_impl:
-    path: modules/secure_sharing/secure_sharing_impl
+    path: module/secure_sharing/secure_sharing_impl
   # end : if
 
   flutter_cupertino_localizations:
@@ -82,9 +82,10 @@ dependencies:
 
   theme:
     path: {{_themeModule}}
-
+  aurora_ui_kit:
+    git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
   crypto_plugin:
-    path: core/crypto_plugin
+    git: https://github.com/afterlogic/flutter_crypto_plugin
   receive_sharing:
     path: core/receive_sharing
 

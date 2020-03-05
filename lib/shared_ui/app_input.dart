@@ -58,6 +58,7 @@ class AppInput extends StatelessWidget {
         obscureText: obscureText,
         autocorrect: keyboardType != null ? false : true,
         decoration: InputDecoration(
+
           alignLabelWithHint: true,
           labelText: labelText,
           prefixIcon: prefix,

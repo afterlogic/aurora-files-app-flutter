@@ -48,10 +48,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "689ca2ce673c9a162ec0a8516d2a2d13ad00320b"
-      url: "git://github.com/afterlogic/aurora_ui_kit_flutter.git"
+      resolved-ref: cc505027b4b67d11179542919bfcf74023379970
+      url: "https://github.com/afterlogic/aurora_ui_kit_flutter.git"
     source: git
-    version: "0.0.2"
+    version: "0.0.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -762,13 +762,6 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
-  secure_sharing_impl:
-    dependency: "direct main"
-    description:
-      path: "module/secure_sharing/secure_sharing_impl"
-      relative: true
-    source: path
-    version: "0.0.1"
   share_extend:
     dependency: "direct main"
     description:
@@ -889,7 +882,7 @@ packages:
   theme:
     dependency: "direct main"
     description:
-      path: "build_res/private_mail/theme"
+      path: "build_res/afterlogic/theme"
       relative: true
     source: path
     version: "0.0.1"

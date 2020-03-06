@@ -33,7 +33,10 @@ class EnString extends S {
       "Are you sure you want to delete all the cached files and images? This will not affect saved files for offline.";
   final String clear = "Clear";
   final String cache_cleared_success = "Cache cleared successfully";
-  final String dark_theme = "Dark theme";
+  final String app_theme = "App theme";
+  final String system_theme = "System theme";
+  final String dark_theme = "Dark";
+  final String light_theme = "Light";
   final String encryption_description =
       "Files are encrypted/decrypted right on this device, even the server itself cannot get access to non-encrypted content of paranoid-encrypted files. Encryption method is AES256.";
   final String delete_encryption_key_success =

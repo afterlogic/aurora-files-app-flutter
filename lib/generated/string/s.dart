@@ -29,7 +29,10 @@ abstract class S {
   String get confirm_delete;
   String get clear;
   String get cache_cleared_success;
+  String get app_theme;
+  String get system_theme;
   String get dark_theme;
+  String get light_theme;
   String get encryption_description;
   String get delete_encryption_key_success;
   String get delete_key;

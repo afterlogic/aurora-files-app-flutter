@@ -6,6 +6,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 
+import 'components/theme_selection_dialog.dart';
+
 class CommonSettingsAndroid extends StatefulWidget {
   @override
   _CommonSettingsAndroidState createState() => _CommonSettingsAndroidState();
@@ -34,6 +36,16 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
     }
   }
 
+  String _getThemeName(bool isDarkTheme) {
+    s = Str.of(context);
+    if (isDarkTheme == false)
+      return s.light_theme;
+    else if (isDarkTheme == true)
+      return s.dark_theme;
+    else
+      return s.system_theme;
+  }
+
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
@@ -45,16 +57,16 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
       body: ListView(
         children: <Widget>[
           Observer(
-            builder: (_) => SwitchListTile.adaptive(
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-              value: _settingsState.isDarkTheme,
-              activeColor: Theme.of(context).accentColor,
-              onChanged: (bool val) => _settingsState.toggleDarkTheme(val),
-              title: ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: AMCircleIcon(MdiIcons.themeLightDark),
-                title: Text(s.dark_theme),
+            builder: (_) => ListTile(
+              leading: AMCircleIcon(MdiIcons.themeLightDark),
+              title: Text(s.app_theme),
+              trailing: Text(_getThemeName(_settingsState.isDarkTheme),
+                style: Theme.of(context).textTheme.caption,
               ),
+              onTap: () => ThemeSelectionDialog.show(
+                  context,
+                  _settingsState.isDarkTheme,
+                  (val) => _settingsState.toggleDarkTheme(val)),
             ),
           ),
           ListTile(

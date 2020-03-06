@@ -38,6 +38,15 @@ class _AppState extends State<App> {
     ]);
   }
 
+  ThemeData _getTheme(bool isDarkTheme) {
+    if (isDarkTheme == false)
+      return AppTheme.light;
+    else if (isDarkTheme == true)
+      return AppTheme.dark;
+    else
+      return null;
+  }
+
   bool _canEnterMainApp(List<bool> localStorageInitializationResults) {
     if (localStorageInitializationResults == null) return false;
     bool canEnterMailApp = true;
@@ -55,27 +64,29 @@ class _AppState extends State<App> {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
             return Observer(
-              builder: (_) => MaterialApp(
-                title: BuildProperty.appName,
-                theme: _settingsState.isDarkTheme == true
-                    ? AppTheme.dark
-                    : AppTheme.light,
-                onGenerateRoute: AppNavigation.onGenerateRoute,
-                localizationsDelegates: [
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                  LocalizationStringWidget.delegate,
-                ],
-                supportedLocales:
-                    LocalizationStringWidget.delegate.supportedLocales,
-                localeResolutionCallback: LocalizationStringWidget.delegate
-                    .resolution(
-                        fallback: new Locale("en", ""), withCountry: false),
-                initialRoute: _canEnterMainApp(snapshot.data)
-                    ? FilesRoute.name
-                    : AuthRoute.name,
-              ),
+              builder: (_) {
+                final theme = _getTheme(_settingsState.isDarkTheme);
+                return MaterialApp(
+                  title: BuildProperty.appName,
+                  theme: theme ?? AppTheme.light,
+                  darkTheme: theme ?? AppTheme.dark,
+                  onGenerateRoute: AppNavigation.onGenerateRoute,
+                  localizationsDelegates: [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    LocalizationStringWidget.delegate,
+                  ],
+                  supportedLocales:
+                      LocalizationStringWidget.delegate.supportedLocales,
+                  localeResolutionCallback: LocalizationStringWidget.delegate
+                      .resolution(
+                          fallback: new Locale("en", ""), withCountry: false),
+                  initialRoute: _canEnterMainApp(snapshot.data)
+                      ? FilesRoute.name
+                      : AuthRoute.name,
+                );
+              },
             );
           } else if (snapshot.hasError) {
             final err = snapshot.error.toString();

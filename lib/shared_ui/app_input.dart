@@ -53,12 +53,12 @@ class AppInput extends StatelessWidget {
       return TextFormField(
         style: style,
         validator: validator,
+        keyboardType: keyboardType,
         cursorColor: theme.accentColor,
         controller: controller,
         obscureText: obscureText,
         autocorrect: keyboardType != null ? false : true,
         decoration: InputDecoration(
-
           alignLabelWithHint: true,
           labelText: labelText,
           prefixIcon: prefix,

@@ -762,6 +762,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  secure_sharing_impl:
+    dependency: "direct main"
+    description:
+      path: "module/secure_sharing/secure_sharing_impl"
+      relative: true
+    source: path
+    version: "0.0.1"
   share_extend:
     dependency: "direct main"
     description:
@@ -882,7 +889,7 @@ packages:
   theme:
     dependency: "direct main"
     description:
-      path: "build_res/afterlogic/theme"
+      path: "build_res/private_mail/theme"
       relative: true
     source: path
     version: "0.0.1"

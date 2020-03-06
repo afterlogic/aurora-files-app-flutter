@@ -43,6 +43,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   Widget build(BuildContext context) {
     s = Str.of(context);
     final theme = Theme.of(context);
+    final spacer = SizedBox(height: 10.0);
     return Scaffold(
         key: _scaffoldKey,
         appBar: AMAppBar(
@@ -62,7 +63,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                 state.private.map((item) => KeyWidget(item, openKey)).toList();
 
             return ListView(
-              padding: const EdgeInsets.only(left: 16, bottom: 25),
+              padding: const EdgeInsets.all(16.0),
               children: <Widget>[
                 if (publicKeys.isNotEmpty)
                   Padding(
@@ -73,9 +74,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                     ),
                   ),
                 if (publicKeys.isNotEmpty)
-                  Column(
-                    children: publicKeys,
-                  ),
+                  Column(children: publicKeys),
                 if (privateKeys.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 25),
@@ -85,64 +84,29 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                     ),
                   ),
                 if (privateKeys.isNotEmpty)
-                  Column(
-                    children: privateKeys,
-                  ),
-                SizedBox(
-                  height: 25,
-                ),
+                  Column(children: privateKeys),
+                SizedBox(height: 25),
                 if (publicKeys.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: AMButton(
-                        child: Text(s.export_all_public_keys),
-                        onPressed: () {
-                          exportAll(state.public);
-                        },
-                      ),
-                    ),
+                  AMButton(
+                    child: Text(s.export_all_public_keys),
+                    onPressed: () {
+                      exportAll(state.public);
+                    },
                   ),
-                if (publicKeys.isNotEmpty)
-                  SizedBox(
-                    height: 8,
-                  ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: AMButton(
-                      child: Text(s.import_keys_from_text),
-                      onPressed: importKeyDialog,
-                    ),
-                  ),
+                if (publicKeys.isNotEmpty) spacer,
+                AMButton(
+                  child: Text(s.import_keys_from_text),
+                  onPressed: importKeyDialog,
                 ),
-                SizedBox(
-                  height: 8,
+                spacer,
+                AMButton(
+                  child: Text(s.import_keys_from_file),
+                  onPressed: _presenter.getKeysFromFile,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: AMButton(
-                      child: Text(s.import_keys_from_file),
-                      onPressed: _presenter.getKeysFromFile,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: AMButton(
-                      child: Text(s.generate_keys),
-                      onPressed: generateKeyDialog,
-                    ),
-                  ),
+                spacer,
+                AMButton(
+                  child: Text(s.generate_keys),
+                  onPressed: generateKeyDialog,
                 ),
               ],
             );

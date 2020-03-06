@@ -51,59 +51,48 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   }
 
   List<Widget> _buildAddingKey() {
+    final spacer = const SizedBox(height: 10.0);
     if (_settingsState.isParanoidEncryptionEnabled &&
         _settingsState.selectedKeyName == null) {
       return [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: Text(s.encryption_keys),
+        Text(s.encryption_keys),
+        SizedBox(height: 32.0),
+        Text(
+          s.need_to_set_encryption_key,
+          style: Theme.of(context).textTheme.caption,
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Text(
-            s.need_to_set_encryption_key,
-            style: Theme.of(context).textTheme.caption,
-          ),
-        ),
-        SizedBox(height: 8.0),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AMButton(
-            child: Text(s.import_key_from_text),
-            onPressed: () => AMDialog.show(
-              context: context,
-              builder: (_) => AddKeyDialog(
-                settingsState: _settingsState,
-                isImport: true,
-              ),
+        SizedBox(height: 32.0),
+        AMButton(
+          child: Text(s.import_key_from_text),
+          onPressed: () => AMDialog.show(
+            context: context,
+            builder: (_) => AddKeyDialog(
+              settingsState: _settingsState,
+              isImport: true,
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AMButton(
-            child: Text(s.import_key_from_file),
-            onPressed: () => _settingsState.onImportKeyFromFile(
-                onSuccess: () => showSnack(
+        spacer,
+        AMButton(
+          child: Text(s.import_key_from_file),
+          onPressed: () => _settingsState.onImportKeyFromFile(
+              onSuccess: () => showSnack(
+                  context: context,
+                  scaffoldState: _scaffoldKey.currentState,
+                  isError: false,
+                  msg: s.import_encryption_key_success),
+              onError: (err) => showSnack(
                     context: context,
                     scaffoldState: _scaffoldKey.currentState,
-                    isError: false,
-                    msg: s.import_encryption_key_success),
-                onError: (err) => showSnack(
-                      context: context,
-                      scaffoldState: _scaffoldKey.currentState,
-                      msg: s.key_not_found_in_file,
-                    )),
-          ),
+                    msg: s.key_not_found_in_file,
+                  )),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
-          child: AMButton(
-            child: Text(s.generate_key),
-            onPressed: () => AMDialog.show(
-              context: context,
-              builder: (_) => AddKeyDialog(settingsState: _settingsState),
-            ),
+        spacer,
+        AMButton(
+          child: Text(s.generate_key),
+          onPressed: () => AMDialog.show(
+            context: context,
+            builder: (_) => AddKeyDialog(settingsState: _settingsState),
           ),
         ),
       ];
@@ -113,66 +102,54 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   }
 
   List<Widget> _buildKeyOptions() {
+    final spacer = const SizedBox(height: 10.0);
     final theme = Theme.of(context);
     if (_settingsState.selectedKeyName != null) {
       return [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: Text(s.encryption_keys),
+        SizedBox(height: 26.0),
+        Text(s.encryption_keys),
+        spacer,
+        Text(
+          _settingsState.selectedKeyName,
+          style: Theme.of(context).textTheme.subhead,
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Text(
-            _settingsState.selectedKeyName,
-            style: Theme.of(context).textTheme.subhead,
-          ),
+        Divider(height: 32.0),
+        Text(
+          s.encryption_export_description,
+          style: Theme.of(context).textTheme.caption,
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Divider(),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Text(
-            s.encryption_export_description,
-            style: Theme.of(context).textTheme.caption,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: AMButton(child: Text(s.share_key), onPressed: _shareKey),
-        ),
+        SizedBox(height: 32.0),
+        AMButton(child: Text(s.share_key), onPressed: _shareKey),
+        if (!PlatformOverride.isIOS) spacer,
         if (!PlatformOverride.isIOS)
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-            child:
-                AMButton(child: Text(s.download_key), onPressed: _downloadKey),
+          AMButton(child: Text(s.download_key), onPressed: _downloadKey),
+        spacer,
+        AMButton(
+          color: theme.errorColor,
+          shadow: BoxShadow(
+            color: theme.errorColor.withOpacity(0.6),
+            blurRadius: 8.0,
+            offset: Offset(0.0, 3.0),
           ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: AMButton(
-            color: theme.errorColor,
-            child: Text(s.delete_key),
-            onPressed: () async {
-              final result = await AMDialog.show(
+          child: Text(s.delete_key),
+          onPressed: () async {
+            final result = await AMDialog.show(
+              context: context,
+              builder: (_) => DeleteKeyConfirmationDialog(
+                settingsState: _settingsState,
+              ),
+            );
+            if (result == DeleteKeyConfirmationDialogResult.delete) {
+              showSnack(
                 context: context,
-                builder: (_) => DeleteKeyConfirmationDialog(
-                  settingsState: _settingsState,
-                ),
+                scaffoldState: _scaffoldKey.currentState,
+                msg: s.delete_encryption_key_success,
+                isError: false,
               );
-              if (result == DeleteKeyConfirmationDialogResult.delete) {
-                showSnack(
-                  context: context,
-                  scaffoldState: _scaffoldKey.currentState,
-                  msg: s.delete_encryption_key_success,
-                  isError: false,
-                );
-              } else if (result == DeleteKeyConfirmationDialogResult.export) {
-                _downloadKey();
-              }
-            },
-          ),
+            } else if (result == DeleteKeyConfirmationDialogResult.export) {
+              _downloadKey();
+            }
+          },
         ),
       ];
     } else {
@@ -188,10 +165,9 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       child: Observer(
         builder: (_) => Scaffold(
           key: _scaffoldKey,
-          appBar: AMAppBar(
-            title: Text(s.encryption),
-          ),
+          appBar: AMAppBar(title: Text(s.encryption)),
           body: ListView(
+            padding: const EdgeInsets.all(16.0),
             children: <Widget>[
 //              SwitchListTile.adaptive(
 //                value: _settingsState.isParanoidEncryptionEnabled,
@@ -211,12 +187,9 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
 //                padding: EdgeInsets.symmetric(horizontal: 16.0),
 //                child: Divider(height: 0),
 //              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  s.encryption_description,
-                  style: Theme.of(context).textTheme.caption,
-                ),
+              Text(
+                s.encryption_description,
+                style: Theme.of(context).textTheme.caption,
               ),
               ..._buildAddingKey(),
               ..._buildKeyOptions(),

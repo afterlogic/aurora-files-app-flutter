@@ -153,7 +153,7 @@ class MainDrawer extends StatelessWidget {
               height: 0,
             ),
             ListTile(
-              leading: AMCircleIcon(Icons.settings),
+              leading: Icon(Icons.settings),
               title: Text(s.settings),
               onTap: () {
                 Navigator.pop(context);

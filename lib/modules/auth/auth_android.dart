@@ -64,11 +64,11 @@ class _AuthAndroidState extends State<AuthAndroid> {
   }
 
   Future _login(BuildContext context) async {
+    // autodiscover field if it's hidden
+    if (!_showHostField) _authState.hostCtrl.clear();
     String errMsg = "";
     if (PlatformOverride.isIOS) {
-      if (_showHostField && _authState.hostCtrl.text.isEmpty) {
-        errMsg = s.please_enter_hostname;
-      } else if (_authState.emailCtrl.text.isEmpty) {
+      if (_authState.emailCtrl.text.isEmpty) {
         errMsg = s.please_enter_email;
       } else if (_authState.passwordCtrl.text.isEmpty) {
         errMsg = s.please_enter_password;
@@ -92,7 +92,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
       );
       if (showHost) {
-        _authState.hostCtrl.text = _authState.hostName;
+//        _authState.hostCtrl.text = _authState.hostName;
         setState(() => _showHostField = true);
         showSnack(
           context: context,
@@ -118,9 +118,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
           inputCase: InputCase.Underline,
           controller: _authState.hostCtrl,
           keyboardType: TextInputType.url,
-          validator: (value) => _showHostField
-              ? validateInput(value, [ValidationTypes.empty])
-              : "",
           labelText: s.host,
         ),
       SizedBox(height: 10),

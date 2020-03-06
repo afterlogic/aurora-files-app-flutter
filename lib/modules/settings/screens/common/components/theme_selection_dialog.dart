@@ -63,9 +63,6 @@ class ThemeSelectionDialog extends StatelessWidget {
       ),
       actions: <Widget>[
         FlatButton(
-          textColor: Theme.of(context).brightness == Brightness.light
-              ? Theme.of(context).accentColor
-              : null,
           child: Text(s.cancel),
           onPressed: Navigator.of(context).pop,
         ),

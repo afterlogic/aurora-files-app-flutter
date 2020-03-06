@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -49,19 +50,13 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final canDownload = !(hasVector && !hasDecryptKey);
     if (canDownload) {
       Navigator.pop(context);
-      final result = await (PlatformOverride.isIOS
-          ? showCupertinoDialog(
-              context: context,
-              builder: (_) => ShareDialog(
-                    filesState: widget.filesState,
-                    file: widget.file,
-                  ))
-          : showDialog(
-              context: context,
-              builder: (_) => ShareDialog(
-                    filesState: widget.filesState,
-                    file: widget.file,
-                  )));
+      final result = await AMDialog.show(
+        context: context,
+        builder: (_) => ShareDialog(
+          filesState: widget.filesState,
+          file: widget.file,
+        ),
+      );
       if (result is PreparedForShare) {
         widget.filesState.share(result);
       }
@@ -154,23 +149,14 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   title: Text(s.rename),
                   onTap: () async {
                     Navigator.pop(context);
-                    final result = PlatformOverride.isIOS
-                        ? await showCupertinoDialog(
-                            context: context,
-                            builder: (_) => RenameDialog(
-                                  file: widget.file,
-                                  filesState: widget.filesState,
-                                  filesPageState: widget.filesPageState,
-                                ))
-                        : await showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (_) => RenameDialog(
-                              file: widget.file,
-                              filesState: widget.filesState,
-                              filesPageState: widget.filesPageState,
-                            ),
-                          );
+                    final result = await AMDialog.show(
+                      context: context,
+                      builder: (_) => RenameDialog(
+                        file: widget.file,
+                        filesState: widget.filesState,
+                        filesPageState: widget.filesPageState,
+                      ),
+                    );
                     if (result is String) {
                       widget.filesPageState.onGetFiles();
                     }
@@ -182,18 +168,10 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   title: Text(s.delete),
                   onTap: () async {
                     Navigator.pop(context);
-                    bool shouldDelete;
-                    if (PlatformOverride.isIOS) {
-                      shouldDelete = await showCupertinoDialog(
-                          context: context,
-                          builder: (_) =>
-                              DeleteConfirmationDialog(itemsNumber: 1));
-                    } else {
-                      shouldDelete = await showDialog(
-                          context: context,
-                          builder: (_) =>
-                              DeleteConfirmationDialog(itemsNumber: 1));
-                    }
+                    final shouldDelete = await AMDialog.show<bool>(
+                      context: context,
+                      builder: (_) => DeleteConfirmationDialog(itemsNumber: 1),
+                    );
                     if (shouldDelete == true) {
                       widget.filesPageState.onDeleteFiles(
                         storage: widget.filesState.selectedStorage,

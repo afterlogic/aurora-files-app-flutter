@@ -4,7 +4,6 @@ import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
@@ -85,9 +84,9 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
                         ),
                       ),
                     if (!PlatformOverride.isIOS)
-                    SizedBox(
-                      height: 8,
-                    ),
+                      SizedBox(
+                        height: 8,
+                      ),
                     SizedBox(
                       width: double.infinity,
                       child: AMButton(
@@ -121,9 +120,9 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
   }
 
   delete() async {
-    final result = await openDialog(
-      context,
-      (_) {
+    final result = await AMDialog.show(
+      context: context,
+      builder: (_) {
         return ConfirmDeleteKeyWidget(
             s.confirm_delete_pgp_key(widget._pgpKey.email));
       },

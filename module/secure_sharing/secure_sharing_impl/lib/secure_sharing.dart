@@ -1,10 +1,10 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/string/s.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
-import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:crypto_plugin/algorithm/pgp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:secure_sharing/secure_sharing.dart';
@@ -29,18 +29,18 @@ class SecureSharingImpl extends SecureSharing {
     bool usePassword = true;
 
     if (!preparedForShare.localFile.published) {
-      usePassword = await openDialog(
-        context,
-        (context) => LinkOptionWidget(),
+      usePassword = await AMDialog.show(
+        context: context,
+        builder: (context) => LinkOptionWidget(),
       );
     }
 
     RecipientWithKey selectRecipientResult;
     if (usePassword != null) {
       while (true) {
-        final needRecipient = await openDialog(
-          context,
-          (context) => ShareLink(
+        final needRecipient = await AMDialog.show(
+          context: context,
+          builder: (context) => ShareLink(
             userPrivateKey,
             userPublicKey,
             usePassword,
@@ -56,9 +56,9 @@ class SecureSharingImpl extends SecureSharing {
           break;
         }
 
-        selectRecipientResult = await openDialog(
-          context,
-          (context) => SelectRecipient(fileViewerState, s.send_public_link_to),
+        selectRecipientResult = await AMDialog.show(
+          context: context,
+          builder: (context) => SelectRecipient(fileViewerState, s.send_public_link_to),
         );
         if (selectRecipientResult == null) {
           break;
@@ -79,15 +79,15 @@ class SecureSharingImpl extends SecureSharing {
     Pgp pgp,
     S s,
   ) async {
-    final selectRecipientResult = await openDialog(
-      context,
-      (context) => SelectRecipient(fileViewerState, s.secure_sharing),
+    final selectRecipientResult = await AMDialog.show(
+      context: context,
+      builder: (context) => SelectRecipient(fileViewerState, s.secure_sharing),
     );
 
     if (selectRecipientResult is RecipientWithKey) {
-      final selectEncryptMethodResult = await openDialog(
-        context,
-        (context) => SelectEncryptMethod(
+      final selectEncryptMethodResult = await AMDialog.show(
+        context: context,
+        builder: (context) => SelectEncryptMethod(
           userPrivateKey,
           selectRecipientResult.recipient,
           selectRecipientResult.pgpKey,
@@ -95,9 +95,9 @@ class SecureSharingImpl extends SecureSharing {
         ),
       );
       if (selectEncryptMethodResult is SelectEncryptMethodResult) {
-        await openDialog(
-          context,
-          (context) => EncryptedShareLink(
+        await AMDialog.show(
+          context: context,
+          builder: (context) => EncryptedShareLink(
             fileViewerState,
             userPrivateKey,
             userPublicKey,

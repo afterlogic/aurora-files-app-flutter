@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,58 +24,23 @@ class DeleteConfirmationDialog extends StatelessWidget {
     else
       itemName = "${s.file}/${s.folder}";
 
-    if (PlatformOverride.isIOS) {
-      return CupertinoAlertDialog(
-        title: Text(itemsNumber != null && itemsNumber > 1
-            ? s.delete_files
-            : s.delete_file),
-        content: Text(
-            s.confirm_delete_file(itemsNumber != null &&
-                itemsNumber > 1
-                ? s.these_files(itemsNumber.toString())
-                : s.these_files(itemName))),
-        actions: <Widget>[
-          CupertinoButton(
-            child: Text(s.cancel),
-            onPressed: () => Navigator.pop(context, false),
-          ),
-          CupertinoButton(
-            child: Text(
-              s.delete,
-              style: TextStyle(color: Theme
-                  .of(context)
-                  .errorColor),
-            ),
-            onPressed: () => Navigator.pop(context, true),
-          ),
-        ],
-      );
-    } else {
-      return AlertDialog(
-        title: Text(itemsNumber != null && itemsNumber > 1
-            ? s.delete_files
-            : s.delete_file),
-        content: Text(
-            s.confirm_delete_file(itemsNumber != null &&
-                itemsNumber > 1
-                ? s.these_files(itemsNumber.toString())
-                : s.these_files(itemName))),
-        actions: <Widget>[
-          FlatButton(
-            child: Text(s.cancel),
-            onPressed: () => Navigator.pop(context, false),
-          ),
-          FlatButton(
-            child: Text(
-              s.delete,
-              style: TextStyle(color: Theme
-                  .of(context)
-                  .errorColor),
-            ),
-            onPressed: () => Navigator.pop(context, true),
-          ),
-        ],
-      );
-    }
+    return AMDialog(
+      title: Text(itemsNumber != null && itemsNumber > 1
+          ? s.delete_files
+          : s.delete_file),
+      content: Text(s.confirm_delete_file(itemsNumber != null && itemsNumber > 1
+          ? s.these_files(itemsNumber.toString())
+          : s.these_files(itemName))),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(s.cancel),
+          onPressed: () => Navigator.pop(context, false),
+        ),
+        FlatButton(
+          child: Text(s.delete),
+          onPressed: () => Navigator.pop(context, true),
+        ),
+      ],
+    );
   }
 }

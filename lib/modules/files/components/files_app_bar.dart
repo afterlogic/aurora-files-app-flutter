@@ -140,22 +140,13 @@ class _FilesAppBarState extends State<FilesAppBar>
           IconButton(
             icon: Icon(Icons.create_new_folder),
             tooltip: s.add_folder,
-            onPressed: () => PlatformOverride.isIOS
-                ? showCupertinoDialog(
-                    context: context,
-                    builder: (_) => AddFolderDialogAndroid(
-                      filesState: _filesState,
-                      filesPageState: _filesPageState,
-                    ),
-                  )
-                : showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (_) => AddFolderDialogAndroid(
-                      filesState: _filesState,
-                      filesPageState: _filesPageState,
-                    ),
-                  ),
+            onPressed: () => AMDialog.show(
+              context: context,
+              builder: (_) => AddFolderDialogAndroid(
+                filesState: _filesState,
+                filesPageState: _filesPageState,
+              ),
+            ),
           ),
           if (_filesState.currentStorages.length > 1)
             PopupMenuButton<Storage>(

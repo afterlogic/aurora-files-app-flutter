@@ -1,11 +1,11 @@
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/shared_ui/confirmation_dialog.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+
 class CommonSettingsAndroid extends StatefulWidget {
   @override
   _CommonSettingsAndroidState createState() => _CommonSettingsAndroidState();
@@ -17,11 +17,13 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
   S s;
 
   Future _clearCache() async {
-    final result = await ConfirmationDialog.show(
-        context,
-        s.clear_cache,
-        s.confirm_delete,
-        s.clear);
+    final result = await AMConfirmationDialog.show(
+      context,
+      s.clear_cache,
+      s.confirm_delete,
+      s.clear,
+      s.cancel,
+    );
     if (result == true) {
       await AppStore.filesState.clearCache(deleteCachedImages: true);
       showSnack(

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
@@ -23,64 +24,33 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
     final s = Str.of(context);
     final title = Text(s.delete_key);
     final content = Text(s.delete_key_description);
-    if (PlatformOverride.isIOS) {
-      return CupertinoAlertDialog(
-        title: title,
-        content: content,
-        actions: <Widget>[
-          CupertinoButton(
-            child: Text(s.cancel),
-            onPressed: () => Navigator.pop(
-                context, DeleteKeyConfirmationDialogResult.cancel),
+    return AMDialog(
+      title: title,
+      content: content,
+      actions: <Widget>[
+        FlatButton(
+          child: Text(s.cancel),
+          onPressed: () =>
+              Navigator.pop(context, DeleteKeyConfirmationDialogResult.cancel),
+        ),
+        FlatButton(
+          child: Text(s.download),
+          onPressed: () {
+            Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
+          },
+        ),
+        FlatButton(
+          child: Text(
+            s.delete,
+            style: TextStyle(color: Theme.of(context).errorColor),
           ),
-          CupertinoButton(
-            child: Text(s.download),
-            onPressed: () {
-              Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
-            },
-          ),
-          CupertinoButton(
-            child: Text(
-              s.delete,
-              style: TextStyle(color: Theme.of(context).errorColor),
-            ),
-            onPressed: () async {
-              await settingsState.onDeleteEncryptionKey();
-              await settingsState.getUserEncryptionKeys();
-              Navigator.pop(context, DeleteKeyConfirmationDialogResult.delete);
-            },
-          ),
-        ],
-      );
-    } else {
-      return AlertDialog(
-        title: title,
-        content: content,
-        actions: <Widget>[
-          FlatButton(
-            child: Text(s.cancel),
-            onPressed: () => Navigator.pop(
-                context, DeleteKeyConfirmationDialogResult.cancel),
-          ),
-          FlatButton(
-            child: Text(s.download),
-            onPressed: () {
-              Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
-            },
-          ),
-          FlatButton(
-            child: Text(
-              s.delete,
-              style: TextStyle(color: Theme.of(context).errorColor),
-            ),
-            onPressed: () async {
-              await settingsState.onDeleteEncryptionKey();
-              await settingsState.getUserEncryptionKeys();
-              Navigator.pop(context, DeleteKeyConfirmationDialogResult.delete);
-            },
-          ),
-        ],
-      );
-    }
+          onPressed: () async {
+            await settingsState.onDeleteEncryptionKey();
+            await settingsState.getUserEncryptionKeys();
+            Navigator.pop(context, DeleteKeyConfirmationDialogResult.delete);
+          },
+        ),
+      ],
+    );
   }
 }

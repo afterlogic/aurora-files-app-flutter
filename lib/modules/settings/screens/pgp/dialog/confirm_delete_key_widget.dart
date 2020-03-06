@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,8 +34,6 @@ class _ConfirmDeleteKeyWidgetState extends State<ConfirmDeleteKeyWidget> {
         },
       )
     ];
-    return PlatformOverride.isIOS
-        ? CupertinoAlertDialog(content: content, actions: actions)
-        : AlertDialog(content: content, actions: actions);
+    return AMDialog(content: content, actions: actions);
   }
 }

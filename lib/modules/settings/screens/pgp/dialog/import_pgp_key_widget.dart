@@ -97,22 +97,14 @@ class _ImportPgpKeyWidgetState extends State<ImportPgpKeyWidget> {
       ],
     );
 
-    return PlatformOverride.isIOS
-        ? CupertinoAlertDialog(
-            title: title,
-            content: SizedBox(
-              height: size.height / 2,
-              width: min(size.width - 40, 300),
-              child: content,
-            ),
-          )
-        : AlertDialog(
-            title: title,
-            content: SizedBox(
-                height: size.height / 2,
-                width: min(size.width - 40, 300),
-                child: content),
-          );
+    return AMDialog(
+      title: title,
+      content: SizedBox(
+        height: size.height / 2,
+        width: min(size.width - 40, 300),
+        child: content,
+      ),
+    );
   }
 }
 

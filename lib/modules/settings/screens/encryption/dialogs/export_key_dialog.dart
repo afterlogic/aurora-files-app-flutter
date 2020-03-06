@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
@@ -25,79 +26,39 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
   @override
   Widget build(BuildContext context) {
     final s = Str.of(context);
-    if (PlatformOverride.isIOS) {
-      return CupertinoAlertDialog(
-        title: Text(widget.settingsState.selectedKeyName),
-        content: _isExporting
-            ? Row(
-                children: <Widget>[
-                  CupertinoActivityIndicator(),
-                  SizedBox(width: 20.0),
-                  Text(s.download_key_progress)
-                ],
-              )
-            : Text(s.download_confirm),
-        actions: <Widget>[
-          CupertinoButton(
-              child: Text(s.cancel), onPressed: Navigator.of(context).pop),
-          CupertinoButton(
-            child: Text(s.download),
-            onPressed: _isExporting
-                ? null
-                : () {
-                    setState(() => _isExporting = true);
-                    widget.settingsState.onExportEncryptionKey(
-                      onSuccess: (String exportedDir) =>
-                          Navigator.pop(context, exportedDir),
-                      onError: (String err) {
-                        Navigator.pop(context);
-                        showSnack(
-                            context: context,
-                            scaffoldState: widget.scaffoldState,
-                            msg: err);
-                      },
-                    );
-                  },
-          )
-        ],
-      );
-    } else {
-      return AlertDialog(
-        title: Text(widget.settingsState.selectedKeyName),
-        content: _isExporting
-            ? Row(
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                  SizedBox(width: 20.0),
-                  Text(s.download_key_progress)
-                ],
-              )
-            : Text(s.download_confirm),
-        actions: <Widget>[
-          FlatButton(
-              child: Text(s.cancel),
-              onPressed: Navigator.of(context).pop),
-          FlatButton(
-            child: Text(s.download),
-            onPressed: _isExporting
-                ? null
-                : () {
-                    setState(() => _isExporting = true);
-                    widget.settingsState.onExportEncryptionKey(
-                      onSuccess: (String exportedDir) =>
-                          Navigator.pop(context, exportedDir),
-                      onError: (String err) {
-                        Navigator.pop(context);
-                        showSnack(
-                            context: context,
-                            scaffoldState: widget.scaffoldState,
-                            msg: err);
-                      },
-                    );
-                  },
-          )
-        ],
-      );
-    }
+    return AMDialog(
+      title: Text(widget.settingsState.selectedKeyName),
+      content: _isExporting
+          ? Row(
+              children: <Widget>[
+                CircularProgressIndicator(),
+                SizedBox(width: 20.0),
+                Text(s.download_key_progress)
+              ],
+            )
+          : Text(s.download_confirm),
+      actions: <Widget>[
+        FlatButton(child: Text(s.cancel), onPressed: Navigator.of(context).pop),
+        FlatButton(
+          child: Text(s.download),
+          onPressed: _isExporting
+              ? null
+              : () {
+                  setState(() => _isExporting = true);
+                  widget.settingsState.onExportEncryptionKey(
+                    onSuccess: (String exportedDir) =>
+                        Navigator.pop(context, exportedDir),
+                    onError: (String err) {
+                      Navigator.pop(context);
+                      showSnack(
+                          context: context,
+                          scaffoldState: widget.scaffoldState,
+                          msg: err);
+                    },
+                  );
+                },
+        )
+      ],
+    );
   }
 }

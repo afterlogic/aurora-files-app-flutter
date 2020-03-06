@@ -10,8 +10,6 @@ import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
-import 'package:aurorafiles/shared_ui/confirmation_dialog.dart';
-import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -69,13 +67,13 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               leading: AMCircleIcon(Icons.exit_to_app),
               title: Text(s.log_out),
               onTap: () async {
-                final result = await openDialog(
-                    context,
-                    (_) => ConfirmationDialog(
-                          title: null,
-                          description: s.confirm_exit,
-                          actionText: s.exit,
-                        ));
+                final result = await AMConfirmationDialog.show(
+                  context,
+                  null,
+                  s.confirm_exit,
+                  s.exit,
+                  s.cancel,
+                );
                 if (result == true) {
                   authState.onLogout();
                   Navigator.pushReplacementNamed(context, AuthRoute.name);

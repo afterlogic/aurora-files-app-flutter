@@ -349,19 +349,11 @@ class _ShareLinkState extends State<ShareLink> {
                     ],
                   ));
 
-    return PlatformOverride.isIOS
-        ? CupertinoAlertDialog(
-            title: title,
-            content: content,
-            actions:
-                widget.selectRecipientResult?.pgpKey != null ? [] : actions,
-          )
-        : AlertDialog(
-            title: title,
-            content: content,
-            actions:
-                widget.selectRecipientResult?.pgpKey != null ? null : actions,
-          );
+    return AlertDialog(
+      title: title,
+      content: content,
+      actions: widget.selectRecipientResult?.pgpKey != null ? null : actions,
+    );
   }
 
   Widget contentWrap(Widget content) {

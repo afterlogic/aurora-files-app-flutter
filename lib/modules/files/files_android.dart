@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -144,18 +145,12 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   void _deleteSelected(context) async {
-    bool shouldDelete;
-    if (PlatformOverride.isIOS) {
-      shouldDelete = await showCupertinoDialog(
-          context: context,
-          builder: (_) => DeleteConfirmationDialog(
-              itemsNumber: _filesPageState.selectedFilesIds.length));
-    } else {
-      shouldDelete = await showDialog(
-          context: context,
-          builder: (_) => DeleteConfirmationDialog(
-              itemsNumber: _filesPageState.selectedFilesIds.length));
-    }
+    final shouldDelete = await AMDialog.show(
+      context: context,
+      builder: (_) => DeleteConfirmationDialog(
+        itemsNumber: _filesPageState.selectedFilesIds.length,
+      ),
+    );
 
     if (shouldDelete == true) {
       _filesPageState.onDeleteFiles(
@@ -262,7 +257,7 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   @override
   Widget build(BuildContext context) {
-    final theme=Theme.of(context);
+    final theme = Theme.of(context);
     s = Str.of(context);
     return MultiProvider(
       providers: [
@@ -376,24 +371,13 @@ class _FilesAndroidState extends State<FilesAndroid>
                               CustomSpeedDial(tag: widget.path, children: [
                                 MiniFab(
                                   icon: Icon(Icons.create_new_folder),
-                                  onPressed: () => PlatformOverride.isIOS
-                                      ? showCupertinoDialog(
-                                          context: context,
-                                          builder: (_) =>
-                                              AddFolderDialogAndroid(
-                                            filesState: _filesState,
-                                            filesPageState: _filesPageState,
-                                          ),
-                                        )
-                                      : showDialog(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (_) =>
-                                              AddFolderDialogAndroid(
-                                            filesState: _filesState,
-                                            filesPageState: _filesPageState,
-                                          ),
-                                        ),
+                                  onPressed: () => AMDialog.show(
+                                    context: context,
+                                    builder: (_) => AddFolderDialogAndroid(
+                                      filesState: _filesState,
+                                      filesPageState: _filesPageState,
+                                    ),
+                                  ),
                                 ),
                                 MiniFab(
                                     icon: Icon(MdiIcons.filePlus),

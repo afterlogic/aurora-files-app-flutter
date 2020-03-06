@@ -3,9 +3,7 @@ import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:crypto_plugin/algorithm/pgp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,188 +34,86 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   Widget build(BuildContext context) {
     s = Str.of(context);
     final title = Text(s.generate_keys);
-    if (PlatformOverride.isIOS) {
-      return CupertinoAlertDialog(
-        title: title,
-        content: SizedBox(
-          child: Flex(
-            direction: Axis.vertical,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: 10),
-              CupertinoTextField(
-                enabled: false,
-                prefix: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Text("${s.email}:"),
-                ),
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              SizedBox(height: 10),
-              CupertinoTextField(
-                autofocus: true,
-                prefix: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Text("${s.password}:"),
-                ),
-                suffix: GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Icon(
-                        _obscure ? Icons.visibility : Icons.visibility_off),
+    return AMDialog(
+      title: title,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                      labelText: s.email,
+                      alignLabelWithHint: true,
+                    ),
+                    validator: (v) => validateInput(v, [ValidationTypes.email]),
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
                   ),
-                  onTap: () {
-                    _obscure = !_obscure;
-                    setState(() {});
-                  },
-                ),
-                obscureText: _obscure,
-                controller: _passwordController,
-                keyboardType: TextInputType.visiblePassword,
-              ),
-              SizedBox(height: 10),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  showCupertinoModalPopup(
-                      context: context,
-                      builder: (_) {
-                        return CupertinoActionSheet(
-                            title: Text(s.select_length),
-                            actions: lengths
-                                .map((length) => CupertinoActionSheetAction(
-                                      onPressed: () =>
-                                          Navigator.pop(context, length),
-                                      child: Text(length.toString()),
-                                    ))
-                                .toList());
-                      }).then((result) {
-                    if (result is int) {
-                      _lengthController.text = result.toString();
-                      length = result;
-                      setState(() {});
-                    }
-                  });
-                },
-                child: CupertinoTextField(
-                  enabled: false,
-                  prefix: Text(" ${s.length}: "),
-                  controller: _lengthController,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                _error ?? "",
-                style: TextStyle(color: Colors.red),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: AMButton(
-                  child: Text(s.generate),
-                  onPressed: () {
-                    if (_validateInput() == null) {
-                      _generate();
-                    }
-                    setState(() {});
-                  },
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: AMButton(
-                  child: Text(s.close),
-                  onPressed: _pop,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    } else {
-      return AlertDialog(
-        title: title,
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      enabled: false,
-                      decoration: InputDecoration(
-                        labelText: s.email,
-                        alignLabelWithHint: true,
-                      ),
-                      validator: (v) =>
-                          validateInput(v, [ValidationTypes.email]),
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: s.password,
-                        alignLabelWithHint: true,
-                        suffix: GestureDetector(
-                          child: Icon(
-                            _obscure ? Icons.visibility : Icons.visibility_off,
-                          ),
-                          onTap: () {
-                            _obscure = !_obscure;
-                            setState(() {});
-                          },
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: s.password,
+                      alignLabelWithHint: true,
+                      suffix: GestureDetector(
+                        child: Icon(
+                          _obscure ? Icons.visibility : Icons.visibility_off,
                         ),
+                        onTap: () {
+                          _obscure = !_obscure;
+                          setState(() {});
+                        },
                       ),
-                      validator: (v) =>
-                          validateInput(v, [ValidationTypes.empty]),
-                      controller: _passwordController,
-                      obscureText: _obscure,
                     ),
-                    DropdownButtonFormField(
-                      hint: Text(length.toString()),
-                      decoration: InputDecoration(
-                        labelText: s.length,
-                        alignLabelWithHint: true,
-                      ),
-                      value: length,
-                      items: lengths.map((value) {
-                        return DropdownMenuItem<int>(
-                          value: value,
-                          child: Text(
-                            value.toString(),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (v) {
-                        length = v;
-                        setState(() {});
-                      },
+                    validator: (v) => validateInput(v, [ValidationTypes.empty]),
+                    controller: _passwordController,
+                    obscureText: _obscure,
+                  ),
+                  DropdownButtonFormField(
+                    hint: Text(length.toString()),
+                    decoration: InputDecoration(
+                      labelText: s.length,
+                      alignLabelWithHint: true,
                     ),
-                  ],
-                ),
+                    value: length,
+                    items: lengths.map((value) {
+                      return DropdownMenuItem<int>(
+                        value: value,
+                        child: Text(
+                          value.toString(),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (v) {
+                      length = v;
+                      setState(() {});
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        actions: <Widget>[
-          FlatButton(
-            child: Text(s.close),
-            onPressed: _pop,
-          ),
-          FlatButton(
-            child: Text(s.generate),
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                _generate();
-              }
-            },
-          ),
-        ],
-      );
-    }
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(s.close),
+          onPressed: _pop,
+        ),
+        FlatButton(
+          child: Text(s.generate),
+          onPressed: () {
+            if (_formKey.currentState.validate()) {
+              _generate();
+            }
+          },
+        ),
+      ],
+    );
   }
 
   String _validateInput() {
@@ -240,9 +136,9 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     final password = _passwordController.text;
     final hasKey = await widget.pgpKeyUtil.checkHasKey(_emailController.text);
     if (hasKey) {
-      final result = await openDialog(
-        context,
-        (_) => ConfirmDeleteKeyWidget(s.already_have_key),
+      final result = await AMDialog.show(
+        context: context,
+        builder: (_) => ConfirmDeleteKeyWidget(s.already_have_key),
       );
       if (result != true) {
         return;

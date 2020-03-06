@@ -81,7 +81,7 @@ dependencies:
   theme:
     path: build_res/private_mail/theme
   aurora_ui_kit:
-    git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
+    git: git://github.com/afterlogic/aurora_ui_kit_flutter.git
   crypto_plugin:
     git: https://github.com/afterlogic/flutter_crypto_plugin
   receive_sharing:

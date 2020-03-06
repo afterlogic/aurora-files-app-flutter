@@ -94,17 +94,11 @@ class _SelectRecipientState extends State<SelectRecipient> {
       )
     ];
 
-    return PlatformOverride.isIOS
-        ? CupertinoAlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          )
-        : AlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          );
+    return AlertDialog(
+      title: title,
+      content: content,
+      actions: actions,
+    );
   }
 
   List<Widget> body(ThemeData theme) {

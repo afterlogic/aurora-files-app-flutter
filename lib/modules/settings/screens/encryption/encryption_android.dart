@@ -29,21 +29,13 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
 
   void _downloadKey() async {
     var exportedDir;
-    if (PlatformOverride.isIOS) {
-      exportedDir = await showCupertinoDialog(
-          context: context,
-          builder: (_) => ExportKeyDialog(
-                settingsState: _settingsState,
-                scaffoldState: _scaffoldKey.currentState,
-              ));
-    } else {
-      exportedDir = await showDialog(
-          context: context,
-          builder: (_) => ExportKeyDialog(
-                settingsState: _settingsState,
-                scaffoldState: _scaffoldKey.currentState,
-              ));
-    }
+    exportedDir = await AMDialog.show(
+      context: context,
+      builder: (_) => ExportKeyDialog(
+        settingsState: _settingsState,
+        scaffoldState: _scaffoldKey.currentState,
+      ),
+    );
     if (exportedDir is String) {
       showSnack(
           context: context,
@@ -78,18 +70,13 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AMButton(
             child: Text(s.import_key_from_text),
-            onPressed: () => PlatformOverride.isIOS
-                ? showCupertinoDialog(
-                    context: context,
-                    builder: (_) => AddKeyDialog(
-                        settingsState: _settingsState, isImport: true),
-                  )
-                : showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (_) => AddKeyDialog(
-                        settingsState: _settingsState, isImport: true),
-                  ),
+            onPressed: () => AMDialog.show(
+              context: context,
+              builder: (_) => AddKeyDialog(
+                settingsState: _settingsState,
+                isImport: true,
+              ),
+            ),
           ),
         ),
         Padding(
@@ -113,9 +100,8 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
           child: AMButton(
             child: Text(s.generate_key),
-            onPressed: () => showDialog(
+            onPressed: () => AMDialog.show(
               context: context,
-              barrierDismissible: false,
               builder: (_) => AddKeyDialog(settingsState: _settingsState),
             ),
           ),
@@ -169,10 +155,12 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
             color: theme.errorColor,
             child: Text(s.delete_key),
             onPressed: () async {
-              final result = await showDialog(
-                  context: context,
-                  builder: (_) => DeleteKeyConfirmationDialog(
-                      settingsState: _settingsState));
+              final result = await AMDialog.show(
+                context: context,
+                builder: (_) => DeleteKeyConfirmationDialog(
+                  settingsState: _settingsState,
+                ),
+              );
               if (result == DeleteKeyConfirmationDialogResult.delete) {
                 showSnack(
                   context: context,

@@ -125,19 +125,13 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         isError: false,
       );
     } else {
-      final result = await (PlatformOverride.isIOS
-          ? showCupertinoDialog(
-              context: context,
-              builder: (_) => ShareDialog(
-                    filesState: widget.filesState,
-                    file: _file,
-                  ))
-          : showDialog(
-              context: context,
-              builder: (_) => ShareDialog(
-                    filesState: widget.filesState,
-                    file: _file,
-                  )));
+      final result = await AMDialog.show(
+        context: context,
+        builder: (_) => ShareDialog(
+          filesState: widget.filesState,
+          file: _file,
+        ),
+      );
 
       if (result is PreparedForShare) {
         complete(result);
@@ -146,46 +140,27 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _renameFile() async {
-    final result = PlatformOverride.isIOS
-        ? await showCupertinoDialog(
-            context: context,
-            builder: (_) => RenameDialog(
-              file: _file,
-              filesState: widget.filesState,
-              filesPageState: widget.filesPageState,
-            ),
-          )
-        : await showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => RenameDialog(
-              file: _file,
-              filesState: widget.filesState,
-              filesPageState: widget.filesPageState,
-            ),
-          );
+    final result = await AMDialog.show(
+      context: context,
+      builder: (_) => RenameDialog(
+        file: _file,
+        filesState: widget.filesState,
+        filesPageState: widget.filesPageState,
+      ),
+    );
     if (result is String) {
       _updateFile(result);
     }
   }
 
   void _deleteFile() async {
-    bool shouldDelete;
-    if (PlatformOverride.isIOS) {
-      shouldDelete = await showCupertinoDialog(
-          context: context,
-          builder: (_) => DeleteConfirmationDialog(
-                itemsNumber: 1,
-                isFolder: false,
-              ));
-    } else {
-      shouldDelete = await showDialog(
-          context: context,
-          builder: (_) => DeleteConfirmationDialog(
-                itemsNumber: 1,
-                isFolder: false,
-              ));
-    }
+    final shouldDelete = await AMDialog.show(
+      context: context,
+      builder: (_) => DeleteConfirmationDialog(
+        itemsNumber: 1,
+        isFolder: false,
+      ),
+    );
     if (shouldDelete != null && shouldDelete) {
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [_file],

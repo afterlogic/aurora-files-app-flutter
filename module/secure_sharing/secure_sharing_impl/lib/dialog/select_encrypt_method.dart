@@ -102,9 +102,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
                     ? s.password_sign
                     : widget.pgpKey == null
                         ? s.sign_data_with_not_key(s.data)
-                        : useSign
-                            ? s.data_signed
-                            : s.data_not_signed,
+                        : useSign ? s.data_signed : s.data_not_signed,
                 style: theme.textTheme.caption,
               )
             ],
@@ -133,17 +131,11 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
         },
       )
     ];
-    return PlatformOverride.isIOS
-        ? CupertinoAlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          )
-        : AlertDialog(
-            title: title,
-            content: content,
-            actions: actions,
-          );
+    return AlertDialog(
+      title: title,
+      content: content,
+      actions: actions,
+    );
   }
 
   checkSign() async {

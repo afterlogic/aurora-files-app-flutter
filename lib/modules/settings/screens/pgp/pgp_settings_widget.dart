@@ -9,7 +9,6 @@ import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
 import 'package:aurorafiles/shared_ui/error_dialog.dart';
-import 'package:aurorafiles/utils/open_dialog.dart';
 import 'package:aurorafiles/utils/stream_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -106,9 +105,9 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                     ),
                   ),
                 if (publicKeys.isNotEmpty)
-                SizedBox(
-                  height: 8,
-                ),
+                  SizedBox(
+                    height: 8,
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: SizedBox(
@@ -172,7 +171,10 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
   @override
   importKeyDialog() async {
-    final result = await openDialog(context, (_) => KeyFromTextWidget());
+    final result = await AMDialog.show(
+      context: context,
+      builder: (_) => KeyFromTextWidget(),
+    );
     if (result is String) {
       _presenter.getKeysFromText(result);
     }
@@ -180,20 +182,27 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
   @override
   showImportDialog(List<LocalPgpKey> keys) async {
-    final result = await openDialog(
-        context, (_) => ImportPgpKeyWidget(keys, _presenter.pgpKeyUtil));
+    final result = await AMDialog.show(
+      context: context,
+      builder: (_) => ImportPgpKeyWidget(keys, _presenter.pgpKeyUtil),
+    );
     if (result is List<LocalPgpKey>) {
       _presenter.saveKeys(result);
     }
   }
 
   keysNotFound() {
-    openDialog(context, (_) => ErrorDialog(s.failed, s.keys_not_found));
+    AMDialog.show(
+      context: context,
+      builder: (_) => ErrorDialog(s.failed, s.keys_not_found),
+    );
   }
 
   generateKeyDialog() async {
-    final result = await openDialog(
-        context, (_) => CreateKeyDialog(_presenter.pgpKeyUtil));
+    final result = await AMDialog.show(
+      context: context,
+      builder: (_) => CreateKeyDialog(_presenter.pgpKeyUtil),
+    );
     if (result is CreateKeyResult) {
       _presenter.addPrivateKey(result);
     }

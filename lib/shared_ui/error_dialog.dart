@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,18 +25,11 @@ class ErrorDialog extends StatelessWidget {
         },
       ),
     ];
-    if (PlatformOverride.isIOS) {
-      return CupertinoAlertDialog(
-        title: title,
-        content: content,
-        actions: action,
-      );
-    } else {
-      return AlertDialog(
-        title: title,
-        content: content,
-        actions: action,
-      );
-    }
+
+    return AMDialog(
+      title: title,
+      content: content,
+      actions: action,
+    );
   }
 }

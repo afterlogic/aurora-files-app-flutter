@@ -137,6 +137,15 @@ abstract class _FilesState with Store {
     }
   }
 
+  Future<void> refreshQuota() async {
+    final response = await _filesApi.getFiles(
+      AppStore.filesState.selectedStorage.type,
+      "",
+      "",
+    );
+    quota = response.quota;
+  }
+
   onUploadShared(List<SharedMediaFile> files) {
     isShareUpload = true;
     filesToShareUpload = files;

@@ -78,7 +78,13 @@ class MainDrawer extends StatelessWidget {
             }),
             Expanded(
               child: RefreshIndicator(
-                onRefresh: () => filesState.onGetStorages(),
+                onRefresh: () {
+                  final futures = [
+                    filesState.refreshQuota(),
+                    filesState.onGetStorages(),
+                  ];
+                  return Future.wait(futures);
+                },
                 child: Observer(
                   builder: (_) => ListView(
                     padding: EdgeInsets.only(top: 10.0),

@@ -16,6 +16,10 @@ class AppTheme {
     scaffoldBackgroundColor: Colors.white,
     toggleableActiveColor: AppColor.accent,
     textSelectionHandleColor: AppColor.accent,
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Color(0xFF1A1A1A),
+      actionTextColor: Colors.white,
+    ),
     cursorColor: AppColor.accent,
     highlightColor: Platform.isIOS ? Colors.transparent : null,
     splashColor: Platform.isIOS ? Colors.transparent : null,
@@ -44,6 +48,10 @@ class AppTheme {
     scaffoldBackgroundColor: Color(0xFF1A1A1A),
     toggleableActiveColor: AppColor.accent,
     textSelectionHandleColor: AppColor.accent,
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Colors.white,
+      actionTextColor: Colors.black,
+    ),
     cursorColor: AppColor.accent,
     highlightColor: Platform.isIOS ? Colors.transparent : null,
     splashColor: Platform.isIOS ? Colors.transparent : null,

@@ -29,7 +29,7 @@ void showSnack({
             style: TextStyle(
                 color: !isError ? theme.scaffoldBackgroundColor : Colors.white),
           ),
-          backgroundColor: isError ? theme.errorColor : theme.iconTheme.color,
+          backgroundColor: isError ? theme.errorColor : null,
           action: action,
         );
 

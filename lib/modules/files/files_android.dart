@@ -80,13 +80,6 @@ class _FilesAndroidState extends State<FilesAndroid>
     });
   }
 
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _settingsState.setAppTheme(context);
-  }
-
   listenShare() {
     ReceiveSharing.getMediaStream().listen((List<SharedMediaFile> files) {
       if (files.isNotEmpty) {

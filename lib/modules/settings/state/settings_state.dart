@@ -34,13 +34,6 @@ abstract class _SettingsState with Store {
 
   String get currentKey => encryptionKeys[selectedKeyName];
 
-  void setAppTheme(BuildContext context) {
-    if (context != null && isDarkTheme == null) {
-      isDarkTheme =
-          MediaQuery.of(context).platformBrightness == Brightness.dark;
-    }
-  }
-
   Future<bool> getUserEncryptionKeys() async {
     try {
       encryptionKeys = await _settingsLocal.getAllUserKeys();

@@ -198,9 +198,6 @@ class _FilesAndroidState extends State<FilesAndroid>
     final fakeLocalFile =
         getFakeLocalFileForUploadProgress(process, widget.path);
     _filesPageState.currentFiles.add(fakeLocalFile);
-    _filesPageState.currentFiles.sort((a, b) {
-      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-    });
     _filesPageState.filesLoading = FilesLoadingType.none;
   }
 

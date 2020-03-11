@@ -20,9 +20,12 @@ class FilesList extends StatefulWidget {
 class _FilesListState extends State<FilesList> {
   @override
   Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    widget._filesPageState.currentFiles.sort((a, b) =>
+        a.isFolder ? -1 : a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
     return ListView.separated(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 70.0),
+      padding: EdgeInsets.only(bottom: mq.padding.bottom + 70.0),
       itemCount: widget._filesPageState.currentFiles.length,
       itemBuilder: (BuildContext context, int index) {
         if (widget._filesPageState.currentFiles.isEmpty) return SizedBox();

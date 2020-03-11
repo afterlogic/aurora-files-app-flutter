@@ -127,7 +127,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         AMButton(
           color: theme.errorColor,
           shadow: BoxShadow(
-            color: theme.errorColor.withOpacity(0.6),
+            color: Colors.black26,
             blurRadius: 8.0,
             offset: Offset(0.0, 3.0),
           ),

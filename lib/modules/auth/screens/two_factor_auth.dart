@@ -118,6 +118,9 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
           return;
         }
         await authState.setAccount();
+        Navigator.of(context).popUntil((Route<dynamic> route) {
+          return route.isFirst;
+        });
         Navigator.pushReplacementNamed(context, FilesRoute.name,
             arguments: FilesScreenArguments(path: ""));
       },

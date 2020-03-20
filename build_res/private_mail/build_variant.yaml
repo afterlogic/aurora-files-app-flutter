@@ -12,8 +12,9 @@ privacyPolicy: "https://privatemail.com/privacy.php"
 termsOfService: "https://privatemail.com/terms.php"
 autodiscover_url: "https://torguard.tv/pm/autodiscover.php"
 
-
 useMainLogo: true
 
 secureSharingEnable: true
 canUpgradePlan: true
+
+version: "2.0.0+32"

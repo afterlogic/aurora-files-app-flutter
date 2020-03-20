@@ -12,3 +12,5 @@ privacyPolicy: "https://afterlogic.com/privacy-policy"
 autodiscover_url: "https://test.afterlogic.com/autodiscover.php"
 
 secureSharingEnable: false
+
+version: "2.0.1+104"

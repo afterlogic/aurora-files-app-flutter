@@ -13,8 +13,8 @@ termsOfService: "https://privatemail.com/terms.php"
 autodiscover_url: "https://torguard.tv/pm/autodiscover.php"
 
 useMainLogo: true
-
+pgpEnable: true
 secureSharingEnable: true
 canUpgradePlan: true
 
-version: "2.0.0+32"
+_version: "2.0.0"

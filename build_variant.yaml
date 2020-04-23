@@ -25,8 +25,10 @@ appName: ""
 _appId: ""
 _iosDeveloperId: ""
 _appleGroupId: ""
-
-version: "2.0.0+32"
+_build: 105
+_version: ""
+_version_android: "{{_version}}{{_build}}"
+version_ios: "{{_version}}+{{_build}}"
 
 #android sign
 _jksName: "key.jks"
@@ -53,7 +55,9 @@ useMainLogo: false
 privacyPolicy: ""
 termsOfService: ""
 autodiscover_url: ""
+
 #module
-secureSharingEnable: true
+pgpEnable: false
+secureSharingEnable: false
 canUpgradePlan: false
 

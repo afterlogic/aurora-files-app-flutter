@@ -41,10 +41,10 @@ packages:
   aurorafiles:
     dependency: "direct main"
     description:
-      path: "../../.."
+      path: "..\\..\\.."
       relative: true
     source: path
-    version: "1.0.0+21"
+    version: "2.0.1+104"
   boolean_selector:
     dependency: transitive
     description:
@@ -462,7 +462,7 @@ packages:
   receive_sharing:
     dependency: transitive
     description:
-      path: "../../../core/receive_sharing"
+      path: "..\\..\\..\\core\\receive_sharing"
       relative: true
     source: path
     version: "0.0.1"
@@ -476,7 +476,7 @@ packages:
   secure_sharing:
     dependency: "direct main"
     description:
-      path: "../secure_sharing"
+      path: "..\\secure_sharing"
       relative: true
     source: path
     version: "0.0.1"
@@ -565,7 +565,7 @@ packages:
   theme:
     dependency: transitive
     description:
-      path: "../../../build_res/private_mail/theme"
+      path: "..\\..\\..\\build_res\\afterlogic\\theme"
       relative: true
     source: path
     version: "0.0.1"

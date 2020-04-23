@@ -37,9 +37,7 @@ class UpgradeAndroid extends StatelessWidget {
                       message: "",
                     ),
                     Text(
-                      PlatformOverride.isIOS
-                          ? s.upgrade_your_plan
-                          : s.please_upgrade_your_plan,
+                      s.upgrade_your_plan,
                       style: theme.textTheme.subhead.copyWith(
                         fontSize: 20,
                       ),
@@ -47,15 +45,6 @@ class UpgradeAndroid extends StatelessWidget {
                     ),
                     Column(
                       children: <Widget>[
-                        if (!PlatformOverride.isIOS)
-                          SizedBox(
-                            width: double.infinity,
-                            child: AMButton(
-                              child: Text(s.upgrade_now),
-                              onPressed: () => launch(
-                                  "https://privatemail.com/members/clientarea.php?action=services"),
-                            ),
-                          ),
                         SizedBox(height: 6.0),
                         SizedBox(
                           width: double.infinity,

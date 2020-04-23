@@ -21,7 +21,7 @@ class FilesLocalStorage {
   Aes aes = DI.get();
 
   Future<File> pickFiles({FileType type, String extension}) {
-    return FilePicker.getFile(type: type, fileExtension: extension);
+    return FilePicker.getFile(type: type, allowedExtensions: [extension]);
   }
 
   // is used to download files on iOS

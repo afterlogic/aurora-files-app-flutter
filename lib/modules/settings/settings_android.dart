@@ -45,7 +45,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               leading: AMCircleIcon(MdiIcons.alien),
               onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
             ),
-            if (BuildProperty.secureSharingEnable)
+            if (BuildProperty.pgpEnable)
               ListTile(
                 title: Text(s.openPGP),
                 leading: AMCircleIcon(MdiIcons.key),

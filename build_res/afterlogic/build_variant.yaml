@@ -11,6 +11,7 @@ splashGradientBottom: "#FFFFFF"
 privacyPolicy: "https://afterlogic.com/privacy-policy"
 autodiscover_url: "https://test.afterlogic.com/autodiscover.php"
 
+pgpEnable: true
 secureSharingEnable: false
 
-version: "2.0.1+104"
+_version: "2.0.1"

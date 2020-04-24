@@ -57,4 +57,7 @@ class Files extends Table {
   TextColumn get initVector => text().nullable()();
 
   TextColumn get linkPassword => text().nullable()();
+
+  TextColumn get encryptedDecryptionKey => text().nullable()();
+
 }

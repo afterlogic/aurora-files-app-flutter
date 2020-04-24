@@ -36,6 +36,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   final bool isExternal;
   final String initVector;
   final String linkPassword;
+  final String encryptedDecryptionKey;
   LocalFile(
       {@required this.localId,
       @required this.id,
@@ -64,7 +65,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       @required this.extendedProps,
       @required this.isExternal,
       this.initVector,
-      this.linkPassword});
+      this.linkPassword,
+      this.encryptedDecryptionKey});
   factory LocalFile.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -121,6 +123,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           .mapFromDatabaseResponse(data['${effectivePrefix}init_vector']),
       linkPassword: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}link_password']),
+      encryptedDecryptionKey: stringType.mapFromDatabaseResponse(
+          data['${effectivePrefix}encrypted_decryption_key']),
     );
   }
   factory LocalFile.fromJson(Map<String, dynamic> json,
@@ -154,6 +158,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       isExternal: serializer.fromJson<bool>(json['isExternal']),
       initVector: serializer.fromJson<String>(json['initVector']),
       linkPassword: serializer.fromJson<String>(json['linkPassword']),
+      encryptedDecryptionKey:
+          serializer.fromJson<String>(json['encryptedDecryptionKey']),
     );
   }
   @override
@@ -188,6 +194,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       'isExternal': serializer.toJson<bool>(isExternal),
       'initVector': serializer.toJson<String>(initVector),
       'linkPassword': serializer.toJson<String>(linkPassword),
+      'encryptedDecryptionKey':
+          serializer.toJson<String>(encryptedDecryptionKey),
     };
   }
 
@@ -262,6 +270,9 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       linkPassword: linkPassword == null && nullToAbsent
           ? const Value.absent()
           : Value(linkPassword),
+      encryptedDecryptionKey: encryptedDecryptionKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(encryptedDecryptionKey),
     ) as T;
   }
 
@@ -293,7 +304,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           String extendedProps,
           bool isExternal,
           String initVector,
-          String linkPassword}) =>
+          String linkPassword,
+          String encryptedDecryptionKey}) =>
       LocalFile(
         localId: localId ?? this.localId,
         id: id ?? this.id,
@@ -323,6 +335,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
         isExternal: isExternal ?? this.isExternal,
         initVector: initVector ?? this.initVector,
         linkPassword: linkPassword ?? this.linkPassword,
+        encryptedDecryptionKey:
+            encryptedDecryptionKey ?? this.encryptedDecryptionKey,
       );
   @override
   String toString() {
@@ -354,7 +368,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           ..write('extendedProps: $extendedProps, ')
           ..write('isExternal: $isExternal, ')
           ..write('initVector: $initVector, ')
-          ..write('linkPassword: $linkPassword')
+          ..write('linkPassword: $linkPassword, ')
+          ..write('encryptedDecryptionKey: $encryptedDecryptionKey')
           ..write(')'))
         .toString();
   }
@@ -402,7 +417,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
                                                                               .hashCode,
                                                                           $mrjc(
                                                                               owner.hashCode,
-                                                                              $mrjc(content.hashCode, $mrjc(viewUrl.hashCode, $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, $mrjc(initVector.hashCode, linkPassword.hashCode))))))))))))))))))))))))))));
+                                                                              $mrjc(content.hashCode, $mrjc(viewUrl.hashCode, $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, $mrjc(initVector.hashCode, $mrjc(linkPassword.hashCode, encryptedDecryptionKey.hashCode)))))))))))))))))))))))))))));
   @override
   bool operator ==(other) =>
       identical(this, other) ||
@@ -434,7 +449,8 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           other.extendedProps == extendedProps &&
           other.isExternal == isExternal &&
           other.initVector == initVector &&
-          other.linkPassword == linkPassword);
+          other.linkPassword == linkPassword &&
+          other.encryptedDecryptionKey == encryptedDecryptionKey);
 }
 
 class FilesCompanion extends UpdateCompanion<LocalFile> {
@@ -466,6 +482,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
   final Value<bool> isExternal;
   final Value<String> initVector;
   final Value<String> linkPassword;
+  final Value<String> encryptedDecryptionKey;
   const FilesCompanion({
     this.localId = const Value.absent(),
     this.id = const Value.absent(),
@@ -495,6 +512,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
     this.isExternal = const Value.absent(),
     this.initVector = const Value.absent(),
     this.linkPassword = const Value.absent(),
+    this.encryptedDecryptionKey = const Value.absent(),
   });
   FilesCompanion copyWith(
       {Value<int> localId,
@@ -524,7 +542,8 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       Value<String> extendedProps,
       Value<bool> isExternal,
       Value<String> initVector,
-      Value<String> linkPassword}) {
+      Value<String> linkPassword,
+      Value<String> encryptedDecryptionKey}) {
     return FilesCompanion(
       localId: localId ?? this.localId,
       id: id ?? this.id,
@@ -554,6 +573,8 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       isExternal: isExternal ?? this.isExternal,
       initVector: initVector ?? this.initVector,
       linkPassword: linkPassword ?? this.linkPassword,
+      encryptedDecryptionKey:
+          encryptedDecryptionKey ?? this.encryptedDecryptionKey,
     );
   }
 }
@@ -907,6 +928,20 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     );
   }
 
+  final VerificationMeta _encryptedDecryptionKeyMeta =
+      const VerificationMeta('encryptedDecryptionKey');
+  GeneratedTextColumn _encryptedDecryptionKey;
+  @override
+  GeneratedTextColumn get encryptedDecryptionKey =>
+      _encryptedDecryptionKey ??= _constructEncryptedDecryptionKey();
+  GeneratedTextColumn _constructEncryptedDecryptionKey() {
+    return GeneratedTextColumn(
+      'encrypted_decryption_key',
+      $tableName,
+      true,
+    );
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         localId,
@@ -936,7 +971,8 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
         extendedProps,
         isExternal,
         initVector,
-        linkPassword
+        linkPassword,
+        encryptedDecryptionKey
       ];
   @override
   $FilesTable get asDslTable => this;
@@ -1123,6 +1159,14 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     } else if (linkPassword.isRequired && isInserting) {
       context.missing(_linkPasswordMeta);
     }
+    if (d.encryptedDecryptionKey.present) {
+      context.handle(
+          _encryptedDecryptionKeyMeta,
+          encryptedDecryptionKey.isAcceptableValue(
+              d.encryptedDecryptionKey.value, _encryptedDecryptionKeyMeta));
+    } else if (encryptedDecryptionKey.isRequired && isInserting) {
+      context.missing(_encryptedDecryptionKeyMeta);
+    }
     return context;
   }
 
@@ -1221,6 +1265,10 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
     }
     if (d.linkPassword.present) {
       map['link_password'] = Variable<String, StringType>(d.linkPassword.value);
+    }
+    if (d.encryptedDecryptionKey.present) {
+      map['encrypted_decryption_key'] =
+          Variable<String, StringType>(d.encryptedDecryptionKey.value);
     }
     return map;
   }

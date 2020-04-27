@@ -223,12 +223,21 @@ packages:
     source: hosted
     version: "2.1.3"
   crypto_plugin:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "."
       ref: HEAD
       resolved-ref: "60688ffe5613428feb30a5991fdc7dfd102168ec"
       url: "https://github.com/afterlogic/flutter_crypto_plugin"
+    source: git
+    version: "0.0.1"
+  crypto_stream:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: c7bd69243eccc785d115e91cd9f896b8da7f91db
+      url: "https://github.com/afterlogic/flutter_crypto_stream"
     source: git
     version: "0.0.1"
   csslib:

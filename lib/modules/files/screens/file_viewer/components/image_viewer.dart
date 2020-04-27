@@ -37,10 +37,12 @@ class _ImageViewerState extends State<ImageViewer> {
     _fileViewerState = widget.fileViewerState;
     if (AppStore.filesState.isOfflineMode &&
         _fileViewerState.file.initVector != null) {
-      Future.delayed(Duration(milliseconds: 250),
-          () => _fileViewerState.getPreviewImage((err) => showError(err)));
+      Future.delayed(
+          Duration(milliseconds: 250),
+          () => _fileViewerState.getPreviewImage(
+              (err) => showError(err), context));
     } else if (_fileViewerState.fileWithContents == null) {
-      _fileViewerState.getPreviewImage((err) => showError(err));
+      _fileViewerState.getPreviewImage((err) => showError(err), context);
     }
   }
 

@@ -47,7 +47,7 @@ class _PdfViewerState extends State<PdfViewer> {
             )
           : AMButton(
               child: Text(s.open_PDF),
-              onPressed: _fileViewerState.onOpenPdf,
+              onPressed:()=> _fileViewerState.onOpenPdf(context),
             ),
     );
   }

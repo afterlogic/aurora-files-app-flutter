@@ -9,6 +9,7 @@ import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
@@ -110,11 +111,11 @@ class _FileWidgetState extends State<FileWidget> {
     );
   }
 
-  void _openEncryptedFile(BuildContext context) {
-    if (AppStore.settingsState.selectedKeyName == null) {
+  void _openEncryptedFile(BuildContext context) async {
+    if (!await PgpKeyUtil.instance.hasUserKey()) {
       showSnack(
           context: context,
-          scaffoldState:_filesPageState.scaffoldKey.currentState,
+          scaffoldState: _filesPageState.scaffoldKey.currentState,
           msg: s.set_any_encryption_key);
     } else {
       _openFile(context);
@@ -125,6 +126,7 @@ class _FileWidgetState extends State<FileWidget> {
     final filesState = _filesState;
     final filesPageState = _filesPageState;
     filesState.onDownloadFile(
+      context,
       file: widget.file,
       onStart: (ProcessingFile process) {
         _subscribeToProgress(process);
@@ -168,6 +170,7 @@ class _FileWidgetState extends State<FileWidget> {
       }
       await filesState.onSetFileOffline(
         widget.file,
+        context,
         onStart: _subscribeToProgress,
         onSuccess: () {
           if (widget.file.localId == null) {
@@ -311,7 +314,7 @@ class _FileWidgetState extends State<FileWidget> {
     return Observer(
       builder: (_) {
         final isMenuVisible = !_filesState.isMoveModeEnabled &&
-            !_filesState.isShareUpload   &&
+            !_filesState.isShareUpload &&
             _filesPageState.selectedFilesIds.length <= 0 &&
             !_filesPageState.isInsideZip;
         return SelectableFilesItemTile(

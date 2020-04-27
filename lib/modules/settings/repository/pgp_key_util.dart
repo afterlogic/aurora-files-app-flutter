@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/permissions.dart';
@@ -10,10 +12,17 @@ import 'package:file_picker/file_picker.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PgpKeyUtil {
+  static PgpKeyUtil _instance;
+
+  static PgpKeyUtil get instance =>
+      _instance ??= PgpKeyUtil._(DI.get(), DI.get());
+
+  final Utf8Codec utf8 = Utf8Codec(allowMalformed: true);
   final Pgp pgp;
+
   final PgpKeyDao pgpKeyDao;
 
-  PgpKeyUtil(this.pgp, this.pgpKeyDao);
+  PgpKeyUtil._(this.pgp, this.pgpKeyDao);
 
   Future<List<LocalPgpKey>> validateText(String text) async {
     final keys = RegExp("$keyStart((\\D|\\d)*)$keyEnd")
@@ -133,6 +142,34 @@ class PgpKeyUtil {
 
   Future<bool> checkPrivateKey(String password, String pgpKey) {
     return pgp.checkPassword(password, pgpKey);
+  }
+
+  Future<String> userEncrypt(String string) async {
+    try {
+      await pgp.setPublicKeys([(await userPublicKey()).key]);
+      final result = await pgp.encryptBytes(utf8.encode(string), null);
+      pgp.stop();
+      return utf8.decode(result);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<String> userDecrypt(String string, String password) async {
+    try {
+      await pgp.setPrivateKey((await userPrivateKey()).key);
+      final result = await pgp.decryptBytes(utf8.encode(string), password);
+      pgp.stop();
+      return utf8.decode(result);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<bool> hasUserKey() async {
+    return (await userPrivateKey()) != null && (await userPublicKey()) != null;
   }
 
   static const pgpKeyPath = "/pgp_keys";

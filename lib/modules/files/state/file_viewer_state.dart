@@ -11,11 +11,11 @@ import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
-import 'package:aurorafiles/utils/file_utils.dart';
+import 'package:aurorafiles/utils/key_request_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:mobx/mobx.dart';
-import 'package:uuid/uuid.dart';
 
 part 'file_viewer_state.g.dart';
 
@@ -37,8 +37,12 @@ abstract class _FileViewerState with Store {
 
   ProcessingFile processingFile;
 
-  Future<void> _getPreviewFile(File fileToView,
+  Future<void> _getPreviewFile(File fileToView, BuildContext context,
       {Function(File) onDownloadEnd}) async {
+    String password;
+    if (file.encryptedDecryptionKey != null) {
+      password = await KeyRequestDialog.show(context);
+    }
     downloadProgress = 0.0;
 
     // get file contents
@@ -62,20 +66,24 @@ abstract class _FileViewerState with Store {
               ? ProcessingType.cacheImage
               : ProcessingType.cacheToDelete,
         );
-
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
-            file.viewUrl, file, processingFile, false,
-            onSuccess: (_) {
-              fileWithContents = fileToView;
-              downloadProgress = null;
-              processingFile = null;
-              if (onDownloadEnd != null) onDownloadEnd(fileToView);
-            },
-            updateViewerProgress: (progress) => downloadProgress = progress,
-            onError: (err) {
-              processingFile = null;
-            });
+          file.viewUrl,
+          file,
+          processingFile,
+          false,
+          password,
+          onSuccess: (_) {
+            fileWithContents = fileToView;
+            downloadProgress = null;
+            processingFile = null;
+            if (onDownloadEnd != null) onDownloadEnd(fileToView);
+          },
+          updateViewerProgress: (progress) => downloadProgress = progress,
+          onError: (err) {
+            processingFile = null;
+          },
+        );
         processingFile.subscription = sub;
       }
     }
@@ -93,14 +101,15 @@ abstract class _FileViewerState with Store {
 //    }
   }
 
-  Future<void> getPreviewImage(Function(String) onError) async {
+  Future<void> getPreviewImage(
+      Function(String) onError, BuildContext context) async {
     downloadProgress = 0.0;
     // try to retrieve the file from cache
     // if no cache, get file
     if (fileWithContents == null) {
       try {
         final File imageToView = await _filesLocal.createImageCacheFile(file);
-        await _getPreviewFile(imageToView);
+        await _getPreviewFile(imageToView, context);
       } catch (err) {
         onError(err is PlatformException ? err.message : err.toString());
       }
@@ -109,19 +118,21 @@ abstract class _FileViewerState with Store {
     }
   }
 
-  Future<void> getPreviewText(Function(String) getText) async {
+  Future<void> getPreviewText(
+      Function(String) getText, BuildContext context) async {
     downloadProgress = 0.0;
     final File textToView = await _filesLocal.createTempFile(file);
-    await _getPreviewFile(textToView, onDownloadEnd: (File storedFile) async {
+    await _getPreviewFile(textToView, context,
+        onDownloadEnd: (File storedFile) async {
       String previewText = await fileWithContents.readAsString();
       getText(previewText);
     });
   }
 
-  Future<void> onOpenPdf() async {
+  Future<void> onOpenPdf(BuildContext context) async {
     final File pdfToView =
         await _filesLocal.createTempFile(file, useName: true);
-    await _getPreviewFile(pdfToView, onDownloadEnd: (File storedFile) {
+    await _getPreviewFile(pdfToView, context, onDownloadEnd: (File storedFile) {
       fileWithContents = storedFile;
       _filesLocal.openFileWith(fileWithContents);
     });

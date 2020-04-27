@@ -13,7 +13,7 @@ class PgpSettingPresenter {
   final PgpKeyUtil pgpKeyUtil;
 
   PgpSettingPresenter(this._view, this._pgpKeyDao, Pgp pgp)
-      : pgpKeyUtil = PgpKeyUtil(pgp, _pgpKeyDao);
+      : pgpKeyUtil =PgpKeyUtil.instance;
 
   Future refreshKeys(
       [List<LocalPgpKey> addedPublic, List<LocalPgpKey> addedPrivate]) {

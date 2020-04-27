@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/processing_file.dart';
-import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/permissions.dart';
@@ -21,7 +21,10 @@ class FilesLocalStorage {
   Aes aes = DI.get();
 
   Future<File> pickFiles({FileType type, String extension}) {
-    return FilePicker.getFile(type: type, allowedExtensions: [extension]);
+    return FilePicker.getFile(
+      type: type,
+      allowedExtensions: extension != null ? [extension] : null,
+    );
   }
 
   // is used to download files on iOS
@@ -58,7 +61,7 @@ class FilesLocalStorage {
   Future<File> createFileForDownloadAndroid(LocalFile file) async {
     if (!Platform.isIOS) await getStoragePermissions();
 
-    final Directory dir =await getDownloadDirectory();
+    final Directory dir = await getDownloadDirectory();
     File dartFile = new File("${dir.path}/${file.name}");
 
     // if name exists add suffix (name_0.png)
@@ -174,7 +177,10 @@ class FilesLocalStorage {
   }
 
   Future<File> downloadOffline(
-      LocalFile file, ProcessingFile processingFile) async {
+    LocalFile file,
+    ProcessingFile processingFile,
+    String keyPassword,
+  ) async {
     final offlineFile = new File(file.localPath);
     if (!await offlineFile.exists()) {
       throw CustomException(
@@ -186,32 +192,50 @@ class FilesLocalStorage {
       await offlineFile.copy(processingFile.fileOnDevice.path);
       return processingFile.fileOnDevice;
     } else {
-      final decryptedFile = await _decryptFile(processingFile, offlineFile);
+      final decryptedFile = await _decryptFile(
+        processingFile,
+        offlineFile,
+        file.encryptedDecryptionKey,
+        keyPassword,
+      );
       return decryptedFile;
     }
   }
 
   Future<PreparedForShare> shareOffline(
-      LocalFile file, ProcessingFile processingFile) async {
+    LocalFile file,
+    ProcessingFile processingFile,
+    String keyPassword,
+  ) async {
     File offlineFile = new File(file.localPath);
     if (!await offlineFile.exists()) {
       throw CustomException(
           "The file does not exist, please remove it and set offline when you are online again.");
     }
-    if (file.initVector != null) {
-      offlineFile = await _decryptFile(processingFile, offlineFile);
+    if (file.initVector != null && file.encryptedDecryptionKey != null) {
+      offlineFile = await _decryptFile(
+        processingFile,
+        offlineFile,
+        file.encryptedDecryptionKey,
+        keyPassword,
+      );
     }
 
     return PreparedForShare(offlineFile, file);
   }
 
   Future<File> _decryptFile(
-      ProcessingFile processingFile, File encryptedFile) async {
+    ProcessingFile processingFile,
+    File encryptedFile,
+    String encryptedDecryptionKey,
+    String password,
+  ) async {
     assert(processingFile.ivBase64 != null);
 
     await processingFile.fileOnDevice.create(recursive: true);
 
-    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+    final key = prefixEncrypt.Key.fromBase16(await PgpKeyUtil.instance
+        .userDecrypt(encryptedDecryptionKey, password));
 
     List<int> fileBytesBuffer = new List();
     int progress = 0;

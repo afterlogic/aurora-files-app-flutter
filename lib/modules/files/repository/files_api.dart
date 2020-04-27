@@ -8,10 +8,10 @@ import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
-import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/secure_link.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
@@ -115,10 +115,13 @@ class FilesApi {
           encryptionRecipientEmail;
     }
 
+    String encryptKey = prefixEncrypt.Key.fromSecureRandom(32).base16;
     if (shouldEncrypt == true) {
       final vector = IV.fromSecureRandom(vectorLength);
       processingFile.ivBase64 = vector.base64;
-
+      params["ExtendedProps"]["ParanoidKey"] =
+          (await PgpKeyUtil.instance.userEncrypt(encryptKey))
+              .replaceAll("\n", "\r\n");
       params["ExtendedProps"]["InitializationVector"] = vector.base16;
       params["ExtendedProps"]["FirstChunk"] = true;
     }
@@ -129,7 +132,7 @@ class FilesApi {
             parameters: jsonEncode(params))
         .toMap();
     final stream = new http.ByteStream(
-        _openFileRead(processingFile, shouldEncrypt, onError));
+        _openFileRead(processingFile, shouldEncrypt, onError, encryptKey));
     final length = await processingFile.fileOnDevice.length();
     final lengthWithPadding =
         ((length / vectorLength) + 1).toInt() * vectorLength;
@@ -160,12 +163,10 @@ class FilesApi {
   }
 
   Stream<List<int>> _openFileRead(ProcessingFile processingFile,
-      bool shouldEncrypt, Function(String) onError) {
+      bool shouldEncrypt, Function(String) onError, String encryptKey) {
     StreamController<List<int>> controller;
     StreamSubscription<List<int>> fileReadSub;
-    final key = shouldEncrypt
-        ? prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey)
-        : null;
+    final key = shouldEncrypt ? prefixEncrypt.Key.fromBase16(encryptKey) : null;
 
     int bytesUploaded = 0;
 
@@ -239,12 +240,17 @@ class FilesApi {
   // download file contents and write it into a file for different purposes
   // IMPORTANT! the function ends when it starts downloading
   // to get the real ending when the download is finished, pass the onSuccess callback
-  Future<StreamSubscription> getFileContentsFromServer(String url,
-      LocalFile file, ProcessingFile processingFile, bool decryptFile,
-      {Function(String) onError,
-      Function(double) updateViewerProgress,
-      @required Function(File) onSuccess,
-      bool isRedirect = false}) async {
+  Future<StreamSubscription> getFileContentsFromServer(
+    String url,
+    LocalFile file,
+    ProcessingFile processingFile,
+    bool decryptFile,
+    String keyPassword, {
+    Function(String) onError,
+    Function(double) updateViewerProgress,
+    @required Function(File) onSuccess,
+    bool isRedirect = false,
+  }) async {
     // getFileContentsFromServer function assumes that fileToWriteInto exists
     final bool fileExists = await processingFile.fileOnDevice.exists();
     if (!fileExists) {
@@ -275,6 +281,7 @@ class FilesApi {
             file,
             processingFile,
             shouldDecrypt,
+            keyPassword,
             updateViewerProgress: updateViewerProgress,
             onSuccess: onSuccess,
             onError: onError,
@@ -284,9 +291,13 @@ class FilesApi {
       List<int> fileBytesBuffer = new List();
 
       // set initial vector that comes with the LocalFile object that we get from our api
+      String decryptKey;
       if (shouldDecrypt) {
+        decryptKey = keyPassword;
         IV iv = IV.fromBase16(file.initVector);
         processingFile.ivBase64 = iv.base64;
+        decryptKey = await PgpKeyUtil.instance
+            .userDecrypt(file.encryptedDecryptionKey, decryptKey);
       }
 
       int progress = 0;
@@ -315,8 +326,13 @@ class FilesApi {
             fileBytesBuffer.addAll(contentsForCurrent);
 
             downloadSubscription.pause();
-            await _writeChunkToFile(fileBytesBuffer,
-                shouldDecrypt ? file.initVector : null, processingFile, false);
+            await _writeChunkToFile(
+              fileBytesBuffer,
+              shouldDecrypt ? file.initVector : null,
+              processingFile,
+              false,
+              decryptKey,
+            );
             // flush the buffer
             fileBytesBuffer = new List();
             downloadSubscription.resume();
@@ -332,8 +348,13 @@ class FilesApi {
         onDone: () async {
           // when finished send all we have, if the file is decrypted, the rest will be filled with padding
           // this is why we pass true for isLast
-          await _writeChunkToFile(fileBytesBuffer,
-              shouldDecrypt ? file.initVector : null, processingFile, true);
+          await _writeChunkToFile(
+            fileBytesBuffer,
+            shouldDecrypt ? file.initVector : null,
+            processingFile,
+            true,
+            decryptKey,
+          );
           // resolve with the destination on where the downloaded file is
           onSuccess(processingFile.fileOnDevice);
         },
@@ -351,11 +372,10 @@ class FilesApi {
   }
 
   Future<void> _writeChunkToFile(List<int> fileBytes, String initVector,
-      ProcessingFile processingFile, bool isLast) async {
+      ProcessingFile processingFile, bool isLast, String decryptKey) async {
     // if encrypted - decrypt
     if (initVector != null) {
-      final key =
-          prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);
+      final key = prefixEncrypt.Key.fromBase16(decryptKey);
       final decrypted = await aes.decrypt(
           fileBytes, key.base64, processingFile.ivBase64, isLast);
       await processingFile.fileOnDevice
@@ -538,7 +558,6 @@ class FilesApi {
       throw CustomException(getErrMsg(res));
     }
   }
-
 }
 
 class GetFilesResponse {

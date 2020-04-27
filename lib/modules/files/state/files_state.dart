@@ -14,8 +14,10 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
+import 'package:aurorafiles/utils/key_request_dialog.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
@@ -411,21 +413,28 @@ abstract class _FilesState with Store {
     }
   }
 
-  void onDownloadFile({
+  void onDownloadFile(
+    BuildContext context, {
     LocalFile file,
     Function(ProcessingFile) onStart,
     Function(File) onSuccess,
     Function(String) onError,
   }) async {
+    String password;
+    if (file.encryptedDecryptionKey != null) {
+      password = await KeyRequestDialog.show(context);
+      if (password == null) {
+        return;
+      }
+    }
     try {
       if (file.initVector != null &&
-          AppStore.settingsState.currentKey == null) {
+          !(await PgpKeyUtil.instance.hasUserKey())) {
         throw CustomException("You need an encryption key to download files.");
       }
       if (_isFileIsBeingProcessed(file.guid)) {
         throw CustomException("This file is occupied with another operation.");
       }
-
       if (isOfflineMode) {
         try {
           final fileForDownload =
@@ -440,7 +449,7 @@ abstract class _FilesState with Store {
           );
           onStart(processingFile);
           final downloadedFile =
-              await _filesLocal.downloadOffline(file, processingFile);
+              await _filesLocal.downloadOffline(file, processingFile, password);
           onSuccess(downloadedFile);
           deleteFromProcessing(file.guid);
         } catch (err) {
@@ -470,13 +479,13 @@ abstract class _FilesState with Store {
         );
 
         onStart(processingFile);
-
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
           file.downloadUrl,
           file,
           processingFile,
           true,
+          password,
           onSuccess: (File downloadedFile) {
             deleteFromProcessing(file.guid);
             onSuccess(downloadedFile);
@@ -488,7 +497,7 @@ abstract class _FilesState with Store {
         );
         processingFile.subscription = sub;
       }
-    } catch (err) {
+    } catch (err, s) {
       onError(err.toString());
     }
   }
@@ -498,16 +507,24 @@ abstract class _FilesState with Store {
   }
 
   Future<void> prepareForShare(
-    LocalFile file, {
+    LocalFile file,
+    BuildContext context, {
     File storedFile,
     Function(ProcessingFile) onStart,
     Function(PreparedForShare) onSuccess,
     Function(String) onError,
   }) async {
+    String password;
+    if (file.encryptedDecryptionKey != null) {
+      password = await KeyRequestDialog.show(context);
+      if (password == null) {
+        return;
+      }
+    }
     if (_isFileIsBeingProcessed(file.guid)) {
       onError("This file is occupied with another operation.");
     }
-    if (file.initVector != null && AppStore.settingsState.currentKey == null) {}
+    if (file.initVector != null && !(await PgpKeyUtil.instance.hasUserKey())) {}
     await clearCache();
 
     if (isOfflineMode) {
@@ -523,7 +540,7 @@ abstract class _FilesState with Store {
         );
         onStart(processingFile);
         final prepareForShare = await _filesLocal
-            .shareOffline(file, processingFile)
+            .shareOffline(file, processingFile, password)
             .catchError(onError);
         onSuccess(prepareForShare);
         deleteFromProcessing(file.guid);
@@ -545,7 +562,7 @@ abstract class _FilesState with Store {
         onStart(processingFile);
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
-            file.downloadUrl, file, processingFile, true,
+            file.downloadUrl, file, processingFile, true, password,
             onSuccess: (File savedFile) {
           fileWithContents = savedFile;
           onSuccess(PreparedForShare(fileWithContents, file));
@@ -565,10 +582,17 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future<void> onSetFileOffline(LocalFile file,
+  Future<void> onSetFileOffline(LocalFile file, BuildContext context,
       {@required Function() onSuccess,
       @required Function(ProcessingFile) onStart,
       @required Function(String) onError}) async {
+    String password;
+    if (file.encryptedDecryptionKey != null) {
+      password = await KeyRequestDialog.show(context);
+      if (password == null) {
+        return;
+      }
+    }
     if (_isFileIsBeingProcessed(file.guid)) {
       throw CustomException("This file is occupied with another operation.");
     }
@@ -586,7 +610,7 @@ abstract class _FilesState with Store {
             file, fileForOffline, ProcessingType.offline, file.initVector);
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
-            file.downloadUrl, file, processingFile, false,
+            file.downloadUrl, file, processingFile, false, password,
             onSuccess: (_) async {
               deleteFromProcessing(file.guid);
               final FilesCompanion filesCompanion =

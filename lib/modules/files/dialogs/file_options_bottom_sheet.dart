@@ -9,6 +9,7 @@ import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,7 +46,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
   S s;
 
   void _shareFile() async {
-    final hasDecryptKey = AppStore.settingsState.currentKey != null;
+    final hasDecryptKey = await PgpKeyUtil.instance.hasUserKey();
     final hasVector = widget.file.initVector != null;
     final canDownload = !(hasVector && !hasDecryptKey);
     if (canDownload) {

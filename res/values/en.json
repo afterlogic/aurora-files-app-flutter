@@ -203,5 +203,7 @@
   "upload_files": "Upload $count files",
   "login_to_continue": "Log in to continue",
   "confirm_exit": "Are you sure want to exit",
-  "exit": "Exit"
+  "exit": "Exit",
+  "error_required_pgp_key": "Required pgp key",
+  "label_required_pgp_key": "Required pgp key"
 }

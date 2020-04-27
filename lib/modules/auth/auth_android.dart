@@ -46,7 +46,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     _authState.emailCtrl.text = _authState.userEmail;
     _authState.passwordCtrl.text = "";
     if (kDebugMode) {
-//      _authState.hostCtrl.text = AuthData.host;
+      _authState.hostCtrl.text = AuthData.host;
       _authState.emailCtrl.text = AuthData.email;
       _authState.passwordCtrl.text = AuthData.password;
     }
@@ -65,7 +65,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   Future _login(BuildContext context) async {
     // autodiscover field if it's hidden
-    if (!_showHostField) _authState.hostCtrl.clear();
+//    if (!_showHostField) _authState.hostCtrl.clear();
     String errMsg = "";
     if (PlatformOverride.isIOS) {
       if (_authState.emailCtrl.text.isEmpty) {

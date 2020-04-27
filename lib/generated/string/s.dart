@@ -211,4 +211,6 @@ abstract class S {
   String get login_to_continue;
   String get confirm_exit;
   String get exit;
+  String get error_required_pgp_key;
+  String get label_required_pgp_key;
 }

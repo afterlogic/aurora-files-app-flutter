@@ -33,6 +33,7 @@ class _ShareDialogState extends State<ShareDialog> {
   Future _shareFile() async {
     await widget.filesState.prepareForShare(
       widget.file,
+      context,
       onError: (e) {
         //todo show error
         e;

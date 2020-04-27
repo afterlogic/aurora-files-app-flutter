@@ -16,7 +16,7 @@ class Storage {
   });
 
   static Storage fromMap(Map<String, dynamic> rawStorage) {
-    return new Storage(
+    return  Storage(
       type: rawStorage["Type"],
       displayName: rawStorage["DisplayName"],
       isExternal: rawStorage["IsExternal"],

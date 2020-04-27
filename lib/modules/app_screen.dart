@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:theme/app_theme.dart';
+
 import 'auth/auth_route.dart';
 import 'files/files_route.dart';
 
@@ -21,7 +22,6 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final _authState = AppStore.authState;
   final _settingsState = AppStore.settingsState;
-
   Future<List<bool>> _localStorageInitialization;
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
@@ -29,7 +30,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:secure_sharing/secure_sharing.dart';
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+
 import 'components/image_viewer.dart';
 import 'components/info_list_tile.dart';
 import 'components/text_viewer.dart';
@@ -109,6 +110,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     if (_fileViewerState.fileWithContents != null) {
       widget.filesState.prepareForShare(
         _file,
+        context,
         storedFile: _fileViewerState.fileWithContents,
         onSuccess: complete,
         onError: (String err) => showSnack(
@@ -184,6 +186,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   void _downloadFile() {
     widget.filesState.onDownloadFile(
+      context,
       file: _file,
       onStart: (ProcessingFile process) {
         // TODO VO: update ui without refreshing files
@@ -216,7 +219,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   Future _setFileForOffline() async {
     if (widget.filesState.isOfflineMode) {
-      widget.filesState.onSetFileOffline(_file,
+      widget.filesState.onSetFileOffline(_file, context,
           onStart: (process) {
             _fileViewerState.processingFile = process;
             widget.filesPageState
@@ -242,7 +245,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             isError: false,
           );
         }
-        await widget.filesState.onSetFileOffline(_file,
+        await widget.filesState.onSetFileOffline(_file, context,
             onStart: (process) {
               _fileViewerState.processingFile = process;
               widget.filesPageState
@@ -282,7 +285,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       return _prepareShareFile(_secureEncryptSharing);
     }
     final preparedForShare = PreparedForShare(null, _file);
-    final pgpKeyUtil = PgpKeyUtil(DI.get(), DI.get());
+    final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
     await secureSharing.sharing(
@@ -302,7 +305,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   _secureEncryptSharing(PreparedForShare preparedForShare) async {
-    final pgpKeyUtil = PgpKeyUtil(DI.get(), DI.get());
+    final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
     secureSharing.encryptSharing(

@@ -251,4 +251,6 @@ class EnString extends S {
   final String login_to_continue = "Log in to continue";
   final String confirm_exit = "Are you sure want to exit";
   final String exit = "Exit";
+  final String error_required_pgp_key = "Required pgp key";
+  final String label_required_pgp_key = "Required pgp key";
 }

@@ -253,4 +253,5 @@ class EnString extends S {
   final String exit = "Exit";
   final String error_required_pgp_key = "Required pgp key";
   final String label_required_pgp_key = "Required pgp key";
+  String hint_upload_encrypt_ask(String name) => "Encrypt '$name'?.";
 }

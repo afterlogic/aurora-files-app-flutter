@@ -11,7 +11,7 @@ import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
-import 'package:aurorafiles/utils/key_request_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';

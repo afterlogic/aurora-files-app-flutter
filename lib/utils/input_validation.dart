@@ -29,7 +29,7 @@ String validateInput(
     final valueToCheck =
         fileExtension != null ? "$value.$fileExtension" : value;
     otherItems.forEach((item) {
-      if (item.name == valueToCheck) exists = true;
+      if (item.fileName == valueToCheck) exists = true;
     });
 
     if (exists) return "This name already exists";

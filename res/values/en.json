@@ -205,5 +205,6 @@
   "confirm_exit": "Are you sure want to exit",
   "exit": "Exit",
   "error_required_pgp_key": "Required pgp key",
-  "label_required_pgp_key": "Required pgp key"
+  "label_required_pgp_key": "Required pgp key",
+  "hint_upload_encrypt_ask": "Encrypt '$name'?."
 }

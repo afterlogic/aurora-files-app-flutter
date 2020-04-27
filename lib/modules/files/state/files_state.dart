@@ -17,7 +17,7 @@ import 'package:aurorafiles/modules/files/repository/mail_api.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
-import 'package:aurorafiles/utils/key_request_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';

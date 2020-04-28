@@ -34,9 +34,10 @@ class AppInput extends StatelessWidget {
     final theme = Theme.of(context);
     if (PlatformOverride.isIOS) {
       return CupertinoTextField(
-        style: style,
+        style: theme.textTheme.subhead,
         cursorColor: theme.accentColor,
         placeholder: labelText,
+        placeholderStyle: theme.textTheme.subhead.copyWith(color: theme.textTheme.subhead.color.withAlpha(100)),
         obscureText: obscureText,
         controller: controller,
         autocorrect: keyboardType != null ? false : true,

@@ -218,18 +218,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: Container(
             padding: const EdgeInsets.all(12.0),
-            child: PlatformOverride.isIOS
-                ? CupertinoTextField(
-                    onSubmitted: (_) => _search(),
-                    autofocus: true,
-                    controller: _searchInputCtrl,
-                    placeholder: s.search,
-                    suffix: IconButton(
-                        icon: Icon(Icons.search),
-                        color: Colors.white,
-                        onPressed: _search),
-                  )
-                : ClipRRect(
+            child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
                     child: Container(
                       color: Colors.white54,

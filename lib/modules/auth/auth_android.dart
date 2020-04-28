@@ -175,50 +175,50 @@ class _AuthAndroidState extends State<AuthAndroid> {
     return Provider(
       create: (_) => _authState,
       child: Theme(
-        data: AppTheme.login,
-        child: Scaffold(
-          body: MainGradient(
-            child: Stack(
-              children: <Widget>[
-                if (!BuildProperty.useMainLogo)
-                  Positioned(
-                    top: -70.0,
-                    left: -70.0,
-                    child: MailLogo(isBackground: true),
-                  ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 22.0),
-                  child: Form(
-                    key: _authFormKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        PresentationHeader(),
-                        Column(
-                          children: _buildTextFields(),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Observer(
-                            builder: (BuildContext context) => _debugRouteToTwoFactor(
-                              AMButton(
-                                isLoading: _authState.isLoggingIn,
-                                onPressed: () => _login(context),
-                                child: Text(s.login),
-                              ),
+      data: AppTheme.login,
+      child: Scaffold(
+        body: MainGradient(
+          child: Stack(
+            children: <Widget>[
+              if (!BuildProperty.useMainLogo)
+                Positioned(
+                  top: -70.0,
+                  left: -70.0,
+                  child: MailLogo(isBackground: true),
+                ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 22.0),
+                child: Form(
+                  key: _authFormKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      PresentationHeader(),
+                      Column(
+                        children: _buildTextFields(),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Observer(
+                          builder: (BuildContext context) => _debugRouteToTwoFactor(
+                            AMButton(
+                              isLoading: _authState.isLoggingIn,
+                              onPressed: () => _login(context),
+                              child: Text(s.login),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
+        ),
     );
   }
 

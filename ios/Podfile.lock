@@ -1,4 +1,5 @@
 PODS:
+  - BouncyCastle-ObjC (0.1.1)
   - connectivity (0.0.1):
     - Flutter
     - Reachability
@@ -8,6 +9,9 @@ PODS:
     - Fabric (~> 1.10.2)
   - crypto_plugin (0.0.1):
     - Flutter
+  - DMSOpenPGP (0.1.4):
+    - BouncyCastle-ObjC (~> 0.1.0)
+    - OpenSSL-Universal (~> 1.0.2.17)
   - Fabric (1.10.2)
   - file_picker (0.0.1):
     - Flutter
@@ -96,6 +100,9 @@ PODS:
   - nanopb/encode (0.3.9011)
   - open_file (0.0.1):
     - Flutter
+  - OpenSSL-Universal (1.0.2.19):
+    - OpenSSL-Universal/Static (= 1.0.2.19)
+  - OpenSSL-Universal/Static (1.0.2.19)
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -128,10 +135,12 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - BouncyCastle-ObjC (= 0.1.1)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - connectivity_macos (from `.symlinks/plugins/connectivity_macos/ios`)
   - Crashlytics (~> 3.14.0)
   - crypto_plugin (from `.symlinks/plugins/crypto_plugin/ios`)
+  - DMSOpenPGP (= 0.1.4)
   - Fabric (~> 1.10.2)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Firebase/Analytics
@@ -157,7 +166,9 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - BouncyCastle-ObjC
     - Crashlytics
+    - DMSOpenPGP
     - Fabric
     - Firebase
     - FirebaseAnalytics
@@ -172,6 +183,7 @@ SPEC REPOS:
     - GoogleDataTransportCCTSupport
     - GoogleUtilities
     - nanopb
+    - OpenSSL-Universal
     - PromisesObjC
     - Reachability
     - RxSwift
@@ -223,10 +235,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_web/ios"
 
 SPEC CHECKSUMS:
+  BouncyCastle-ObjC: bf0db0fe9fe11ae5e2515d2e6816ef86454b9cc6
   connectivity: 6e94255659cc86dcbef1d452ad3e0491bb1b3e75
   connectivity_macos: e2e9731b6b22dda39eb1b128f6969d574460e191
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   crypto_plugin: 628115b4b05d5843f12b3398012e0b53eabcc603
+  DMSOpenPGP: 3c667b775e705abef816582f320bbadb972bd8ce
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
   Firebase: 497158b816d0a86fc31babbd05546fcd7e6083ff
@@ -247,6 +261,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 06eb53bb579efe7099152735900dd04bf09e7275
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
+  OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
@@ -264,6 +279,6 @@ SPEC CHECKSUMS:
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
   url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
 
-PODFILE CHECKSUM: dab34435707bbd478b83c14df240a1465fff94ea
+PODFILE CHECKSUM: 0938750e8f973f9630e3948ea20da88797df8f90
 
 COCOAPODS: 1.8.4

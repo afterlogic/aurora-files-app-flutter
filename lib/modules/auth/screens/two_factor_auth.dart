@@ -117,7 +117,7 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
           error = s.invalid_pin;
           return;
         }
-        await authState.setAccount();
+        await authState.successLogin();
         Navigator.of(context).popUntil((Route<dynamic> route) {
           return route.isFirst;
         });

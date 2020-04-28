@@ -18,13 +18,24 @@ class _EncryptAskDialogState extends State<EncryptAskDialog> {
   Widget build(BuildContext context) {
     final s = Str.of(context);
     return AlertDialog(
-      title: Text(s.label_required_pgp_key),
       content: Text(s.hint_upload_encrypt_ask(widget.fileName)),
       actions: <Widget>[
         FlatButton(
-          child: Text(s.oK),
+          child: Text(s.encrypt),
           onPressed: () {
             Navigator.pop(context, true);
+          },
+        ),
+        FlatButton(
+          child: Text(s.btn_do_not_encrypt),
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
+        FlatButton(
+          child: Text(s.cancel),
+          onPressed: () {
+            Navigator.pop(context);
           },
         )
       ],

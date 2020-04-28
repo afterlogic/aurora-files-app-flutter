@@ -1,6 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
-import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
 import 'package:crypto_plugin/algorithm/pgp.dart';
@@ -13,7 +12,7 @@ class PgpSettingPresenter {
   final PgpKeyUtil pgpKeyUtil;
 
   PgpSettingPresenter(this._view, this._pgpKeyDao, Pgp pgp)
-      : pgpKeyUtil =PgpKeyUtil.instance;
+      : pgpKeyUtil = PgpKeyUtil.instance;
 
   Future refreshKeys(
       [List<LocalPgpKey> addedPublic, List<LocalPgpKey> addedPrivate]) {
@@ -40,7 +39,7 @@ class PgpSettingPresenter {
     final result = await pgpKeyUtil.importKeyFromFile();
     if (result.isNotEmpty) {
       _view.showImportDialog(result);
-    }else{
+    } else {
       _view.keysNotFound();
     }
   }
@@ -49,7 +48,7 @@ class PgpSettingPresenter {
     final result = await pgpKeyUtil.validateText(text);
     if (result.isNotEmpty) {
       _view.showImportDialog(result);
-    }else{
+    } else {
       _view.keysNotFound();
     }
   }
@@ -68,9 +67,15 @@ class PgpSettingPresenter {
 
   addPrivateKey(CreateKeyResult result) async {
     var privateKey = LocalPgpKey(
-        email: result.email, isPrivate: true, length: result.length,name: result.name);
+        email: result.email,
+        isPrivate: true,
+        length: result.length,
+        name: result.name);
     var publicKey = LocalPgpKey(
-        email: result.email, isPrivate: false, length: result.length,name: result.name);
+        email: result.email,
+        isPrivate: false,
+        length: result.length,
+        name: result.name);
 
     await refreshKeys([publicKey], [privateKey]);
     final keys = await result.keyBuilder;
@@ -82,7 +87,7 @@ class PgpSettingPresenter {
     refreshKeys();
   }
 
-  close(){
+  close() {
     pgpKeyUtil.close();
   }
 }

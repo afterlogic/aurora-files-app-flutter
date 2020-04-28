@@ -65,6 +65,13 @@ abstract class _AuthState with Store {
     userId = id;
   }
 
+  Future successLogin() {
+    return Future.wait([
+      setAccount(),
+      AppStore.settingsState.updateSettings(),
+    ]);
+  }
+
   Future setAccount() async {
     final account = await _mailApi.getAccounts();
     if (account.isNotEmpty) {
@@ -113,7 +120,7 @@ abstract class _AuthState with Store {
         final int id = res['AuthenticatedUserId'];
         await _setAuthSharedPrefs(
             host: hostName, token: token, email: email, id: id);
-        await setAccount();
+        await successLogin();
         onSuccess();
       } catch (err) {
         isLoggingIn = false;

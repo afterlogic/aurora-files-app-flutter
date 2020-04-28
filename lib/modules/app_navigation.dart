@@ -16,6 +16,8 @@ import 'package:aurorafiles/modules/settings/screens/common/common_android.dart'
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_android.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
+import 'package:aurorafiles/modules/settings/screens/encryption_server_setting/encryption_server_android.dart';
+import 'package:aurorafiles/modules/settings/screens/encryption_server_setting/encryption_server_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/export_pgp_key_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/export_pgp_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_model_route.dart';
@@ -161,6 +163,22 @@ class AppNavigation {
                 name: settings.name,
               ),
               page: PgpSettingWidget(),
+              duration: 150);
+        }
+        break;
+      case EncryptionServerRoute.name:
+        if (PlatformOverride.isIOS) {
+          return CupertinoPageRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              builder: (context) => EncryptionServer());
+        } else {
+          return FadeRoute(
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+              page: EncryptionServer(),
               duration: 150);
         }
         break;

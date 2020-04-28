@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
@@ -16,7 +17,7 @@ class SettingsState = _SettingsState with _$SettingsState;
 
 abstract class _SettingsState with Store {
   final _settingsLocal = SettingsLocalStorage();
-
+  final settingApi = SettingApi();
   @observable
   ConnectivityResult internetConnection;
 
@@ -144,5 +145,25 @@ abstract class _SettingsState with Store {
     } catch (err) {
       onError(err.toString());
     }
+  }
+
+  Future updateSettings() async {
+    final setting = await settingApi.getEncryptSetting();
+    await _settingsLocal.setEncryptEnable(setting.enable);
+    await _settingsLocal.setUploadEncryptMode(setting.uploadEncryptMode.index);
+  }
+
+  Future<EncryptionSetting> getEncryptionSetting() async {
+    return EncryptionSetting(
+      UploadEncryptMode
+          .values[(await _settingsLocal.getUploadEncryptMode()) ?? 0],
+      await _settingsLocal.getEncryptEnable(),
+    );
+  }
+
+  Future setEncryptionSetting(EncryptionSetting setting) async {
+    await settingApi.setEncryptSetting(setting);
+    await _settingsLocal.setUploadEncryptMode(setting.uploadEncryptMode.index);
+    await _settingsLocal.setEncryptEnable(setting.enable);
   }
 }

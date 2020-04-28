@@ -7,6 +7,7 @@ import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
+import 'package:aurorafiles/modules/settings/screens/encryption_server_setting/encryption_server_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
@@ -43,7 +44,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             ListTile(
               title: Text(s.encryption),
               leading: AMCircleIcon(MdiIcons.alien),
-              onTap: () => Navigator.pushNamed(context, EncryptionRoute.name),
+              onTap: () => Navigator.pushNamed(context, EncryptionServerRoute.name),
             ),
             if (BuildProperty.pgpEnable)
               ListTile(

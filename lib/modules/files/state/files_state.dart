@@ -320,22 +320,24 @@ abstract class _FilesState with Store {
     return _filesDao.updateFile(file);
   }
 
-  Future<void> onUploadFile({
+  Future<void> onUploadFile(
+   Future<bool> Function(File) onSelect, {
     @required String path,
     @required Function(ProcessingFile) onUploadStart,
     @required Function() onSuccess,
     @required Function(String) onError,
   }) async {
     File file = await _filesLocal.pickFiles();
-
     if (file == null) return;
+    final shouldEncrypt =await onSelect(file);
+    if (shouldEncrypt == null) return;
     return uploadFile(
       file: file,
       path: path,
       onUploadStart: onUploadStart,
       onSuccess: onSuccess,
       onError: onError,
-      shouldEncrypt: selectedStorage.type == "encrypted",
+      shouldEncrypt: shouldEncrypt,
     );
   }
 

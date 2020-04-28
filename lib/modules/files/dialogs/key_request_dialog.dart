@@ -24,7 +24,7 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
   Widget build(BuildContext context) {
     final s = Str.of(context);
     return AlertDialog(
-      title: Text(s.label_required_pgp_key),
+      title: Text(s.label_encryption_password_for_pgp_key),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -6,8 +7,10 @@ import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/upload_options.dart';
+import 'package:aurorafiles/modules/files/dialogs/encrypt_ask_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
+import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
@@ -167,30 +170,55 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   void _uploadFile() async {
-    if (_filesState.selectedStorage.type == "encrypted" &&
-        !(await PgpKeyUtil.instance.hasUserKey())) {
-      showSnack(
+    _filesState.onUploadFile(
+      (file) async {
+        final encryptionSettings = await _settingsState.getEncryptionSetting();
+        bool shouldEncrypt = false;
+        if (encryptionSettings.enable) {
+          switch (encryptionSettings.uploadEncryptMode) {
+            case UploadEncryptMode.Always:
+              shouldEncrypt = true;
+              break;
+            case UploadEncryptMode.Ask:
+              shouldEncrypt = await AMDialog.show<bool>(
+                  builder: (_) => EncryptAskDialog(
+                      file.path.split(Platform.pathSeparator).last),
+                  context: context);
+              break;
+            case UploadEncryptMode.Never:
+              shouldEncrypt = false;
+              break;
+            case UploadEncryptMode.InEncryptedFolder:
+              shouldEncrypt = _filesState.selectedStorage.type == "encrypted";
+              break;
+          }
+        }
+
+        if (shouldEncrypt == true &&
+            !(await PgpKeyUtil.instance.hasUserKey())) {
+          showSnack(
+            context: context,
+            scaffoldState: _filesPageState.scaffoldKey.currentState,
+            msg: s.error_required_pgp_key,
+          );
+          return null;
+        }
+        return shouldEncrypt ?? false;
+      },
+      path: widget.path,
+      onUploadStart: _addUploadingFileToFiles,
+      onSuccess: () => showSnack(
         context: context,
         scaffoldState: _filesPageState.scaffoldKey.currentState,
-        msg: s.error_required_pgp_key,
-      );
-    } else {
-      _filesState.onUploadFile(
-        path: widget.path,
-        onUploadStart: _addUploadingFileToFiles,
-        onSuccess: () => showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: s.successfully_uploaded,
-          isError: false,
-        ),
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: err,
-        ),
-      );
-    }
+        msg: s.successfully_uploaded,
+        isError: false,
+      ),
+      onError: (String err) => showSnack(
+        context: context,
+        scaffoldState: _filesPageState.scaffoldKey.currentState,
+        msg: err,
+      ),
+    );
   }
 
   void _addUploadingFileToFiles(ProcessingFile process) {

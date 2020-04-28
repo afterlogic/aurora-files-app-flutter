@@ -214,4 +214,14 @@ abstract class S {
   String get error_required_pgp_key;
   String get label_required_pgp_key;
   String hint_upload_encrypt_ask(String name);
+  String get btn_do_not_encrypt;
+  String get label_encryption_always_in_encryption_folder;
+  String get label_encryption_always;
+  String get label_encryption_ask;
+  String get label_encryption_never;
+  String get label_encryption_enable_paranoid_encryption;
+  String get btn_encryption_enable;
+  String get label_encryption_mode;
+  String get btn_encryption_save;
+  String get label_encryption_password_for_pgp_key;
 }

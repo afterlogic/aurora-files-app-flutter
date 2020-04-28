@@ -100,4 +100,24 @@ class SettingsLocalStorage {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.remove("isDarkThemeEnabled");
   }
+
+  Future<int> getUploadEncryptMode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("UploadEncryptMode");
+  }
+
+  Future setUploadEncryptMode(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setInt("UploadEncryptMode", value);
+  }
+
+  Future<bool> setEncryptEnable(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool("EncryptEnable", value);
+  }
+
+  Future<bool> getEncryptEnable() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove("EncryptEnable");
+  }
 }

@@ -254,4 +254,17 @@ class EnString extends S {
   final String error_required_pgp_key = "Required pgp key";
   final String label_required_pgp_key = "Required pgp key";
   String hint_upload_encrypt_ask(String name) => "Encrypt '$name'?.";
+  final String btn_do_not_encrypt = "Do not encrypt";
+  final String label_encryption_always_in_encryption_folder =
+      "Always in Encrypted folder";
+  final String label_encryption_always = "Always";
+  final String label_encryption_ask = "Ask me";
+  final String label_encryption_never = "Never";
+  final String label_encryption_enable_paranoid_encryption =
+      "Enable Paranoid Encryption";
+  final String btn_encryption_enable = "Enable Paranoid Encryption";
+  final String label_encryption_mode = "Encrypt uploaded files";
+  final String btn_encryption_save = "Save";
+  final String label_encryption_password_for_pgp_key =
+      "Required password for PGP key";
 }

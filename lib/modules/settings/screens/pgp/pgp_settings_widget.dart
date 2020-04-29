@@ -28,15 +28,9 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
   @override
   void initState() {
-    _presenter = PgpSettingPresenter(this, DI.get(), DI.get());
+    _presenter = PgpSettingPresenter(this, DI.get());
     _presenter.refreshKeys();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _presenter.close();
-    super.dispose();
   }
 
   @override
@@ -73,8 +67,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                       style: theme.textTheme.subhead,
                     ),
                   ),
-                if (publicKeys.isNotEmpty)
-                  Column(children: publicKeys),
+                if (publicKeys.isNotEmpty) Column(children: publicKeys),
                 if (privateKeys.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 25),
@@ -83,8 +76,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                       style: theme.textTheme.subhead,
                     ),
                   ),
-                if (privateKeys.isNotEmpty)
-                  Column(children: privateKeys),
+                if (privateKeys.isNotEmpty) Column(children: privateKeys),
                 SizedBox(height: 25),
                 if (publicKeys.isNotEmpty)
                   AMButton(

@@ -16,7 +16,7 @@ import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/stream_util.dart';
-import 'package:crypto_plugin/crypto_plugin.dart';
+import 'package:crypto_stream/algorithm/aes.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:flutter/widgets.dart';

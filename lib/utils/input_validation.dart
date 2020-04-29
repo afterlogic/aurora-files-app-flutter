@@ -1,3 +1,5 @@
+import 'package:aurorafiles/database/app_database.dart';
+
 enum ValidationTypes {
   empty,
   email,
@@ -29,7 +31,9 @@ String validateInput(
     final valueToCheck =
         fileExtension != null ? "$value.$fileExtension" : value;
     otherItems.forEach((item) {
-      if (item.fileName == valueToCheck) exists = true;
+      if (item is LocalFile) {
+        if (item?.name == valueToCheck) exists = true;
+      }
     });
 
     if (exists) return "This name already exists";

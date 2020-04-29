@@ -281,7 +281,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   _secureSharing() async {
-    if (widget.filesState.selectedStorage.type == "encrypted") {
+    if (widget.immutableFile.encryptedDecryptionKey != null) {
       return _prepareShareFile(_secureEncryptSharing);
     }
     final preparedForShare = PreparedForShare(null, _file);

@@ -4,7 +4,8 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:crypto_plugin/algorithm/pgp.dart';
+import 'package:crypto_stream/algorithm/pgp.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

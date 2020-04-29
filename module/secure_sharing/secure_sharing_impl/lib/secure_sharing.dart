@@ -5,7 +5,7 @@ import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
-import 'package:crypto_plugin/algorithm/pgp.dart';
+import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:secure_sharing/secure_sharing.dart';
 
@@ -58,7 +58,8 @@ class SecureSharingImpl extends SecureSharing {
 
         selectRecipientResult = await AMDialog.show(
           context: context,
-          builder: (context) => SelectRecipient(fileViewerState, s.send_public_link_to),
+          builder: (context) =>
+              SelectRecipient(fileViewerState, s.send_public_link_to),
         );
         if (selectRecipientResult == null) {
           break;

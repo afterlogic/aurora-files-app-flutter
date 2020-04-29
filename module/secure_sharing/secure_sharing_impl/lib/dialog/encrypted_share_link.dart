@@ -14,11 +14,12 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
-import 'package:crypto_plugin/crypto_plugin.dart';
+import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'legacy_pgp_api.dart';
 import 'select_recipient.dart';
 
 class EncryptedShareLink extends StatefulWidget {
@@ -58,6 +59,7 @@ class EncryptedShareLink extends StatefulWidget {
 
 class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   ProcessingFile _processingFile;
+  LegacyPgpApi legacyPgpApi;
   double progress = 0;
   bool isDownload = false;
   bool sendProgress = false;
@@ -76,7 +78,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     if (await temp.exists()) await temp.delete();
 
     if (widget.useKey) {
-      widget.pgp
+      legacyPgpApi
           .encryptFile(
         widget.file.file,
         output,
@@ -92,8 +94,9 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       });
     } else {
       password = PgpUtil.createSymmetricKey();
-      widget.pgp.encryptSymmetricFile(widget.file.file, output, password).then(
-          (_) {
+      legacyPgpApi
+          .encryptSymmetricFile(widget.file.file, output, password)
+          .then((_) {
         upload();
       }, onError: (e) {
         error = s.encrypt_error;
@@ -103,9 +106,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       });
     }
     while (isProgress) {
-      final pgpProgress = await widget.pgp.getProgress();
-      progress =
-          pgpProgress == null ? null : pgpProgress.current / pgpProgress.total;
+      progress = legacyPgpApi.progress;
       if (isProgress) {
         setState(() {});
       }
@@ -186,17 +187,17 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   }
 
   prepare() async {
+    legacyPgpApi = LegacyPgpApi(widget.pgp);
     if (widget.useEncrypt) {
-      await widget.pgp.setTempFile(temp);
+      legacyPgpApi.temp = temp;
     }
     if (widget.pgpKey != null) {
-      await widget.pgp.setPublicKeys([
-        widget.pgpKey.key,
-        widget.userPublicKey?.key
-      ].where((item) => item != null).toList());
+      legacyPgpApi.publicKeys = [widget.pgpKey.key, widget.userPublicKey?.key]
+          .where((item) => item != null)
+          .toList();
     }
     if (widget.useSign == true) {
-      await widget.pgp.setPrivateKey(widget.userPrivateKey.key);
+      legacyPgpApi.privateKey = widget.userPrivateKey.key;
     }
     share();
   }
@@ -212,7 +213,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   @override
   void dispose() {
     _processingFile?.endProcess();
-    widget.pgp.stop().whenComplete(() async {
+    legacyPgpApi.close().whenComplete(() async {
       if (await output.exists()) await output.delete();
       if (await temp.exists()) await temp.delete();
     });
@@ -295,12 +296,12 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     );
 
     if (widget.pgpKey != null) {
-      final encrypt = await widget.pgp.encryptBytes(
-        Uint8List.fromList(template.body.codeUnits),
+      final encrypt = await legacyPgpApi.encryptBytes(
+        template.body,
         widget.privateKeyPassword,
       );
 
-      template.body = String.fromCharCodes(encrypt);
+      template.body = encrypt;
     }
 
     widget.filesState

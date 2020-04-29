@@ -102,7 +102,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
                     ? s.password_sign
                     : widget.pgpKey == null
                         ? s.sign_data_with_not_key(s.data)
-                        : useSign ? s.data_signed : s.data_not_signed,
+                        : useSign ? s.data_signed : s.data_not_signed(s.data),
                 style: theme.textTheme.caption,
               )
             ],

@@ -7,7 +7,7 @@ import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/permissions.dart';
-import 'package:crypto_plugin/crypto_plugin.dart';
+import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -34,7 +34,7 @@ class PgpKeyUtil {
     for (String key in keys) {
       final description = await pgp.getKeyDescription(key);
 
-      for (String email in description.email) {
+      for (String email in description.emails) {
         final groups = RegExp("(\\D|\\d)*<((?:\\D|\\d)*)>").firstMatch(email);
         String validEmail;
         String name = "";
@@ -136,36 +136,27 @@ class PgpKeyUtil {
   }
 
   Future<KeyPair> createKeys(int length, String email, String password) async {
-    await pgp.stop();
     return pgp.createKeys(length, email, password);
   }
 
   Future<bool> checkPrivateKey(String password, String pgpKey) {
-    return pgp.checkPassword(password, pgpKey);
+    return pgp.checkKeyPassword(pgpKey,password);
   }
 
   Future<String> userEncrypt(String string) async {
-    try {
-      await pgp.setPublicKeys([(await userPublicKey()).key]);
-      final result = await pgp.encryptBytes(utf8.encode(string), null);
-      pgp.stop();
-      return utf8.decode(result);
-    } catch (e) {
-      print(e);
-      rethrow;
-    }
+    final publicKey = (await userPublicKey()).key;
+    return pgp.bufferPlatformSink(
+      string,
+      pgp.encrypt(null, [publicKey], null),
+    );
   }
 
   Future<String> userDecrypt(String string, String password) async {
-    try {
-      await pgp.setPrivateKey((await userPrivateKey()).key);
-      final result = await pgp.decryptBytes(utf8.encode(string), password);
-      pgp.stop();
-      return utf8.decode(result);
-    } catch (e) {
-      print(e);
-      rethrow;
-    }
+    final publicKey = (await userPrivateKey()).key;
+    return pgp.bufferPlatformSink(
+      string,
+      pgp.decrypt(publicKey, [], password),
+    );
   }
 
   Future<bool> hasUserKey() async {
@@ -175,8 +166,4 @@ class PgpKeyUtil {
   static const pgpKeyPath = "/pgp_keys";
   static const keyStart = "-----BEGIN PGP \\w* KEY BLOCK-----";
   static const keyEnd = "-----END PGP \\w* KEY BLOCK-----";
-
-  close() {
-    pgp.stop();
-  }
 }

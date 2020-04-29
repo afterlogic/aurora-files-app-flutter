@@ -9,7 +9,7 @@ import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/permissions.dart';
-import 'package:crypto_plugin/crypto_plugin.dart';
+import 'package:crypto_stream/algorithm/aes.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file_picker/file_picker.dart';

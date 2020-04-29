@@ -18,7 +18,7 @@ import 'package:aurorafiles/utils/case_util.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
-import 'package:crypto_plugin/crypto_plugin.dart';
+import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -170,21 +170,17 @@ class _ShareLinkState extends State<ShareLink> {
     );
 
     if (widget.selectRecipientResult.pgpKey != null) {
-      pgp.setTempFile(
-          File((await getTemporaryDirectory()).path + "/temp" + ".temp"));
-      pgp.setPublicKeys([
-        widget.selectRecipientResult.pgpKey.key,
-        widget.userPublicKey?.key
-      ].where((item) => item != null).toList());
-      if (useSign) {
-        pgp.setPrivateKey(widget.userPrivateKey.key);
-      }
-      final encrypt = await pgp.encryptBytes(
-        Uint8List.fromList(template.body.codeUnits),
-        useSign ? signKey.currentState.password : null,
-      );
+      final encrypt = await pgp.bufferPlatformSink(
+          template.body,
+          pgp.encrypt(
+              useSign ? widget.userPrivateKey.key : null,
+              [
+                widget.selectRecipientResult.pgpKey.key,
+                widget.userPublicKey?.key
+              ].where((item) => item != null).toList(),
+              useSign ? signKey.currentState.password : null));
 
-      template.body = String.fromCharCodes(encrypt);
+      template.body = encrypt;
     }
 
     widget.filesState

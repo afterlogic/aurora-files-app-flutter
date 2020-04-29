@@ -1,7 +1,7 @@
 name: aurorafiles
 description: File management system for ...
 
-version: 10.2.0+105
+version: 10.2.0+107
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -81,8 +81,8 @@ dependencies:
     path: build_res/private_mail/theme
   aurora_ui_kit:
     git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
-  crypto_plugin:
-    git: https://github.com/afterlogic/flutter_crypto_plugin
+  crypto_stream:
+    git: https://github.com/afterlogic/flutter_crypto_stream
   receive_sharing:
     git: https://github.com/afterlogic/receive_sharing
 

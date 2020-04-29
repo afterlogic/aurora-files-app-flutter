@@ -2,7 +2,8 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
-import 'package:crypto_plugin/algorithm/pgp.dart';
+
+import 'package:crypto_stream/algorithm/pgp.dart';
 
 import 'dialog/create_key_dialog.dart';
 
@@ -11,7 +12,7 @@ class PgpSettingPresenter {
   final PgpKeyDao _pgpKeyDao;
   final PgpKeyUtil pgpKeyUtil;
 
-  PgpSettingPresenter(this._view, this._pgpKeyDao, Pgp pgp)
+  PgpSettingPresenter(this._view, this._pgpKeyDao)
       : pgpKeyUtil = PgpKeyUtil.instance;
 
   Future refreshKeys(
@@ -80,14 +81,10 @@ class PgpSettingPresenter {
     await refreshKeys([publicKey], [privateKey]);
     final keys = await result.keyBuilder;
 
-    privateKey = privateKey.copyWith(key: keys.secret);
-    publicKey = publicKey.copyWith(key: keys.public);
+    privateKey = privateKey.copyWith(key: keys.privateKey);
+    publicKey = publicKey.copyWith(key: keys.publicKey);
 
     await pgpKeyUtil.saveKeys([publicKey, privateKey]);
     refreshKeys();
-  }
-
-  close() {
-    pgpKeyUtil.close();
   }
 }

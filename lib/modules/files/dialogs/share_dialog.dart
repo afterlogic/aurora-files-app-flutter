@@ -27,7 +27,9 @@ class _ShareDialogState extends State<ShareDialog> {
   @override
   void initState() {
     super.initState();
-    _shareFile();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _shareFile();
+    });
   }
 
   Future _shareFile() async {

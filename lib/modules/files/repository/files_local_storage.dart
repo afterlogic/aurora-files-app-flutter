@@ -20,8 +20,8 @@ import 'package:share_extend/share_extend.dart';
 class FilesLocalStorage {
   Aes aes = DI.get();
 
-  Future<File> pickFiles({FileType type, String extension}) {
-    return FilePicker.getFile(type: type, allowedExtensions: [extension]);
+  Future<File> pickFiles() {
+    return FilePicker.getFile();
   }
 
   // is used to download files on iOS

@@ -27,8 +27,8 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   S s;
   String _error;
   bool _obscure = true;
-  static const lengths = [1024, 2048, 3072, 4096, 8192];
-  var length = lengths[1];
+  static const lengths = [ 2048,  4096];
+  var length = lengths[0];
 
   @override
   Widget build(BuildContext context) {

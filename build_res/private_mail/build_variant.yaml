@@ -17,4 +17,4 @@ pgpEnable: true
 secureSharingEnable: true
 canUpgradePlan: true
 
-_version: "10.2.0"
+_version: "10.3.0"

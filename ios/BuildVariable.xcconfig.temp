@@ -1,4 +1,4 @@
 APP_NAME={{appName}}
 PRODUCT_ID = {{_appId}}
 DEVELOPMENT_ID = {{_iosDeveloperId}}
-PRODUCT_VERSION = {{version_ios}}
+PRODUCT_VERSION = {{_version}}

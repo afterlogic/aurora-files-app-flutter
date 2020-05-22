@@ -19,13 +19,7 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		DB2F2AA523B4EA2A0064E88E /* PgpApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2F2AA423B4EA2A0064E88E /* PgpApi.swift */; };
 		DBB2978223EC410400FAC526 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DBB2978123EC410400FAC526 /* GoogleService-Info.plist */; };
-		DBB4A3FE23A7E5BF00B3A649 /* CryptoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A3FD23A7E5BF00B3A649 /* CryptoPlugin.swift */; };
-		DBB4A40123A7E5E000B3A649 /* Pgp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A40023A7E5E000B3A649 /* Pgp.swift */; };
-		DBB4A40423A7E61000B3A649 /* Aes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4A40323A7E61000B3A649 /* Aes.swift */; };
-		DBB4BD0F23D0593F00F6E6B7 /* SymmetricPgp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */; };
-		DBB4BD1123D0623D00F6E6B7 /* PgpUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */; };
 		DBEB4DF723E081F200E957F6 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBEB4DF623E081F200E957F6 /* ShareViewController.swift */; };
 		DBEB4DFA23E081F200E957F6 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBEB4DF823E081F200E957F6 /* MainInterface.storyboard */; };
 		DBEB4DFE23E081F200E957F6 /* AppShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DBEB4DF423E081F200E957F6 /* AppShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -89,14 +83,8 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB156FB023A7C5AF0045651F /* DMSOpenPGP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = DMSOpenPGP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DB2F2AA423B4EA2A0064E88E /* PgpApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PgpApi.swift; sourceTree = "<group>"; };
 		DB49062D23E30ED40098DFE2 /* BuildVariable.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BuildVariable.xcconfig; sourceTree = "<group>"; };
 		DBB2978123EC410400FAC526 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		DBB4A3FD23A7E5BF00B3A649 /* CryptoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoPlugin.swift; sourceTree = "<group>"; };
-		DBB4A40023A7E5E000B3A649 /* Pgp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pgp.swift; sourceTree = "<group>"; };
-		DBB4A40323A7E61000B3A649 /* Aes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aes.swift; sourceTree = "<group>"; };
-		DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricPgp.swift; sourceTree = "<group>"; };
-		DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PgpUtil.swift; sourceTree = "<group>"; };
 		DBEB4DF423E081F200E957F6 /* AppShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AppShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBEB4DF623E081F200E957F6 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		DBEB4DF923E081F200E957F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -179,7 +167,6 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
-				DBB4A3FC23A7E5A300B3A649 /* crypt */,
 				DDC97FE623572B4A007336A2 /* Runner.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
@@ -209,43 +196,6 @@
 				8F17C4AAF9F9157F1CEDCFA5 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		DBB4A3FC23A7E5A300B3A649 /* crypt */ = {
-			isa = PBXGroup;
-			children = (
-				DBB4A40223A7E5FE00B3A649 /* aes */,
-				DBB4A3FF23A7E5C300B3A649 /* pgp */,
-				DBB4A3FD23A7E5BF00B3A649 /* CryptoPlugin.swift */,
-			);
-			name = crypt;
-			sourceTree = "<group>";
-		};
-		DBB4A3FF23A7E5C300B3A649 /* pgp */ = {
-			isa = PBXGroup;
-			children = (
-				DBB4BD0923D0590100F6E6B7 /* symmetric */,
-				DBB4A40023A7E5E000B3A649 /* Pgp.swift */,
-				DB2F2AA423B4EA2A0064E88E /* PgpApi.swift */,
-				DBB4BD1023D0623D00F6E6B7 /* PgpUtil.swift */,
-			);
-			name = pgp;
-			sourceTree = "<group>";
-		};
-		DBB4A40223A7E5FE00B3A649 /* aes */ = {
-			isa = PBXGroup;
-			children = (
-				DBB4A40323A7E61000B3A649 /* Aes.swift */,
-			);
-			name = aes;
-			sourceTree = "<group>";
-		};
-		DBB4BD0923D0590100F6E6B7 /* symmetric */ = {
-			isa = PBXGroup;
-			children = (
-				DBB4BD0E23D0593F00F6E6B7 /* SymmetricPgp.swift */,
-			);
-			name = symmetric;
 			sourceTree = "<group>";
 		};
 		DBEB4DF523E081F200E957F6 /* AppShareExtension */ = {
@@ -316,7 +266,7 @@
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = K6298N65JA;
+						DevelopmentTeam = J7AW6VHJK4;
 						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -327,7 +277,7 @@
 					};
 					DBEB4DF323E081F200E957F6 = {
 						CreatedOnToolsVersion = 11.3;
-						DevelopmentTeam = K6298N65JA;
+						DevelopmentTeam = J7AW6VHJK4;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -465,14 +415,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBB4A3FE23A7E5BF00B3A649 /* CryptoPlugin.swift in Sources */,
-				DBB4BD0F23D0593F00F6E6B7 /* SymmetricPgp.swift in Sources */,
-				DBB4A40423A7E61000B3A649 /* Aes.swift in Sources */,
-				DB2F2AA523B4EA2A0064E88E /* PgpApi.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
-				DBB4BD1123D0623D00F6E6B7 /* PgpUtil.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
-				DBB4A40123A7E5E000B3A649 /* Pgp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,7 +508,50 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FMDB/FMDB.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore/FirebaseCore.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstallations/FirebaseInstallations.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstanceID/FirebaseInstanceID.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleDataTransport/GoogleDataTransport.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleDataTransportCCTSupport/GoogleDataTransportCCTSupport.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities/GoogleUtilities.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC/FBLPromises.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Reachability/Reachability.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift/RxSwift.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/connectivity/connectivity.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/crypto_stream/crypto_stream.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/file_picker/file_picker.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/firebase_crashlytics/firebase_crashlytics.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/flutter_plugin_android_lifecycle/flutter_plugin_android_lifecycle.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/flutter_secure_storage/flutter_secure_storage.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb/nanopb.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/open_file/open_file.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/package_info/package_info.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/path_provider/path_provider.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/permission_handler/permission_handler.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/receive_sharing/receive_sharing.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/share_extend/share_extend.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/shared_preferences/shared_preferences.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/sqflite/sqflite.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/url_launcher/url_launcher.framework/Headers\"",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/Firebase\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCoreDiagnosticsInterop\"",
+					"\"${PODS_ROOT}/Headers/Public/OpenSSL-Universal\"",
+					"$(inherited)",
+					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
+					"\"${PODS_TARGET_SRCROOT}/Sources/FBLPromises/include\"",
+					dist/frameworks/JRE.framework/Headers,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/OpenSSL-Universal/ios/lib\"",
+					dist/lib,
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -656,7 +643,50 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FMDB/FMDB.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore/FirebaseCore.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstallations/FirebaseInstallations.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstanceID/FirebaseInstanceID.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleDataTransport/GoogleDataTransport.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleDataTransportCCTSupport/GoogleDataTransportCCTSupport.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities/GoogleUtilities.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC/FBLPromises.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Reachability/Reachability.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift/RxSwift.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/connectivity/connectivity.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/crypto_stream/crypto_stream.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/file_picker/file_picker.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/firebase_crashlytics/firebase_crashlytics.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/flutter_plugin_android_lifecycle/flutter_plugin_android_lifecycle.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/flutter_secure_storage/flutter_secure_storage.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb/nanopb.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/open_file/open_file.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/package_info/package_info.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/path_provider/path_provider.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/permission_handler/permission_handler.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/receive_sharing/receive_sharing.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/share_extend/share_extend.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/shared_preferences/shared_preferences.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/sqflite/sqflite.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/url_launcher/url_launcher.framework/Headers\"",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/Firebase\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCoreDiagnosticsInterop\"",
+					"\"${PODS_ROOT}/Headers/Public/OpenSSL-Universal\"",
+					"$(inherited)",
+					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
+					"\"${PODS_TARGET_SRCROOT}/Sources/FBLPromises/include\"",
+					dist/frameworks/JRE.framework/Headers,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/OpenSSL-Universal/ios/lib\"",
+					dist/lib,
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -707,7 +737,50 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FMDB/FMDB.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore/FirebaseCore.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstallations/FirebaseInstallations.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstanceID/FirebaseInstanceID.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleDataTransport/GoogleDataTransport.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleDataTransportCCTSupport/GoogleDataTransportCCTSupport.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities/GoogleUtilities.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC/FBLPromises.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Reachability/Reachability.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift/RxSwift.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/connectivity/connectivity.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/crypto_stream/crypto_stream.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/file_picker/file_picker.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/firebase_crashlytics/firebase_crashlytics.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/flutter_plugin_android_lifecycle/flutter_plugin_android_lifecycle.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/flutter_secure_storage/flutter_secure_storage.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb/nanopb.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/open_file/open_file.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/package_info/package_info.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/path_provider/path_provider.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/permission_handler/permission_handler.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/receive_sharing/receive_sharing.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/share_extend/share_extend.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/shared_preferences/shared_preferences.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/sqflite/sqflite.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/url_launcher/url_launcher.framework/Headers\"",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/Firebase\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCoreDiagnosticsInterop\"",
+					"\"${PODS_ROOT}/Headers/Public/OpenSSL-Universal\"",
+					"$(inherited)",
+					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
+					"\"${PODS_TARGET_SRCROOT}/Sources/FBLPromises/include\"",
+					dist/frameworks/JRE.framework/Headers,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/OpenSSL-Universal/ios/lib\"",
+					dist/lib,
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

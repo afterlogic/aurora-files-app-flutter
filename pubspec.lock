@@ -746,7 +746,7 @@ packages:
   secure_sharing:
     dependency: "direct main"
     description:
-      path: "module\\secure_sharing\\secure_sharing"
+      path: "module/secure_sharing/secure_sharing"
       relative: true
     source: path
     version: "0.0.1"
@@ -898,7 +898,7 @@ packages:
   theme:
     dependency: "direct main"
     description:
-      path: "build_res\\afterlogic\\theme"
+      path: "build_res/afterlogic/theme"
       relative: true
     source: path
     version: "0.0.1"

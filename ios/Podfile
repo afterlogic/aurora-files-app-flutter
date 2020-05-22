@@ -37,9 +37,6 @@ target 'Runner' do
   use_modular_headers!
   
   # Flutter Pod
-  pod 'DMSOpenPGP', '0.1.4'
-  pod 'BouncyCastle-ObjC', '0.1.1'
-  pod 'RxSwift', '4'
   pod 'Fabric', '~> 1.10.2'
   pod 'Crashlytics', '~> 3.14.0'
   pod 'Firebase/Analytics'

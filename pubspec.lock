@@ -746,14 +746,14 @@ packages:
   secure_sharing:
     dependency: "direct main"
     description:
-      path: "module/secure_sharing/secure_sharing"
+      path: "module\\secure_sharing\\secure_sharing"
       relative: true
     source: path
     version: "0.0.1"
   secure_sharing_impl:
     dependency: "direct main"
     description:
-      path: "module/secure_sharing/secure_sharing_impl"
+      path: "module\\secure_sharing\\secure_sharing_impl"
       relative: true
     source: path
     version: "0.0.1"
@@ -905,7 +905,7 @@ packages:
   theme:
     dependency: "direct main"
     description:
-      path: "build_res/private_mail/theme"
+      path: "build_res\\private_mail\\theme"
       relative: true
     source: path
     version: "0.0.1"

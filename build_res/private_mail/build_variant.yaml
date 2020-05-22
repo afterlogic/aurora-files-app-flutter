@@ -16,5 +16,5 @@ useMainLogo: true
 pgpEnable: true
 secureSharingEnable: true
 canUpgradePlan: true
-
-_version: "10.2.0"
+#todo before changed version 10.2.0, will
+_version: "2.1.0"

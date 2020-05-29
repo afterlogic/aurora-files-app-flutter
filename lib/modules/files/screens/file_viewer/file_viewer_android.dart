@@ -12,6 +12,7 @@ import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/share_to_email_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
@@ -405,6 +406,16 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ),
                 ]
               : [
+                  IconButton(
+                    icon: Icon(Icons.screen_share),
+                    onPressed: () => AMDialog.show(
+                      context: context,
+                      builder: (_) => ShareToEmailDialog(
+                        _fileViewerState,
+                        _file,
+                      ),
+                    ),
+                  ),
                   if (BuildProperty.secureSharingEnable)
                     IconButton(
                       icon: AssetIcon(

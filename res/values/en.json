@@ -216,5 +216,6 @@
   "btn_encryption_enable": "Enable Paranoid Encryption",
   "label_encryption_mode": "Encrypt uploaded files",
   "btn_encryption_save": "Save",
-  "label_encryption_password_for_pgp_key": "Required password for PGP key"
+  "label_encryption_password_for_pgp_key": "Required password for PGP key",
+  "btn_share_save": "Save"
 }

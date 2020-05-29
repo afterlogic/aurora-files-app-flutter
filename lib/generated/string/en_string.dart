@@ -267,4 +267,5 @@ class EnString extends S {
   final String btn_encryption_save = "Save";
   final String label_encryption_password_for_pgp_key =
       "Required password for PGP key";
+  final String btn_share_save = "Save";
 }

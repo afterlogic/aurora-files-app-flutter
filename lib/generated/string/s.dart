@@ -224,4 +224,5 @@ abstract class S {
   String get label_encryption_mode;
   String get btn_encryption_save;
   String get label_encryption_password_for_pgp_key;
+  String get btn_share_save;
 }

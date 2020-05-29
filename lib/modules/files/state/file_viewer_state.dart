@@ -191,4 +191,13 @@ abstract class _FileViewerState with Store {
         onSuccess: onSuccess,
         onError: onError);
   }
+
+  Future<List<Recipient>> searchContact(String pattern) async {
+    return _mailApi.searchContact(pattern);
+  }
+
+  Future<void> shareFileToContact(
+      LocalFile localFile, Set<String> canEdit, Set<String> canSee) async {
+    return _mailApi.shareFileToContact(localFile, canEdit, canSee);
+  }
 }

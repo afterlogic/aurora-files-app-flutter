@@ -50,10 +50,13 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
     return (delete(pgpKey)..where((item) => item.id.equals(key.id))).go();
   }
 
-  Future<bool> checkHasKey(String email) {
-    return (select(pgpKey)..where((item) => item.email.equals(email)))
-        .get()
-        .then((i) => i.isNotEmpty);
+  Future<bool> checkHasKey(String email, [bool isPrivate]) {
+    final query = select(pgpKey);
+    query..where((item) => item.email.equals(email));
+    if (isPrivate != null) {
+      query..where((item) => item.isPrivate.equals(isPrivate));
+    }
+    return query.get().then((i) => i.isNotEmpty);
   }
 
   Future deleteByEmails(List<String> emails) {
@@ -87,5 +90,9 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
     }
     return key?.copyWith(
         key: await secureStorage.getKey(key.email + key.isPrivate.toString()));
+  }
+
+  void clear() {
+    delete(pgpKey).go();
   }
 }

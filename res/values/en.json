@@ -62,7 +62,6 @@
   "already_have_keys": "Keys which are already in the system are greyed out.",
   "import_selected_keys": "Import selected keys",
   "check_keys": "Check keys",
-  "import_keys": "Import keys",
   "all_public_keys": "All public keys",
   "send_all": "Send all",
   "download_all": "Download all",
@@ -217,5 +216,13 @@
   "label_encryption_mode": "Encrypt uploaded files",
   "btn_encryption_save": "Save",
   "label_encryption_password_for_pgp_key": "Required password for PGP key",
-  "btn_share_save": "Save"
+  "btn_share_save": "Save",
+  "label_pgp_import_key": "Import keys",
+  "hint_pgp_already_have_keys": "Keys which are already in the system are greyed out.",
+  "hint_pgp_your_keys": "Your keys",
+  "hint_pgp_keys_will_be_import_to_contacts": "This keys will be import to contacts",
+  "btn_pgp_import_selected_key": "Import selected keys",
+  "label_pgp_contact_public_keys": "Contact public keys",
+  "error_pgp_required_key": "Required pgp key for $user",
+  "btn_share_to_email": "Share to email"
 }

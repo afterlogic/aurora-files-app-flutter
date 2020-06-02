@@ -64,6 +64,7 @@ class AuthLocalStorage {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.remove("userId");
   }
+
   Future<String> getFriendlyName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("friendlyName");
@@ -72,5 +73,15 @@ class AuthLocalStorage {
   Future<bool> setFriendlyName(String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString("friendlyName", value);
+  }
+
+  Future setIdentity(List<String> identity) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setStringList("identity", identity);
+  }
+
+  Future<List<String>> getIdentity() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList("identity");
   }
 }

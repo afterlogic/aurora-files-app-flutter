@@ -909,7 +909,7 @@ class ComposeTypeAheadFieldState<T> extends State<ComposeTypeAheadField<T>>
           link: this._layerLink,
           showWhenUnlinked: false,
           offset: Offset(
-              widget.suggestionsBoxHorizontalOffset ?? 0.0,
+              0 ?? 0.0,
               _suggestionsBox.direction == AxisDirection.down
                   ? _suggestionsBox.textBoxHeight +
                       widget.suggestionsBoxVerticalOffset

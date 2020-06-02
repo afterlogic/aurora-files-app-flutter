@@ -75,8 +75,8 @@ class PgpKeyUtil {
     return pgpKeyDao.checkHasKeys(keys);
   }
 
-  Future<bool> checkHasKey(String email) {
-    return pgpKeyDao.checkHasKey(email);
+  Future<bool> checkHasKey(String email, [bool isPrivate]) {
+    return pgpKeyDao.checkHasKey(email, isPrivate);
   }
 
   Future deleteByEmail(List<String> emails) {
@@ -140,7 +140,7 @@ class PgpKeyUtil {
   }
 
   Future<bool> checkPrivateKey(String password, String pgpKey) {
-    return pgp.checkKeyPassword(pgpKey,password);
+    return pgp.checkKeyPassword(pgpKey, password);
   }
 
   Future<String> userEncrypt(String string) async {
@@ -151,16 +151,28 @@ class PgpKeyUtil {
     );
   }
 
-  Future<String> userDecrypt(String string, String password) async {
-    final publicKey = (await userPrivateKey()).key;
+  Future<String> encrypt(String string, List<String> keys) async {
     return pgp.bufferPlatformSink(
       string,
-      pgp.decrypt(publicKey, [], password),
+      pgp.encrypt(null, keys, null),
     );
   }
 
+  Future<String> userDecrypt(String string, String password) async {
+    final publicKey = (await userPrivateKey()).key;
+    final decrypted = await pgp.bufferPlatformSink(
+      string,
+      pgp.decrypt(publicKey, [], password),
+    );
+    if (decrypted.endsWith("�")) {
+      return decrypted.substring(0, decrypted.length - 1);
+    } else {
+      return decrypted;
+    }
+  }
+
   Future<bool> hasUserKey() async {
-    return (await userPrivateKey()) != null && (await userPublicKey()) != null;
+    return (await userPrivateKey()) != null;
   }
 
   static const pgpKeyPath = "/pgp_keys";

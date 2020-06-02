@@ -69,7 +69,6 @@ abstract class S {
   String get already_have_keys;
   String get import_selected_keys;
   String get check_keys;
-  String get import_keys;
   String get all_public_keys;
   String get send_all;
   String get download_all;
@@ -225,4 +224,12 @@ abstract class S {
   String get btn_encryption_save;
   String get label_encryption_password_for_pgp_key;
   String get btn_share_save;
+  String get label_pgp_import_key;
+  String get hint_pgp_already_have_keys;
+  String get hint_pgp_your_keys;
+  String get hint_pgp_keys_will_be_import_to_contacts;
+  String get btn_pgp_import_selected_key;
+  String get label_pgp_contact_public_keys;
+  String error_pgp_required_key(String user);
+  String get btn_share_to_email;
 }

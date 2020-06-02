@@ -80,7 +80,6 @@ class EnString extends S {
       "Keys which are already in the system are greyed out.";
   final String import_selected_keys = "Import selected keys";
   final String check_keys = "Check keys";
-  final String import_keys = "Import keys";
   final String all_public_keys = "All public keys";
   final String send_all = "Send all";
   final String download_all = "Download all";
@@ -268,4 +267,14 @@ class EnString extends S {
   final String label_encryption_password_for_pgp_key =
       "Required password for PGP key";
   final String btn_share_save = "Save";
+  final String label_pgp_import_key = "Import keys";
+  final String hint_pgp_already_have_keys =
+      "Keys which are already in the system are greyed out.";
+  final String hint_pgp_your_keys = "Your keys";
+  final String hint_pgp_keys_will_be_import_to_contacts =
+      "This keys will be import to contacts";
+  final String btn_pgp_import_selected_key = "Import selected keys";
+  final String label_pgp_contact_public_keys = "Contact public keys";
+  String error_pgp_required_key(String user) => "Required pgp key for $user";
+  final String btn_share_to_email = "Share to email";
 }

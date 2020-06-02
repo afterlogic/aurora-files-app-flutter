@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:math';
-
+import 'package:aurorafiles/modules/settings/repository/pgp_key_api.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
@@ -23,6 +23,7 @@ class SelectRecipient extends StatefulWidget {
 
 class _SelectRecipientState extends State<SelectRecipient> {
   final PgpKeyDao _pgpKeyDao = DI.get();
+  final pgpApi = PgpKeyApi();
   S s;
   bool hasError = false;
   List<RecipientWithKey> recipients = [];
@@ -57,6 +58,8 @@ class _SelectRecipientState extends State<SelectRecipient> {
 
   loadKeys() async {
     final localKeys = await _pgpKeyDao.getPublicKeys();
+    final userKey = await pgpApi.getKeyFromContacts();
+    localKeys.addAll(userKey);
     keys = Map.fromEntries(
       localKeys.map(
         (item) => MapEntry(item.email, item),

@@ -148,6 +148,15 @@ abstract class _FilesState with Store {
     quota = response.quota;
   }
 
+  Future<LocalFile> getFileFromServer(LocalFile file) {
+    return _filesApi.getFiles(file.type, file.path, file.name).then(
+          (value) => value.items.firstWhere(
+            (element) => element.name == file.name,
+            orElse: () => null,
+          ),
+        );
+  }
+
   onUploadShared(List<SharedMediaFile> files) {
     isShareUpload = true;
     filesToShareUpload = files;
@@ -239,6 +248,17 @@ abstract class _FilesState with Store {
     }
   }
 
+  Future addDecryptedKey(
+      BuildContext context, LocalFile file, List<String> contactKey) async {
+    final password = await KeyRequestDialog.show(context);
+    if (password == null) {
+      throw "";
+    }
+    final key = (await PgpKeyUtil.instance
+        .userDecrypt(file.encryptedDecryptionKey, password));
+    return _filesApi.updateExtendedProps(file, key, contactKey);
+  }
+
   Future onGetPublicLink({
     @required String name,
     @required int size,
@@ -321,7 +341,7 @@ abstract class _FilesState with Store {
   }
 
   Future<void> onUploadFile(
-   Future<bool> Function(File) onSelect, {
+    Future<bool> Function(File) onSelect, {
     @required String path,
     @required Function(ProcessingFile) onUploadStart,
     @required Function() onSuccess,
@@ -329,7 +349,7 @@ abstract class _FilesState with Store {
   }) async {
     File file = await _filesLocal.pickFiles();
     if (file == null) return;
-    final shouldEncrypt =await onSelect(file);
+    final shouldEncrypt = await onSelect(file);
     if (shouldEncrypt == null) return;
     return uploadFile(
       file: file,
@@ -351,6 +371,7 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
     String encryptionRecipientEmail,
     bool passwordEncryption,
+    List<LocalPgpKey> addedPgpKey,
   }) async {
     final fileName = name ?? FileUtils.getFileNameFromPath(file.path);
     final localFile = new LocalFile(
@@ -400,6 +421,7 @@ abstract class _FilesState with Store {
         storageType: selectedStorage.type,
         path: path,
         encryptionRecipientEmail: encryptionRecipientEmail,
+        addedPgpKey: addedPgpKey,
         onSuccess: () {
           deleteFromProcessing(processingFile.guid);
           onSuccess();
@@ -501,6 +523,7 @@ abstract class _FilesState with Store {
       }
     } catch (err, s) {
       onError(err.toString());
+      deleteFromProcessing(file.guid);
     }
   }
 

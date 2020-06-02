@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +11,15 @@ class EmailsInput extends StatefulWidget {
   final Future<List<Recipient>> Function(String pattern) searchContact;
   final Set<String> emails;
   final bool enable;
+  final Set<String> pgpKeys;
 
-  EmailsInput(this.searchContact, this.emails, this.enable, Key key)
-      : super(key: key);
+  EmailsInput(
+    this.searchContact,
+    this.emails,
+    this.enable,
+    Key key,
+    this.pgpKeys,
+  ) : super(key: key);
 
   @override
   EmailsInputState createState() => EmailsInputState();
@@ -65,7 +72,7 @@ class EmailsInputState extends State<EmailsInput> {
   @override
   void dispose() {
     super.dispose();
-    debounce.cancel();
+    debounce?.cancel();
     focusNode.removeListener(focusListener);
     focusNode.dispose();
   }
@@ -149,7 +156,10 @@ class EmailsInputState extends State<EmailsInput> {
             ],
           ),
         ),
-        if ((contact.pgpPublicKey?.length ?? 0) > 5) Icon(Icons.vpn_key),
+        if (widget.pgpKeys.contains(contact.email)) Icon(Icons.vpn_key),
+        SizedBox(
+          width: 10,
+        )
       ],
     );
   }

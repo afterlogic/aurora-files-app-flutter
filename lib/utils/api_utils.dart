@@ -210,7 +210,7 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
     lastModified: rawFile["LastModified"],
     contentType: rawFile["ContentType"],
     oEmbedHtml: rawFile["OembedHtml"],
-    published: publicLink != null || rawFile["Published"],
+    published: publicLink != null || rawFile["Published"]==true,
     owner: rawFile["Owner"],
     content: rawFile["Content"],
     isExternal: rawFile["IsExternal"],

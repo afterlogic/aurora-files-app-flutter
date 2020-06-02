@@ -406,16 +406,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ),
                 ]
               : [
-                  IconButton(
-                    icon: Icon(Icons.screen_share),
-                    onPressed: () => AMDialog.show(
-                      context: context,
-                      builder: (_) => ShareToEmailDialog(
-                        _fileViewerState,
-                        _file,
-                      ),
-                    ),
-                  ),
                   if (BuildProperty.secureSharingEnable)
                     IconButton(
                       icon: AssetIcon(
@@ -425,18 +415,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                       tooltip: s.secure_sharing,
                       onPressed: _secureSharing,
                     ),
-                  IconButton(
-                    icon: Icon(MdiIcons.fileMove),
-                    tooltip: s.copy_or_move,
-                    onPressed: _moveFile,
-                  ),
-                  IconButton(
-                    icon: Icon(PlatformOverride.isIOS
-                        ? MdiIcons.exportVariant
-                        : Icons.share),
-                    tooltip: s.share,
-                    onPressed: () => _prepareShareFile(_shareFile),
-                  ),
                   if (_file.downloadUrl != null && !PlatformOverride.isIOS)
                     IconButton(
                       icon: Icon(Icons.file_download),
@@ -444,14 +422,55 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                       onPressed: _downloadFile,
                     ),
                   IconButton(
-                    icon: Icon(Icons.edit),
-                    tooltip: s.rename,
-                    onPressed: _renameFile,
-                  ),
-                  IconButton(
                     icon: Icon(Icons.delete_outline),
                     tooltip: s.delete_file,
                     onPressed: _deleteFile,
+                  ),
+                  PopupMenuButton<Function>(
+                    onSelected: (fn) => fn(),
+                    itemBuilder: (BuildContext context) => [
+                      PopupMenuItem(
+                        value: () => _prepareShareFile(_shareFile),
+                        child: ListTile(
+                          leading: Icon(PlatformOverride.isIOS
+                              ? MdiIcons.exportVariant
+                              : Icons.share),
+                          title: Text(s.share),
+                        ),
+                      ),
+                      if (_file.type != "shared")
+                        PopupMenuItem(
+                          value: () => AMDialog.show(
+                            context: context,
+                            builder: (_) => ShareToEmailDialog(
+                              _fileViewerState,
+                              _file,
+                              widget.filesState,
+                              context,
+                            ),
+                          ),
+                          child: ListTile(
+                            leading: SizedBox(
+                              width: theme.iconTheme.size,
+                            ),
+                            title: Text(s.btn_share_to_email),
+                          ),
+                        ),
+                      PopupMenuItem(
+                        value: _moveFile,
+                        child: ListTile(
+                          leading: Icon(MdiIcons.fileMove),
+                          title: Text(s.copy_or_move),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: _renameFile,
+                        child: ListTile(
+                          leading: Icon(Icons.edit),
+                          title: Text(s.rename),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
         ),

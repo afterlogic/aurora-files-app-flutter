@@ -87,13 +87,14 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
                       SizedBox(
                         height: 8,
                       ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: AMButton(
-                        child: Text(s.delete),
-                        onPressed: delete,
+                    if (widget._pgpKey.id != null)
+                      SizedBox(
+                        width: double.infinity,
+                        child: AMButton(
+                          child: Text(s.delete),
+                          onPressed: delete,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),

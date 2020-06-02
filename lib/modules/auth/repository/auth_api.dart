@@ -74,4 +74,43 @@ class AuthApi {
       throw CustomException(getErrMsg(resBody));
     }
   }
+
+  Future<List<String>> getIdentity() async {
+    final emails = <String>[];
+
+    try {
+      final body = new ApiBody(
+        module: "Mail",
+        method: "GetIdentities",
+      );
+
+      final res = await sendRequest(body);
+
+      if (res["Result"] is List) {
+        res["Result"].forEach((e) {
+          emails.add(e["Email"]);
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    try {
+      final body = new ApiBody(
+        module: "CpanelIntegrator",
+        method: "GetAliases",
+      );
+
+      final res = await sendRequest(body);
+
+      if (res["Result"] is Map) {
+        res["Result"]["ObjAliases"].forEach((e) {
+          emails.add(e["Email"]);
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+    return emails;
+  }
 }

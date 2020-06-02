@@ -1,18 +1,31 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:aurora_ui_kit/components/dialogs/am_dialog.dart';
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/components/emails_input.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
+import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_api.dart';
 import 'package:flutter/material.dart';
 
 class ShareToEmailDialog extends StatefulWidget {
+  final BuildContext context;
   final FileViewerState fileViewerState;
   final LocalFile file;
+  final FilesState filesState;
 
-  ShareToEmailDialog(this.fileViewerState, this.file);
+  ShareToEmailDialog(
+    this.fileViewerState,
+    this.file,
+    this.filesState,
+    this.context,
+  );
 
   @override
   _ShareToEmailDialogState createState() => _ShareToEmailDialogState();
@@ -26,23 +39,50 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   final btnFocus = FocusNode();
   final canSeeKey = GlobalKey<EmailsInputState>();
   final canEditKey = GlobalKey<EmailsInputState>();
+  final PgpKeyDao _pgpKeyDao = DI.get();
+  final _pgpKeyApi = PgpKeyApi();
+  final Set<LocalPgpKey> pgpKeys = {};
+  Set<String> pgpKeysEmail = {};
+  String error;
 
   Future<List<Recipient>> searchContact(String pattern) {
     return widget.fileViewerState.searchContact(pattern.replaceAll(" ", ""));
   }
 
   share() async {
+    error = null;
     canSeeKey.currentState.addEmail();
     canEditKey.currentState.addEmail();
+    canEdit.forEach((element) => canSee.remove(element));
+    final addedPgpKey = <String>[];
+    if (widget.file.encryptedDecryptionKey != null) {
+      for (var email in [...canSee, ...canEdit]) {
+        final key = pgpKeys.firstWhere((element) => element.email == email,
+            orElse: () => null);
+        if (key != null) {
+          addedPgpKey.add(key.key);
+        } else {
+          error = s.error_pgp_required_key(email);
+          setState(() {});
+          return;
+        }
+      }
+    }
+    progress = true;
+    setState(() {});
     try {
-      canEdit.forEach((element) => canSee.remove(element));
-      progress = true;
-      setState(() {});
+      if (addedPgpKey.isNotEmpty)
+        await widget.filesState
+            .addDecryptedKey(context, widget.file, addedPgpKey);
       await widget.fileViewerState
           .shareFileToContact(widget.file, canEdit, canSee);
       Navigator.pop(context);
-    } catch (e) {}
+    } catch (e) {
+      error = e.toString();
+    }
+
     progress = false;
+    setState(() {});
   }
 
   @override
@@ -51,7 +91,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
     initShares();
   }
 
-  initShares() {
+  initShares() async {
     if (widget.file.extendedProps == null) return;
     final map = json.decode(widget.file.extendedProps);
     if (map["Shares"] != null) {
@@ -63,6 +103,12 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
           canEdit.add(value["PublicId"]);
         }
       }
+    }
+    if (widget.file.encryptedDecryptionKey != null) {
+      pgpKeys.addAll(await _pgpKeyApi.getKeyFromContacts());
+      pgpKeys.addAll(await _pgpKeyDao.getPublicKeys());
+      pgpKeysEmail = pgpKeys.map((e) => e.email).toSet();
+      if (mounted) setState(() {});
     }
   }
 
@@ -81,6 +127,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
               canSee,
               !progress,
               canSeeKey,
+              pgpKeysEmail,
             ),
             SizedBox(height: 20),
             EmailsInput(
@@ -88,7 +135,14 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
               canEdit,
               !progress,
               canEditKey,
+              pgpKeysEmail,
             ),
+            if (error != null) SizedBox(height: 20),
+            if (error != null)
+              Text(
+                error,
+                style: TextStyle(color: Colors.red),
+              ),
           ],
         ),
       ),

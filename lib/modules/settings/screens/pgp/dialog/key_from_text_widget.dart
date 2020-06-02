@@ -29,7 +29,7 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
 
     return AMDialog(
       title: Text(
-        s.import_keys,
+        s.import_key,
         style: theme.textTheme.title,
       ),
       content: SingleChildScrollView(

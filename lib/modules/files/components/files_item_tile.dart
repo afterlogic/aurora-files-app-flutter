@@ -39,7 +39,7 @@ class SelectableFilesItemTile extends StatelessWidget {
   Widget _buildSelectionOverlay(BuildContext context) {
     final thumbnailSize = Provider.of<FilesState>(context).filesTileLeadingSize;
     return Container(
-      color: Theme.of(context).selectedRowColor,
+      color: Theme.of(context).selectedRowColor.withOpacity(0.5),
       child: Column(
         children: <Widget>[
           SizedBox(height: 6.0),

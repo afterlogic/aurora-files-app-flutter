@@ -9,9 +9,11 @@ class KeyRequestDialog extends StatefulWidget {
   }
 
   static Future<String> show(BuildContext context) {
-    return AMDialog.show(
+    return showDialog(
       context: context,
-      builder: (context) => KeyRequestDialog(),
+      builder: (context) {
+        return KeyRequestDialog();
+      },
     );
   }
 }

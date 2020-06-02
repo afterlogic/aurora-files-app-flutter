@@ -60,4 +60,4 @@ autodiscover_url: ""
 pgpEnable: false
 secureSharingEnable: false
 canUpgradePlan: false
-
+legacyPgpKey: false

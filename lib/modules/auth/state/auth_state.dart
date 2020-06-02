@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
@@ -67,9 +69,19 @@ abstract class _AuthState with Store {
 
   Future successLogin() {
     return Future.wait([
+      setIdentity(),
       setAccount(),
       AppStore.settingsState.updateSettings(),
     ]);
+  }
+
+  Future setIdentity() async {
+    final identity = await _authApi.getIdentity();
+    await _authLocal.setIdentity(identity);
+  }
+
+  Future<List<String>> getIdentity() {
+    return _authLocal.getIdentity();
   }
 
   Future setAccount() async {
@@ -141,6 +153,8 @@ abstract class _AuthState with Store {
     AppStore.filesState.currentStorages = new List();
     _authLocal.deleteTokenFromStorage();
     _authLocal.deleteUserIdFromStorage();
+    PgpKeyDao pgpKeyDao = DI.instance.get();
+    pgpKeyDao.clear();
     authToken = null;
     userId = null;
   }

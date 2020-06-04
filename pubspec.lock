@@ -279,7 +279,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.3+2"
+    version: "1.4.3+2"
   filesize:
     dependency: "direct main"
     description:
@@ -339,13 +339,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  flutter_plugin_android_lifecycle:
-    dependency: transitive
-    description:
-      name: flutter_plugin_android_lifecycle
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.7"
   flutter_secure_storage:
     dependency: "direct main"
     description:

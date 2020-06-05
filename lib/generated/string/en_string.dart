@@ -277,4 +277,7 @@ class EnString extends S {
   final String label_pgp_contact_public_keys = "Contact public keys";
   String error_pgp_required_key(String user) => "Required pgp key for $user";
   final String btn_share_to_email = "Share to email";
+  final String hint_pgp_share_warning =
+      "You are going to share you private PGP key. The key must be kept from the 3-thd party. Do you want to continue?";
+  final String label_pgp_share_warning = "Warning";
 }

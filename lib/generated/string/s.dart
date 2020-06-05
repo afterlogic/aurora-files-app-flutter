@@ -232,4 +232,6 @@ abstract class S {
   String get label_pgp_contact_public_keys;
   String error_pgp_required_key(String user);
   String get btn_share_to_email;
+  String get hint_pgp_share_warning;
+  String get label_pgp_share_warning;
 }

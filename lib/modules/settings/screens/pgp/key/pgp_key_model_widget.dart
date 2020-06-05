@@ -105,11 +105,35 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
     );
   }
 
-  share() {
+  share() async {
+    if (widget._pgpKey.isPrivate) {
+      final result = await AMConfirmationDialog.show(
+        context,
+        s.label_pgp_share_warning,
+        s.hint_pgp_share_warning,
+        s.share,
+        s.cancel,
+      );
+      if (result != true) {
+        return;
+      }
+    }
     ShareExtend.share(widget._pgpKey.key, "text");
   }
 
   download() async {
+    if (widget._pgpKey.isPrivate) {
+      final result = await AMConfirmationDialog.show(
+        context,
+        s.label_pgp_share_warning,
+        s.hint_pgp_share_warning,
+        s.share,
+        s.cancel,
+      );
+      if (result != true) {
+        return;
+      }
+    }
     final result = await widget._pgpKeyUtil.downloadKey(widget._pgpKey);
 
     showSnack(

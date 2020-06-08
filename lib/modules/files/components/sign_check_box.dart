@@ -56,7 +56,7 @@ class SignCheckBoxState extends State<SignCheckBox> {
             suffix: GestureDetector(
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                child: Icon( Icons.info_outline),
               ),
               onTap: () {
                 _obscure = !_obscure;
@@ -75,7 +75,7 @@ class SignCheckBoxState extends State<SignCheckBox> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child:
-                      Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                      Icon(Icons.info_outline),
                 ),
                 onTap: () {
                   _obscure = !_obscure;

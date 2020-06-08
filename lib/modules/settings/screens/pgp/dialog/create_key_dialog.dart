@@ -62,7 +62,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                       alignLabelWithHint: true,
                       suffix: GestureDetector(
                         child: Icon(
-                          _obscure ? Icons.visibility : Icons.visibility_off,
+                          Icons.info_outline,
                         ),
                         onTap: () {
                           _obscure = !_obscure;

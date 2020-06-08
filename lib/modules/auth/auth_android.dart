@@ -160,7 +160,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
           child: Padding(
             padding: const EdgeInsets.only(top: 16.0),
             child: Icon(
-              _obscureText ? Icons.visibility : Icons.visibility_off,
+              Icons.info_outline,
             ),
           ),
           onTap: () => setState(() => _obscureText = !_obscureText),

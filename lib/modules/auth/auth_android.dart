@@ -169,14 +169,23 @@ class _AuthAndroidState extends State<AuthAndroid> {
     ];
   }
 
+  Widget theme(Widget widget) {
+    if (AppTheme.login != null) {
+      return Theme(
+        data: AppTheme.login,
+        child: widget,
+      );
+    }
+    return widget;
+  }
+
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
     return Provider(
       create: (_) => _authState,
-      child: Theme(
-        data: AppTheme.login,
-        child: Scaffold(
+      child: theme(
+        Scaffold(
           body: MainGradient(
             child: Stack(
               children: <Widget>[
@@ -201,7 +210,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
                         SizedBox(
                           width: double.infinity,
                           child: Observer(
-                            builder: (BuildContext context) => _debugRouteToTwoFactor(
+                            builder: (BuildContext context) =>
+                                _debugRouteToTwoFactor(
                               AMButton(
                                 isLoading: _authState.isLoggingIn,
                                 onPressed: () => _login(context),
@@ -225,7 +235,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
   Widget _debugRouteToTwoFactor(Widget child) {
     if (kDebugMode) {
       return GestureDetector(
-        onLongPress: ()=>Navigator.pushNamed(
+        onLongPress: () => Navigator.pushNamed(
           context,
           UpgradeRoute.name,
         ),

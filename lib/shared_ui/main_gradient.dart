@@ -9,6 +9,7 @@ class MainGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -17,8 +18,16 @@ class MainGradient extends StatelessWidget {
           end: Alignment.bottomLeft,
           stops: [0, 1],
           colors: [
-            _fromHex(BuildProperty.splashGradientTop),
-            _fromHex(BuildProperty.splashGradientBottom),
+            _fromHex(
+              theme.brightness == Brightness.light
+                  ? BuildProperty.splashGradientTop
+                  : BuildProperty.splashGradientTopDark,
+            ),
+            _fromHex(
+              theme.brightness == Brightness.light
+                  ? BuildProperty.splashGradientBottom
+                  : BuildProperty.splashGradientBottomDark,
+            ),
           ],
         ),
       ),

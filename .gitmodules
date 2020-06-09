@@ -1,0 +1,3 @@
+[submodule "aurora-files-app-customs"]
+	path = aurora-files-app-customs
+	url = https://github.com/afterlogic/aurora-files-app-customs

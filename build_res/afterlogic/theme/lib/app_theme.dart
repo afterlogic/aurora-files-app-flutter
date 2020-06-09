@@ -89,7 +89,7 @@ class AppTheme {
     bottomAppBarColor: Colors.black,
   );
 
-  static final login = light;
+  static final login = null;
 
   static final _dialogTheme = DialogTheme(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),

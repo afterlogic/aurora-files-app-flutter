@@ -23,15 +23,24 @@ class _TwoFactorAuthState extends State<TwoFactorAuth> {
   String error = "";
   var isProgress = false;
 
+  Widget themeWidget(Widget widget) {
+    if (AppTheme.login != null) {
+      return Theme(
+        data: AppTheme.login,
+        child: widget,
+      );
+    }
+    return widget;
+  }
+
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
     final theme = Theme.of(context);
     final mq = MediaQuery.of(context);
 
-    return Theme(
-      data: AppTheme.login,
-      child: Scaffold(
+    return themeWidget(
+      Scaffold(
         body: MainGradient(
           child: Stack(
             children: <Widget>[

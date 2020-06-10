@@ -10,14 +10,23 @@ import 'package:theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UpgradeAndroid extends StatelessWidget {
+  Widget themeWidget(Widget widget) {
+    if (AppTheme.login != null) {
+      return Theme(
+        data: AppTheme.login,
+        child: widget,
+      );
+    }
+    return widget;
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = Str.of(context);
     final mq = MediaQuery.of(context);
     final theme = Theme.of(context);
-    return Theme(
-      data: AppTheme.login,
-      child: Scaffold(
+    return themeWidget(
+      Scaffold(
         body: MainGradient(
           child: Stack(
             children: <Widget>[

@@ -6,6 +6,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
+import 'package:aurorafiles/modules/files/dialogs/share_to_email_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -128,6 +129,21 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                         .enableMoveMode(filesToMove: [widget.file]);
                     Navigator.pop(context);
                   },
+                ),
+              if (widget.file.type != "shared")
+                ListTile(
+                  leading: Icon(PlatformOverride.isIOS
+                      ? MdiIcons.exportVariant
+                      : Icons.share),
+                  title: Text(s.btn_share_to_email),
+                  onTap: () => AMDialog.show(
+                    context: context,
+                    builder: (_) => ShareToEmailDialog(
+                      widget.filesState,
+                      widget.file,
+                      context,
+                    ),
+                  ),
                 ),
               if (!widget.file.isFolder)
                 ListTile(

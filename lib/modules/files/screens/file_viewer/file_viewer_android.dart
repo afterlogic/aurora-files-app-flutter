@@ -443,16 +443,15 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           value: () => AMDialog.show(
                             context: context,
                             builder: (_) => ShareToEmailDialog(
-                              _fileViewerState,
-                              _file,
                               widget.filesState,
+                              _file,
                               context,
                             ),
                           ),
                           child: ListTile(
-                            leading: SizedBox(
-                              width: theme.iconTheme.size,
-                            ),
+                            leading: Icon(PlatformOverride.isIOS
+                                ? MdiIcons.exportVariant
+                                : Icons.share),
                             title: Text(s.btn_share_to_email),
                           ),
                         ),

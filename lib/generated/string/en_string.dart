@@ -276,8 +276,10 @@ class EnString extends S {
   final String btn_pgp_import_selected_key = "Import selected keys";
   final String label_pgp_contact_public_keys = "Contact public keys";
   String error_pgp_required_key(String user) => "Required pgp key for $user";
-  final String btn_share_to_email = "Share to email";
+  final String btn_share_to_email = "Share with team";
   final String hint_pgp_share_warning =
       "You are going to share you private PGP key. The key must be kept from the 3-thd party. Do you want to continue?";
   final String label_pgp_share_warning = "Warning";
+  final String hint_share_folder =
+      "Encrypted files will not be available in shared folder.";
 }

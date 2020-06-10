@@ -16,14 +16,12 @@ import 'package:flutter/material.dart';
 
 class ShareToEmailDialog extends StatefulWidget {
   final BuildContext context;
-  final FileViewerState fileViewerState;
+  final FilesState fileState;
   final LocalFile file;
-  final FilesState filesState;
 
   ShareToEmailDialog(
-    this.fileViewerState,
+    this.fileState,
     this.file,
-    this.filesState,
     this.context,
   );
 
@@ -46,7 +44,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   String error;
 
   Future<List<Recipient>> searchContact(String pattern) {
-    return widget.fileViewerState.searchContact(pattern.replaceAll(" ", ""));
+    return widget.fileState.searchContact(pattern.replaceAll(" ", ""));
   }
 
   share() async {
@@ -72,10 +70,9 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
     setState(() {});
     try {
       if (addedPgpKey.isNotEmpty)
-        await widget.filesState
+        await widget.fileState
             .addDecryptedKey(context, widget.file, addedPgpKey);
-      await widget.fileViewerState
-          .shareFileToContact(widget.file, canEdit, canSee);
+      await widget.fileState.shareFileToContact(widget.file, canEdit, canSee);
       Navigator.pop(context);
     } catch (e) {
       error = e.toString();
@@ -137,6 +134,11 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
               canEditKey,
               pgpKeysEmail,
             ),
+            if (widget.file.isFolder) SizedBox(height: 20),
+            if (widget.file.isFolder)
+              Text(
+                s.hint_share_folder,
+              ),
             if (error != null) SizedBox(height: 20),
             if (error != null)
               Text(

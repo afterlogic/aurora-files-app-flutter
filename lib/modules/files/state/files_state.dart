@@ -8,6 +8,7 @@ import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/folder.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
+import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/secure_link.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -719,5 +720,14 @@ abstract class _FilesState with Store {
       await _mailApi.sendMail(
           accountID, sendFolderPath, template.subject, template.body, to);
     }
+  }
+
+  Future<List<Recipient>> searchContact(String pattern) async {
+    return _mailApi.searchContact(pattern);
+  }
+
+  Future<void> shareFileToContact(
+      LocalFile localFile, Set<String> canEdit, Set<String> canSee) async {
+    return _mailApi.shareFileToContact(localFile, canEdit, canSee);
   }
 }

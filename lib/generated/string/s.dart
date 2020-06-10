@@ -234,4 +234,5 @@ abstract class S {
   String get btn_share_to_email;
   String get hint_pgp_share_warning;
   String get label_pgp_share_warning;
+  String get hint_share_folder;
 }

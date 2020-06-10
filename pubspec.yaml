@@ -79,7 +79,9 @@ dependencies:
   theme:
     path: build_res/afterlogic/theme
   aurora_ui_kit:
-    git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
+    git:
+      ref: HEAD
+      url: https://github.com/afterlogic/aurora_ui_kit_flutter.git
   crypto_stream:
     git: https://github.com/afterlogic/flutter_crypto_stream
   receive_sharing:

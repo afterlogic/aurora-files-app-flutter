@@ -1,6 +1,7 @@
 #variables
 appName: "Aurora Files"
 _appId: "com.afterlogic.aurora.files"
+_appIdIos: "com.afterlogic.aurorafiles"
 _iosDeveloperId: "J7AW6VHJK4"
 _appleGroupId: "group.com.afterlogic.aurora"
 

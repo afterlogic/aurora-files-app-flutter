@@ -23,6 +23,7 @@ _buildVariant: "build_res/afterlogic/build_variant.yaml"
 #app
 appName: ""
 _appId: ""
+_appIdIos: "{{_appId}}"
 _iosDeveloperId: ""
 _appleGroupId: ""
 _build: 114

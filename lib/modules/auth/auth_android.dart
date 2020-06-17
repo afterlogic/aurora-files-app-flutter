@@ -84,7 +84,11 @@ class _AuthAndroidState extends State<AuthAndroid> {
           Navigator.pushReplacementNamed(context, FilesRoute.name,
               arguments: FilesScreenArguments(path: ""));
         },
-        onShowUpgrade: () => Navigator.pushNamed(context, UpgradeRoute.name),
+        onShowUpgrade: (message) => Navigator.pushNamed(
+          context,
+          UpgradeRoute.name,
+          arguments: UpgradeArg(message),
+        ),
         onError: (String err) => showSnack(
           context: context,
           scaffoldState: Scaffold.of(context),
@@ -161,7 +165,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
             padding: const EdgeInsets.only(top: 16.0),
             child: Icon(
               _obscureText ? Icons.visibility : Icons.visibility_off,
-
             ),
           ),
           onTap: () => setState(() => _obscureText = !_obscureText),

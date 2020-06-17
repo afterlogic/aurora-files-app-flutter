@@ -38,7 +38,7 @@ class EnString extends S {
   final String dark_theme = "Dark";
   final String light_theme = "Light";
   final String encryption_description =
-      "Files are encrypted/decrypted right on this device, even the server itself cannot get access to non-encrypted content of paranoid-encrypted files. Encryption method is AES256.";
+      "Files are encrypted/decrypted right on this device, even the server itself cannot get access to original content of paranoid-encrypted files. Encryption method is AES256.";
   final String delete_encryption_key_success =
       "The encryption key was successfully deleted.";
   final String delete_key = "Delete key";
@@ -54,7 +54,7 @@ class EnString extends S {
   final String import_key_from_file = "Import key from file";
   final String import_key_from_text = "Import key from text";
   final String need_to_set_encryption_key =
-      "To start using encryption of uploaded files your need to set any encryption key.";
+      "To start using encryption of uploaded files your need to set an encryption key.";
   final String oK = "OK";
   String key_downloaded_into(String dir) => "The key was downloaded into: $dir";
   final String import_key = "Import key";
@@ -65,7 +65,7 @@ class EnString extends S {
   final String import = "Import";
   final String generate = "Generate";
   final String delete_key_description =
-      "Attention! You'll no longer be able to decrypt encrypted files on this device unless you import this key again.";
+      "Warning! You'll no longer be able to decrypt encrypted files on this device unless you import this key again.";
   final String delete = "Delete";
   final String download_key_progress = "Downloading the key...";
   final String download_confirm = "Are you sure you want to download this key?";
@@ -133,9 +133,9 @@ class EnString extends S {
   final String encrypt = "Encrypt";
   final String key_based = "Key based";
   final String password_based = "Password based";
-  final String not_have_recipiens = "Not have recipiens";
+  final String not_have_recipiens = "No recipients specified";
   final String select_recipient = "Select recipient:";
-  final String cant_load_recipients = "Cant load recipients:";
+  final String cant_load_recipients = "Can't load recipients:";
   final String try_again = "Try again";
   final String no_name = "No name";
   String encrypted_using_key(String user) =>
@@ -163,8 +163,7 @@ class EnString extends S {
   final String getting_file_progress = "Getting file for sharing...";
   final String decrypt_error =
       "An error occurred during the decryption process. Perhaps, this file was encrypted with another key.";
-  final String file_is_damaged =
-      "Error happened. Perhaps this file is damaged.";
+  final String file_is_damaged = "Error occured. Perhaps this file is damaged.";
   final String encrypted = "Encrypted";
   final String open_PDF = "Open PDF";
   final String please_wait_until_loading =
@@ -192,7 +191,7 @@ class EnString extends S {
   final String please_enter_email = "Please enter email";
   final String please_enter_password = "Please enter password";
   final String enter_host =
-      "Could not detect domain from this email, please specify your server url manually.";
+      "Could not detect domain from this email, please specify your server URL manually.";
   final String host = "Host";
   final String login = "Login";
   final String encrypted_file_link = "Encrypted file public link:";
@@ -216,17 +215,17 @@ class EnString extends S {
   final String failed = "Failed";
   final String keys_not_found = "Keys not found";
   String sign_with_not_key(String data) =>
-      "$data can’t be signed because the private key has not been added.";
+      "$data can't be signed because the private key has not been added.";
   final String invalid_password = "Invalid password";
   final String sign_email = "Sign the email";
   final String sign_file_email = "Sign the file and email";
   final String data = "data";
   String sign_data_with_not_key(String data) =>
-      "Will not sign the $data because you don’t have pgp private key.";
+      "Will not sign the $data because you don’t have PGP private key.";
   String sign_mail_with_not_key(String data) =>
-      "The $data will not be signed because you don’t have pgp private key.";
+      "The $data will not be signed because you don’t have PGP private key.";
   final String password_sign =
-      "For password-based encryption the pgp-signing is not supported.";
+      "For password-based encryption the PGP-signing is not supported.";
   final String email_signed =
       "The email will be signed using your private key.";
   final String data_signed = "Will sign the data with your private key.";
@@ -234,7 +233,7 @@ class EnString extends S {
   final String protected_public_link = "Protected public link";
   final String send_public_link_to = "Send public link to";
   final String copy_password =
-      "You can send the link via email. The password must be sent using a different channel.\n\nYou will be able to retrieve the password when need.";
+      "You can send the link via email. The password must be sent using a different channel.\n\nYou will be able to retrieve the password when needed.";
   final String copy_encrypted_password =
       "You can send the link via email. The password must be sent using a different channel.\n\n  Store the password somewhere. You will not be able to recover it otherwise.";
   String encrypted_sign_using_key(String user) =>
@@ -250,8 +249,8 @@ class EnString extends S {
   final String login_to_continue = "Log in to continue";
   final String confirm_exit = "Are you sure want to exit";
   final String exit = "Exit";
-  final String error_required_pgp_key = "Required pgp key";
-  final String label_required_pgp_key = "Required pgp key";
+  final String error_required_pgp_key = "Required PGP key";
+  final String label_required_pgp_key = "Required PGP key";
   String hint_upload_encrypt_ask(String name) => "Encrypt '$name'?.";
   final String btn_do_not_encrypt = "Do not encrypt";
   final String label_encryption_always_in_encryption_folder =
@@ -272,14 +271,17 @@ class EnString extends S {
       "Keys which are already in the system are greyed out.";
   final String hint_pgp_your_keys = "Your keys";
   final String hint_pgp_keys_will_be_import_to_contacts =
-      "This keys will be import to contacts";
+      "The keys will be imported to contacts";
   final String btn_pgp_import_selected_key = "Import selected keys";
   final String label_pgp_contact_public_keys = "Contact public keys";
-  String error_pgp_required_key(String user) => "Required pgp key for $user";
+  String error_pgp_required_key(String user) => "Required PGP key for $user";
   final String btn_share_to_email = "Share with team";
   final String hint_pgp_share_warning =
-      "You are going to share you private PGP key. The key must be kept from the 3-thd party. Do you want to continue?";
+      "You are going to share you private PGP key. The key must be kept from the 3rd parties. Do you want to continue?";
   final String label_pgp_share_warning = "Warning";
   final String hint_share_folder =
       "Encrypted files will not be available in shared folder.";
+  final String label_share_with_team = "Share with team";
+  final String input_who_cas_see = "Who can see";
+  final String input_who_cas_edit = "Who can edit";
 }

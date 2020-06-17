@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'compose_type_ahead.dart';
 
 class EmailsInput extends StatefulWidget {
+  final String label;
   final Future<List<Recipient>> Function(String pattern) searchContact;
   final Set<String> emails;
   final bool enable;
@@ -19,6 +20,7 @@ class EmailsInput extends StatefulWidget {
     this.enable,
     Key key,
     this.pgpKeys,
+    this.label,
   ) : super(key: key);
 
   @override
@@ -186,7 +188,7 @@ class EmailsInputState extends State<EmailsInput> {
       onTap: focusNode.requestFocus,
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: "Who can read",
+          labelText: widget.label,
           contentPadding: EdgeInsets.all(8),
           border: OutlineInputBorder(gapPadding: 0),
         ),

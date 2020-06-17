@@ -227,5 +227,7 @@
   "btn_share_to_email": "Share with team",
   "hint_pgp_share_warning": "You are going to share you private PGP key. The key must be kept from the 3rd parties. Do you want to continue?",
   "label_pgp_share_warning": "Warning",
-  "hint_share_folder": "Encrypted files will not be available in shared folder."
+  "hint_share_folder": "Encrypted files will not be available in shared folder.",
+  "input_who_cas_see": "Who can see",
+  "input_who_cas_edit": "Who can edit"
 }

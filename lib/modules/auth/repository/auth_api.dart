@@ -40,7 +40,11 @@ class AuthApi {
     final res = await http.post(AppStore.authState.apiUrl, body: body);
 
     final resBody = json.decode(res.body);
+
     if (resBody['Result'] != null) {
+      if (resBody['Result']["AllowAccess"] != 1) {
+        throw AllowAccess();
+      }
       return resBody;
     }
     if (resBody["ErrorCode"] == accessDenied) {
@@ -121,3 +125,5 @@ class AuthApi {
     return emails;
   }
 }
+
+class AllowAccess extends Error {}

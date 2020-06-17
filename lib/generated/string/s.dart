@@ -235,4 +235,7 @@ abstract class S {
   String get hint_pgp_share_warning;
   String get label_pgp_share_warning;
   String get hint_share_folder;
+  String get label_share_with_team;
+  String get input_who_cas_see;
+  String get input_who_cas_edit;
 }

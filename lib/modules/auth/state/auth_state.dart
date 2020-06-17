@@ -91,9 +91,7 @@ abstract class _AuthState with Store {
         await _authLocal.setFriendlyName(account.first.friendlyName);
         friendlyName = account.first.friendlyName;
       }
-    }catch(e){
-
-    }
+    } catch (e) {}
   }
 
   // returns true the host field needs to be revealed because auto discover was unsuccessful
@@ -101,7 +99,7 @@ abstract class _AuthState with Store {
       {bool isFormValid,
       Function() onSuccess,
       Function() onTwoFactorAuth,
-      Function() onShowUpgrade,
+      Function(String message) onShowUpgrade,
       Function(String) onError}) async {
     if (isFormValid) {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
@@ -136,12 +134,12 @@ abstract class _AuthState with Store {
             host: hostName, token: token, email: email, id: id);
         await successLogin();
         onSuccess();
-      } catch (err,s) {
+      } catch (err, s) {
         isLoggingIn = false;
         if (err is SocketException && err.osError.errorCode == 7) {
           onError("\"$hostName\" is not a valid hostname");
-        } else if (err == accessDenied) {
-          onShowUpgrade();
+        } else if (err is AllowAccess) {
+          onShowUpgrade(null);
         } else {
           onError(err.toString());
         }

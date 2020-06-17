@@ -113,7 +113,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   Widget build(BuildContext context) {
     s = Str.of(context);
     return AMDialog(
-      title: Text(s.share),
+      title: Text(s.btn_share_to_email),
       content: SizedBox(
         width: double.infinity,
         child: Column(
@@ -125,6 +125,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
               !progress,
               canSeeKey,
               pgpKeysEmail,
+              s.input_who_cas_see,
             ),
             SizedBox(height: 20),
             EmailsInput(
@@ -133,6 +134,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
               !progress,
               canEditKey,
               pgpKeysEmail,
+              s.input_who_cas_edit,
             ),
             if (widget.file.isFolder) SizedBox(height: 20),
             if (widget.file.isFolder)

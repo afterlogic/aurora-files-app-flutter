@@ -104,11 +104,13 @@ class AppNavigation {
         break;
 
       case UpgradeRoute.name:
+        final args = settings.arguments as UpgradeArg;
         return FadeRoute(
-            settings: RouteSettings(
-              name: settings.name,
-            ),
-            page: UpgradeAndroid());
+          settings: RouteSettings(
+            name: settings.name,
+          ),
+          page: UpgradeAndroid(args.message),
+        );
         break;
       case TwoFactorAuthRoute.name:
         return FadeRoute(

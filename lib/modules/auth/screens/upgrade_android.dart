@@ -3,13 +3,15 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/auth/component/mail_logo.dart';
 import 'package:aurorafiles/modules/auth/component/presentation_header.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:theme/app_theme.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class UpgradeAndroid extends StatelessWidget {
+  final String message;
+
+  const UpgradeAndroid(this.message);
+
   Widget themeWidget(Widget widget) {
     if (AppTheme.login != null) {
       return Theme(

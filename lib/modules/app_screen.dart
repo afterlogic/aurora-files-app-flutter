@@ -67,6 +67,7 @@ class _AppState extends State<App> {
               builder: (_) {
                 final theme = _getTheme(_settingsState.isDarkTheme);
                 return MaterialApp(
+                  debugShowCheckedModeBanner: false,
                   title: BuildProperty.appName,
                   theme: theme ?? AppTheme.light,
                   darkTheme: theme ?? AppTheme.dark,

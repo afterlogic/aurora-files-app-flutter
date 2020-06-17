@@ -102,15 +102,9 @@ class GeneratedLocalizationsDelegate
     if (locale != null) {
       for (Locale supportedLocale in supportedLocales) {
         // Language must always match both locales.
-        if (supportedLocale.languageCode != locale.languageCode) {
-          continue;
-        }
-
-        // If country code matches, return this locale.
-        if (supportedLocale.countryCode == locale.countryCode) {
+        if (supportedLocale.languageCode == locale.languageCode) {
           return true;
         }
-
         // If no country requirement is requested, check if this locale has no country.
         if (true != withCountry &&
             (supportedLocale.countryCode == null ||

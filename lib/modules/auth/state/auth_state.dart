@@ -85,10 +85,14 @@ abstract class _AuthState with Store {
   }
 
   Future setAccount() async {
-    final account = await _mailApi.getAccounts();
-    if (account.isNotEmpty) {
-      await _authLocal.setFriendlyName(account.first.friendlyName);
-      friendlyName = account.first.friendlyName;
+    try {
+      final account = await _mailApi.getAccounts();
+      if (account.isNotEmpty) {
+        await _authLocal.setFriendlyName(account.first.friendlyName);
+        friendlyName = account.first.friendlyName;
+      }
+    }catch(e){
+
     }
   }
 
@@ -110,9 +114,7 @@ abstract class _AuthState with Store {
       isLoggingIn = true;
       // auto discover domain
       if (hostCtrl.text.isEmpty) {
-        final splitEmail = email.split("@");
-        final domain = splitEmail.last.trim();
-        final autoDiscoveredHost = await _authApi.autoDiscoverHostname(domain);
+        final autoDiscoveredHost = await _authApi.autoDiscoverHostname(email);
         if (autoDiscoveredHost == null || autoDiscoveredHost.isEmpty) {
           isLoggingIn = false;
           return true;
@@ -134,7 +136,7 @@ abstract class _AuthState with Store {
             host: hostName, token: token, email: email, id: id);
         await successLogin();
         onSuccess();
-      } catch (err) {
+      } catch (err,s) {
         isLoggingIn = false;
         if (err is SocketException && err.osError.errorCode == 7) {
           onError("\"$hostName\" is not a valid hostname");

@@ -9,9 +9,16 @@ import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:http/http.dart' as http;
 
 class AuthApi {
-  Future<String> autoDiscoverHostname(String domain) async {
+  Future<String> autoDiscoverHostname(String email) async {
     try {
-      final url = "${BuildProperty.autodiscover_url}?domain=$domain";
+      final dogIndex = email.indexOf("@") + 1;
+
+      final domain = email.substring(dogIndex);
+
+      final url = BuildProperty.autodiscover_url
+          .replaceFirst("{domain}", domain)
+          .replaceFirst("{email}", email);
+
       final res = await http.get(url);
       final resBody = json.decode(res.body);
       return resBody["url"];

@@ -109,7 +109,7 @@ class AppNavigation {
           settings: RouteSettings(
             name: settings.name,
           ),
-          page: UpgradeAndroid(args.message),
+          page: UpgradeAndroid(args?.message),
         );
         break;
       case TwoFactorAuthRoute.name:

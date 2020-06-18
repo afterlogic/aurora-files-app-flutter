@@ -127,15 +127,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
       SizedBox(height: 10),
       AppInput(
         controller: _authState.emailCtrl,
-        prefix: isIOS
-            ? Opacity(
-                opacity: 0.6,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-                  child: Icon(Icons.email),
-                ),
-              )
-            : null,
         keyboardType: TextInputType.emailAddress,
         validator: (value) => validateInput(
             value, [ValidationTypes.empty, ValidationTypes.email]),
@@ -149,17 +140,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
         validator: (value) => validateInput(value, [ValidationTypes.empty]),
         obscureText: _obscureText,
         labelText: s.password,
-        prefix: isIOS
-            ? Opacity(
-                opacity: 0.6,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 12.0, 8.0, 12.0),
-                  child: Icon(
-                    Icons.lock,
-                  ),
-                ),
-              )
-            : null,
         suffix: GestureDetector(
           child: Padding(
             padding: const EdgeInsets.only(top: 16.0),

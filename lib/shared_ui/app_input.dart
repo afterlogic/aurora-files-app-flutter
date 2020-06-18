@@ -32,40 +32,22 @@ class AppInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    if (PlatformOverride.isIOS) {
-      return CupertinoTextField(
-        style: style,
-        cursorColor: theme.accentColor,
-        placeholder: labelText,
-        obscureText: obscureText,
-        controller: controller,
-        autocorrect: keyboardType != null ? false : true,
-        prefix: prefix,
-        decoration: inputCase == InputCase.Underline
-            ? BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.white24)),
-              )
-            : BoxDecoration(),
-        suffix: suffix,
-        keyboardType: keyboardType,
-      );
-    } else {
-      return TextFormField(
-        style: style,
-        validator: validator,
-        keyboardType: keyboardType,
-        cursorColor: theme.accentColor,
-        controller: controller,
-        obscureText: obscureText,
-        autocorrect: keyboardType != null ? false : true,
-        decoration: InputDecoration(
-          alignLabelWithHint: true,
-          labelText: labelText,
-          prefixIcon: prefix,
-          suffixIcon: suffix,
-        ),
-      );
-    }
+
+    return TextFormField(
+      style: style,
+      validator: validator,
+      keyboardType: keyboardType,
+      cursorColor: theme.accentColor,
+      controller: controller,
+      obscureText: obscureText,
+      autocorrect: keyboardType != null ? false : true,
+      decoration: InputDecoration(
+        alignLabelWithHint: true,
+        labelText: labelText,
+        prefixIcon: prefix,
+        suffixIcon: suffix,
+      ),
+    );
   }
 }
 

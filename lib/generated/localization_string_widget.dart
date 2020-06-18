@@ -99,21 +99,7 @@ class GeneratedLocalizationsDelegate
   /// Returns true if the specified locale is supported, false otherwise.
   ///
   bool _isSupported(Locale locale, bool withCountry) {
-    if (locale != null) {
-      for (Locale supportedLocale in supportedLocales) {
-        // Language must always match both locales.
-        if (supportedLocale.languageCode == locale.languageCode) {
-          return true;
-        }
-        // If no country requirement is requested, check if this locale has no country.
-        if (true != withCountry &&
-            (supportedLocale.countryCode == null ||
-                supportedLocale.countryCode.isEmpty)) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return true;
   }
 }
 

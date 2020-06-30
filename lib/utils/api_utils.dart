@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/error/api_error_code.dart';
+import 'package:aurorafiles/http/interceptor.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import 'file_utils.dart';
@@ -21,7 +21,7 @@ Future sendRequest(ApiBody body, [Map<String, dynamic> addedBody]) async {
     map[key] = value;
   });
   final rawResponse =
-      await http.post(authState.apiUrl, headers: getHeader(), body: map);
+      await WebMailApi.request(authState.apiUrl, map, getHeader());
   if (rawResponse.statusCode != 200) {
     return {"ErrorCode": unknownError};
   }
@@ -210,7 +210,7 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
     lastModified: rawFile["LastModified"],
     contentType: rawFile["ContentType"],
     oEmbedHtml: rawFile["OembedHtml"],
-    published: publicLink != null || rawFile["Published"]==true,
+    published: publicLink != null || rawFile["Published"] == true,
     owner: rawFile["Owner"],
     content: rawFile["Content"],
     isExternal: rawFile["IsExternal"],

@@ -2,6 +2,7 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/example_widget/example_widget.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/logger/logger.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
@@ -44,7 +45,8 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             ListTile(
               title: Text(s.encryption),
               leading: AMCircleIcon(MdiIcons.alien),
-              onTap: () => Navigator.pushNamed(context, EncryptionServerRoute.name),
+              onTap: () =>
+                  Navigator.pushNamed(context, EncryptionServerRoute.name),
             ),
             if (BuildProperty.pgpEnable)
               ListTile(
@@ -61,8 +63,12 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             ListTile(
               title: Text(s.about),
               leading: AMCircleIcon(Icons.info_outline),
-              onLongPress: kDebugMode ? () => openExample(context) : null,
               onTap: () => Navigator.pushNamed(context, AboutRoute.name),
+              onLongPress: BuildProperty.logger
+                  ? () {
+                      logger.enable = !logger.enable;
+                    }
+                  : null,
             ),
             ListTile(
               leading: AMCircleIcon(Icons.exit_to_app),

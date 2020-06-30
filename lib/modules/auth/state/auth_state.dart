@@ -29,6 +29,7 @@ abstract class _AuthState with Store {
   String userEmail;
   String friendlyName;
 
+  Future<String> get lastEmail => _authLocal.getLastEmail();
   @observable
   bool isLoggingIn = false;
 
@@ -60,6 +61,8 @@ abstract class _AuthState with Store {
       _authLocal.setTokenToStorage(token),
       _authLocal.setUserEmailToStorage(email),
       _authLocal.setUserIdToStorage(id),
+      _authLocal.setLastHost(host),
+      _authLocal.setLastEmail(email),
     ]);
     hostName = host;
     authToken = token;
@@ -105,21 +108,27 @@ abstract class _AuthState with Store {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
       String email = emailCtrl.text;
       String password = passwordCtrl.text;
-      hostName = hostCtrl.text.startsWith("http")
-          ? hostCtrl.text
-          : "https://${hostCtrl.text}";
+      String host = hostCtrl.text;
 
       isLoggingIn = true;
+      if (host.isEmpty) {
+        if (email == await lastEmail) {
+          host = await _authLocal.getLastHost();
+        }
+      }
+
       // auto discover domain
-      if (hostCtrl.text.isEmpty) {
+      if (host.isEmpty) {
         final autoDiscoveredHost = await _authApi.autoDiscoverHostname(email);
         if (autoDiscoveredHost == null || autoDiscoveredHost.isEmpty) {
           isLoggingIn = false;
           return true;
         } else {
-          hostName = autoDiscoveredHost;
+          host = autoDiscoveredHost;
         }
       }
+
+      host = host.startsWith("http") ? host : "https://$host";
 
       try {
         final Map<String, dynamic> res = await _authApi.login(email, password);
@@ -131,13 +140,13 @@ abstract class _AuthState with Store {
         final String token = res['Result']['AuthToken'];
         final int id = res['AuthenticatedUserId'];
         await _setAuthSharedPrefs(
-            host: hostName, token: token, email: email, id: id);
+            host: host, token: token, email: email, id: id);
         await successLogin();
         onSuccess();
       } catch (err, s) {
         isLoggingIn = false;
         if (err is SocketException && err.osError.errorCode == 7) {
-          onError("\"$hostName\" is not a valid hostname");
+          onError("\"$host\" is not a valid hostname");
         } else if (err is AllowAccess) {
           onShowUpgrade(null);
         } else {

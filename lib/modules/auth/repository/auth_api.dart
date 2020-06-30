@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/error/api_error_code.dart';
+import 'package:aurorafiles/http/interceptor.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -37,7 +38,7 @@ class AuthApi {
       parameters: parameters,
     ).toMap();
 
-    final res = await http.post(AppStore.authState.apiUrl, body: body);
+    final res = await WebMailApi.request(AppStore.authState.apiUrl, body);
 
     final resBody = json.decode(res.body);
 
@@ -72,7 +73,7 @@ class AuthApi {
             parameters: parameters)
         .toMap();
 
-    final res = await http.post(AppStore.authState.apiUrl, body: body);
+    final res = await WebMailApi.request(AppStore.authState.apiUrl, body);
 
     final resBody = json.decode(res.body);
     if (resBody['Result'] != null) {

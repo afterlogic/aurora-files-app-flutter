@@ -50,6 +50,11 @@ class _AuthAndroidState extends State<AuthAndroid> {
       _authState.emailCtrl.text = AuthData.email;
       _authState.passwordCtrl.text = AuthData.password;
     }
+    _authState.lastEmail.then((value) {
+      if (value != null) {
+        _authState.emailCtrl.text = value;
+      }
+    });
   }
 
   @override

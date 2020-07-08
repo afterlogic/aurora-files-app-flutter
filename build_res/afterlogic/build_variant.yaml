@@ -15,6 +15,6 @@ privacyPolicy: "https://afterlogic.com/privacy-policy"
 autodiscover_url: "https://{domain}/aurora-autodiscover.json?email={email}"
 
 pgpEnable: true
-secureSharingEnable: false
+secureSharingEnable: true
 
 _version: "2.2.0"

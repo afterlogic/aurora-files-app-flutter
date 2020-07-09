@@ -13,7 +13,7 @@ class PgpSettingPresenter {
   final PgpKeyDao _pgpKeyDao;
   final PgpKeyUtil pgpKeyUtil;
   final PgpKeyApi _pgpKeyApi = PgpKeyApi();
-  List<LocalPgpKey> contactsKey = [];
+  List<LocalPgpKey> contactsKey = null;
 
   PgpSettingPresenter(this._view, this._pgpKeyDao)
       : pgpKeyUtil = PgpKeyUtil.instance {

@@ -53,7 +53,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
             final publicKeys =
                 state.public.map((item) => KeyWidget(item, openKey)).toList();
             final userKeys =
-                state.user.map((item) => KeyWidget(item, openKey)).toList();
+                state.user?.map((item) => KeyWidget(item, openKey))?.toList();
             final privateKeys =
                 state.private.map((item) => KeyWidget(item, openKey)).toList();
 
@@ -83,7 +83,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                           ),
                         if (privateKeys.isNotEmpty)
                           Column(children: privateKeys),
-                        if (userKeys.isNotEmpty)
+                        if (userKeys?.isEmpty != true)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10, top: 25),
                             child: Text(
@@ -91,7 +91,15 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                               style: theme.textTheme.subhead,
                             ),
                           ),
-                        if (userKeys.isNotEmpty) Column(children: userKeys),
+                        if (userKeys?.isNotEmpty == true)
+                          Column(children: userKeys),
+                        if (userKeys == null)
+                          Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
                       ],
                     ),
                   ),

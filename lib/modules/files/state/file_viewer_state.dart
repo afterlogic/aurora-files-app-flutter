@@ -165,10 +165,9 @@ abstract class _FileViewerState with Store {
   Future<void> createPublicLink({
     @required Function(String) onSuccess,
     @required Function(String) onError,
-    @required String extend,
   }) async {
     return fileState.onGetPublicLink(
-        name: this.file.name + extend,
+        name: this.file.name,
         size: this.file.size,
         isFolder: false,
         path: this.file.path,
@@ -179,17 +178,21 @@ abstract class _FileViewerState with Store {
   Future<void> createSecureLink({
     @required Function(SecureLink) onSuccess,
     @required Function(String) onError,
-    @required String extend,
     @required String password,
+    @required String email,
+    @required bool isKey,
   }) async {
     return fileState.onGetSecureLink(
-        password: password,
-        name: this.file.name + extend,
-        size: this.file.size,
-        isFolder: false,
-        path: this.file.path,
-        onSuccess: onSuccess,
-        onError: onError);
+      password: password,
+      name: this.file.name,
+      size: this.file.size,
+      isFolder: false,
+      path: this.file.path,
+      onSuccess: onSuccess,
+      onError: onError,
+      email: email,
+      isKey: isKey,
+    );
   }
 
   Future<List<Recipient>> searchContact(String pattern) async {

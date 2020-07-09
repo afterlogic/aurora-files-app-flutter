@@ -43,7 +43,16 @@ class LegacyPgpApi {
     return _sink?.close() as Future;
   }
 
-  encryptSymmetricFile(File file, File output, String password) {}
+  encryptSymmetric( String content, String password) {
+    return pgp.bufferPlatformSink(
+      content,
+      pgp.symmetricallyEncrypt(
+        temp,
+        password,
+        content.length,
+      ),
+    );
+  }
 
   Future<String> encryptBytes(String text, String password) {
     return pgp.bufferPlatformSink(

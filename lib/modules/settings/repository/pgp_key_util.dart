@@ -49,7 +49,7 @@ class PgpKeyUtil {
           key: key,
           isPrivate: description.isPrivate,
           length: description.length,
-          name: name,
+          name: name ?? "",
         );
 
         localKeys.add(localPgpKey);
@@ -152,10 +152,15 @@ class PgpKeyUtil {
   }
 
   Future<String> encrypt(String string, List<String> keys) async {
-    return pgp.bufferPlatformSink(
+    final decrypted =await pgp.bufferPlatformSink(
       string,
       pgp.encrypt(null, keys, null),
     );
+    if (decrypted.endsWith("�")) {
+      return decrypted.substring(0, decrypted.length - 1);
+    } else {
+      return decrypted;
+    }
   }
 
   Future<String> userDecrypt(String string, String password) async {

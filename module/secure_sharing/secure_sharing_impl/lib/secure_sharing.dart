@@ -80,6 +80,7 @@ class SecureSharingImpl extends SecureSharing {
     Pgp pgp,
     S s,
   ) async {
+
     final selectRecipientResult = await AMDialog.show(
       context: context,
       builder: (context) => SelectRecipient(fileViewerState, s.secure_sharing),

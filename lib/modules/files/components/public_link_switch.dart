@@ -48,7 +48,6 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       path: filesPageState.pagePath,
       name: widget.file.name,
       size: widget.file.size,
-      isFolder: widget.file.isFolder,
       onSuccess: (link) async {
         Clipboard.setData(ClipboardData(text: link));
         setState(() => _isGettingPublicLink = false);

@@ -260,6 +260,30 @@ abstract class _FilesState with Store {
     return _filesApi.updateExtendedProps(file, key, contactKey);
   }
 
+  Future addDecryptedPublicKey(
+      BuildContext context, LocalFile file, List<String> contactKey) async {
+    final password = await KeyRequestDialog.show(context);
+    if (password == null) {
+      throw "";
+    }
+    final key = (await PgpKeyUtil.instance
+        .userDecrypt(file.encryptedDecryptionKey, password));
+    return _filesApi.updateExtendedPropsPublicKey(
+        file,
+        (await PgpKeyUtil.instance.encrypt(key, contactKey))
+            .replaceAll("\n", "\r\n"));
+  }
+
+  Future addDecryptedPublicPassword(
+      BuildContext context, LocalFile file, String password) async {
+    final password = await KeyRequestDialog.show(context);
+    if (password == null) {
+      throw "";
+    }
+
+    return _filesApi.updateExtendedPropsPublicKey(file, password);
+  }
+
   Future onGetPublicLink({
     @required String name,
     @required int size,
@@ -285,6 +309,8 @@ abstract class _FilesState with Store {
     @required Function(SecureLink) onSuccess,
     @required Function(String) onError,
     @required String password,
+    @required bool isKey,
+    @required String email,
   }) async {
     try {
       final SecureLink result = await _filesApi.createSecureLink(
@@ -294,6 +320,8 @@ abstract class _FilesState with Store {
         size,
         isFolder,
         password,
+        isKey,
+        email,
       );
       onSuccess(result);
     } catch (err) {

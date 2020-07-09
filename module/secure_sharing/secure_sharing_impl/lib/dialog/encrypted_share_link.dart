@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -18,6 +20,7 @@ import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'legacy_pgp_api.dart';
 import 'select_recipient.dart';
@@ -63,115 +66,69 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   double progress = 0;
   bool isDownload = false;
   bool sendProgress = false;
-
-  File output;
-  File temp;
   String link;
   S s;
   String error;
-  String password;
+  String password = null;
   final toastKey = GlobalKey<ToastWidgetState>();
 
   encrypt() async {
-    var isProgress = true;
-    if (await output.exists()) await output.delete();
-    if (await temp.exists()) await temp.delete();
-
     if (widget.useKey) {
-      legacyPgpApi
-          .encryptFile(
-        widget.file.file,
-        output,
-        widget.privateKeyPassword,
+      widget.filesState.addDecryptedPublicKey(
+          context, widget.file.localFile, [widget.pgpKey.key]).then((_) {
+        upload();
+      }, onError: (e) {
+        error = s.encrypt_error;
+        setState(() {});
+      });
+    } else {
+      password = PgpUtil.createSymmetricKey();
+      final pgpPassword = await KeyRequestDialog.show(context);
+      if (pgpPassword == null) {
+        error = "";
+        setState(() {});
+      }
+      final key = (await PgpKeyUtil.instance.userDecrypt(
+          widget.file.localFile.encryptedDecryptionKey, pgpPassword));
+
+      widget.filesState
+          .addDecryptedPublicPassword(
+        context,
+        widget.file.localFile,
+        await legacyPgpApi.encryptSymmetric(key, password),
       )
           .then((_) {
         upload();
       }, onError: (e) {
         error = s.encrypt_error;
         setState(() {});
-      }).whenComplete(() {
-        isProgress = false;
       });
-    } else {
-      password = PgpUtil.createSymmetricKey();
-      legacyPgpApi
-          .encryptSymmetricFile(widget.file.file, output, password)
-          .then((_) {
-        upload();
-      }, onError: (e) {
-        error = s.encrypt_error;
-        setState(() {});
-      }).whenComplete(() {
-        isProgress = false;
-      });
-    }
-    while (isProgress) {
-      progress = legacyPgpApi.progress;
-      if (isProgress) {
-        setState(() {});
-      }
-      await Future.delayed(Duration(milliseconds: 500));
     }
   }
 
   upload() {
     isDownload = true;
-    final extend = !widget.useKey ? ".gpg" : ".pgp";
+    widget.onLoad();
+    createPublicLink();
+  }
+
+  createPublicLink() {
+    isDownload = true;
     setState(() {});
 
-    widget._fileViewerState.uploadSecureFile(
-      extend: extend,
-      encryptionRecipientEmail: widget.recipient?.email ?? widget.pgpKey?.email,
-      passwordEncryption: !widget.useKey,
-      file: output,
-      onUploadStart: (processingFile) {
-        _processingFile = processingFile;
-        processingFile.progressStream.listen((value) {
-          progress = value;
-          setState(() {});
-        });
-      },
-      onSuccess: () {
-        widget.onLoad();
-        createPublicLink(_processingFile.fileOnDevice, extend);
-      },
+    widget._fileViewerState.createSecureLink(
+      email: widget.recipient.email,
+      isKey: widget.useKey,
+      password: widget.useEncrypt ? "" : password,
       onError: (e) {
         error = e;
         setState(() {});
       },
+      onSuccess: (link) {
+        this.link = link.link;
+        setState(() {});
+      },
     );
-  }
-
-  createPublicLink(File file, String extend) {
-    isDownload = true;
-    setState(() {});
-    if (widget.useEncrypt) {
-      widget._fileViewerState.createPublicLink(
-        extend: extend,
-        onError: (e) {
-          error = e;
-          setState(() {});
-        },
-        onSuccess: (link) {
-          this.link = link;
-          setState(() {});
-        },
-      );
-    } else {
-      password = PgpUtil.createSymmetricKey();
-      widget._fileViewerState.createSecureLink(
-        password: password,
-        extend: extend,
-        onError: (e) {
-          error = e;
-          setState(() {});
-        },
-        onSuccess: (link) {
-          this.link = link.link;
-          setState(() {});
-        },
-      );
-    }
   }
 
   share() async {
@@ -182,15 +139,29 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
         encrypt();
       }
     } else {
-      createPublicLink(widget.file.file, "");
+      createPublicLink();
     }
+  }
+
+  @override
+  void initState() {
+    prepare();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      share();
+    });
+    super.initState();
+  }
+
+  static Future<File> get tempFile async {
+    final dir = await getTemporaryDirectory();
+    final file = File(dir.path + Platform.pathSeparator + _tempFile);
+    if (!(await file.exists())) await file.create();
+    return file;
   }
 
   prepare() async {
     legacyPgpApi = LegacyPgpApi(widget.pgp);
-    if (widget.useEncrypt) {
-      legacyPgpApi.temp = temp;
-    }
+    legacyPgpApi.temp = await tempFile;
     if (widget.pgpKey != null) {
       legacyPgpApi.publicKeys = [widget.pgpKey.key, widget.userPublicKey?.key]
           .where((item) => item != null)
@@ -199,24 +170,12 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     if (widget.useSign == true) {
       legacyPgpApi.privateKey = widget.userPrivateKey.key;
     }
-    share();
-  }
-
-  @override
-  void initState() {
-    temp = File(widget.file.file.path + ".temp");
-    output = File(widget.file.file.path + (!widget.useKey ? ".gpg" : ".pgp"));
-    prepare();
-    super.initState();
   }
 
   @override
   void dispose() {
     _processingFile?.endProcess();
-    legacyPgpApi.close().whenComplete(() async {
-      if (await output.exists()) await output.delete();
-      if (await temp.exists()) await temp.delete();
-    });
+    legacyPgpApi.close();
     super.dispose();
   }
 
@@ -347,9 +306,11 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     }
     if (link == null) {
       return [
-        Text(isDownload ? s.upload : s.encryption),
-        LinearProgressIndicator(
-          value: PlatformOverride.isIOS && !isDownload ? null : progress,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
       ];
     }
@@ -377,6 +338,8 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       )
     ];
   }
+
+  static const _tempFile = "temp.pgp";
 }
 
 class ClipboardLabel extends StatefulWidget {

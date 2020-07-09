@@ -282,8 +282,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   _secureSharing() async {
-    if (widget.immutableFile.encryptedDecryptionKey != null) {
-      return _prepareShareFile(_secureEncryptSharing);
+    if (_file.published == false &&
+        widget.immutableFile.encryptedDecryptionKey != null) {
+      return _secureEncryptSharing(PreparedForShare(null, _file));
     }
     final preparedForShare = PreparedForShare(null, _file);
     final pgpKeyUtil = PgpKeyUtil.instance;

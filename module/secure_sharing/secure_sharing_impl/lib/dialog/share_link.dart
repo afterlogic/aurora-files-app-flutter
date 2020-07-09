@@ -76,19 +76,24 @@ class _ShareLinkState extends State<ShareLink> {
     error = null;
     if (mounted) setState(() {});
     if (widget.usePassword) {
-      widget.file.localFile = widget.file.localFile
-          .copyWith(linkPassword: PgpUtil.createSymmetricKey());
+      widget.file.localFile = widget.file.localFile.copyWith(
+        linkPassword: PgpUtil.createSymmetricKey(),
+      );
 
       widget.fileViewerState.createSecureLink(
-          onSuccess: (link) {
-            widget.file.localFile = widget.file.localFile
-                .copyWith(linkUrl: link.link, published: true);
-            progress = false;
-            setState(() {});
-          },
-          onError: onError,
-          extend: "",
-          password: widget.file.localFile.linkPassword);
+        email:  "",
+        isKey: false,
+        onSuccess: (link) {
+          widget.file.localFile = widget.file.localFile.copyWith(
+            linkUrl: link.link,
+            published: true,
+          );
+          progress = false;
+          setState(() {});
+        },
+        onError: onError,
+        password: widget.file.localFile.linkPassword,
+      );
     } else {
       widget.fileViewerState.createPublicLink(
         onSuccess: (link) {
@@ -98,7 +103,6 @@ class _ShareLinkState extends State<ShareLink> {
           setState(() {});
         },
         onError: onError,
-        extend: "",
       );
     }
   }
@@ -241,7 +245,7 @@ class _ShareLinkState extends State<ShareLink> {
     ];
 
     final content = SizedBox(
-        height: PlatformOverride.isIOS ? size.height / 2 : size.height / 1.5,
+        height: PlatformOverride.isIOS ? size.height / 2 : size.height / 2,
         width: min(size.width - 40, 300),
         child: progress
             ? Center(

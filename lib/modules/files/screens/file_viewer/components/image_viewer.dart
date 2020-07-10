@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -42,7 +43,11 @@ class _ImageViewerState extends State<ImageViewer> {
           () => _fileViewerState.getPreviewImage(
               (err) => showError(err), context));
     } else if (_fileViewerState.fileWithContents == null) {
-      _fileViewerState.getPreviewImage((err) => showError(err), context);
+      Future.delayed(
+        Duration(milliseconds: 250),
+        () =>
+            _fileViewerState.getPreviewImage((err) => showError(err), context),
+      );
     }
   }
 
@@ -85,10 +90,10 @@ class _ImageViewerState extends State<ImageViewer> {
           _fileViewerState.fileWithContents,
           fit: BoxFit.cover,
         );
-        precacheImage(image.image, context, onError: (e, stackTrace) {
-          Future.delayed(Duration(milliseconds: 100),
-              () => setState(() => _isError = true));
-        });
+//        precacheImage(image.image, context, onError: (e, stackTrace) {
+//          Future.delayed(Duration(milliseconds: 100),
+//              () => setState(() => _isError = true));
+//        });
         return ConstrainedBox(
           constraints: BoxConstraints(minHeight: 60.0),
           child: image,
@@ -133,7 +138,9 @@ class _ImageViewerState extends State<ImageViewer> {
     s = Str.of(context);
     double prevProgress = 999;
     Widget placeholder;
-    if (AppStore.filesState.isOfflineMode) {
+    if (_fileViewerState.file.encryptedDecryptionKey != null) {
+      placeholder = null;
+    } else if (AppStore.filesState.isOfflineMode) {
       if (_fileViewerState.fileWithContents != null) {
         placeholder = Image.file(
           _fileViewerState.fileWithContents,
@@ -165,7 +172,7 @@ class _ImageViewerState extends State<ImageViewer> {
                 : Stack(
                     fit: StackFit.passthrough,
                     children: <Widget>[
-                      if (!_isError)
+                      if (!_isError&& placeholder!=null)
                         ConstrainedBox(
                           constraints: BoxConstraints(minHeight: 60.0),
                           child: placeholder,
@@ -183,13 +190,16 @@ class _ImageViewerState extends State<ImageViewer> {
                           ),
                         ),
                       ),
-                      Observer(builder: (_) {
-                        if (prevProgress != _fileViewerState.downloadProgress) {
-                          builtImage = _buildImage();
-                          prevProgress = _fileViewerState.downloadProgress;
-                        }
-                        return builtImage;
-                      }),
+                      Observer(
+                        builder: (_) {
+                          if (prevProgress !=
+                              _fileViewerState.downloadProgress) {
+                            builtImage = _buildImage();
+                            prevProgress = _fileViewerState.downloadProgress;
+                          }
+                          return builtImage;
+                        },
+                      ),
                     ],
                   ),
           ));

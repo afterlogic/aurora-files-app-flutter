@@ -16,6 +16,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:mobx/mobx.dart';
+import 'package:file/memory.dart';
 
 part 'file_viewer_state.g.dart';
 
@@ -71,7 +72,7 @@ abstract class _FileViewerState with Store {
           file.viewUrl,
           file,
           processingFile,
-          false,
+          file.encryptedDecryptionKey!=null,
           password,
           onSuccess: (_) {
             fileWithContents = fileToView;
@@ -108,7 +109,9 @@ abstract class _FileViewerState with Store {
     // if no cache, get file
     if (fileWithContents == null) {
       try {
-        final File imageToView = await _filesLocal.createImageCacheFile(file);
+        final File imageToView = file.encryptedDecryptionKey != null
+            ? await MemoryFileSystem().file(file.name).create()
+            : await _filesLocal.createImageCacheFile(file);
         await _getPreviewFile(imageToView, context);
       } catch (err) {
         onError(err is PlatformException ? err.message : err.toString());

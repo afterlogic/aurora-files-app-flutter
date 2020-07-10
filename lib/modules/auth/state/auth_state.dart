@@ -129,7 +129,7 @@ abstract class _AuthState with Store {
       }
 
       host = host.startsWith("http") ? host : "https://$host";
-
+      hostName=host;
       try {
         final Map<String, dynamic> res = await _authApi.login(email, password);
         if (res["Result"].containsKey("TwoFactorAuth")) {

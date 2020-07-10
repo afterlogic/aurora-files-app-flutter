@@ -222,7 +222,7 @@
   "hint_pgp_your_keys": "Your keys",
   "hint_pgp_keys_will_be_import_to_contacts": "The keys will be imported to contacts",
   "btn_pgp_import_selected_key": "Import selected keys",
-  "label_pgp_contact_public_keys": "Contact public keys",
+  "label_pgp_contact_public_keys": "External public keys",
   "error_pgp_required_key": "Required PGP key for $user",
   "btn_share_to_email": "Share with team",
   "hint_pgp_share_warning": "You are going to share you private PGP key. The key must be kept from the 3rd parties. Do you want to continue?",

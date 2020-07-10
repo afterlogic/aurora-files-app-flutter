@@ -61,7 +61,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   S s;
   LocalFile _file;
   FileType _fileType;
-
+  bool _showEncrypt = false;
   bool _isFileOffline = false;
   bool _isSyncingForOffline = false;
 
@@ -332,9 +332,20 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   Widget _getPreviewContent() {
     final previewIconSize = 120.0;
-    if (_file.initVector != null) {
-      return Icon(Icons.lock_outline,
-          size: previewIconSize, color: Theme.of(context).disabledColor);
+    if (_file.initVector != null && _showEncrypt == false) {
+      return Column(
+        children: <Widget>[
+          Icon(Icons.lock_outline,
+              size: previewIconSize, color: Theme.of(context).disabledColor),
+          FlatButton(
+            child: Text("Show"),
+            onPressed: () {
+              _showEncrypt = true;
+              setState(() {});
+            },
+          )
+        ],
+      );
     }
     switch (_fileType) {
       case FileType.image:

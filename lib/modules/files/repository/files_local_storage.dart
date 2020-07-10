@@ -94,9 +94,9 @@ class FilesLocalStorage {
   }
 
   Future<File> createImageCacheFile(LocalFile file) async {
-    if (file.initVector != null) {
-      throw CustomException("Cannot cache encrypted image contents");
-    }
+//    if (file.initVector != null) {
+//      throw CustomException("Cannot cache encrypted image contents");
+//    }
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getTemporaryDirectory();

@@ -54,7 +54,7 @@ class AuthApi {
     } else {
       throw CustomException(getErrMsg(resBody));
     }
-  }
+    }
 
   Future<Map<String, dynamic>> verifyPin(
     String pin,

@@ -10,6 +10,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_to_email_dialog.dart';
@@ -64,6 +65,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   bool _showEncrypt = false;
   bool _isFileOffline = false;
   bool _isSyncingForOffline = false;
+  String password;
 
   @override
   void initState() {
@@ -341,9 +343,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               .contains(_fileType))
             FlatButton(
               child: Text(s.btn_show_encrypt),
-              onPressed: () {
-                _showEncrypt = true;
-                setState(() {});
+              onPressed: () async {
+                password = await KeyRequestDialog.show(context);
+                if (password != null) {
+                  _showEncrypt = true;
+                  setState(() {});
+                }
               },
             )
         ],
@@ -352,12 +357,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     switch (_fileType) {
       case FileType.image:
         return ImageViewer(
+          password: password,
           fileViewerState: _fileViewerState,
           scaffoldState: _fileViewerScaffoldKey.currentState,
         );
       case FileType.text:
       case FileType.code:
         return TextViewer(
+          password: password,
           fileViewerState: _fileViewerState,
           scaffoldState: _fileViewerScaffoldKey.currentState,
         );

@@ -127,7 +127,7 @@ class PgpSettingPresenter {
   Future saveKeys(
       List<LocalPgpKey> userKey, List<LocalPgpKey> contactKey) async {
     await pgpKeyUtil.saveKeys(userKey);
-    if (contactsKey.isNotEmpty) {
+    if (contactKey.isNotEmpty) {
       await _pgpKeyApi.addKeyToContacts(contactKey);
       initContactKeys();
     }

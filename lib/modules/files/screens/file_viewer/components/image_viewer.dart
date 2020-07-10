@@ -17,8 +17,9 @@ class ImageViewer extends StatefulWidget {
     Key key,
     @required this.fileViewerState,
     @required this.scaffoldState,
+    this.password,
   }) : super(key: key);
-
+  final String password;
   final FileViewerState fileViewerState;
   final ScaffoldState scaffoldState;
 
@@ -41,12 +42,15 @@ class _ImageViewerState extends State<ImageViewer> {
       Future.delayed(
           Duration(milliseconds: 250),
           () => _fileViewerState.getPreviewImage(
-              (err) => showError(err), context));
+                widget.password,
+                (err) => showError(err),
+                context,
+              ));
     } else if (_fileViewerState.fileWithContents == null) {
       Future.delayed(
         Duration(milliseconds: 250),
-        () =>
-            _fileViewerState.getPreviewImage((err) => showError(err), context),
+        () => _fileViewerState.getPreviewImage(
+            widget.password, (err) => showError(err), context),
       );
     }
   }
@@ -58,7 +62,15 @@ class _ImageViewerState extends State<ImageViewer> {
   }
 
   void showError(String err) {
-    showSnack(context: context, scaffoldState: widget.scaffoldState, msg: err);
+    if (err == "Invalid password") {
+      _isError = true;
+      setState(() {});
+    } else if (err.isNotEmpty)
+      showSnack(
+        context: context,
+        scaffoldState: widget.scaffoldState,
+        msg: err,
+      );
   }
 
   Widget _buildImage() {
@@ -172,7 +184,7 @@ class _ImageViewerState extends State<ImageViewer> {
                 : Stack(
                     fit: StackFit.passthrough,
                     children: <Widget>[
-                      if (!_isError&& placeholder!=null)
+                      if (!_isError && placeholder != null)
                         ConstrainedBox(
                           constraints: BoxConstraints(minHeight: 60.0),
                           child: placeholder,

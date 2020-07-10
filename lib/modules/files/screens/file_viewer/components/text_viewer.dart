@@ -10,10 +10,12 @@ class TextViewer extends StatefulWidget {
     Key key,
     @required this.scaffoldState,
     @required this.fileViewerState,
+    this.password,
   }) : super(key: key);
 
   final ScaffoldState scaffoldState;
   final FileViewerState fileViewerState;
+  final String password;
 
   @override
   _TextViewerState createState() => _TextViewerState();
@@ -38,6 +40,7 @@ class _TextViewerState extends State<TextViewer> {
   Future _initTextViewer() async {
     file = widget.fileViewerState.file;
     widget.fileViewerState.getPreviewText(
+      widget.password,
       (String fileText) {
         setState(() => previewText = fileText);
       },

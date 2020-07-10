@@ -10,6 +10,7 @@ import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,11 +39,17 @@ abstract class _FileViewerState with Store {
 
   ProcessingFile processingFile;
 
-  Future<void> _getPreviewFile(File fileToView, BuildContext context,
+  Future<void> _getPreviewFile(
+      String _password, File fileToView, BuildContext context,
       {Function(File) onDownloadEnd}) async {
-    String password;
+    String password = _password;
     if (file.encryptedDecryptionKey != null) {
-      password = await KeyRequestDialog.show(context);
+      if (password == null) {
+        password = await KeyRequestDialog.show(context);
+        if (password == null) {
+          throw "";
+        }
+      }
     }
     downloadProgress = 0.0;
 
@@ -72,7 +79,7 @@ abstract class _FileViewerState with Store {
           file.viewUrl,
           file,
           processingFile,
-          file.encryptedDecryptionKey!=null,
+          file.encryptedDecryptionKey != null,
           password,
           onSuccess: (_) {
             fileWithContents = fileToView;
@@ -103,7 +110,7 @@ abstract class _FileViewerState with Store {
   }
 
   Future<void> getPreviewImage(
-      Function(String) onError, BuildContext context) async {
+      String password, Function(String) onError, BuildContext context) async {
     downloadProgress = 0.0;
     // try to retrieve the file from cache
     // if no cache, get file
@@ -112,9 +119,9 @@ abstract class _FileViewerState with Store {
         final File imageToView = file.encryptedDecryptionKey != null
             ? await MemoryFileSystem().file(file.name).create()
             : await _filesLocal.createImageCacheFile(file);
-        await _getPreviewFile(imageToView, context);
+        await _getPreviewFile(password, imageToView, context);
       } catch (err) {
-        onError(err is PlatformException ? err.message : err.toString());
+        onError(err is CustomException ? "Invalid password" : err.toString());
       }
     } else {
       downloadProgress = 1.0;
@@ -122,10 +129,10 @@ abstract class _FileViewerState with Store {
   }
 
   Future<void> getPreviewText(
-      Function(String) getText, BuildContext context) async {
+      String password, Function(String) getText, BuildContext context) async {
     downloadProgress = 0.0;
     final File textToView = await _filesLocal.createTempFile(file);
-    await _getPreviewFile(textToView, context,
+    await _getPreviewFile(password, textToView, context,
         onDownloadEnd: (File storedFile) async {
       String previewText = await fileWithContents.readAsString();
       getText(previewText);
@@ -135,7 +142,8 @@ abstract class _FileViewerState with Store {
   Future<void> onOpenPdf(BuildContext context) async {
     final File pdfToView =
         await _filesLocal.createTempFile(file, useName: true);
-    await _getPreviewFile(pdfToView, context, onDownloadEnd: (File storedFile) {
+    await _getPreviewFile(null, pdfToView, context,
+        onDownloadEnd: (File storedFile) {
       fileWithContents = storedFile;
       _filesLocal.openFileWith(fileWithContents);
     });

@@ -85,7 +85,7 @@ class MailApi {
       "Text": text,
       "To": to,
       "IdentityId": 677,
-      "method": "SendMessage"
+      "Method": "SendMessage"
     };
     final body = new ApiBody(
       module: "Mail",

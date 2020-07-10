@@ -337,13 +337,15 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         children: <Widget>[
           Icon(Icons.lock_outline,
               size: previewIconSize, color: Theme.of(context).disabledColor),
-          FlatButton(
-            child: Text("Show"),
-            onPressed: () {
-              _showEncrypt = true;
-              setState(() {});
-            },
-          )
+          if ([FileType.image, FileType.text, FileType.code]
+              .contains(_fileType))
+            FlatButton(
+              child: Text(s.btn_show_encrypt),
+              onPressed: () {
+                _showEncrypt = true;
+                setState(() {});
+              },
+            )
         ],
       );
     }

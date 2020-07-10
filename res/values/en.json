@@ -229,5 +229,6 @@
   "label_pgp_share_warning": "Warning",
   "hint_share_folder": "Encrypted files will not be available in shared folder.",
   "input_who_cas_see": "Who can see",
-  "input_who_cas_edit": "Who can edit"
+  "input_who_cas_edit": "Who can edit",
+  "btn_show_encrypt": "Show"
 }

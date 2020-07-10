@@ -273,7 +273,7 @@ class EnString extends S {
   final String hint_pgp_keys_will_be_import_to_contacts =
       "The keys will be imported to contacts";
   final String btn_pgp_import_selected_key = "Import selected keys";
-  final String label_pgp_contact_public_keys = "Contact public keys";
+  final String label_pgp_contact_public_keys = "External public keys";
   String error_pgp_required_key(String user) => "Required PGP key for $user";
   final String btn_share_to_email = "Share with team";
   final String hint_pgp_share_warning =
@@ -281,7 +281,7 @@ class EnString extends S {
   final String label_pgp_share_warning = "Warning";
   final String hint_share_folder =
       "Encrypted files will not be available in shared folder.";
-  final String label_share_with_team = "Share with team";
   final String input_who_cas_see = "Who can see";
   final String input_who_cas_edit = "Who can edit";
+  final String btn_show_encrypt = "Show";
 }

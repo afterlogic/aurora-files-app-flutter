@@ -46,44 +46,6 @@ class SignCheckBoxState extends State<SignCheckBox> {
             onChanged: widget.enable ? widget.onCheck : null,
           ),
         ),
-        Divider(color: Colors.grey),
-        if (widget.enable && PlatformOverride.isIOS)
-          CupertinoTextField(
-            enabled: widget.checked,
-            controller: _passwordController,
-            obscureText: _obscure,
-            placeholder: s.password,
-            suffix: GestureDetector(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Icon( _obscure ? Icons.visibility : Icons.visibility_off),
-              ),
-              onTap: () {
-                _obscure = !_obscure;
-                setState(() {});
-              },
-            ),
-          ),
-        if (widget.enable && !PlatformOverride.isIOS)
-          TextFormField(
-            enabled: widget.checked,
-            controller: _passwordController,
-            obscureText: _obscure,
-            decoration: InputDecoration(
-              labelText: s.password,
-              suffix: GestureDetector(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child:
-                      Icon(_obscure ? Icons.visibility : Icons.visibility_off),
-                ),
-                onTap: () {
-                  _obscure = !_obscure;
-                  setState(() {});
-                },
-              ),
-            ),
-          ),
       ],
     );
   }

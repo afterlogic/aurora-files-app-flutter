@@ -7,6 +7,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
+import 'package:aurorafiles/modules/settings/repository/encryption_local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
@@ -129,7 +130,7 @@ abstract class _AuthState with Store {
       }
 
       host = host.startsWith("http") ? host : "https://$host";
-      hostName=host;
+      hostName = host;
       try {
         final Map<String, dynamic> res = await _authApi.login(email, password);
         if (res["Result"].containsKey("TwoFactorAuth")) {
@@ -166,6 +167,7 @@ abstract class _AuthState with Store {
     pgpKeyDao.clear();
     authToken = null;
     userId = null;
+    EncryptionLocalStorage.instance.setStorePasswordStorage(false);
   }
 
   Future<bool> twoFactorAuth(String pin) async {

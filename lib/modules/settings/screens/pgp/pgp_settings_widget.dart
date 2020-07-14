@@ -2,12 +2,14 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/create_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/key_from_text_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
 import 'package:aurorafiles/shared_ui/error_dialog.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:aurorafiles/utils/stream_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -64,6 +66,13 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                   Expanded(
                     child: ListView(
                       children: <Widget>[
+                        CheckboxListTile(
+                          value: state.storePassword,
+                          title: Text(s.label_store_password_in_session),
+                          onChanged: (bool value) {
+                            _presenter.setStorePassword(value);
+                          },
+                        ),
                         if (publicKeys.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10, top: 25),
@@ -147,16 +156,22 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
               ),
             );
           },
-          initialData: KeysState([], [], [], true),
+          initialData: KeysState([], [], [], null, true),
         ));
   }
 
   openKey(LocalPgpKey pgpKey) async {
     if (pgpKey.key == null) return;
+    if (pgpKey.isPrivate) {
+      final password = await KeyRequestDialog.request(context);
+      if(password==null){
+        return;
+      }
+    }
     final result = await Navigator.pushNamed(
       context,
       PgpKeyModelRoute.name,
-      arguments: [pgpKey, _presenter.pgpKeyUtil],
+      arguments: [_presenter, pgpKey, _presenter.pgpKeyUtil],
     );
 
     if (result == true) {
@@ -165,8 +180,11 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   exportAll(List<LocalPgpKey> keys) async {
-    Navigator.pushNamed(context, PgpKeyExportRoute.name,
-        arguments: [keys, _presenter.pgpKeyUtil]);
+    Navigator.pushNamed(
+      context,
+      PgpKeyExportRoute.name,
+      arguments: [keys, _presenter.pgpKeyUtil],
+    );
   }
 
   @override
@@ -207,5 +225,15 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     if (result is CreateKeyResult) {
       _presenter.addPrivateKey(result);
     }
+  }
+
+  @override
+  showError(String error) {
+    showSnack(
+      context: context,
+      scaffoldState: _scaffoldKey.currentState,
+      msg: error,
+      isError: true,
+    );
   }
 }

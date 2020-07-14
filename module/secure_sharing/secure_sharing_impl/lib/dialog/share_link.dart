@@ -33,7 +33,6 @@ class ShareLink extends StatefulWidget {
   final PreparedForShare file;
   final RecipientWithKey selectRecipientResult;
   final FilesState filesState;
-  final FileViewerState fileViewerState;
   final PgpKeyUtil pgpKeyUtil;
 
   ShareLink(
@@ -43,7 +42,6 @@ class ShareLink extends StatefulWidget {
     this.file,
     this.selectRecipientResult,
     this.filesState,
-    this.fileViewerState,
     this.pgpKeyUtil,
   );
 
@@ -80,7 +78,8 @@ class _ShareLinkState extends State<ShareLink> {
         linkPassword: PgpUtil.createSymmetricKey(),
       );
 
-      widget.fileViewerState.createSecureLink(
+      widget.filesState.createSecureLink(
+        file: widget.file.localFile,
         email:  "",
         isKey: false,
         onSuccess: (link) {
@@ -95,7 +94,8 @@ class _ShareLinkState extends State<ShareLink> {
         password: widget.file.localFile.linkPassword,
       );
     } else {
-      widget.fileViewerState.createPublicLink(
+      widget.filesState.createPublicLink(
+        file: widget.file.localFile,
         onSuccess: (link) {
           widget.file.localFile =
               widget.file.localFile.copyWith(linkUrl: link, published: true);

@@ -3,6 +3,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
+import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
@@ -11,16 +12,40 @@ import 'package:share_extend/share_extend.dart';
 class PgpKeyModelWidget extends StatefulWidget {
   final LocalPgpKey _pgpKey;
   final PgpKeyUtil _pgpKeyUtil;
+  final PgpSettingPresenter presenter;
 
-  const PgpKeyModelWidget(this._pgpKey, this._pgpKeyUtil);
+  const PgpKeyModelWidget(this.presenter, this._pgpKey, this._pgpKeyUtil);
 
   @override
   _PgpKeyModelWidgetState createState() => _PgpKeyModelWidgetState();
 }
 
-class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
+class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
+    with WidgetsBindingObserver {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isPoped = false;
   S s;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive && !isPoped) {
+      isPoped = true;
+      Navigator.pop(context);
+    }
+    super.didChangeAppLifecycleState(state);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,14 +112,13 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
                       SizedBox(
                         height: 8,
                       ),
-                    if (widget._pgpKey.id != null)
-                      SizedBox(
-                        width: double.infinity,
-                        child: AMButton(
-                          child: Text(s.delete),
-                          onPressed: delete,
-                        ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: AMButton(
+                        child: Text(s.delete),
+                        onPressed: delete,
                       ),
+                    ),
                   ],
                 ),
               ),
@@ -153,7 +177,11 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> {
       },
     );
     if (result == true) {
-      await widget._pgpKeyUtil.deleteKey(widget._pgpKey);
+      if (widget._pgpKey.id != null) {
+        await widget._pgpKeyUtil.deleteKey(widget._pgpKey);
+      } else {
+        widget.presenter.deleteKey(widget._pgpKey.email);
+      }
       Navigator.pop(context, true);
     }
   }

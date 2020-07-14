@@ -27,7 +27,6 @@ import 'select_recipient.dart';
 
 class EncryptedShareLink extends StatefulWidget {
   final FilesState filesState;
-  final FileViewerState _fileViewerState;
   final Recipient recipient;
   final LocalPgpKey pgpKey;
   final LocalPgpKey userPrivateKey;
@@ -41,7 +40,6 @@ class EncryptedShareLink extends StatefulWidget {
   final String privateKeyPassword;
 
   const EncryptedShareLink(
-    this._fileViewerState,
     this.userPrivateKey,
     this.userPublicKey,
     this.file,
@@ -83,7 +81,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       });
     } else {
       password = PgpUtil.createSymmetricKey();
-      final pgpPassword = await KeyRequestDialog.show(context);
+      final pgpPassword = await KeyRequestDialog.request(context);
       if (pgpPassword == null) {
         error = "";
         setState(() {});
@@ -116,7 +114,8 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     isDownload = true;
     setState(() {});
 
-    widget._fileViewerState.createSecureLink(
+    widget.filesState.createSecureLink(
+      file: widget.file.localFile,
       email: widget.recipient.email,
       isKey: widget.useKey,
       password: widget.useEncrypt ? "" : password,

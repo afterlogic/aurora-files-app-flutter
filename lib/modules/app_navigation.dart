@@ -208,13 +208,13 @@ class AppNavigation {
                 name: settings.name,
               ),
               builder: (context) =>
-                  PgpKeyModelWidget(arguments.first, arguments.last));
+                  PgpKeyModelWidget(arguments[0],arguments[1], arguments[2]));
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              page: PgpKeyModelWidget(arguments.first, arguments.last),
+              page: PgpKeyModelWidget(arguments[0],arguments[1], arguments[2]),
               duration: 150);
         }
         break;

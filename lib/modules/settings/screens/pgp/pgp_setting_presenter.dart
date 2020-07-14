@@ -2,6 +2,7 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/settings/repository/encryption_local_storage.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_api.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
@@ -13,7 +14,9 @@ class PgpSettingPresenter {
   final PgpKeyDao _pgpKeyDao;
   final PgpKeyUtil pgpKeyUtil;
   final PgpKeyApi _pgpKeyApi = PgpKeyApi();
-  List<LocalPgpKey> contactsKey = null;
+  final encryptionStorage = EncryptionLocalStorage.instance;
+  bool storePassword;
+  List<LocalPgpKey> contactsKey;
 
   PgpSettingPresenter(this._view, this._pgpKeyDao)
       : pgpKeyUtil = PgpKeyUtil.instance {
@@ -22,6 +25,7 @@ class PgpSettingPresenter {
 
   Future refreshKeys(
       [List<LocalPgpKey> addedPublic, List<LocalPgpKey> addedPrivate]) async {
+    storePassword = await encryptionStorage.getStorePasswordStorage();
     return _pgpKeyDao.getKeys().then(
       (keys) async {
         final public = addedPublic ?? <LocalPgpKey>[];
@@ -33,10 +37,11 @@ class PgpSettingPresenter {
             public.add(item);
           }
         });
-        _view.keysState.add(KeysState(public, private, contactsKey));
+        _view.keysState
+            .add(KeysState(public, private, contactsKey, storePassword));
       },
       onError: (e) {
-        _view.keysState.add(KeysState([], [], contactsKey));
+        _view.keysState.add(KeysState([], [], contactsKey, storePassword));
       },
     );
   }
@@ -48,6 +53,7 @@ class PgpSettingPresenter {
         _view.keysState.value.public,
         _view.keysState.value.private,
         contactsKey,
+        storePassword,
         _view.keysState.value.isProgress,
       ));
     }
@@ -153,6 +159,20 @@ class PgpSettingPresenter {
     publicKey = publicKey.copyWith(key: keys.publicKey);
 
     await pgpKeyUtil.saveKeys([publicKey, privateKey]);
+    refreshKeys();
+  }
+
+  deleteKey(String email) async {
+    try {
+      await _pgpKeyApi.deleteContactKey(email);
+      contactsKey.removeWhere((element) => element.email == email);
+    } catch (e) {
+      _view.showError(e.toString());
+    }
+  }
+
+  void setStorePassword(bool value) async {
+    await encryptionStorage.setStorePasswordStorage(value);
     refreshKeys();
   }
 }

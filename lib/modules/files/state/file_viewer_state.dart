@@ -45,7 +45,7 @@ abstract class _FileViewerState with Store {
     String password = _password;
     if (file.encryptedDecryptionKey != null) {
       if (password == null) {
-        password = await KeyRequestDialog.show(context);
+        password = await KeyRequestDialog.request(context);
         if (password == null) {
           throw "";
         }
@@ -149,9 +149,6 @@ abstract class _FileViewerState with Store {
     });
   }
 
-  Future<List<Recipient>> getRecipient() async {
-    return _mailApi.getRecipient();
-  }
 
   Future<void> uploadSecureFile(
       {@required File file,
@@ -173,38 +170,7 @@ abstract class _FileViewerState with Store {
         onError: onError);
   }
 
-  Future<void> createPublicLink({
-    @required Function(String) onSuccess,
-    @required Function(String) onError,
-  }) async {
-    return fileState.onGetPublicLink(
-        name: this.file.name,
-        size: this.file.size,
-        isFolder: false,
-        path: this.file.path,
-        onSuccess: onSuccess,
-        onError: onError);
-  }
 
-  Future<void> createSecureLink({
-    @required Function(SecureLink) onSuccess,
-    @required Function(String) onError,
-    @required String password,
-    @required String email,
-    @required bool isKey,
-  }) async {
-    return fileState.onGetSecureLink(
-      password: password,
-      name: this.file.name,
-      size: this.file.size,
-      isFolder: false,
-      path: this.file.path,
-      onSuccess: onSuccess,
-      onError: onError,
-      email: email,
-      isKey: isKey,
-    );
-  }
 
   Future<List<Recipient>> searchContact(String pattern) async {
     return _mailApi.searchContact(pattern);

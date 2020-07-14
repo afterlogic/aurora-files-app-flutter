@@ -238,4 +238,5 @@ abstract class S {
   String get input_who_cas_see;
   String get input_who_cas_edit;
   String get btn_show_encrypt;
+  String get label_store_password_in_session;
 }

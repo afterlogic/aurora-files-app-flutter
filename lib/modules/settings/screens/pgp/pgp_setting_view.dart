@@ -21,6 +21,8 @@ mixin PgpSettingView<W extends StatefulWidget> on State<W> {
   showImportDialog(PgpKeyMap result);
 
   keysNotFound();
+
+  showError(String error);
 }
 
 class KeysState {
@@ -28,8 +30,10 @@ class KeysState {
   final List<LocalPgpKey> private;
   final List<LocalPgpKey> user;
   final bool isProgress;
+  final bool storePassword;
 
-  KeysState(this.public, this.private, this.user, [this.isProgress = false]);
+  KeysState(this.public, this.private, this.user, this.storePassword,
+      [this.isProgress = false]);
 }
 
 class PgpKeyMap {

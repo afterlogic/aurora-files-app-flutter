@@ -295,7 +295,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     await secureSharing.sharing(
       context,
       widget.filesState,
-      _fileViewerState,
       userPrivateKey,
       userPublicKey,
       pgpKeyUtil,
@@ -315,7 +314,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     secureSharing.encryptSharing(
       context,
       widget.filesState,
-      _fileViewerState,
       userPrivateKey,
       userPublicKey,
       pgpKeyUtil,
@@ -344,7 +342,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             FlatButton(
               child: Text(s.btn_show_encrypt),
               onPressed: () async {
-                password = await KeyRequestDialog.show(context);
+                password = await KeyRequestDialog.request(context);
                 if (password != null) {
                   _showEncrypt = true;
                   setState(() {});
@@ -537,7 +535,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 updateFile: _updateFile,
                 scaffoldKey: _fileViewerScaffoldKey,
               ),
-            if (!widget.filesState.isOfflineMode) Divider(),
             ListTile(
               contentPadding: EdgeInsets.zero,
               onTap: _isSyncingForOffline ? null : _setFileForOffline,

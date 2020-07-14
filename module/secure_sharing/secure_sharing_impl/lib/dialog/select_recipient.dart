@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_api.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
@@ -12,10 +13,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SelectRecipient extends StatefulWidget {
-  final FileViewerState fileViewerState;
+  final FilesState filesState;
   final String title;
 
-  SelectRecipient(this.fileViewerState, this.title);
+  SelectRecipient(this.filesState, this.title);
 
   @override
   _SelectRecipientState createState() => _SelectRecipientState();
@@ -33,7 +34,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
     if (mounted) setState(() {});
     hasError = false;
     recipients = null;
-    widget.fileViewerState.getRecipient().then(
+    widget.filesState.getRecipient().then(
       (result) async {
         recipients = [];
         await loadKeys();

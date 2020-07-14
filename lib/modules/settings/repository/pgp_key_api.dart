@@ -53,4 +53,15 @@ class PgpKeyApi {
       return [];
     }
   }
+
+  Future deleteContactKey(String email) async {
+    final body = ApiBody(
+      module: "OpenPgpWebclient",
+      method: "RemovePublicKeyFromContact",
+      parameters: jsonEncode({"Email": email}),
+    );
+
+    final result = await sendRequest(body);
+    return result["Result"] as bool;
+  }
 }

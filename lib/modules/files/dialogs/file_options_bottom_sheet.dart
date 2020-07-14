@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
@@ -12,6 +13,8 @@ import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/asset_icon.dart';
+import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +22,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'delete_confirmation_dialog.dart';
 import 'rename_dialog_android.dart';
 import 'share_dialog.dart';
+
+import 'package:secure_sharing/secure_sharing.dart';
 
 enum FileOptionsBottomSheetResult {
   toggleOffline,
@@ -45,6 +50,7 @@ class FileOptionsBottomSheet extends StatefulWidget {
 class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
   S s;
+  SecureSharing secureSharing = DI.get();
 
   void _shareFile() async {
     final hasDecryptKey = await PgpKeyUtil.instance.hasUserKey();
@@ -130,6 +136,15 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     Navigator.pop(context);
                   },
                 ),
+              if (BuildProperty.secureSharingEnable)
+                ListTile(
+                  leading: AssetIcon(
+                    "lib/assets/svg/insert_link.svg",
+                    addedSize: 14,
+                  ),
+                  title: Text(s.secure_sharing),
+                  onTap: _secureSharing,
+                ),
               if (widget.file.type != "shared")
                 ListTile(
                   leading: Icon(PlatformOverride.isIOS
@@ -209,5 +224,51 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         ),
       ],
     );
+  }
+
+  _secureSharing() async {
+    if (widget.file.published == false &&
+        widget.file.encryptedDecryptionKey != null) {
+      return _secureEncryptSharing(PreparedForShare(null, widget.file));
+    }
+    final preparedForShare = PreparedForShare(null, widget.file);
+    final pgpKeyUtil = PgpKeyUtil.instance;
+    final userPrivateKey = await pgpKeyUtil.userPrivateKey();
+    final userPublicKey = await pgpKeyUtil.userPublicKey();
+    await secureSharing.sharing(
+      context,
+      widget.filesState,
+      userPrivateKey,
+      userPublicKey,
+      pgpKeyUtil,
+      preparedForShare,
+      s,
+    );
+
+    await widget.filesState
+        .updateFile(getCompanionFromLocalFile(preparedForShare.localFile));
+    setState(() {});
+  }
+
+  _secureEncryptSharing(PreparedForShare preparedForShare) async {
+    final pgpKeyUtil = PgpKeyUtil.instance;
+    final userPrivateKey = await pgpKeyUtil.userPrivateKey();
+    final userPublicKey = await pgpKeyUtil.userPublicKey();
+    secureSharing.encryptSharing(
+      context,
+      widget.filesState,
+      userPrivateKey,
+      userPublicKey,
+      pgpKeyUtil,
+      preparedForShare,
+      () {
+        widget.filesPageState.onGetFiles(
+          showLoading: FilesLoadingType.filesVisible,
+        );
+      },
+      DI.get(),
+      s,
+    );
+    setState(() {});
   }
 }

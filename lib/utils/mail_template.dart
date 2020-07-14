@@ -49,7 +49,7 @@ class MailTemplate {
         : "You can download the file at: $link";
     body += "\n";
     body += useKey
-        ? "\nThe file is encrypted using $recipient's PGP public key.You can decrypt it if you're logged in PrivateMail WebMail Client system. If you're not logged in there, you'll be able to download the encrypted file only. You can decrypt it using other PGP tools then."
+        ? "\nThe file is encrypted using $recipient's PGP public key.You can decrypt it if you're logged in AfterLogic WebMail Client system. If you're not logged in there, you'll be able to download the encrypted file only. You can decrypt it using other PGP tools then."
         : password?.isNotEmpty == true
             ? encryptedFile
                 ? "File encrypted with password: $password"

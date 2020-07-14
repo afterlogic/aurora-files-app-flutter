@@ -13,7 +13,6 @@ abstract class SecureSharing {
   Future sharing(
     BuildContext context,
     FilesState filesState,
-    FileViewerState fileViewerState,
     LocalPgpKey userPrivateKey,
     LocalPgpKey userPublicKey,
     PgpKeyUtil pgpKeyUtil,
@@ -24,7 +23,6 @@ abstract class SecureSharing {
   Future encryptSharing(
     BuildContext context,
     FilesState filesState,
-    FileViewerState fileViewerState,
     LocalPgpKey userPrivateKey,
     LocalPgpKey userPublicKey,
     PgpKeyUtil pgpKeyUtil,

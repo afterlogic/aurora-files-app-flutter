@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -27,7 +28,6 @@ class SelectEncryptMethod extends StatefulWidget {
 }
 
 class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
-  final signKey = GlobalKey<SignCheckBoxState>();
   final toastKey = GlobalKey<ToastWidgetState>();
   bool useKey;
   bool useSign;
@@ -84,7 +84,6 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
                 style: theme.textTheme.caption,
               ),
               SignCheckBox(
-                key: signKey,
                 checked: useSign,
                 enable: useKey &&
                     widget.userPgpKey != null &&
@@ -141,14 +140,9 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   checkSign() async {
     String password;
     if (useSign && widget.userPgpKey != null) {
-      password = signKey.currentState.password;
-      if (password.isEmpty) {
-        toastKey.currentState.show(s.password_is_empty);
-        return;
-      }
-      final isValidPassword =
-          await widget.pgpUtil.checkPrivateKey(password, widget.userPgpKey.key);
-      if (!isValidPassword) {
+      try {
+        password = await KeyRequestDialog.request(context);
+      } catch (e) {
         toastKey.currentState.show(s.invalid_password);
         return;
       }

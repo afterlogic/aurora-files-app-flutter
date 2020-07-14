@@ -11,6 +11,8 @@ import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_extend/share_extend.dart';
 
+import 'encryption_local_storage.dart';
+
 class PgpKeyUtil {
   static PgpKeyUtil _instance;
 
@@ -68,6 +70,11 @@ class PgpKeyUtil {
   }
 
   saveKeys(List<LocalPgpKey> keys) async {
+    if (keys.firstWhere((element) => element.isPrivate,
+        orElse: () => null) !=
+        null) {
+      EncryptionLocalStorage.memoryPassword = null;
+    }
     await pgpKeyDao.addKeys(keys);
   }
 

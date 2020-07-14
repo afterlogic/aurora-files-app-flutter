@@ -251,7 +251,7 @@ abstract class _FilesState with Store {
 
   Future addDecryptedKey(
       BuildContext context, LocalFile file, List<String> contactKey) async {
-    final password = await KeyRequestDialog.show(context);
+    final password = await KeyRequestDialog.request(context);
     if (password == null) {
       throw "";
     }
@@ -262,7 +262,7 @@ abstract class _FilesState with Store {
 
   Future addDecryptedPublicKey(
       BuildContext context, LocalFile file, List<String> contactKey) async {
-    final password = await KeyRequestDialog.show(context);
+    final password = await KeyRequestDialog.request(context);
     if (password == null) {
       throw "";
     }
@@ -276,7 +276,7 @@ abstract class _FilesState with Store {
 
   Future addDecryptedPublicPassword(
       BuildContext context, LocalFile file, String password) async {
-    final password = await KeyRequestDialog.show(context);
+    final password = await KeyRequestDialog.request(context);
     if (password == null) {
       throw "";
     }
@@ -475,7 +475,7 @@ abstract class _FilesState with Store {
   }) async {
     String password;
     if (file.encryptedDecryptionKey != null) {
-      password = await KeyRequestDialog.show(context);
+      password = await KeyRequestDialog.request(context);
       if (password == null) {
         return;
       }
@@ -570,7 +570,7 @@ abstract class _FilesState with Store {
   }) async {
     String password;
     if (file.encryptedDecryptionKey != null) {
-      password = await KeyRequestDialog.show(context);
+      password = await KeyRequestDialog.request(context);
       if (password == null) {
         return;
       }
@@ -642,7 +642,7 @@ abstract class _FilesState with Store {
       @required Function(String) onError}) async {
     String password;
     if (file.encryptedDecryptionKey != null) {
-      password = await KeyRequestDialog.show(context);
+      password = await KeyRequestDialog.request(context);
       if (password == null) {
         return;
       }
@@ -729,6 +729,45 @@ abstract class _FilesState with Store {
   Future<void> clearCache({deleteCachedImages = false}) async {
     return _filesLocal.deleteFilesFromCache(
         deleteCachedImages: deleteCachedImages);
+  }
+
+  Future<void> createPublicLink({
+    @required LocalFile file,
+    @required Function(String) onSuccess,
+    @required Function(String) onError,
+  }) async {
+    return onGetPublicLink(
+        name: file.name,
+        size: file.size,
+        isFolder: false,
+        path: file.path,
+        onSuccess: onSuccess,
+        onError: onError);
+  }
+
+  Future<void> createSecureLink({
+    @required LocalFile file,
+    @required Function(SecureLink) onSuccess,
+    @required Function(String) onError,
+    @required String password,
+    @required String email,
+    @required bool isKey,
+  }) async {
+    return onGetSecureLink(
+      password: password,
+      name: file.name,
+      size: file.size,
+      isFolder: false,
+      path: file.path,
+      onSuccess: onSuccess,
+      onError: onError,
+      email: email,
+      isKey: isKey,
+    );
+  }
+
+  Future<List<Recipient>> getRecipient() async {
+    return _mailApi.getRecipient();
   }
 
   Future sendViaEmail(MailTemplate template, String to) async {

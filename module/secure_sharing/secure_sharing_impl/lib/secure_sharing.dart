@@ -19,7 +19,6 @@ class SecureSharingImpl extends SecureSharing {
   Future sharing(
     BuildContext context,
     FilesState filesState,
-    FileViewerState fileViewerState,
     LocalPgpKey userPrivateKey,
     LocalPgpKey userPublicKey,
     PgpKeyUtil pgpKeyUtil,
@@ -47,7 +46,6 @@ class SecureSharingImpl extends SecureSharing {
             preparedForShare,
             selectRecipientResult,
             filesState,
-            fileViewerState,
             pgpKeyUtil,
           ),
         );
@@ -59,7 +57,7 @@ class SecureSharingImpl extends SecureSharing {
         selectRecipientResult = await AMDialog.show(
           context: context,
           builder: (context) =>
-              SelectRecipient(fileViewerState, s.send_public_link_to),
+              SelectRecipient(filesState, s.send_public_link_to),
         );
         if (selectRecipientResult == null) {
           break;
@@ -71,7 +69,6 @@ class SecureSharingImpl extends SecureSharing {
   Future encryptSharing(
     BuildContext context,
     FilesState filesState,
-    FileViewerState fileViewerState,
     LocalPgpKey userPrivateKey,
     LocalPgpKey userPublicKey,
     PgpKeyUtil pgpKeyUtil,
@@ -83,7 +80,7 @@ class SecureSharingImpl extends SecureSharing {
 
     final selectRecipientResult = await AMDialog.show(
       context: context,
-      builder: (context) => SelectRecipient(fileViewerState, s.secure_sharing),
+      builder: (context) => SelectRecipient(filesState, s.secure_sharing),
     );
 
     if (selectRecipientResult is RecipientWithKey) {
@@ -100,7 +97,6 @@ class SecureSharingImpl extends SecureSharing {
         await AMDialog.show(
           context: context,
           builder: (context) => EncryptedShareLink(
-            fileViewerState,
             userPrivateKey,
             userPublicKey,
             preparedForShare,

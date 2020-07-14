@@ -44,7 +44,8 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     final path = nullablePath ?? "";
     final offlineFiles = await (select(files)
           ..where((file) => file.owner.equals(userEmail))
-          ..where((file) => file.type.equals(storageType)))
+          ..where((file) => file.type.equals(storageType))
+    )
         .get();
     // get files from subfolders to recreate folders structure
     final childFiles =
@@ -57,7 +58,9 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
         if (trimmedPath.startsWith("/")) trimmedPath = trimmedPath.substring(1);
         final name = trimmedPath.split("/")[0];
         if (name.isNotEmpty) folderNames.add(name);
-      } catch (err) {}
+      } catch (err) {
+        err;
+      }
     });
     Set<LocalFile> filesAtPath = new Set();
     folderNames.forEach((name) {

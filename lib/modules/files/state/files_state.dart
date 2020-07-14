@@ -641,22 +641,26 @@ abstract class _FilesState with Store {
       @required Function(ProcessingFile) onStart,
       @required Function(String) onError}) async {
     String password;
-    if (file.encryptedDecryptionKey != null) {
-      password = await KeyRequestDialog.request(context);
-      if (password == null) {
-        return;
-      }
-    }
+
     if (_isFileIsBeingProcessed(file.guid)) {
       throw CustomException("This file is occupied with another operation.");
     }
 
     if (file.localId == null) {
+      if (file.encryptedDecryptionKey != null) {
+        password = await KeyRequestDialog.request(context);
+        if (password == null) {
+          return;
+        }
+      }
       // if file exists in cache, just copy it to downloads folder
       final Directory dir = await getApplicationDocumentsDirectory();
       final offlineDir = "${dir.path}/offline/${file.guid}_${file.name}";
       File fileForOffline = await _filesLocal.copyFromCache(file, offlineDir);
       if (fileForOffline != null && fileForOffline.lengthSync() == file.size) {
+        final FilesCompanion filesCompanion =
+        getCompanionFromLocalFile(file, fileForOffline.path);
+        await _filesDao.addFile(filesCompanion);
         onSuccess();
       } else {
         fileForOffline = await _filesLocal.createFileForOffline(file);
@@ -664,7 +668,7 @@ abstract class _FilesState with Store {
             file, fileForOffline, ProcessingType.offline, file.initVector);
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
-            file.downloadUrl, file, processingFile, false, password,
+            file.downloadUrl, file, processingFile, file.encryptedDecryptionKey!=null, password,
             onSuccess: (_) async {
               deleteFromProcessing(file.guid);
               final FilesCompanion filesCompanion =

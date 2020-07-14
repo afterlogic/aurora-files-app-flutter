@@ -56,8 +56,8 @@ abstract class _FileViewerState with Store {
     // get file contents
     if (AppStore.filesState.isOfflineMode) {
       fileWithContents = new File(file.localPath);
+      downloadProgress = null;
       if (onDownloadEnd != null) onDownloadEnd(fileToView);
-      downloadProgress = 1.0;
     } else {
       if (await fileToView.length() > 0) {
         fileWithContents = fileToView;
@@ -114,7 +114,7 @@ abstract class _FileViewerState with Store {
     downloadProgress = 0.0;
     // try to retrieve the file from cache
     // if no cache, get file
-    if (fileWithContents == null) {
+
       try {
         final File imageToView = file.encryptedDecryptionKey != null
             ? await MemoryFileSystem().file(file.name).create()
@@ -123,9 +123,6 @@ abstract class _FileViewerState with Store {
       } catch (err) {
         onError(err is CustomException ? "Invalid password" : err.toString());
       }
-    } else {
-      downloadProgress = 1.0;
-    }
   }
 
   Future<void> getPreviewText(

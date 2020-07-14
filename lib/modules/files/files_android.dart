@@ -314,60 +314,61 @@ class _FilesAndroidState extends State<FilesAndroid>
                         : 1)),
                 child: FilesAppBar(onDeleteFiles: _deleteSelected)),
             body: Observer(
-                builder: (_) => RefreshIndicator(
-                      onRefresh: () async {
-                        if (_filesState.currentStorages.length <= 0) {
-                          await _filesState.onGetStorages();
-                        }
-                        return _getFiles(context, FilesLoadingType.none);
-                      },
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Positioned.fill(
-                            child: _buildFiles(context),
-                          ),
-                          // LOADER
-                          Positioned(
-                            top: 0.0,
-                            left: 0.0,
-                            right: 0.0,
-                            height: 6.0,
-                            child: AnimatedOpacity(
-                              duration: Duration(milliseconds: 150),
-                              opacity: _filesPageState.filesLoading ==
-                                      FilesLoadingType.filesVisible
-                                  ? 1.0
-                                  : 0.0,
-                              child: LinearProgressIndicator(
-                                  backgroundColor: Theme.of(context)
-                                      .disabledColor
-                                      .withOpacity(0.1)),
-                            ),
-                          ),
-                          if (_filesState.isShareUpload)
-                            Positioned(
-                              bottom: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: UploadOptions(
-                                filesState: _filesState,
-                                filesPageState: _filesPageState,
-                              ),
-                            ),
-                          if (_filesState.isMoveModeEnabled)
-                            Positioned(
-                              bottom: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: MoveOptions(
-                                filesState: _filesState,
-                                filesPageState: _filesPageState,
-                              ),
-                            )
-                        ],
+              builder: (_) => RefreshIndicator(
+                onRefresh: () async {
+                  if (_filesState.currentStorages.length <= 0) {
+                    await _filesState.onGetStorages();
+                  }
+                  return _getFiles(context, FilesLoadingType.none);
+                },
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    Positioned.fill(
+                      child: _buildFiles(context),
+                    ),
+                    // LOADER
+                    Positioned(
+                      top: 0.0,
+                      left: 0.0,
+                      right: 0.0,
+                      height: 6.0,
+                      child: AnimatedOpacity(
+                        duration: Duration(milliseconds: 150),
+                        opacity: _filesPageState.filesLoading ==
+                                FilesLoadingType.filesVisible
+                            ? 1.0
+                            : 0.0,
+                        child: LinearProgressIndicator(
+                            backgroundColor: Theme.of(context)
+                                .disabledColor
+                                .withOpacity(0.1)),
                       ),
-                    )),
+                    ),
+                    if (_filesState.isShareUpload)
+                      Positioned(
+                        bottom: 0.0,
+                        left: 0.0,
+                        right: 0.0,
+                        child: UploadOptions(
+                          filesState: _filesState,
+                          filesPageState: _filesPageState,
+                        ),
+                      ),
+                    if (_filesState.isMoveModeEnabled)
+                      Positioned(
+                        bottom: 0.0,
+                        left: 0.0,
+                        right: 0.0,
+                        child: MoveOptions(
+                          filesState: _filesState,
+                          filesPageState: _filesPageState,
+                        ),
+                      )
+                  ],
+                ),
+              ),
+            ),
             floatingActionButton: Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).padding.bottom),

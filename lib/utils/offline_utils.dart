@@ -41,6 +41,7 @@ FilesCompanion getCompanionFromLocalFile(LocalFile file, [String pathToFile]) {
     extendedProps: Value(file.extendedProps),
     isExternal: Value(file.isExternal),
     initVector: Value(file.initVector),
+    encryptedDecryptionKey: Value(file.encryptedDecryptionKey),
   );
 }
 

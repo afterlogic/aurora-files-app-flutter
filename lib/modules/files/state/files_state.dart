@@ -79,9 +79,24 @@ abstract class _FilesState with Store {
     Function(String) onError,
   }) updateFilesCb;
 
-  void toggleOffline(bool val) {
-    currentStorages = new List();
+  void toggleOffline(bool val) async {
     isOfflineMode = val;
+    currentStorages = [];
+    if (val == true) {
+      _initOffline();
+    }
+  }
+
+  _initOffline() async {
+    final offlineStorages = <Storage>[];
+    final storages = await _filesDao.getStorages();
+    for (Storage storage in storages) {
+      final files = await _filesDao.getFilesForStorage(storage.displayName);
+      if (files.isNotEmpty) {
+        offlineStorages.add(storage);
+      }
+    }
+    currentStorages = offlineStorages;
   }
 
   void enableMoveMode({
@@ -640,26 +655,18 @@ abstract class _FilesState with Store {
       {@required Function() onSuccess,
       @required Function(ProcessingFile) onStart,
       @required Function(String) onError}) async {
-    String password;
-
     if (_isFileIsBeingProcessed(file.guid)) {
       throw CustomException("This file is occupied with another operation.");
     }
 
     if (file.localId == null) {
-      if (file.encryptedDecryptionKey != null) {
-        password = await KeyRequestDialog.request(context);
-        if (password == null) {
-          return;
-        }
-      }
       // if file exists in cache, just copy it to downloads folder
       final Directory dir = await getApplicationDocumentsDirectory();
       final offlineDir = "${dir.path}/offline/${file.guid}_${file.name}";
       File fileForOffline = await _filesLocal.copyFromCache(file, offlineDir);
       if (fileForOffline != null && fileForOffline.lengthSync() == file.size) {
         final FilesCompanion filesCompanion =
-        getCompanionFromLocalFile(file, fileForOffline.path);
+            getCompanionFromLocalFile(file, fileForOffline.path);
         await _filesDao.addFile(filesCompanion);
         onSuccess();
       } else {
@@ -668,7 +675,7 @@ abstract class _FilesState with Store {
             file, fileForOffline, ProcessingType.offline, file.initVector);
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
-            file.downloadUrl, file, processingFile, file.encryptedDecryptionKey!=null, password,
+            file.downloadUrl, file, processingFile, false, null,
             onSuccess: (_) async {
               deleteFromProcessing(file.guid);
               final FilesCompanion filesCompanion =

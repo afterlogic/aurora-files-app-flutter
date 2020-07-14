@@ -39,13 +39,19 @@ class _TextViewerState extends State<TextViewer> {
 
   Future _initTextViewer() async {
     file = widget.fileViewerState.file;
-    widget.fileViewerState.getPreviewText(
-      widget.password,
-      (String fileText) {
-        setState(() => previewText = fileText);
-      },
-      context,
-    );
+    if (AppStore.filesState.isOfflineMode) {
+      final fileText = String.fromCharCodes(
+          await widget.fileViewerState.decryptOfflineFile(widget.password));
+      setState(() => previewText = fileText);
+    } else {
+      widget.fileViewerState.getPreviewText(
+        widget.password,
+        (String fileText) {
+          setState(() => previewText = fileText);
+        },
+        context,
+      );
+    }
   }
 
   @override

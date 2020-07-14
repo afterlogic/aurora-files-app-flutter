@@ -44,8 +44,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     final path = nullablePath ?? "";
     final offlineFiles = await (select(files)
           ..where((file) => file.owner.equals(userEmail))
-          ..where((file) => file.type.equals(storageType))
-    )
+          ..where((file) => file.type.equals(storageType)))
         .get();
     // get files from subfolders to recreate folders structure
     final childFiles =
@@ -133,5 +132,12 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
 
   Future<int> updateFile(FilesCompanion file) {
     return into(files).insert(file, orReplace: true);
+  }
+
+  Future<List<LocalFile>> getFilesForStorage(String displayName) async {
+    return (select(files)
+          ..where((file) => file.owner.equals(userEmail))
+          ..where((file) => file.type.equals(storageType)))
+        .get();
   }
 }

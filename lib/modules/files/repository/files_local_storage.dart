@@ -114,7 +114,8 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getApplicationDocumentsDirectory();
-    final dartFile = new File("${dir.path}/offline/${file.guid}_${file.name}");
+    final dartFile = new File(
+        "${dir.path}/offline${file.path + (file.path.isNotEmpty ? "/" : "")}${file.guid}_${file.name}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {

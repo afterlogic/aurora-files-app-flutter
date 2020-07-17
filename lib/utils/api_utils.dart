@@ -193,7 +193,7 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
   return LocalFile(
     localId: null,
     id: rawFile["Id"],
-    guid: props != null ? props["GUID"] : Uuid().v4(),
+    guid: props != null ? (props["GUID"]?? Uuid().v4()) : Uuid().v4(),
     type: rawFile["Type"],
     localPath: null,
     path: rawFile["Path"],

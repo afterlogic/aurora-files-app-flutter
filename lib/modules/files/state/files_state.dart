@@ -662,7 +662,8 @@ abstract class _FilesState with Store {
     if (file.localId == null) {
       // if file exists in cache, just copy it to downloads folder
       final Directory dir = await getApplicationDocumentsDirectory();
-      final offlineDir = "${dir.path}/offline/${file.guid}_${file.name}";
+      final offlineDir =
+          "${dir.path}/offline${file.path + (file.path.isNotEmpty ? "/" : "")}${file.guid}_${file.name}";
       File fileForOffline = await _filesLocal.copyFromCache(file, offlineDir);
       if (fileForOffline != null && fileForOffline.lengthSync() == file.size) {
         final FilesCompanion filesCompanion =

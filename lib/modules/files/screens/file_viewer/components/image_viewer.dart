@@ -146,9 +146,7 @@ class _ImageViewerState extends State<ImageViewer> {
       return FutureBuilder(
         future:decryptFuture,
         builder: (context, snap) {
-          if (snap.data == null) {
-            return SizedBox.shrink();
-          } else if (snap.error != null) {
+         if (snap.error != null) {
             return Row(
               children: <Widget>[
                 Icon(Icons.error),
@@ -158,7 +156,9 @@ class _ImageViewerState extends State<ImageViewer> {
                 ),
               ],
             );
-          }
+          }  else if (snap.data == null) {
+           return SizedBox.shrink();
+         }
           return Image.memory(snap.data);
         },
       );

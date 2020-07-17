@@ -39,6 +39,7 @@ class InvalidKeyPassword extends Error {
 class _KeyRequestDialogState extends State<KeyRequestDialog> {
   final passCtrl = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  bool obscure = true;
   String error;
 
   @override
@@ -63,7 +64,21 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
                 }
                 return null;
               },
-              decoration: InputDecoration(labelText: s.password),
+              obscureText: obscure,
+              decoration: InputDecoration(
+                labelText: s.password,
+                suffixIcon: Padding(
+                  padding: EdgeInsets.only(top: 11),
+                  child: IconButton(
+                    icon: Icon(
+                      obscure ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() => obscure = !obscure);
+                    },
+                  ),
+                ),
+              ),
               controller: passCtrl,
             ),
           ),

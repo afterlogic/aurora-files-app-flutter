@@ -166,6 +166,11 @@ class EmailsInputState extends State<EmailsInput> {
     );
   }
 
+  void _deleteEmail(String email) {
+    setState(() => widget.emails.remove(email));
+    composeTypeAheadFieldKey.currentState.resize();
+  }
+
   Future _addEmail(String _email) async {
     final email = _email.replaceAll(" ", "");
     textCtrl.text = " ";
@@ -240,12 +245,37 @@ class EmailsInputState extends State<EmailsInput> {
                 controller: textCtrl,
                 focusNode: focusNode,
                 decoration: null,
+                onChanged: (value) {
+                  if (widget.emails.isNotEmpty && value.isEmpty) {
+                    textCtrl.text = " ";
+                    textCtrl.selection = TextSelection.collapsed(offset: 1);
+                    _deleteEmail(widget.emails.last);
+                  } else if (value.length > 1 && value.endsWith(" ")) {
+                    onSubmit();
+                  }
+                  lastSuggestions = [];
+                },
+                onEditingComplete: () {
+                  onSubmit();
+                },
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  onSubmit() {
+    if (lastSuggestions.isEmpty) {
+      if (isEmailValid(textCtrl.text.replaceAll(" ", ""))) {
+        _addEmail(textCtrl.text.replaceAll(" ", ""));
+        composeTypeAheadFieldKey.currentState.clear();
+      }
+    } else {
+      _addEmail(lastSuggestions.first.email);
+      composeTypeAheadFieldKey.currentState.clear();
+    }
   }
 }
 

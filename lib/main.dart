@@ -21,7 +21,10 @@ void main() {
   PlatformOverride.setPlatform(Platform.isIOS);
   DI.init();
 
-  runZoned(() {
-    runApp(LoggerView.wrap((App())));
-  }, onError: Crashlytics.instance.recordError);
+  runZoned(
+    () {
+      runApp(LoggerView.wrap((App())));
+    },
+    onError: Crashlytics.instance.recordError,
+  );
 }

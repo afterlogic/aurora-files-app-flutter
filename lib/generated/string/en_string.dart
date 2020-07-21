@@ -123,7 +123,7 @@ class EnString extends S {
   final String copy_public_link = "Copy public link";
   final String secure_sharing = "Secure sharing";
   final String has_PGP_public_key =
-      "Selected recipient has PGP public key. The file can be encrypted using this key.";
+      "Selected recipient has PGP public key. The data can be encrypted using this key.";
   final String has_no_PGP_public_key =
       "Selected recipient has no PGP public key. The key based encryption is not allowed.";
   final String encryption_type = "Encryption type:";
@@ -217,7 +217,7 @@ class EnString extends S {
   String sign_with_not_key(String data) =>
       "$data can't be signed because the private key has not been added.";
   final String invalid_password = "Invalid password";
-  final String sign_email = "Sign the email";
+  final String sign_email = "Add digital signature";
   final String sign_file_email = "Sign the file and email";
   final String data = "data";
   String sign_data_with_not_key(String data) =>

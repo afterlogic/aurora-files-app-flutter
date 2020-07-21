@@ -302,8 +302,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       s,
     );
     _file = preparedForShare.localFile;
-    await widget.filesState
-        .updateFile(getCompanionFromLocalFile(preparedForShare.localFile));
     setState(() {});
   }
 
@@ -410,7 +408,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         ? MdiIcons.exportVariant
                         : Icons.share),
                     tooltip: s.share,
-                    onPressed: () => _prepareShareFile(_shareFile),
+                    onPressed: () => _shareFile(
+                      PreparedForShare(
+                        File(widget.immutableFile.localPath),
+                        widget.immutableFile,
+                      ),
+                    ),
                   ),
                   if (!PlatformOverride.isIOS)
                     IconButton(
@@ -418,11 +421,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                       tooltip: s.download,
                       onPressed: _downloadFile,
                     ),
-                  IconButton(
-                    icon: Icon(Icons.airplanemode_inactive),
-                    tooltip: s.delete_from_offline,
-                    onPressed: _setFileForOffline,
-                  ),
                 ]
               : [
                   if (BuildProperty.secureSharingEnable)

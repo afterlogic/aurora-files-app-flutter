@@ -136,7 +136,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     Navigator.pop(context);
                   },
                 ),
-              if (BuildProperty.secureSharingEnable)
+              if (!offline && BuildProperty.secureSharingEnable)
                 ListTile(
                   leading: AssetIcon(
                     "lib/assets/svg/insert_link.svg",
@@ -145,7 +145,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   title: Text(s.secure_sharing),
                   onTap: _secureSharing,
                 ),
-              if (widget.file.type != "shared")
+              if (!offline && widget.file.type != "shared")
                 ListTile(
                   leading: Icon(PlatformOverride.isIOS
                       ? MdiIcons.exportVariant

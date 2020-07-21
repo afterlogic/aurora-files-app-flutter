@@ -9,7 +9,9 @@ void showSnack({
   isError = true,
 }) {
   if (Theme == null || scaffoldState == null) return;
-
+  if (isError) {
+    print(msg);
+  }
   final theme = Theme.of(context);
   final snack = theme.brightness == Brightness.light
       ? SnackBar(

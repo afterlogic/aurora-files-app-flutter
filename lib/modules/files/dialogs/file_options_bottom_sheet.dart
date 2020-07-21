@@ -80,7 +80,25 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
+    final storage = widget.file.type;
+    final isFolder = widget.file.isFolder;
     final offline = widget.filesState.isOfflineMode;
+    bool enableSecureLink() {
+      if (isFolder) {
+        return ["corporate", "personal"].contains(storage);
+      } else {
+        return storage != "shared";
+      }
+    }
+
+    bool enableTeamShare() {
+      if (isFolder) {
+        return storage == "personal";
+      } else {
+        return ["encrypted", "personal"].contains(storage);
+      }
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,8 +125,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   filesState: widget.filesState,
                   filesPageState: widget.filesPageState,
                 ),
-              if (!widget.file.isFolder && !offline) Divider(height: 0),
-              if (!widget.file.isFolder)
+              if (!isFolder && !offline) Divider(height: 0),
+              if (!isFolder)
                 ListTile(
                   onTap: () => onItemSelected(
                       FileOptionsBottomSheetResult.toggleOffline),
@@ -124,9 +142,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               Divider(height: 0),
               if (!offline)
                 ListTile(
-                  leading: Icon(widget.file.isFolder
-                      ? MdiIcons.folderMove
-                      : MdiIcons.fileMove),
+                  leading:
+                      Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove),
                   title: Text(s.copy_or_move),
                   onTap: () {
                     widget.filesState.updateFilesCb =
@@ -136,7 +153,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     Navigator.pop(context);
                   },
                 ),
-              if (!offline && BuildProperty.secureSharingEnable)
+              if (!offline &&
+                  BuildProperty.secureSharingEnable &&
+                  enableSecureLink())
                 ListTile(
                   leading: AssetIcon(
                     "lib/assets/svg/insert_link.svg",
@@ -145,7 +164,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   title: Text(s.secure_sharing),
                   onTap: _secureSharing,
                 ),
-              if (!offline && widget.file.type != "shared")
+              if (!offline && enableTeamShare())
                 ListTile(
                   leading: Icon(PlatformOverride.isIOS
                       ? MdiIcons.exportVariant
@@ -160,7 +179,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     ),
                   ),
                 ),
-              if (!widget.file.isFolder)
+              if (!isFolder)
                 ListTile(
                   leading: Icon(PlatformOverride.isIOS
                       ? MdiIcons.exportVariant
@@ -168,7 +187,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   title: Text(s.share),
                   onTap: _shareFile,
                 ),
-              if (!PlatformOverride.isIOS && !widget.file.isFolder)
+              if (!PlatformOverride.isIOS && !isFolder)
                 ListTile(
                   leading: Icon(Icons.file_download),
                   title: Text(s.download),
@@ -189,9 +208,6 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                         filesPageState: widget.filesPageState,
                       ),
                     );
-                    if (result is String) {
-                      widget.filesPageState.onGetFiles();
-                    }
                   },
                 ),
               if (!offline)

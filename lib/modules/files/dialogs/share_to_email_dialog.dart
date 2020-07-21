@@ -116,38 +116,40 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
       title: Text(s.btn_share_to_email),
       content: SizedBox(
         width: double.infinity,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            EmailsInput(
-              searchContact,
-              canSee,
-              !progress,
-              canSeeKey,
-              pgpKeysEmail,
-              s.input_who_cas_see,
-            ),
-            SizedBox(height: 20),
-            EmailsInput(
-              searchContact,
-              canEdit,
-              !progress,
-              canEditKey,
-              pgpKeysEmail,
-              s.input_who_cas_edit,
-            ),
-            if (widget.file.isFolder) SizedBox(height: 20),
-            if (widget.file.isFolder)
-              Text(
-                s.hint_share_folder,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              EmailsInput(
+                searchContact,
+                canSee,
+                !progress,
+                canSeeKey,
+                pgpKeysEmail,
+                s.input_who_cas_see,
               ),
-            if (error != null) SizedBox(height: 20),
-            if (error != null)
-              Text(
-                error,
-                style: TextStyle(color: Colors.red),
+              SizedBox(height: 20),
+              EmailsInput(
+                searchContact,
+                canEdit,
+                !progress,
+                canEditKey,
+                pgpKeysEmail,
+                s.input_who_cas_edit,
               ),
-          ],
+              if (widget.file.isFolder) SizedBox(height: 20),
+              if (widget.file.isFolder)
+                Text(
+                  s.hint_share_folder,
+                ),
+              if (error != null) SizedBox(height: 20),
+              if (error != null)
+                Text(
+                  error,
+                  style: TextStyle(color: Colors.red),
+                ),
+            ],
+          ),
         ),
       ),
       actions: [

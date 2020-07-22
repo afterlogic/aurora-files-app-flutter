@@ -197,7 +197,7 @@ class _FileWidgetState extends State<FileWidget> {
     }
   }
 
-  void _openFile(BuildContext context) {
+  void _openFile(BuildContext context) async {
     // TODO enable opening ZIP files for Aurora
     if (false && widget.file.isOpenable) {
       Navigator.pushNamed(
@@ -209,7 +209,7 @@ class _FileWidgetState extends State<FileWidget> {
         ),
       );
     } else {
-      Navigator.pushNamed(
+      final file = await Navigator.pushNamed(
         context,
         FileViewerRoute.name,
         arguments: FileViewerScreenArguments(
@@ -221,6 +221,12 @@ class _FileWidgetState extends State<FileWidget> {
           filesPageState: _filesPageState,
         ),
       );
+      for (var i = 0; i < _filesPageState.currentFiles.length; i++) {
+        if (_filesPageState.currentFiles[i].id == widget.file.id) {
+          _filesPageState.currentFiles[i] = file;
+          break;
+        }
+      }
     }
   }
 

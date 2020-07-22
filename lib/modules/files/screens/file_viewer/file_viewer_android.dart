@@ -385,171 +385,195 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
+    final storage = widget.immutableFile.type;
+    final isFolder = widget.immutableFile.isFolder;
     final theme = Theme.of(context);
-    return MultiProvider(
-      providers: [
-        Provider<FilesState>(
-          create: (_) => widget.filesState,
-        ),
-        Provider<FilesPageState>(
-          create: (_) => widget.filesPageState,
-        ),
-        Provider<AuthState>(
-          create: (_) => AppStore.authState,
-        ),
-      ],
-      child: Scaffold(
-        key: _fileViewerScaffoldKey,
-        appBar: AMAppBar(
-          actions: widget.filesState.isOfflineMode
-              ? [
-                  IconButton(
-                    icon: Icon(PlatformOverride.isIOS
-                        ? MdiIcons.exportVariant
-                        : Icons.share),
-                    tooltip: s.share,
-                    onPressed: () => _shareFile(
-                      PreparedForShare(
-                        File(widget.immutableFile.localPath),
-                        widget.immutableFile,
-                      ),
-                    ),
-                  ),
-                  if (!PlatformOverride.isIOS)
+    bool enableSecureLink() {
+      if (isFolder) {
+        return ["corporate", "personal"].contains(storage);
+      } else {
+        return storage != "shared";
+      }
+    }
+
+    bool enableTeamShare() {
+      if (isFolder) {
+        return storage == "personal";
+      } else {
+        return ["encrypted", "personal"].contains(storage);
+      }
+    }
+
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, _file);
+        return false;
+      },
+      child: MultiProvider(
+        providers: [
+          Provider<FilesState>(
+            create: (_) => widget.filesState,
+          ),
+          Provider<FilesPageState>(
+            create: (_) => widget.filesPageState,
+          ),
+          Provider<AuthState>(
+            create: (_) => AppStore.authState,
+          ),
+        ],
+        child: Scaffold(
+          key: _fileViewerScaffoldKey,
+          appBar: AMAppBar(
+            actions: widget.filesState.isOfflineMode
+                ? [
                     IconButton(
-                      icon: Icon(Icons.file_download),
-                      tooltip: s.download,
-                      onPressed: _downloadFile,
-                    ),
-                ]
-              : [
-                  if (BuildProperty.secureSharingEnable)
-                    IconButton(
-                      icon: AssetIcon(
-                        "lib/assets/svg/insert_link.svg",
-                        addedSize: 14,
-                      ),
-                      tooltip: s.secure_sharing,
-                      onPressed: _secureSharing,
-                    ),
-                  if (_file.downloadUrl != null && !PlatformOverride.isIOS)
-                    IconButton(
-                      icon: Icon(Icons.file_download),
-                      tooltip: s.download,
-                      onPressed: _downloadFile,
-                    ),
-                  IconButton(
-                    icon: Icon(Icons.delete_outline),
-                    tooltip: s.delete_file,
-                    onPressed: _deleteFile,
-                  ),
-                  PopupMenuButton<Function>(
-                    onSelected: (fn) => fn(),
-                    itemBuilder: (BuildContext context) => [
-                      PopupMenuItem(
-                        value: () => _prepareShareFile(_shareFile),
-                        child: ListTile(
-                          leading: Icon(PlatformOverride.isIOS
-                              ? MdiIcons.exportVariant
-                              : Icons.share),
-                          title: Text(s.share),
+                      icon: Icon(PlatformOverride.isIOS
+                          ? MdiIcons.exportVariant
+                          : Icons.share),
+                      tooltip: s.share,
+                      onPressed: () => _shareFile(
+                        PreparedForShare(
+                          File(widget.immutableFile.localPath),
+                          widget.immutableFile,
                         ),
                       ),
-                      if (_file.type != "shared")
+                    ),
+                    if (!PlatformOverride.isIOS)
+                      IconButton(
+                        icon: Icon(Icons.file_download),
+                        tooltip: s.download,
+                        onPressed: _downloadFile,
+                      ),
+                  ]
+                : [
+                    if (BuildProperty.secureSharingEnable && enableSecureLink())
+                      IconButton(
+                        icon: AssetIcon(
+                          "lib/assets/svg/insert_link.svg",
+                          addedSize: 14,
+                        ),
+                        tooltip: s.secure_sharing,
+                        onPressed: _secureSharing,
+                      ),
+                    if (_file.downloadUrl != null && !PlatformOverride.isIOS)
+                      IconButton(
+                        icon: Icon(Icons.file_download),
+                        tooltip: s.download,
+                        onPressed: _downloadFile,
+                      ),
+                    IconButton(
+                      icon: Icon(Icons.delete_outline),
+                      tooltip: s.delete_file,
+                      onPressed: _deleteFile,
+                    ),
+                    PopupMenuButton<Function>(
+                      onSelected: (fn) => fn(),
+                      itemBuilder: (BuildContext context) => [
                         PopupMenuItem(
-                          value: () => AMDialog.show(
-                            context: context,
-                            builder: (_) => ShareToEmailDialog(
-                              widget.filesState,
-                              _file,
-                              context,
-                            ),
-                          ),
+                          value: () => _prepareShareFile(_shareFile),
                           child: ListTile(
                             leading: Icon(PlatformOverride.isIOS
                                 ? MdiIcons.exportVariant
                                 : Icons.share),
-                            title: Text(s.btn_share_to_email),
+                            title: Text(s.share),
                           ),
                         ),
-                      PopupMenuItem(
-                        value: _moveFile,
-                        child: ListTile(
-                          leading: Icon(MdiIcons.fileMove),
-                          title: Text(s.copy_or_move),
+                        if (enableTeamShare())
+                          PopupMenuItem(
+                            value: () => AMDialog.show(
+                              context: context,
+                              builder: (_) => ShareToEmailDialog(
+                                widget.filesState,
+                                _file,
+                                context,
+                              ),
+                            ),
+                            child: ListTile(
+                              leading: Icon(PlatformOverride.isIOS
+                                  ? MdiIcons.exportVariant
+                                  : Icons.share),
+                              title: Text(s.btn_share_to_email),
+                            ),
+                          ),
+                        PopupMenuItem(
+                          value: _moveFile,
+                          child: ListTile(
+                            leading: Icon(MdiIcons.fileMove),
+                            title: Text(s.copy_or_move),
+                          ),
                         ),
-                      ),
-                      PopupMenuItem(
-                        value: _renameFile,
-                        child: ListTile(
-                          leading: Icon(Icons.edit),
-                          title: Text(s.rename),
+                        PopupMenuItem(
+                          value: _renameFile,
+                          child: ListTile(
+                            leading: Icon(Icons.edit),
+                            title: Text(s.rename),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  ],
+          ),
+          body: ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30.0),
+                child: _getPreviewContent(),
+              ),
+              InfoListTile(
+                label: s.filename,
+                content: _file.name,
+                isPublic: _file.published,
+                isOffline: _file.localId != null,
+                isEncrypted: _file.initVector != null,
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: InfoListTile(
+                        label: s.size, content: filesize(_file.size)),
                   ),
-                ],
-        ),
-        body: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30.0),
-              child: _getPreviewContent(),
-            ),
-            InfoListTile(
-              label: s.filename,
-              content: _file.name,
-              isPublic: _file.published,
-              isOffline: _file.localId != null,
-              isEncrypted: _file.initVector != null,
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: InfoListTile(
-                      label: s.size, content: filesize(_file.size)),
-                ),
-                SizedBox(width: 30),
-                Expanded(
-                  child: InfoListTile(
-                    label: s.created,
-                    content: DateFormatting.formatDateFromSeconds(
-                      timestamp: _file.lastModified,
+                  SizedBox(width: 30),
+                  Expanded(
+                    child: InfoListTile(
+                      label: s.created,
+                      content: DateFormatting.formatDateFromSeconds(
+                        timestamp: _file.lastModified,
+                      ),
                     ),
                   ),
+                ],
+              ),
+              InfoListTile(
+                  label: s.location,
+                  content: _file.path == "" ? "/" : _file.path),
+              InfoListTile(label: s.owner, content: _file.owner),
+              if (!widget.filesState.isOfflineMode &&
+                  !BuildProperty.secureSharingEnable)
+                PublicLinkSwitch(
+                  file: _file,
+                  isFileViewer: true,
+                  updateFile: _updateFile,
+                  scaffoldKey: _fileViewerScaffoldKey,
                 ),
-              ],
-            ),
-            InfoListTile(
-                label: s.location,
-                content: _file.path == "" ? "/" : _file.path),
-            InfoListTile(label: s.owner, content: _file.owner),
-            if (!widget.filesState.isOfflineMode &&
-                !BuildProperty.secureSharingEnable)
-              PublicLinkSwitch(
-                file: _file,
-                isFileViewer: true,
-                updateFile: _updateFile,
-                scaffoldKey: _fileViewerScaffoldKey,
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                onTap: _isSyncingForOffline ? null : _setFileForOffline,
+                leading: Icon(Icons.airplanemode_active),
+                title: Text(s.offline),
+                trailing: Switch.adaptive(
+                  value: _isFileOffline,
+                  activeColor: Theme.of(context).accentColor,
+                  onChanged: _isSyncingForOffline
+                      ? null
+                      : (bool val) => _setFileForOffline(),
+                ),
               ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              onTap: _isSyncingForOffline ? null : _setFileForOffline,
-              leading: Icon(Icons.airplanemode_active),
-              title: Text(s.offline),
-              trailing: Switch.adaptive(
-                value: _isFileOffline,
-                activeColor: Theme.of(context).accentColor,
-                onChanged: _isSyncingForOffline
-                    ? null
-                    : (bool val) => _setFileForOffline(),
-              ),
-            ),
-            SizedBox(
-              height: 16.0 + MediaQuery.of(context).padding.bottom,
-            )
-          ],
+              SizedBox(
+                height: 16.0 + MediaQuery.of(context).padding.bottom,
+              )
+            ],
+          ),
         ),
       ),
     );

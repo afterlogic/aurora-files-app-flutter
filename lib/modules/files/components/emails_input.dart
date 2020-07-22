@@ -189,78 +189,81 @@ class EmailsInputState extends State<EmailsInput> {
     final screenWidth = MediaQuery.of(context).size.width;
     final dropDownWidth = screenWidth / 1.25;
 
-    return GestureDetector(
-      onTap: focusNode.requestFocus,
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: widget.label,
-          contentPadding: EdgeInsets.all(8),
-          border: OutlineInputBorder(gapPadding: 0),
-        ),
-        expands: false,
-        child: Wrap(
-          spacing: 8,
-          children: <Widget>[
-            ...widget.emails.map((e) {
-              return EmailItem(
-                email: e,
-                onDelete: (e) => setState(() => widget.emails.remove(e)),
-              );
-            }),
-            if (widget.emails.isNotEmpty) SizedBox(height: 8),
-            ComposeTypeAheadField<Recipient>(
-              key: composeTypeAheadFieldKey,
-              textFieldConfiguration: TextFieldConfiguration(
-                focusNode: focusNode,
-                enabled: true,
-                controller: textCtrl,
-              ),
-              animationDuration: Duration.zero,
-              suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                color: theme.cardColor,
-                constraints: BoxConstraints(
-                  minWidth: dropDownWidth,
-                  maxWidth: dropDownWidth,
+    return Padding(
+      padding: EdgeInsets.only(top: 4),
+      child: GestureDetector(
+        onTap: focusNode.requestFocus,
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: widget.label,
+            contentPadding: EdgeInsets.all(8),
+            border: OutlineInputBorder(gapPadding: 0),
+          ),
+          expands: false,
+          child: Wrap(
+            spacing: 8,
+            children: <Widget>[
+              ...widget.emails.map((e) {
+                return EmailItem(
+                  email: e,
+                  onDelete: (e) => setState(() => widget.emails.remove(e)),
+                );
+              }),
+              if (widget.emails.isNotEmpty) SizedBox(height: 8),
+              ComposeTypeAheadField<Recipient>(
+                key: composeTypeAheadFieldKey,
+                textFieldConfiguration: TextFieldConfiguration(
+                  focusNode: focusNode,
+                  enabled: true,
+                  controller: textCtrl,
+                ),
+                animationDuration: Duration.zero,
+                suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                  color: theme.cardColor,
+                  constraints: BoxConstraints(
+                    minWidth: dropDownWidth,
+                    maxWidth: dropDownWidth,
+                  ),
+                ),
+                suggestionsBoxVerticalOffset: 0.0,
+                suggestionsBoxHorizontalOffset:
+                    screenWidth - dropDownWidth - 16 * 2,
+                autoFlipDirection: true,
+                hideOnLoading: true,
+                keepSuggestionsOnLoading: true,
+                getImmediateSuggestions: true,
+                noItemsFoundBuilder: (_) => SizedBox(),
+                suggestionsCallback: (pattern) async => search(pattern),
+                itemBuilder: (_, c) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: recipientWidget(c),
+                  );
+                },
+                onSuggestionSelected: (c) {
+                  return _addEmail(c.email);
+                },
+                child: TextField(
+                  controller: textCtrl,
+                  focusNode: focusNode,
+                  decoration: null,
+                  onChanged: (value) {
+                    if (widget.emails.isNotEmpty && value.isEmpty) {
+                      textCtrl.text = " ";
+                      textCtrl.selection = TextSelection.collapsed(offset: 1);
+                      _deleteEmail(widget.emails.last);
+                    } else if (value.length > 1 && value.endsWith(" ")) {
+                      onSubmit();
+                    }
+                    lastSuggestions = [];
+                  },
+                  onEditingComplete: () {
+                    onSubmit();
+                  },
                 ),
               ),
-              suggestionsBoxVerticalOffset: 0.0,
-              suggestionsBoxHorizontalOffset:
-                  screenWidth - dropDownWidth - 16 * 2,
-              autoFlipDirection: true,
-              hideOnLoading: true,
-              keepSuggestionsOnLoading: true,
-              getImmediateSuggestions: true,
-              noItemsFoundBuilder: (_) => SizedBox(),
-              suggestionsCallback: (pattern) async => search(pattern),
-              itemBuilder: (_, c) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: recipientWidget(c),
-                );
-              },
-              onSuggestionSelected: (c) {
-                return _addEmail(c.email);
-              },
-              child: TextField(
-                controller: textCtrl,
-                focusNode: focusNode,
-                decoration: null,
-                onChanged: (value) {
-                  if (widget.emails.isNotEmpty && value.isEmpty) {
-                    textCtrl.text = " ";
-                    textCtrl.selection = TextSelection.collapsed(offset: 1);
-                    _deleteEmail(widget.emails.last);
-                  } else if (value.length > 1 && value.endsWith(" ")) {
-                    onSubmit();
-                  }
-                  lastSuggestions = [];
-                },
-                onEditingComplete: () {
-                  onSubmit();
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

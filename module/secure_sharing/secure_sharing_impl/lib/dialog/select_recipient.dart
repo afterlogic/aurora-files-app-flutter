@@ -118,16 +118,12 @@ class _SelectRecipientState extends State<SelectRecipient> {
       }
 
       return [
-        if (PlatformOverride.isIOS)
-          SizedBox(
-            height: 10,
-          ),
         Text(
           s.select_recipient,
           style: theme.textTheme.subtitle,
         ),
         SizedBox(
-          height: 10,
+          height: 2,
         ),
         Expanded(
           child: ListView.separated(

@@ -103,7 +103,7 @@ abstract class _FileViewerState with Store {
           file.viewUrl,
           file,
           processingFile,
-          file.encryptedDecryptionKey != null,
+          file.initVector != null,
           password,
           onSuccess: (_) {
             fileWithContents = fileToView;
@@ -140,7 +140,7 @@ abstract class _FileViewerState with Store {
     // if no cache, get file
 
     try {
-      final File imageToView = file.encryptedDecryptionKey != null
+      final File imageToView = file.initVector != null
           ? await MemoryFileSystem().file(file.name).create()
           : await _filesLocal.createImageCacheFile(file);
       await _getPreviewFile(password, imageToView, context);

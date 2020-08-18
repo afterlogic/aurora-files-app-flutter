@@ -497,6 +497,10 @@ abstract class _FilesState with Store {
     }
     try {
       if (file.initVector != null &&
+          AppStore.settingsState.currentKey == null) {
+        throw CustomException("You need an encryption key to download files.");
+      }
+      if (file.encryptedDecryptionKey != null &&
           !(await PgpKeyUtil.instance.hasUserKey())) {
         throw CustomException("You need an encryption key to download files.");
       }

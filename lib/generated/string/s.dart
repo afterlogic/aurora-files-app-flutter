@@ -96,6 +96,7 @@ abstract class S {
   String downloading(String name);
   String get set_any_encryption_key;
   String get need_an_encryption_to_share;
+  String get need_an_encryption_to_download;
   String get search;
   String get add_folder;
   String get move_file_or_folder;
@@ -239,4 +240,7 @@ abstract class S {
   String get input_who_cas_edit;
   String get btn_show_encrypt;
   String get label_store_password_in_session;
+  String get btn_enable_backward_compatibility;
+  String get error_backward_compatibility_sharing_not_supported;
+  String get hint_backward_compatibility_aes_key;
 }

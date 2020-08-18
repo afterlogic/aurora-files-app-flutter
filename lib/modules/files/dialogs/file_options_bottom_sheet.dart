@@ -29,6 +29,7 @@ enum FileOptionsBottomSheetResult {
   toggleOffline,
   download,
   cantShare,
+  cantDownload,
 }
 
 class FileOptionsBottomSheet extends StatefulWidget {
@@ -52,10 +53,31 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
   S s;
   SecureSharing secureSharing = DI.get();
 
+  void _download() async {
+    bool canDownload = true;
+    if (widget.file.initVector != null) {
+      if (widget.file.encryptedDecryptionKey != null) {
+        canDownload = await PgpKeyUtil.instance.hasUserKey();
+      } else {
+        canDownload = AppStore.settingsState.currentKey != null;
+      }
+    }
+    if (canDownload) {
+      onItemSelected(FileOptionsBottomSheetResult.download);
+    } else {
+      onItemSelected(FileOptionsBottomSheetResult.cantDownload);
+    }
+  }
+
   void _shareFile() async {
-    final hasDecryptKey = await PgpKeyUtil.instance.hasUserKey();
-    final hasVector = widget.file.initVector != null;
-    final canDownload = !(hasVector && !hasDecryptKey);
+    bool canDownload = true;
+    if (widget.file.initVector != null) {
+      if (widget.file.encryptedDecryptionKey != null) {
+        canDownload = await PgpKeyUtil.instance.hasUserKey();
+      } else {
+        canDownload = AppStore.settingsState.currentKey != null;
+      }
+    }
     if (canDownload) {
       Navigator.pop(context);
       final result = await AMDialog.show(
@@ -170,14 +192,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                       ? MdiIcons.exportVariant
                       : Icons.share),
                   title: Text(s.btn_share_to_email),
-                  onTap: () => AMDialog.show(
-                    context: context,
-                    builder: (_) => ShareToEmailDialog(
-                      widget.filesState,
-                      widget.file,
-                      context,
-                    ),
-                  ),
+                  onTap: _shareWithTeammates,
                 ),
               if (!isFolder)
                 ListTile(
@@ -191,8 +206,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 ListTile(
                   leading: Icon(Icons.file_download),
                   title: Text(s.download),
-                  onTap: () =>
-                      onItemSelected(FileOptionsBottomSheetResult.download),
+                  onTap: _download,
                 ),
               if (!offline)
                 ListTile(
@@ -243,8 +257,21 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
   }
 
   _secureSharing() async {
-    if (widget.file.published == false &&
-        widget.file.encryptedDecryptionKey != null) {
+    if (widget.file.published == false && widget.file.initVector != null) {
+      if (widget.file.encryptedDecryptionKey == null) {
+        return AMDialog.show(
+          context: context,
+          builder: (_) => AMDialog(
+            content: Text(s.error_backward_compatibility_sharing_not_supported),
+            actions: [
+              FlatButton(
+                child: Text(s.oK),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+      }
       return _secureEncryptSharing(PreparedForShare(null, widget.file));
     }
     final preparedForShare = PreparedForShare(null, widget.file);
@@ -286,5 +313,32 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       s,
     );
     setState(() {});
+  }
+
+  _shareWithTeammates() {
+    if (widget.file.initVector != null &&
+        widget.file.encryptedDecryptionKey == null) {
+      return AMDialog.show(
+        context: context,
+        builder: (_) => AMDialog(
+          content: Text(s.error_backward_compatibility_sharing_not_supported),
+          actions: [
+            FlatButton(
+              child: Text(s.oK),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      );
+    } else {
+      AMDialog.show(
+        context: context,
+        builder: (_) => ShareToEmailDialog(
+          widget.filesState,
+          widget.file,
+          context,
+        ),
+      );
+    }
   }
 }

@@ -89,6 +89,7 @@
   "downloading": "Downloading $name",
   "set_any_encryption_key": "You have enabled encryption of uploaded files but haven't set any encryption key.",
   "need_an_encryption_to_share": "You need an encryption key to share files.",
+  "need_an_encryption_to_download": "You need an encryption key to download files.",
   "search": "Search",
   "add_folder": "Add folder",
   "move_file_or_folder": "Move files/folders",
@@ -231,5 +232,8 @@
   "input_who_cas_see": "Who can see",
   "input_who_cas_edit": "Who can edit",
   "btn_show_encrypt": "Show",
-  "label_store_password_in_session": "Store OpenPGP key password within a session"
+  "label_store_password_in_session": "Store OpenPGP key password within a session",
+  "btn_enable_backward_compatibility": "Enable backward compatibility",
+  "error_backward_compatibility_sharing_not_supported": "The sharing of this file is not supported. The file is encrypted using the old encryption mode. The file must be uploaded and encrypted using the modern encryption mode. Please download and upload the file again.",
+  "hint_backward_compatibility_aes_key": "The AES key will be used only to decrypt the files that are encrypted using the old encryption mode. The new files will be encrypted using modern encryption mode."
 }

@@ -283,9 +283,49 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
   }
 
+  _shareWithTeammates() {
+    if (widget.immutableFile.initVector != null &&
+        widget.immutableFile.encryptedDecryptionKey == null) {
+      return AMDialog.show(
+        context: context,
+        builder: (_) => AMDialog(
+          content: Text(s.error_backward_compatibility_sharing_not_supported),
+          actions: [
+            FlatButton(
+              child: Text(s.oK),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return AMDialog.show(
+        context: context,
+        builder: (_) => ShareToEmailDialog(
+          widget.filesState,
+          _file,
+          context,
+        ),
+      );
+    }
+  }
+
   _secureSharing() async {
-    if (_file.published == false &&
-        widget.immutableFile.encryptedDecryptionKey != null) {
+    if (_file.published == false && widget.immutableFile.initVector != null) {
+      if (widget.immutableFile.encryptedDecryptionKey == null) {
+        return AMDialog.show(
+          context: context,
+          builder: (_) => AMDialog(
+            content: Text(s.error_backward_compatibility_sharing_not_supported),
+            actions: [
+              FlatButton(
+                child: Text(s.oK),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+      }
       return _secureEncryptSharing(PreparedForShare(null, _file));
     }
     final preparedForShare = PreparedForShare(null, _file);
@@ -340,11 +380,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             FlatButton(
               child: Text(s.btn_show_encrypt),
               onPressed: () async {
-                password = await KeyRequestDialog.request(context);
-                if (password != null) {
-                  _showEncrypt = true;
-                  setState(() {});
+                if (widget.immutableFile.encryptedDecryptionKey != null) {
+                  password = await KeyRequestDialog.request(context);
+                  if (password == null) return;
                 }
+                _showEncrypt = true;
+                setState(() {});
               },
             )
         ],
@@ -480,14 +521,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         ),
                         if (enableTeamShare())
                           PopupMenuItem(
-                            value: () => AMDialog.show(
-                              context: context,
-                              builder: (_) => ShareToEmailDialog(
-                                widget.filesState,
-                                _file,
-                                context,
-                              ),
-                            ),
+                            value: _shareWithTeammates,
                             child: ListTile(
                               leading: Icon(PlatformOverride.isIOS
                                   ? MdiIcons.exportVariant

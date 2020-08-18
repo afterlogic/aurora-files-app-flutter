@@ -100,9 +100,18 @@ class _FileWidgetState extends State<FileWidget> {
       case FileOptionsBottomSheetResult.cantShare:
         _cantShareMessage();
         break;
+      case FileOptionsBottomSheetResult.cantDownload:
+        _cantDownloadMessage();
+        break;
     }
   }
-
+  void _cantDownloadMessage() {
+    showSnack(
+      context: context,
+      scaffoldState: _filesPageState.scaffoldKey.currentState,
+      msg: s.need_an_encryption_to_download,
+    );
+  }
   void _cantShareMessage() {
     showSnack(
       context: context,
@@ -112,14 +121,22 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _openEncryptedFile(BuildContext context) async {
-    if (!await PgpKeyUtil.instance.hasUserKey()) {
-      showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: s.set_any_encryption_key);
+    if (widget.file.encryptedDecryptionKey == null) {
+      if (AppStore.settingsState.selectedKeyName == null) {
+        return showSnack(
+            context: context,
+            scaffoldState: _filesPageState.scaffoldKey.currentState,
+            msg: s.set_any_encryption_key);
+      }
     } else {
-      _openFile(context);
+      if (!await PgpKeyUtil.instance.hasUserKey()) {
+        return showSnack(
+            context: context,
+            scaffoldState: _filesPageState.scaffoldKey.currentState,
+            msg: s.set_any_encryption_key);
+      }
     }
+    _openFile(context);
   }
 
   void _downloadFile() {

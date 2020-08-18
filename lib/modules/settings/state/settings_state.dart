@@ -33,7 +33,7 @@ abstract class _SettingsState with Store {
   @observable
   String selectedKeyName;
 
-//  String get currentKey => encryptionKeys[selectedKeyName];
+  String get currentKey => encryptionKeys[selectedKeyName];
 
   Future<bool> getUserEncryptionKeys() async {
     try {

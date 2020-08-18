@@ -113,6 +113,8 @@ class EnString extends S {
       "You have enabled encryption of uploaded files but haven't set any encryption key.";
   final String need_an_encryption_to_share =
       "You need an encryption key to share files.";
+  final String need_an_encryption_to_download =
+      "You need an encryption key to download files.";
   final String search = "Search";
   final String add_folder = "Add folder";
   final String move_file_or_folder = "Move files/folders";
@@ -286,4 +288,10 @@ class EnString extends S {
   final String btn_show_encrypt = "Show";
   final String label_store_password_in_session =
       "Store OpenPGP key password within a session";
+  final String btn_enable_backward_compatibility =
+      "Enable backward compatibility";
+  final String error_backward_compatibility_sharing_not_supported =
+      "The sharing of this file is not supported. The file is encrypted using the old encryption mode. The file must be uploaded and encrypted using the modern encryption mode. Please download and upload the file again.";
+  final String hint_backward_compatibility_aes_key =
+      "The AES key will be used only to decrypt the files that are encrypted using the old encryption mode. The new files will be encrypted using modern encryption mode.";
 }

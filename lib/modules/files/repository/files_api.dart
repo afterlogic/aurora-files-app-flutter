@@ -278,15 +278,16 @@ class FilesApi {
       if (response.isRedirect) {
         // redirect manually with different headers
         return await getFileContentsFromServer(
-            response.headers.value("location"),
-            file,
-            processingFile,
-            shouldDecrypt,
-            keyPassword,
-            updateViewerProgress: updateViewerProgress,
-            onSuccess: onSuccess,
-            onError: onError,
-            isRedirect: true);
+          response.headers.value("location"),
+          file,
+          processingFile,
+          shouldDecrypt,
+          keyPassword,
+          updateViewerProgress: updateViewerProgress,
+          onSuccess: onSuccess,
+          onError: onError,
+          isRedirect: true,
+        );
       }
       // temporary buffer, which can hold not more than aes.chunkMaxSize
       List<int> fileBytesBuffer = new List();
@@ -294,14 +295,19 @@ class FilesApi {
       // set initial vector that comes with the LocalFile object that we get from our api
       String decryptKey;
       if (shouldDecrypt) {
-        decryptKey = keyPassword;
         IV iv = IV.fromBase16(file.initVector);
         processingFile.ivBase64 = iv.base64;
-        decryptKey = await PgpKeyUtil.instance.userDecrypt(
-            file.type == "shared"
-                ? jsonDecode(file.extendedProps)["ParanoidKeyShared"]
-                : file.encryptedDecryptionKey,
-            decryptKey);
+        if (file.encryptedDecryptionKey != null) {
+          decryptKey = keyPassword;
+          decryptKey = await PgpKeyUtil.instance.userDecrypt(
+              file.type == "shared"
+                  ? jsonDecode(file.extendedProps)["ParanoidKeyShared"]
+                  : file.encryptedDecryptionKey,
+              decryptKey);
+          decryptKey = decryptKey.replaceAll("�", "");
+        } else {
+          decryptKey = AppStore.settingsState.currentKey;
+        }
       }
 
       int progress = 0;
@@ -379,7 +385,7 @@ class FilesApi {
       ProcessingFile processingFile, bool isLast, String decryptKey) async {
     // if encrypted - decrypt
     if (initVector != null) {
-      final key = prefixEncrypt.Key.fromBase16(decryptKey.replaceAll("�", ""));
+      final key = prefixEncrypt.Key.fromBase16(decryptKey);
       final decrypted = await aes.decrypt(
           fileBytes, key.base64, processingFile.ivBase64, isLast);
       await processingFile.fileOnDevice

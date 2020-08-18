@@ -58,7 +58,7 @@ dependencies:
   shimmer:
   cached_network_image:
   percent_indicator:
-  flutter_svg:
+  flutter_svg: 0.18.0
   #  fluttertoast: 3.0.5
 
   # misc

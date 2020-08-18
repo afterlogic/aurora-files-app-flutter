@@ -46,7 +46,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     _authState.emailCtrl.text = _authState.userEmail;
     _authState.passwordCtrl.text = "";
     if (kDebugMode) {
-//      _authState.hostCtrl.text = AuthData.host;
+      _authState.hostCtrl.text = AuthData.host;
       _authState.emailCtrl.text = AuthData.email;
       _authState.passwordCtrl.text = AuthData.password;
     }

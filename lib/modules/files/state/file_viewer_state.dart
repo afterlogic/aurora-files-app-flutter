@@ -48,12 +48,18 @@ abstract class _FileViewerState with Store {
 
   Future<Uint8List> decryptOfflineFile(String password) async {
     IV iv = IV.fromBase16(file.initVector);
-    String decryptKey = await PgpKeyUtil.instance.userDecrypt(
-        file.type == "shared"
-            ? jsonDecode(file.extendedProps)["ParanoidKeyShared"]
-            : file.encryptedDecryptionKey,
-        password);
-    final key = prefixEncrypt.Key.fromBase16(decryptKey.replaceAll("�", ""));
+    String decryptKey;
+    if (file.encryptedDecryptionKey != null) {
+      decryptKey = await PgpKeyUtil.instance.userDecrypt(
+          file.type == "shared"
+              ? jsonDecode(file.extendedProps)["ParanoidKeyShared"]
+              : file.encryptedDecryptionKey,
+          password);
+      decryptKey.replaceAll("�", "");
+    } else {
+      decryptKey = AppStore.settingsState.currentKey;
+    }
+    final key = prefixEncrypt.Key.fromBase16(decryptKey);
     final decrypted = await aes.decrypt(
       await fileWithContents.readAsBytes(),
       key.base64,

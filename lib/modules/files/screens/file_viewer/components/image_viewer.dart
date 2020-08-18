@@ -45,7 +45,7 @@ class _ImageViewerState extends State<ImageViewer> {
             _fileViewerState.getPreviewImage(
                 widget.password, (err) => showError(err), context),
       );
-    } else if (_fileViewerState.file.encryptedDecryptionKey != null) {
+    } else if (_fileViewerState.file.initVector != null) {
       decryptFuture = _fileViewerState.decryptOfflineFile(widget.password);
     }
   }
@@ -142,7 +142,7 @@ class _ImageViewerState extends State<ImageViewer> {
   }
 
   Widget _buildOfflineImage() {
-    if (_fileViewerState.file.encryptedDecryptionKey != null) {
+    if (_fileViewerState.file.initVector != null) {
       return FutureBuilder(
         future:decryptFuture,
         builder: (context, snap) {
@@ -175,7 +175,7 @@ class _ImageViewerState extends State<ImageViewer> {
     s = Str.of(context);
     double prevProgress = 999;
     Widget placeholder;
-    if (_fileViewerState.file.encryptedDecryptionKey != null) {
+    if (_fileViewerState.file.initVector != null) {
       placeholder = null;
     } else if (AppStore.filesState.isOfflineMode) {
       if (_fileViewerState.fileWithContents != null) {

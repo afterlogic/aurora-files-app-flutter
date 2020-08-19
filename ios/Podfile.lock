@@ -10,6 +10,7 @@ PODS:
     - Flutter
     - OpenSSL-Universal (~> 1.0.2.17)
     - RxSwift (~> 5)
+  - CryptoSwift (1.3.1)
   - Fabric (1.10.2)
   - file_picker (0.0.1):
     - Flutter
@@ -106,8 +107,6 @@ PODS:
     - Flutter
   - path_provider (0.0.1):
     - Flutter
-  - path_provider_linux (0.0.1):
-    - Flutter
   - path_provider_macos (0.0.1):
     - Flutter
   - permission_handler (3.3.0):
@@ -140,6 +139,7 @@ DEPENDENCIES:
   - connectivity_macos (from `.symlinks/plugins/connectivity_macos/ios`)
   - Crashlytics (~> 3.14.0)
   - crypto_stream (from `.symlinks/plugins/crypto_stream/ios`)
+  - CryptoSwift (~> 1.0)
   - Fabric (~> 1.10.2)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Firebase/Analytics
@@ -150,7 +150,6 @@ DEPENDENCIES:
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
-  - path_provider_linux (from `.symlinks/plugins/path_provider_linux/ios`)
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - receive_sharing (from `.symlinks/plugins/receive_sharing/ios`)
@@ -166,6 +165,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Crashlytics
+    - CryptoSwift
     - Fabric
     - Firebase
     - FirebaseAnalytics
@@ -208,8 +208,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
-  path_provider_linux:
-    :path: ".symlinks/plugins/path_provider_linux/ios"
   path_provider_macos:
     :path: ".symlinks/plugins/path_provider_macos/ios"
   permission_handler:
@@ -238,6 +236,7 @@ SPEC CHECKSUMS:
   connectivity_macos: e2e9731b6b22dda39eb1b128f6969d574460e191
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   crypto_stream: 2a2fdbfdec937d8779e8e6b14afb3a5e093a61e4
+  CryptoSwift: f12f037f6d0fcd6d48c96db0071b653de64e6c4d
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
   Firebase: 497158b816d0a86fc31babbd05546fcd7e6083ff
@@ -260,8 +259,7 @@ SPEC CHECKSUMS:
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
-  path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   permission_handler: 67637977b227d62d46bfbf524f335f8568de5a73
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
@@ -277,6 +275,6 @@ SPEC CHECKSUMS:
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
   url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
 
-PODFILE CHECKSUM: 236c9aa345a007ee6038c829853071a0da6ca79e
+PODFILE CHECKSUM: a333db7f6a9d4ce4a37fc2945d33b2d831f53b29
 
 COCOAPODS: 1.9.3

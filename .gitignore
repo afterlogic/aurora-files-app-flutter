@@ -129,3 +129,7 @@ crypto_plugin/ios/Classes/
 sh/build_appbundle.sh
 sh/build_apk.sh
 ios/GoogleService-Info.plist
+ios/dist/
+build_res/afterlogic/theme/pubspec.lock
+ios/Flutter/.last_build_id
+pubspec.lock

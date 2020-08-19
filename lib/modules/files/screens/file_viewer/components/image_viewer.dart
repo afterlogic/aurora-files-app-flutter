@@ -41,8 +41,7 @@ class _ImageViewerState extends State<ImageViewer> {
     if (!AppStore.filesState.isOfflineMode) {
       Future.delayed(
         Duration(milliseconds: 250),
-        () => _fileViewerState.getPreviewImage(
-            widget.password, (err) => showError(err), context),
+        () => _fileViewerState.getPreviewImage(widget.password, (err) => showError(err), context),
       );
     } else if (_fileViewerState.file.initVector != null) {
       decryptFuture = _fileViewerState.decryptOfflineFile(widget.password);
@@ -92,6 +91,9 @@ class _ImageViewerState extends State<ImageViewer> {
           ),
         );
       } else {
+        if (_fileViewerState.fileWithContents == null) {
+          return SizedBox.shrink();
+        }
         final image = Image.file(
           _fileViewerState.fileWithContents,
           fit: BoxFit.cover,
@@ -128,8 +130,7 @@ class _ImageViewerState extends State<ImageViewer> {
           fit: BoxFit.cover,
         );
         precacheImage(image.image, context, onError: (e, stack) {
-          Future.delayed(Duration(milliseconds: 100),
-              () => setState(() => _isError = true));
+          Future.delayed(Duration(milliseconds: 100), () => setState(() => _isError = true));
         });
         return ConstrainedBox(
           constraints: BoxConstraints(minHeight: 60.0),
@@ -184,8 +185,7 @@ class _ImageViewerState extends State<ImageViewer> {
       }
     } else {
       placeholder = CachedNetworkImage(
-        imageUrl:
-            '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
+        imageUrl: '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
         fit: BoxFit.cover,
         httpHeaders: getHeader(),
       );
@@ -198,8 +198,7 @@ class _ImageViewerState extends State<ImageViewer> {
               _fileViewerState.file.hash,
           child: SizedBox(
             width: double.infinity,
-            child: AppStore.filesState.isOfflineMode &&
-                    _fileViewerState.fileWithContents != null
+            child: AppStore.filesState.isOfflineMode && _fileViewerState.fileWithContents != null
                 ? _buildOfflineImage()
                 : Stack(
                     fit: StackFit.passthrough,
@@ -224,8 +223,7 @@ class _ImageViewerState extends State<ImageViewer> {
                       ),
                       Observer(
                         builder: (_) {
-                          if (prevProgress !=
-                              _fileViewerState.downloadProgress) {
+                          if (prevProgress != _fileViewerState.downloadProgress) {
                             builtImage = _buildImage();
                             prevProgress = _fileViewerState.downloadProgress;
                           }

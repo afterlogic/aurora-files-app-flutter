@@ -35,10 +35,13 @@ end
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
-  
+  target 'AppShareExtension' do
+      inherit! :search_paths
+  end
   # Flutter Pod
   pod 'Fabric', '~> 1.10.2'
   pod 'Crashlytics', '~> 3.14.0'
+  pod 'CryptoSwift', '~> 1.0'
   pod 'Firebase/Analytics'
   copied_flutter_dir = File.join(__dir__, 'Flutter')
   copied_framework_path = File.join(copied_flutter_dir, 'Flutter.framework')
@@ -61,6 +64,7 @@ target 'Runner' do
     unless File.exist?(copied_podspec_path)
       FileUtils.cp(File.join(cached_framework_dir, 'Flutter.podspec'), copied_flutter_dir)
     end
+
   end
 
   # Keep pod path relative so it can be checked into Podfile.lock.

@@ -493,7 +493,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           "lib/assets/svg/insert_link.svg",
                           addedSize: 14,
                         ),
-                        tooltip: s.secure_sharing,
+                        tooltip: widget.immutableFile.initVector!=null?s.btn_encrypted_shareable_link: s.btn_shareable_link,
                         onPressed: _secureSharing,
                       ),
                     if (_file.downloadUrl != null && !PlatformOverride.isIOS)

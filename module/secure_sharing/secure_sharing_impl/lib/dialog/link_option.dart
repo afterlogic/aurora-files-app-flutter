@@ -18,7 +18,7 @@ class _LinkOptionWidgetState extends State<LinkOptionWidget> {
   Widget build(BuildContext context) {
     final s = Str.of(context);
     final size = MediaQuery.of(context).size;
-    final title = Text(s.create_link);
+    final title = Text(s.btn_shareable_link);
     final content = SizedBox(
         width: min(size.width - 40, 300),
         child: GestureDetector(

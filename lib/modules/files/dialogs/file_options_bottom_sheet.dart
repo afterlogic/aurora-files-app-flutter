@@ -107,6 +107,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final offline = widget.filesState.isOfflineMode;
     bool enableSecureLink() {
       if (isFolder) {
+        return false;
         return ["corporate", "personal"].contains(storage);
       } else {
         return storage != "shared";
@@ -183,7 +184,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     "lib/assets/svg/insert_link.svg",
                     addedSize: 14,
                   ),
-                  title: Text(s.secure_sharing),
+                  title: Text(widget.file.initVector!=null?s.btn_encrypted_shareable_link: s.btn_shareable_link),
                   onTap: _secureSharing,
                 ),
               if (!offline && enableTeamShare())

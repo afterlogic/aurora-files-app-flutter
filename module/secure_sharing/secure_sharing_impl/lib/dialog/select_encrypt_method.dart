@@ -45,7 +45,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
     s = Str.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final title = Text(s.secure_sharing);
+    final title = Text(s.btn_encrypted_shareable_link);
     final content = SizedBox(
       height: min(size.height / 2, 350),
       width: min(size.width - 40, 300),

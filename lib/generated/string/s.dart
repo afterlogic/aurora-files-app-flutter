@@ -105,7 +105,8 @@ abstract class S {
   String get link_coppied_to_clipboard;
   String get public_link_access;
   String get copy_public_link;
-  String get secure_sharing;
+  String get btn_shareable_link;
+  String get btn_encrypted_shareable_link;
   String get has_PGP_public_key;
   String get has_no_PGP_public_key;
   String get encryption_type;

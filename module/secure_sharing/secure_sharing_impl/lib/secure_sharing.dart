@@ -80,7 +80,7 @@ class SecureSharingImpl extends SecureSharing {
 
     final selectRecipientResult = await AMDialog.show(
       context: context,
-      builder: (context) => SelectRecipient(filesState, s.secure_sharing),
+      builder: (context) => SelectRecipient(filesState, s.btn_encrypted_shareable_link),
     );
 
     if (selectRecipientResult is RecipientWithKey) {

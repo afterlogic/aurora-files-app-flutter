@@ -210,7 +210,7 @@ class _ShareLinkState extends State<ShareLink> {
     s = Str.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final title = Text(s.protected_public_link);
+    final title = Text(s.btn_shareable_link);
 
     final actions = <Widget>[
       widget.selectRecipientResult == null

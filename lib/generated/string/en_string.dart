@@ -123,7 +123,8 @@ class EnString extends S {
   final String link_coppied_to_clipboard = "Link coppied to clipboard";
   final String public_link_access = "Public link access";
   final String copy_public_link = "Copy public link";
-  final String secure_sharing = "Secure sharing";
+  final String btn_shareable_link = "Create shareable link";
+  final String btn_encrypted_shareable_link = "Share encrypted file";
   final String has_PGP_public_key =
       "Selected recipient has PGP public key. The data can be encrypted using this key.";
   final String has_no_PGP_public_key =
@@ -202,7 +203,7 @@ class EnString extends S {
   final String upload = "Upload";
   final String encrypt_error = "Encrypt error";
   final String encrypted_file_password = "Encrypted file password";
-  final String create_link = "Create public link";
+  final String create_link = "Create shareable link";
   final String create_encrypt_link = "Create protected public link";
   final String encrypt_link = "Protect public link with password";
   final String public_link = "Public link";

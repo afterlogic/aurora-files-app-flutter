@@ -199,7 +199,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
         },
       )
     ];
-    final title = Text(s.secure_sharing);
+    final title = Text(s.btn_encrypted_shareable_link);
     final content = SizedBox(
       height: min(size.height / 2, 350),
       width: min(size.width - 40, 300),

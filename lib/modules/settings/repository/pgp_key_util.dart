@@ -48,7 +48,7 @@ class PgpKeyUtil {
         }
         final localPgpKey = LocalPgpKey(
           email: validEmail,
-          key: key,
+          key: description.armoredKey,
           isPrivate: description.isPrivate,
           length: description.length,
           name: name ?? "",

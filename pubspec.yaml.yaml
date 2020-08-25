@@ -38,7 +38,7 @@ dependencies:
   sqflite:
 
   # file downloading/uploading+
-  file_picker: 1.4.3+2
+  file_picker: 1.13.3
   #  flutter_uploader: ^1.0.3+1
   #  flutter_downloader: ^1.1.9
   path_provider:
@@ -85,7 +85,9 @@ dependencies:
   aurora_ui_kit:
     git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
   crypto_stream:
-    git: https://github.com/afterlogic/flutter_crypto_stream
+    git:
+      url: https://github.com/afterlogic/flutter_crypto_stream
+      ref: master
   receive_sharing:
     git: https://github.com/afterlogic/receive_sharing
 

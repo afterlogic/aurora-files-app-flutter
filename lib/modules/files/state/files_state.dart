@@ -488,15 +488,8 @@ abstract class _FilesState with Store {
     Function(File) onSuccess,
     Function(String) onError,
   }) async {
-    String password;
-    if (file.encryptedDecryptionKey != null) {
-      password = await KeyRequestDialog.request(context);
-      if (password == null) {
-        return;
-      }
-    }
     try {
-      if (file.initVector != null &&
+      if ((file.initVector != null && file.encryptedDecryptionKey == null) &&
           AppStore.settingsState.currentKey == null) {
         throw CustomException("You need an encryption key to download files.");
       }
@@ -506,6 +499,13 @@ abstract class _FilesState with Store {
       }
       if (_isFileIsBeingProcessed(file.guid)) {
         throw CustomException("This file is occupied with another operation.");
+      }
+      String password;
+      if (file.encryptedDecryptionKey != null) {
+        password = await KeyRequestDialog.request(context);
+        if (password == null) {
+          return;
+        }
       }
       if (isOfflineMode) {
         try {
@@ -587,71 +587,77 @@ abstract class _FilesState with Store {
     Function(PreparedForShare) onSuccess,
     Function(String) onError,
   }) async {
-    String password;
-    if (file.encryptedDecryptionKey != null) {
-      password = await KeyRequestDialog.request(context);
-      if (password == null) {
+    try {
+      String password;
+      if (file.encryptedDecryptionKey != null) {
+        password = await KeyRequestDialog.request(context);
+        if (password == null) {
+          return;
+        }
+      }
+      if (_isFileIsBeingProcessed(file.guid)) {
+        onError("This file is occupied with another operation.");
+      }
+      if (file.initVector != null &&
+          !(await PgpKeyUtil.instance.hasUserKey())) {}
+      await clearCache();
+
+      if (isOfflineMode) {
+        try {
+          final tempFile =
+              await _filesLocal.createTempFile(file, useName: true);
+          final processingFile = addFileToProcessing(
+            file,
+            tempFile,
+            ProcessingType.download,
+            file.initVector != null
+                ? IV.fromBase16(file.initVector).base64
+                : null,
+          );
+          onStart(processingFile);
+          final prepareForShare = await _filesLocal
+              .shareOffline(file, processingFile, password)
+              .catchError(onError);
+          onSuccess(prepareForShare);
+          deleteFromProcessing(file.guid);
+        } catch (err) {
+          deleteFromProcessing(file.guid);
+          onError(err.toString());
+          throw CustomException(err.toString());
+        }
         return;
       }
-    }
-    if (_isFileIsBeingProcessed(file.guid)) {
-      onError("This file is occupied with another operation.");
-    }
-    if (file.initVector != null && !(await PgpKeyUtil.instance.hasUserKey())) {}
-    await clearCache();
 
-    if (isOfflineMode) {
-      try {
-        final tempFile = await _filesLocal.createTempFile(file, useName: true);
+      File fileWithContents;
+      if (storedFile == null) {
+        final File tempFileForShare =
+            await _filesLocal.createTempFile(file, useName: true);
         final processingFile = addFileToProcessing(
-          file,
-          tempFile,
-          ProcessingType.download,
-          file.initVector != null
-              ? IV.fromBase16(file.initVector).base64
-              : null,
-        );
-        onStart(processingFile);
-        final prepareForShare = await _filesLocal
-            .shareOffline(file, processingFile, password)
-            .catchError(onError);
-        onSuccess(prepareForShare);
-        deleteFromProcessing(file.guid);
-      } catch (err) {
-        deleteFromProcessing(file.guid);
-        onError(err.toString());
-        throw CustomException(err.toString());
-      }
-      return;
-    }
-
-    File fileWithContents;
-    if (storedFile == null) {
-      final File tempFileForShare =
-          await _filesLocal.createTempFile(file, useName: true);
-      final processingFile = addFileToProcessing(
-          file, tempFileForShare, ProcessingType.share, file.initVector);
-      if (await tempFileForShare.length() <= 0) {
-        onStart(processingFile);
-        // ignore: cancel_subscriptions
-        final sub = await _filesApi.getFileContentsFromServer(
-            file.downloadUrl, file, processingFile, true, password,
-            onSuccess: (File savedFile) {
-          fileWithContents = savedFile;
+            file, tempFileForShare, ProcessingType.share, file.initVector);
+        if (await tempFileForShare.length() <= 0) {
+          onStart(processingFile);
+          // ignore: cancel_subscriptions
+          final sub = await _filesApi.getFileContentsFromServer(
+              file.downloadUrl, file, processingFile, true, password,
+              onSuccess: (File savedFile) {
+            fileWithContents = savedFile;
+            onSuccess(PreparedForShare(fileWithContents, file));
+            deleteFromProcessing(file.guid);
+          }, onError: (err) {
+            deleteFromProcessing(file.guid);
+            onError(err);
+          });
+          processingFile.subscription = sub;
+        } else {
+          fileWithContents = tempFileForShare;
           onSuccess(PreparedForShare(fileWithContents, file));
-          deleteFromProcessing(file.guid);
-        }, onError: (err) {
-          deleteFromProcessing(file.guid);
-          onError(err);
-        });
-        processingFile.subscription = sub;
+        }
       } else {
-        fileWithContents = tempFileForShare;
+        fileWithContents = storedFile;
         onSuccess(PreparedForShare(fileWithContents, file));
       }
-    } else {
-      fileWithContents = storedFile;
-      onSuccess(PreparedForShare(fileWithContents, file));
+    } catch (e) {
+      onError(e);
     }
   }
 

@@ -25,6 +25,9 @@ class KeyRequestDialog extends StatefulWidget {
         EncryptionLocalStorage.memoryPassword = password;
       }
     }
+    if (password == null) {
+      throw "";
+    }
     return password;
   }
 }

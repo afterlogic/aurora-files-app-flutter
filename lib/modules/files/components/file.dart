@@ -105,6 +105,7 @@ class _FileWidgetState extends State<FileWidget> {
         break;
     }
   }
+
   void _cantDownloadMessage() {
     showSnack(
       context: context,
@@ -112,6 +113,7 @@ class _FileWidgetState extends State<FileWidget> {
       msg: s.need_an_encryption_to_download,
     );
   }
+
   void _cantShareMessage() {
     showSnack(
       context: context,
@@ -165,11 +167,13 @@ class _FileWidgetState extends State<FileWidget> {
             onPressed:
                 filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
           )),
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: filesPageState.scaffoldKey.currentState,
-        msg: err,
-      ),
+      onError: (String err) => err.isNotEmpty == true
+          ? showSnack(
+              context: context,
+              scaffoldState: filesPageState.scaffoldKey.currentState,
+              msg: err,
+            )
+          : null,
     );
   }
 

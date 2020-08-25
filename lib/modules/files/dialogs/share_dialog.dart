@@ -37,8 +37,6 @@ class _ShareDialogState extends State<ShareDialog> {
       widget.file,
       context,
       onError: (e) {
-        //todo show error
-        e;
         Navigator.pop(context);
       },
       onSuccess: (preparedForShare) {

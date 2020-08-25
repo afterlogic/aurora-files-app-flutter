@@ -89,7 +89,7 @@ class PgpSettingPresenter {
     List<LocalPgpKey> keys,
   ) async {
     final Set<String> userEmail =
-        (await AppStore.authState.getIdentity()).toSet();
+        (await AppStore.authState.getIdentity() ?? []).toSet();
     userEmail.add(AppStore.authState.userEmail);
     final userKeys = <LocalPgpKey>[];
     final contactKeys = <LocalPgpKey>[];

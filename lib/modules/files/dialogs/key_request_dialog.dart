@@ -49,6 +49,8 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
   bool obscure = true;
   String error;
 
+  bool isProgress = false;
+
   @override
   Widget build(BuildContext context) {
     final s = Str.of(context);
@@ -60,6 +62,7 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
           Form(
             key: formKey,
             child: TextFormField(
+              enabled: !isProgress,
               validator: (v) {
                 if (v.isEmpty) {
                   return s.password_is_empty;
@@ -93,24 +96,31 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
       ),
       actions: <Widget>[
         FlatButton(
-          child: Text(s.oK),
-          onPressed: () {
-            if (formKey.currentState.validate()) {
-              _check();
-            }
-          },
+          child: isProgress ? CircularProgressIndicator() : Text(s.oK),
+          onPressed: isProgress
+              ? null
+              : () {
+                  if (formKey.currentState.validate()) {
+                    _check();
+                  }
+                },
         )
       ],
     );
   }
 
   _check() async {
+    setState(() {
+      isProgress = true;
+    });
     if (!await PgpKeyUtil.instance.checkPrivateKey(
       passCtrl.text,
       (await PgpKeyUtil.instance.userPrivateKey()).key,
     )) {
       error = "Invalid password";
       formKey.currentState.validate();
+      isProgress = false;
+      setState(() {});
       return;
     }
     Navigator.pop(context, passCtrl.text);

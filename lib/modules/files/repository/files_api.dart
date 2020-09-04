@@ -304,7 +304,6 @@ class FilesApi {
                   ? jsonDecode(file.extendedProps)["ParanoidKeyShared"]
                   : file.encryptedDecryptionKey,
               decryptKey);
-          decryptKey = decryptKey.replaceAll("�", "");
         } else {
           decryptKey = AppStore.settingsState.currentKey;
         }

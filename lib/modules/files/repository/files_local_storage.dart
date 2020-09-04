@@ -22,8 +22,8 @@ class FilesLocalStorage {
 
   Future<File> pickFiles({FileType type, String extension}) {
     return FilePicker.getFile(
-      type: type,
-      fileExtension: extension,
+      type: type ?? FileType.any,
+      allowedExtensions: extension != null ? [extension] : null,
     );
   }
 

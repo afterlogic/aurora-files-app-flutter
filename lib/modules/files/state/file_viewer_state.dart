@@ -55,7 +55,6 @@ abstract class _FileViewerState with Store {
               ? jsonDecode(file.extendedProps)["ParanoidKeyShared"]
               : file.encryptedDecryptionKey,
           password);
-      decryptKey.replaceAll("�", "");
     } else {
       decryptKey = AppStore.settingsState.currentKey;
     }

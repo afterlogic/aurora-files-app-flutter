@@ -70,8 +70,7 @@ class PgpKeyUtil {
   }
 
   saveKeys(List<LocalPgpKey> keys) async {
-    if (keys.firstWhere((element) => element.isPrivate,
-        orElse: () => null) !=
+    if (keys.firstWhere((element) => element.isPrivate, orElse: () => null) !=
         null) {
       EncryptionLocalStorage.memoryPassword = null;
     }
@@ -159,11 +158,11 @@ class PgpKeyUtil {
   }
 
   Future<String> encrypt(String string, List<String> keys) async {
-    final decrypted =await pgp.bufferPlatformSink(
+    final decrypted = await pgp.bufferPlatformSink(
       string,
       pgp.encrypt(null, keys, null),
     );
-    if (decrypted.endsWith("�")) {
+    if (decrypted) {
       return decrypted.substring(0, decrypted.length - 1);
     } else {
       return decrypted;
@@ -176,7 +175,7 @@ class PgpKeyUtil {
       string,
       pgp.decrypt(publicKey, [], password),
     );
-    if (decrypted.endsWith("�")) {
+    if (decrypted) {
       return decrypted.substring(0, decrypted.length - 1);
     } else {
       return decrypted;

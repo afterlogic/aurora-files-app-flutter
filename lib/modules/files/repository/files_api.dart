@@ -93,6 +93,7 @@ class FilesApi {
     Function(int) updateProgress,
     @required Function() onSuccess,
     @required Function(String) onError,
+    String password,
   }) async {
     final bool fileExists = await processingFile.fileOnDevice.exists();
     if (!fileExists) {
@@ -121,7 +122,7 @@ class FilesApi {
       final vector = IV.fromSecureRandom(vectorLength);
       processingFile.ivBase64 = vector.base64;
       params["ExtendedProps"]["ParanoidKey"] =
-          (await PgpKeyUtil.instance.userEncrypt(encryptKey))
+          (await PgpKeyUtil.instance.userEncrypt(encryptKey, password))
               .replaceAll("\n", "\r\n");
       params["ExtendedProps"]["InitializationVector"] = vector.base16;
       params["ExtendedProps"]["FirstChunk"] = true;

@@ -149,37 +149,32 @@ class PgpKeyUtil {
     return pgp.checkKeyPassword(pgpKey, password);
   }
 
-  Future<String> userEncrypt(String string) async {
+  Future<String> userEncrypt(String string, String password) async {
     final publicKey = (await userPublicKey()).key;
+    final privateKey = (await userPrivateKey())?.key;
     return pgp.bufferPlatformSink(
       string,
-      pgp.encrypt(null, [publicKey], null),
+      pgp.encrypt(
+        password != null ? privateKey : null,
+        [publicKey],
+        privateKey != null ? password : null,
+      ),
     );
   }
 
   Future<String> encrypt(String string, List<String> keys) async {
-    final decrypted = await pgp.bufferPlatformSink(
+    return pgp.bufferPlatformSink(
       string,
       pgp.encrypt(null, keys, null),
     );
-    if (decrypted) {
-      return decrypted.substring(0, decrypted.length - 1);
-    } else {
-      return decrypted;
-    }
   }
 
   Future<String> userDecrypt(String string, String password) async {
     final publicKey = (await userPrivateKey()).key;
-    final decrypted = await pgp.bufferPlatformSink(
+    return pgp.bufferPlatformSink(
       string,
       pgp.decrypt(publicKey, [], password),
     );
-    if (decrypted) {
-      return decrypted.substring(0, decrypted.length - 1);
-    } else {
-      return decrypted;
-    }
   }
 
   Future<bool> hasUserKey() async {

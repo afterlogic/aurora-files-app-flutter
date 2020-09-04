@@ -15,6 +15,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
+import 'package:aurorafiles/modules/settings/repository/encryption_local_storage.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
@@ -406,6 +407,7 @@ abstract class _FilesState with Store {
   }
 
   Future<void> uploadFile({
+    BuildContext context,
     @required bool shouldEncrypt,
     @required File file,
     String name,
@@ -417,6 +419,13 @@ abstract class _FilesState with Store {
     bool passwordEncryption,
     List<LocalPgpKey> addedPgpKey,
   }) async {
+    final privateKey = await PgpKeyUtil.instance.userPrivateKey();
+    String password;
+    if (privateKey != null) {
+      try {
+        password = await KeyRequestDialog.request(context, forSign: true);
+      } catch (e) {}
+    }
     final fileName = name ?? FileUtils.getFileNameFromPath(file.path);
     final localFile = new LocalFile(
       localId: null,
@@ -464,6 +473,7 @@ abstract class _FilesState with Store {
         passwordEncryption: passwordEncryption,
         storageType: selectedStorage.type,
         path: path,
+        password: password,
         encryptionRecipientEmail: encryptionRecipientEmail,
         addedPgpKey: addedPgpKey,
         onSuccess: () {

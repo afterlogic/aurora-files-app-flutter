@@ -5,19 +5,23 @@ import 'package:aurorafiles/modules/settings/repository/settings_local_storage.d
 import 'package:flutter/material.dart';
 
 class KeyRequestDialog extends StatefulWidget {
+  final bool forSign;
+
+  KeyRequestDialog(this.forSign);
+
   @override
   State<StatefulWidget> createState() {
     return _KeyRequestDialogState();
   }
 
-  static Future<String> request(BuildContext context) async {
+  static Future<String> request(BuildContext context, {bool forSign}) async {
     if (EncryptionLocalStorage.memoryPassword != null) {
       return EncryptionLocalStorage.memoryPassword;
     }
     final password = await showDialog(
       context: context,
       builder: (context) {
-        return KeyRequestDialog();
+        return KeyRequestDialog(forSign);
       },
     );
     if (password != null) {

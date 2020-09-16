@@ -9,6 +9,7 @@ _files:
   - ios/AppShareExtension/AppShareExtension.entitlements.temp
   - sh/build_apk.sh.temp
   - sh/build_appbundle.sh.temp
+  - ios/ExportOptions.plist.temp
 _copy:
   "{{mainLogo}}": "android/app/src/main/res/drawable/main_logo.png"
   "{{_dir}}/sign/key.properties": "android/key.properties"

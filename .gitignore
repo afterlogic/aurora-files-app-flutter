@@ -133,3 +133,4 @@ ios/dist/
 build_res/afterlogic/theme/pubspec.lock
 ios/Flutter/.last_build_id
 pubspec.lock
+/ios/RunnerArchive.xcarchive

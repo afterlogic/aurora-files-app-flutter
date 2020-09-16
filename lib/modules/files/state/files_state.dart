@@ -292,11 +292,6 @@ abstract class _FilesState with Store {
 
   Future addDecryptedPublicPassword(
       BuildContext context, LocalFile file, String password) async {
-    final password = await KeyRequestDialog.request(context);
-    if (password == null) {
-      throw "";
-    }
-
     return _filesApi.updateExtendedPropsPublicKey(file, password);
   }
 

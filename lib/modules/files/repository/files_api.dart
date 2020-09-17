@@ -299,12 +299,11 @@ class FilesApi {
         IV iv = IV.fromBase16(file.initVector);
         processingFile.ivBase64 = iv.base64;
         if (file.encryptedDecryptionKey != null) {
-          decryptKey = keyPassword;
           decryptKey = await PgpKeyUtil.instance.userDecrypt(
               file.type == "shared"
                   ? jsonDecode(file.extendedProps)["ParanoidKeyShared"]
                   : file.encryptedDecryptionKey,
-              decryptKey);
+              keyPassword);
         } else {
           decryptKey = AppStore.settingsState.currentKey;
         }

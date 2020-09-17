@@ -127,6 +127,8 @@ class _SelectRecipientState extends State<SelectRecipient> {
         ),
         Expanded(
           child: ListView.separated(
+
+            padding: EdgeInsets.all(0),
             itemBuilder: (_, i) {
               final recipient = recipients[i];
               return RecipientWidget(recipient, (recipient) {

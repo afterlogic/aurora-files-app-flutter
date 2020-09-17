@@ -52,6 +52,8 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
       child: Stack(
         children: <Widget>[
           ListView(
+
+            padding: EdgeInsets.all(0),
             children: <Widget>[
               RecipientWidget(
                   RecipientWithKey(widget.recipient, widget.pgpKey)),

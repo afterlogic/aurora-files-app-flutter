@@ -359,6 +359,7 @@ class _ShareLinkState extends State<ShareLink> {
   Widget contentWrap(Widget content) {
     if (widget.selectRecipientResult?.pgpKey != null) {
       return SingleChildScrollView(
+        padding: EdgeInsets.all(0),
         child: content,
       );
     } else {

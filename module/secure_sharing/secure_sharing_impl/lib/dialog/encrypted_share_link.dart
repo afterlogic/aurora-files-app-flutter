@@ -206,6 +206,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       child: Stack(
         children: <Widget>[
           ListView(
+            padding: EdgeInsets.all(0),
             children: <Widget>[
               RecipientWidget(
                   RecipientWithKey(widget.recipient, widget.pgpKey)),

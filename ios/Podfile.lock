@@ -12,7 +12,6 @@ PODS:
     - Flutter
     - OpenSSL-Universal (~> 1.0.2.17)
     - RxSwift (~> 5)
-  - CryptoSwift (1.1.3)
   - DKImagePickerController/Core (4.3.2):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -180,7 +179,6 @@ DEPENDENCIES:
   - connectivity_macos (from `.symlinks/plugins/connectivity_macos/ios`)
   - Crashlytics (~> 3.14.0)
   - crypto_stream (from `.symlinks/plugins/crypto_stream/ios`)
-  - CryptoSwift (~> 1.1.0)
   - Fabric (~> 1.10.2)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Firebase/Analytics
@@ -207,7 +205,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Crashlytics
-    - CryptoSwift
     - DKImagePickerController
     - DKPhotoGallery
     - Fabric
@@ -287,7 +284,6 @@ SPEC CHECKSUMS:
   connectivity_macos: e2e9731b6b22dda39eb1b128f6969d574460e191
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   crypto_stream: 2a2fdbfdec937d8779e8e6b14afb3a5e093a61e4
-  CryptoSwift: 6b6e488df0598b3e9fa49254ed1a65e8c1b1e10b
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
@@ -331,6 +327,6 @@ SPEC CHECKSUMS:
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
   url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
 
-PODFILE CHECKSUM: 99f80793c922a2e37e97593cff8e6e44351161ec
+PODFILE CHECKSUM: 865852ffa3b5ab41a938a760240f85615d424be7
 
 COCOAPODS: 1.9.3

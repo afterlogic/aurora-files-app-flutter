@@ -20,11 +20,13 @@ import 'package:share_extend/share_extend.dart';
 class FilesLocalStorage {
   Aes aes = DI.get();
 
-  Future<File> pickFiles({FileType type, String extension}) {
-    return FilePicker.getFile(
+  Future<File> pickFiles({FileType type, String extension}) async {
+    final result = await FilePicker.platform.pickFiles(
       type: type ?? FileType.any,
       allowedExtensions: extension != null ? [extension] : null,
     );
+    if (result == null) return null;
+    return File(result.files.first.path);
   }
 
   // is used to download files on iOS

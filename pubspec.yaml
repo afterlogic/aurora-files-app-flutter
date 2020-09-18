@@ -1,7 +1,7 @@
 name: aurorafiles
 description: File management system for ...
 
-version: 2.2.2+132
+version: 2.2.2+133
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -36,7 +36,7 @@ dependencies:
   sqflite:
 
   # file downloading/uploading+
-  file_picker: 1.13.3
+  file_picker: 2.0.0
   #  flutter_uploader: ^1.0.3+1
   #  flutter_downloader: ^1.1.9
   path_provider:

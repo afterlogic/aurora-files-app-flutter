@@ -90,7 +90,10 @@ class PgpKeyUtil {
   }
 
   Future<List<LocalPgpKey>> importKeyFromFile() async {
-    final File fileWithKey = await FilePicker.getFile();
+    final result = await FilePicker.platform.pickFiles(
+    );
+    if (result == null) return null;
+    final File fileWithKey = File(result.files.first.path);
     if (fileWithKey == null) return null;
     final String contents = await fileWithKey.readAsString();
     return validateText(contents);

@@ -104,4 +104,7 @@ class AppTheme {
     hoverColor: AppColor.accent.withOpacity(0.8),
     backgroundColor: AppColor.accent,
   );
+  static final floatIconTheme= IconThemeData(
+    color: Colors.white,
+  );
 }

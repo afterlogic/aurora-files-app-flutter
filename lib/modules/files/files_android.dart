@@ -24,6 +24,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:receive_sharing/recive_sharing.dart';
+import 'package:theme/app_theme.dart';
 
 import 'components/files_app_bar.dart';
 import 'components/files_list.dart';
@@ -386,7 +387,12 @@ class _FilesAndroidState extends State<FilesAndroid>
                     : FloatingActionButton(
                         backgroundColor: theme.accentColor,
                         heroTag: widget.path,
-                        child: Icon(Icons.add),
+                        child: IconTheme(
+                          data: AppTheme.floatIconTheme,
+                          child: Icon(
+                            Icons.add,
+                          ),
+                        ),
                         onPressed: () {
                           _filesPageState.scaffoldKey.currentState
                               .removeCurrentSnackBar();

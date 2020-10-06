@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/localization_string_widget.dart';
+import 'package:aurorafiles/http/interceptor.dart';
 import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
@@ -23,11 +24,26 @@ class _AppState extends State<App> {
   final _authState = AppStore.authState;
   final _settingsState = AppStore.settingsState;
   Future<List<bool>> _localStorageInitialization;
+  final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
+    WebMailApi.onLogout = onLogout;
     _initLocalStorage();
+  }
+
+  @override
+  dispose() {
+    if (WebMailApi.onLogout == onLogout) {
+      WebMailApi.onLogout = null;
+    }
+    super.dispose();
+  }
+
+  onLogout() {
+    _authState.onLogout();
+    navigatorKey.currentState.pushReplacementNamed(AuthRoute.name);
   }
 
   Future _initLocalStorage() async {
@@ -67,6 +83,7 @@ class _AppState extends State<App> {
               builder: (_) {
                 final theme = _getTheme(_settingsState.isDarkTheme);
                 return MaterialApp(
+                  navigatorKey: navigatorKey,
                   debugShowCheckedModeBanner: false,
                   title: BuildProperty.appName,
                   theme: theme ?? AppTheme.light,

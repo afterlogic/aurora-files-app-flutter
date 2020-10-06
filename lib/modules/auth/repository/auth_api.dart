@@ -49,8 +49,7 @@ class AuthApi {
       return resBody;
     }
     if (resBody["ErrorCode"] == accessDenied) {
-      // the app is unavailable for this account, upgrade
-      throw accessDenied;
+      throw AllowAccess();
     } else {
       throw CustomException(getErrMsg(resBody));
     }

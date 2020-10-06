@@ -12,14 +12,13 @@ import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/secure_link.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
-import 'package:aurorafiles/modules/settings/repository/encryption_local_storage.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
-import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:connectivity/connectivity.dart';
@@ -267,13 +266,16 @@ abstract class _FilesState with Store {
 
   Future addDecryptedKey(
       BuildContext context, LocalFile file, List<String> contactKey) async {
+    if (contactKey.isEmpty) {
+      return _filesApi.updateKeyShared(file, null, []);
+    }
     final password = await KeyRequestDialog.request(context);
     if (password == null) {
       throw "";
     }
     final key = (await PgpKeyUtil.instance
         .userDecrypt(file.encryptedDecryptionKey, password));
-    return _filesApi.updateExtendedProps(file, key, contactKey);
+    return _filesApi.updateKeyShared(file, key, contactKey);
   }
 
   Future addDecryptedPublicKey(

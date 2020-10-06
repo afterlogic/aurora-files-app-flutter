@@ -1,15 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:aurora_ui_kit/components/dialogs/am_dialog.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/components/emails_input.dart';
-import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_api.dart';
 import 'package:flutter/material.dart';
@@ -69,11 +66,10 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
     progress = true;
     setState(() {});
     try {
-      if (addedPgpKey.isNotEmpty)
-        await widget.fileState
-            .addDecryptedKey(context, widget.file, addedPgpKey);
+      await widget.fileState.addDecryptedKey(context, widget.file, addedPgpKey);
+
       await widget.fileState.shareFileToContact(widget.file, canEdit, canSee);
-      Navigator.pop(context);
+      Navigator.pop(context, widget.file);
     } catch (e) {
       error = e.toString();
     }

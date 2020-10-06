@@ -24,7 +24,6 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/asset_icon.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
-import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
@@ -283,7 +282,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
   }
 
-  _shareWithTeammates() {
+  _shareWithTeammates() async {
     if (widget.immutableFile.initVector != null &&
         widget.immutableFile.encryptedDecryptionKey == null) {
       return AMDialog.show(
@@ -299,7 +298,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         ),
       );
     } else {
-      return AMDialog.show(
+      final file = await AMDialog.show(
         context: context,
         builder: (_) => ShareToEmailDialog(
           widget.filesState,
@@ -307,6 +306,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           context,
         ),
       );
+      if (file is LocalFile) {
+        widget.filesPageState
+            .onGetFiles(showLoading: FilesLoadingType.filesVisible);
+      }
     }
   }
 
@@ -493,7 +496,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           "lib/assets/svg/insert_link.svg",
                           addedSize: 14,
                         ),
-                        tooltip: widget.immutableFile.initVector!=null?s.btn_encrypted_shareable_link: s.btn_shareable_link,
+                        tooltip: widget.immutableFile.initVector != null
+                            ? s.btn_encrypted_shareable_link
+                            : s.btn_shareable_link,
                         onPressed: _secureSharing,
                       ),
                     if (_file.downloadUrl != null && !PlatformOverride.isIOS)

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
@@ -19,11 +17,11 @@ import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:secure_sharing/secure_sharing.dart';
+
 import 'delete_confirmation_dialog.dart';
 import 'rename_dialog_android.dart';
 import 'share_dialog.dart';
-
-import 'package:secure_sharing/secure_sharing.dart';
 
 enum FileOptionsBottomSheetResult {
   toggleOffline,
@@ -184,7 +182,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     "lib/assets/svg/insert_link.svg",
                     addedSize: 14,
                   ),
-                  title: Text(widget.file.initVector!=null?s.btn_encrypted_shareable_link: s.btn_shareable_link),
+                  title: Text(widget.file.initVector != null
+                      ? s.btn_encrypted_shareable_link
+                      : s.btn_shareable_link),
                   onTap: _secureSharing,
                 ),
               if (!offline && enableTeamShare())
@@ -316,7 +316,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     setState(() {});
   }
 
-  _shareWithTeammates() {
+  _shareWithTeammates() async {
+    Navigator.pop(context);
     if (widget.file.initVector != null &&
         widget.file.encryptedDecryptionKey == null) {
       return AMDialog.show(
@@ -332,7 +333,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         ),
       );
     } else {
-      AMDialog.show(
+      final file = await AMDialog.show(
         context: context,
         builder: (_) => ShareToEmailDialog(
           widget.filesState,
@@ -340,6 +341,10 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
           context,
         ),
       );
+      if (file is LocalFile) {
+        widget.filesPageState
+            .onGetFiles(showLoading: FilesLoadingType.filesVisible);
+      }
     }
   }
 }

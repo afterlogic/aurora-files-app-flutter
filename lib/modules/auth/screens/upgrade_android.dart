@@ -49,9 +49,7 @@ class UpgradeAndroid extends StatelessWidget {
                     ),
                     Text(
                       s.upgrade_your_plan,
-                      style: theme.textTheme.subhead.copyWith(
-                        fontSize: 20,
-                      ),
+                      style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center,
                     ),
                     Column(

@@ -269,7 +269,7 @@ abstract class _FilesState with Store {
   Future addDecryptedKey(
       BuildContext context, LocalFile file, List<String> contactKey) async {
     if (contactKey.isEmpty) {
-      return _filesApi.updateKeyShared(file, null, []);
+      return _filesApi.updateKeyShared(file, null, [], null);
     }
     final password = await KeyRequestDialog.request(context);
     if (password == null) {
@@ -277,7 +277,7 @@ abstract class _FilesState with Store {
     }
     final key = (await PgpKeyUtil.instance
         .userDecrypt(file.encryptedDecryptionKey, password));
-    return _filesApi.updateKeyShared(file, key, contactKey);
+    return _filesApi.updateKeyShared(file, key, contactKey, password);
   }
 
   Future addDecryptedPublicKey(
@@ -290,7 +290,11 @@ abstract class _FilesState with Store {
         .userDecrypt(file.encryptedDecryptionKey, password));
     return _filesApi.updateExtendedPropsPublicKey(
         file,
-        (await PgpKeyUtil.instance.encrypt(key, contactKey))
+        (await PgpKeyUtil.instance.encrypt(
+          key,
+          contactKey,
+          password,
+        ))
             .replaceAll("\n", "\r\n"));
   }
 

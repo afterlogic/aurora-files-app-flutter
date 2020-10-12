@@ -572,8 +572,8 @@ class FilesApi {
     }
   }
 
-  Future updateKeyShared(
-      LocalFile file, String encryptionKey, List<String> contactKey) async {
+  Future updateKeyShared(LocalFile file, String encryptionKey,
+      List<String> contactKey, String password) async {
     final parameters = json.encode({
       "Type": file.type,
       "Path": file.path,
@@ -581,7 +581,11 @@ class FilesApi {
       "ExtendedProps": {
         "ParanoidKeyShared": contactKey.isEmpty
             ? null
-            : (await PgpKeyUtil.instance.encrypt(encryptionKey, contactKey))
+            : (await PgpKeyUtil.instance.encrypt(
+                encryptionKey,
+                contactKey,
+                password,
+              ))
                 .replaceAll("\n", "\r\n")
       }
     });

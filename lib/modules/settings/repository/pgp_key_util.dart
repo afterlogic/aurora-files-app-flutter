@@ -90,8 +90,7 @@ class PgpKeyUtil {
   }
 
   Future<List<LocalPgpKey>> importKeyFromFile() async {
-    final result = await FilePicker.platform.pickFiles(
-    );
+    final result = await FilePicker.platform.pickFiles();
     if (result == null) return null;
     final File fileWithKey = File(result.files.first.path);
     if (fileWithKey == null) return null;
@@ -160,15 +159,17 @@ class PgpKeyUtil {
       pgp.encrypt(
         password != null ? privateKey : null,
         [publicKey],
-        privateKey != null ? password : null,
+        password,
       ),
     );
   }
 
-  Future<String> encrypt(String string, List<String> keys) async {
+  Future<String> encrypt(
+      String string, List<String> keys, String password) async {
+    final privateKey = (await userPrivateKey())?.key;
     return pgp.bufferPlatformSink(
       string,
-      pgp.encrypt(null, keys, null),
+      pgp.encrypt(password != null ? privateKey : null, keys, password),
     );
   }
 

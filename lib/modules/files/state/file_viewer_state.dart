@@ -5,9 +5,9 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/recipient.dart';
-import 'package:aurorafiles/models/secure_link.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
@@ -15,15 +15,13 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
-import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:crypto_stream/algorithm/aes.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:encrypt/encrypt.dart' as prefixEncrypt;
+import 'package:file/memory.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:mobx/mobx.dart';
-import 'package:file/memory.dart';
-import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:moor_flutter/moor_flutter.dart';
 
 part 'file_viewer_state.g.dart';
@@ -175,7 +173,7 @@ abstract class _FileViewerState with Store {
     });
   }
 
-  Future<void> uploadSecureFile(
+  Future<void> uploadSecureFile(BuildContext context,
       {@required File file,
       @required Function(ProcessingFile) onUploadStart,
       @required Function() onSuccess,
@@ -183,7 +181,7 @@ abstract class _FileViewerState with Store {
       @required bool passwordEncryption,
       @required String encryptionRecipientEmail,
       @required String extend}) {
-    return fileState.uploadFile(
+    return fileState.uploadFile(context,
         passwordEncryption: passwordEncryption,
         encryptionRecipientEmail: encryptionRecipientEmail,
         name: this.file.name + extend,

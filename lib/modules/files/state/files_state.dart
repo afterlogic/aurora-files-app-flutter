@@ -183,7 +183,8 @@ abstract class _FilesState with Store {
     isShareUpload = false;
   }
 
-  uploadShared({
+  uploadShared(
+    BuildContext context, {
     String toPath,
     Function onSuccess,
     Function(String) onError,
@@ -206,6 +207,7 @@ abstract class _FilesState with Store {
           file = File(item.path);
         }
         await uploadFile(
+          context,
           file: file,
           name: name,
           path: toPath,
@@ -383,6 +385,7 @@ abstract class _FilesState with Store {
   }
 
   Future<void> onUploadFile(
+    BuildContext context,
     Future<bool> Function(File) onSelect, {
     @required String path,
     @required Function(ProcessingFile) onUploadStart,
@@ -394,6 +397,7 @@ abstract class _FilesState with Store {
     final shouldEncrypt = await onSelect(file);
     if (shouldEncrypt == null) return;
     return uploadFile(
+      context,
       file: file,
       path: path,
       onUploadStart: onUploadStart,
@@ -403,8 +407,8 @@ abstract class _FilesState with Store {
     );
   }
 
-  Future<void> uploadFile({
-    BuildContext context,
+  Future<void> uploadFile(
+    BuildContext context, {
     @required bool shouldEncrypt,
     @required File file,
     String name,
@@ -421,7 +425,9 @@ abstract class _FilesState with Store {
     if (privateKey != null) {
       try {
         password = await KeyRequestDialog.request(context, forSign: true);
-      } catch (e) {}
+      } catch (e) {
+        print(e);
+      }
     }
     final fileName = name ?? FileUtils.getFileNameFromPath(file.path);
     final localFile = new LocalFile(

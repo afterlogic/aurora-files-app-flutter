@@ -25,7 +25,7 @@ class PgpKeyApi {
     );
 
     final result = await sendRequest(body);
-    return result["Result"] as bool;
+    return result["Result"] as List;
   }
 
   Future<List<LocalPgpKey>> getKeyFromContacts() async {

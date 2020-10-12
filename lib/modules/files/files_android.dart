@@ -172,6 +172,7 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   void _uploadFile() async {
     _filesState.onUploadFile(
+      context,
       (file) async {
         final encryptionSettings = await _settingsState.getEncryptionSetting();
         bool shouldEncrypt = false;

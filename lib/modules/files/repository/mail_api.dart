@@ -113,7 +113,7 @@ class MailApi {
     };
     final body = new ApiBody(
       module: "Contacts",
-      method: "GetContacts",
+      method: "GetContactsSuggest",
       parameters: json.encode(parameters),
     );
 

@@ -166,6 +166,7 @@ class PgpSettingPresenter {
     try {
       await _pgpKeyApi.deleteContactKey(email);
       contactsKey.removeWhere((element) => element.email == email);
+      refreshKeys();
     } catch (e) {
       _view.showError(e.toString());
     }

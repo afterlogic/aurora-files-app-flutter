@@ -404,7 +404,14 @@ class _FileWidgetState extends State<FileWidget> {
                             ])
                           : Row(
                               children: <Widget>[
-                                if (widget.file.published || hasShares)
+                                if(hasShares)
+                                Icon(
+                                  Icons.share,
+                                  semanticLabel: s.btn_share_to_email,
+                                ),
+                                if (hasShares)
+                                  SizedBox(width: margin),
+                                if (widget.file.published )
                                   Icon(
                                     Icons.link,
                                     semanticLabel: s.has_public_link,

@@ -572,7 +572,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               InfoListTile(
                 label: s.filename,
                 content: _file.name,
-                isPublic: _file.published || hasShares,
+                isPublic: _file.published,
+                isShared: hasShares,
                 isOffline: _file.localId != null,
                 isEncrypted: _file.initVector != null,
               ),

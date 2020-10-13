@@ -7,6 +7,7 @@ class InfoListTile extends StatefulWidget {
   final String content;
   final bool isOffline;
   final bool isPublic;
+  final bool isShared;
   final bool isEncrypted;
 
   const InfoListTile({
@@ -16,6 +17,7 @@ class InfoListTile extends StatefulWidget {
     this.isOffline = false,
     this.isPublic = false,
     this.isEncrypted = false,
+    this.isShared=false,
   }) : super(key: key);
 
   @override
@@ -37,6 +39,12 @@ class _InfoListTileState extends State<InfoListTile> {
       ),
       child: Row(
         children: <Widget>[
+          if (widget.isShared) SizedBox(width: 10),
+          if (widget.isShared)
+          Icon(
+            Icons.share,
+            semanticLabel: s.btn_share_to_email,
+          ),
           if (widget.isPublic) SizedBox(width: 10),
           if (widget.isPublic)
             Icon(

@@ -1,18 +1,16 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
-import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
-import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
-import 'package:aurorafiles/override_platform.dart';
+
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
-import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
@@ -277,9 +275,13 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
 
   List<Widget> progressLabel() {
     final theme = Theme.of(context);
-    final recipient = widget.recipient?.fullName ??
-        widget.recipient?.email ??
-        widget.pgpKey?.email;
+    String recipient = widget.recipient?.fullName;
+    if (recipient?.isNotEmpty != true) {
+      recipient = widget.recipient?.email;
+    }
+    if (recipient?.isNotEmpty != true) {
+      recipient = widget.pgpKey?.email;
+    }
     if (error != null) {
       return [
         SizedBox(

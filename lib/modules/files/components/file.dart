@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
@@ -337,6 +338,13 @@ class _FileWidgetState extends State<FileWidget> {
     s = Str.of(context);
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
+    bool hasShares = false;
+    if (widget.file.extendedProps != null) {
+      try {
+        hasShares = (jsonDecode(widget.file.extendedProps)["Shares"] as List)
+            .isNotEmpty;
+      } catch (e) {}
+    }
     final margin = 5.0;
     return Observer(
       builder: (_) {
@@ -396,7 +404,7 @@ class _FileWidgetState extends State<FileWidget> {
                             ])
                           : Row(
                               children: <Widget>[
-                                if (widget.file.published)
+                                if (widget.file.published || hasShares)
                                   Icon(
                                     Icons.link,
                                     semanticLabel: s.has_public_link,

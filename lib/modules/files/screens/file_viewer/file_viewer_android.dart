@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
@@ -307,8 +308,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         ),
       );
       if (file is LocalFile) {
+        _file = file;
         widget.filesPageState
             .onGetFiles(showLoading: FilesLoadingType.filesVisible);
+        setState(() {});
       }
     }
   }
@@ -432,6 +435,13 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     final storage = widget.immutableFile.type;
     final isFolder = widget.immutableFile.isFolder;
     final theme = Theme.of(context);
+    bool hasShares = false;
+    if (_file.extendedProps != null) {
+      try {
+        hasShares =
+            (jsonDecode(_file.extendedProps)["Shares"] as List).isNotEmpty;
+      } catch (e) {}
+    }
     bool enableSecureLink() {
       if (isFolder) {
         return ["corporate", "personal"].contains(storage);
@@ -562,7 +572,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               InfoListTile(
                 label: s.filename,
                 content: _file.name,
-                isPublic: _file.published,
+                isPublic: _file.published || hasShares,
                 isOffline: _file.localId != null,
                 isEncrypted: _file.initVector != null,
               ),

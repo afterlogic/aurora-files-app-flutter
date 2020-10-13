@@ -53,7 +53,7 @@ class EmailsInputState extends State<EmailsInput> {
     var _completer = completer;
     debounce?.cancel();
     print(pattern);
-    debounce = Timer(Duration(seconds: 1), () async {
+    debounce = Timer(Duration(milliseconds: 500), () async {
       if (pattern == textCtrl.text) {
         lastSuggestions = await widget.searchContact(pattern);
         if (_completer == completer && pattern == textCtrl.text) {

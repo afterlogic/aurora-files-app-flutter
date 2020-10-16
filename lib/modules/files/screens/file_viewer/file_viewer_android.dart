@@ -594,9 +594,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ),
                 ],
               ),
-              InfoListTile(
-                  label: s.location,
-                  content: _file.path == "" ? "/" : _file.path),
+              InfoListTile(label: s.location, content: _file.type + _file.path),
               InfoListTile(label: s.owner, content: _file.owner),
               if (!widget.filesState.isOfflineMode &&
                   !BuildProperty.secureSharingEnable)

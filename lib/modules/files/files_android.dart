@@ -54,6 +54,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   FilesState _filesState = AppStore.filesState;
   FilesPageState _filesPageState;
   SettingsState _settingsState;
+  StreamSubscription sub;
   S s;
 
   @override
@@ -63,7 +64,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     _settingsState = AppStore.settingsState;
     _initFiles();
     listenShare();
-    Connectivity().onConnectivityChanged.listen((res) async {
+    sub = Connectivity().onConnectivityChanged.listen((res) async {
       if (!_filesState.isOfflineMode && res != ConnectivityResult.none) {
         if (_filesState.currentStorages.length <= 0) {
           _filesPageState.filesLoading = FilesLoadingType.filesHidden;
@@ -98,6 +99,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   void dispose() {
     super.dispose();
     _filesState.folderNavStack.removeLast();
+    sub.cancel();
   }
 
   Future<void> _initFiles() async {

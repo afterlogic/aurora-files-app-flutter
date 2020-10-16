@@ -101,7 +101,7 @@ abstract class _FilesState with Store {
 
   void enableMoveMode({
     List<LocalFile> filesToMove,
-    Set<String> selectedFileIds,
+    Map<String, LocalFile> selectedFileIds,
     List<LocalFile> currentFiles,
   }) {
     if (filesToMove != null)
@@ -109,7 +109,7 @@ abstract class _FilesState with Store {
     else {
       filesToMoveCopy = [];
       currentFiles.forEach((file) {
-        if (selectedFileIds.contains(file.id)) filesToMoveCopy.add(file);
+        if (selectedFileIds[file.id] != null) filesToMoveCopy.add(file);
       });
     }
     isMoveModeEnabled = true;

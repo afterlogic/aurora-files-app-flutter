@@ -12,14 +12,14 @@ mixin _$FilesPageState on _FilesPageState, Store {
   final _$selectedFilesIdsAtom = Atom(name: '_FilesPageState.selectedFilesIds');
 
   @override
-  Set<String> get selectedFilesIds {
+  Map<String, LocalFile> get selectedFilesIds {
     _$selectedFilesIdsAtom.context.enforceReadPolicy(_$selectedFilesIdsAtom);
     _$selectedFilesIdsAtom.reportObserved();
     return super.selectedFilesIds;
   }
 
   @override
-  set selectedFilesIds(Set<String> value) {
+  set selectedFilesIds(Map<String, dynamic> value) {
     _$selectedFilesIdsAtom.context.conditionallyRunInAction(() {
       super.selectedFilesIds = value;
       _$selectedFilesIdsAtom.reportChanged();

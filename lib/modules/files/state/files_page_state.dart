@@ -36,7 +36,7 @@ abstract class _FilesPageState with Store {
   List<LocalFile> currentFiles = [];
 
   @observable
-  Set<String> selectedFilesIds = new Set();
+  Map<String, LocalFile> selectedFilesIds = {};
 
   @observable
   bool isSearchMode = false;
@@ -46,19 +46,19 @@ abstract class _FilesPageState with Store {
   @observable
   FilesLoadingType filesLoading = FilesLoadingType.none;
 
-  void selectFile(String id) {
+  void selectFile(LocalFile file) {
     // reassigning to update the observable
     final selectedIds = selectedFilesIds;
-    if (selectedFilesIds.contains(id)) {
-      selectedIds.remove(id);
+    if (selectedFilesIds[file.id] != null) {
+      selectedIds.remove(file.id);
     } else {
-      selectedIds.add(id);
+      selectedIds[file.id] = file;
     }
     selectedFilesIds = selectedIds;
   }
 
   void quitSelectMode() {
-    selectedFilesIds = new Set();
+    selectedFilesIds = {};
   }
 
   Future<void> onGetFiles({
@@ -200,7 +200,7 @@ abstract class _FilesPageState with Store {
     } else {
       // find selected files by their id
       currentFiles.forEach((file) {
-        if (selectedFilesIds.contains(file.id)) {
+        if (selectedFilesIds[file.id] != null) {
           if (file.localPath != null) filesToDeleteLocally.add(file);
           filesToDeleteFromCache.add(file);
           mappedFilesToDelete.add(FileToDelete(

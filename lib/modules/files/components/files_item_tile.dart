@@ -30,7 +30,7 @@ class SelectableFilesItemTile extends StatelessWidget {
         filesState.isMoveModeEnabled && file != null && !file.isFolder) {
       return null;
     } else if (filesPageState.selectedFilesIds.length > 0) {
-      return () => filesPageState.selectFile(file.id);
+      return () => filesPageState.selectFile(file);
     } else {
       return () => onTap();
     }
@@ -69,7 +69,7 @@ class SelectableFilesItemTile extends StatelessWidget {
               file.extendedProps == "fake" ||
               filesPageState.selectedFilesIds.length > 0
           ? null
-          : () => filesPageState.selectFile(file.id),
+          : () => filesPageState.selectFile(file),
       child: Stack(
         children: <Widget>[
           Column(

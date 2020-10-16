@@ -360,7 +360,7 @@ class _FileWidgetState extends State<FileWidget> {
                 ? _openEncryptedFile(context)
                 : _openFile(context);
           },
-          isSelected: _filesPageState.selectedFilesIds.contains(widget.file.id),
+          isSelected: _filesPageState.selectedFilesIds[widget.file.id] != null,
           child: Stack(children: [
             ListTile(
               leading: _getThumbnail(context),
@@ -404,14 +404,13 @@ class _FileWidgetState extends State<FileWidget> {
                             ])
                           : Row(
                               children: <Widget>[
-                                if(hasShares)
-                                Icon(
-                                  Icons.share,
-                                  semanticLabel: s.btn_share_to_email,
-                                ),
                                 if (hasShares)
-                                  SizedBox(width: margin),
-                                if (widget.file.published )
+                                  Icon(
+                                    Icons.share,
+                                    semanticLabel: s.btn_share_to_email,
+                                  ),
+                                if (hasShares) SizedBox(width: margin),
+                                if (widget.file.published)
                                   Icon(
                                     Icons.link,
                                     semanticLabel: s.has_public_link,

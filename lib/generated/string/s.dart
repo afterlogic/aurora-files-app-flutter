@@ -244,4 +244,5 @@ abstract class S {
   String get btn_enable_backward_compatibility;
   String get error_backward_compatibility_sharing_not_supported;
   String get hint_backward_compatibility_aes_key;
+  String get label_delete_folder;
 }

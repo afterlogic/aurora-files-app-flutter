@@ -295,4 +295,5 @@ class EnString extends S {
       "The sharing of this file is not supported. The file is encrypted using the old encryption mode. The file must be uploaded and encrypted using the modern encryption mode. Please download and upload the file again.";
   final String hint_backward_compatibility_aes_key =
       "The AES key will be used only to decrypt the files that are encrypted using the old encryption mode. The new files will be encrypted using modern encryption mode.";
+  final String label_delete_folder = "Delete folder";
 }

@@ -16,7 +16,8 @@ class FolderWidget extends StatelessWidget {
 
   const FolderWidget({Key key, @required this.folder}) : super(key: key);
 
-  Future _showModalBottomSheet(context,FilesState filesState,FilesPageState filesPageState) async {
+  Future _showModalBottomSheet(
+      context, FilesState filesState, FilesPageState filesPageState) async {
     Navigator.of(context).push(CustomBottomSheet(
       child: FileOptionsBottomSheet(
         file: folder,
@@ -35,7 +36,7 @@ class FolderWidget extends StatelessWidget {
     return Observer(
       builder: (_) => SelectableFilesItemTile(
         file: folder,
-        isSelected: filesPageState.selectedFilesIds.contains(folder.id),
+        isSelected: filesPageState.selectedFilesIds[folder.id] != null,
         onTap: () {
           filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
           Navigator.pushNamed(
@@ -106,7 +107,8 @@ class FolderWidget extends StatelessWidget {
                   Icons.more_vert,
                   color: Theme.of(context).disabledColor,
                 ),
-                onPressed: () => _showModalBottomSheet(context,filesState,filesPageState),
+                onPressed: () =>
+                    _showModalBottomSheet(context, filesState, filesPageState),
               ),
             ),
         ]),

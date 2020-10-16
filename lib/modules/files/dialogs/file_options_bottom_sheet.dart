@@ -233,7 +233,10 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     Navigator.pop(context);
                     final shouldDelete = await AMDialog.show<bool>(
                       context: context,
-                      builder: (_) => DeleteConfirmationDialog(itemsNumber: 1),
+                      builder: (_) => DeleteConfirmationDialog(
+                        itemsNumber: 1,
+                        isFolder: widget.file.isFolder,
+                      ),
                     );
                     if (shouldDelete == true) {
                       widget.filesPageState.onDeleteFiles(

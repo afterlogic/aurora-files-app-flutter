@@ -153,6 +153,9 @@ class _FilesAndroidState extends State<FilesAndroid>
       context: context,
       builder: (_) => DeleteConfirmationDialog(
         itemsNumber: _filesPageState.selectedFilesIds.length,
+        isFolder: _filesPageState.selectedFilesIds.length == 1
+            ? _filesPageState.selectedFilesIds.values.first.isFolder
+            : false,
       ),
     );
 

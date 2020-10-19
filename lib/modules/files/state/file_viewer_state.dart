@@ -68,7 +68,7 @@ abstract class _FileViewerState with Store {
 
   Future<void> _getPreviewFile(
       String _password, File fileToView, BuildContext context,
-      {Function(File) onDownloadEnd}) async {
+      {Function(File) onDownloadEnd, Function(String) onError}) async {
     String password = _password;
     if (file.encryptedDecryptionKey != null) {
       if (password == null) {
@@ -117,6 +117,7 @@ abstract class _FileViewerState with Store {
           updateViewerProgress: (progress) => downloadProgress = progress,
           onError: (err) {
             processingFile = null;
+            onError(err);
           },
         );
         processingFile.subscription = sub;
@@ -146,7 +147,14 @@ abstract class _FileViewerState with Store {
       final File imageToView = file.initVector != null
           ? await MemoryFileSystem().file(file.name).create()
           : await _filesLocal.createImageCacheFile(file);
-      await _getPreviewFile(password, imageToView, context);
+      await _getPreviewFile(
+        password,
+        imageToView,
+        context,
+        onError: (e) {
+          onError(e);
+        },
+      );
     } catch (err) {
       onError(err is CustomException ? "Invalid password" : err.toString());
     }

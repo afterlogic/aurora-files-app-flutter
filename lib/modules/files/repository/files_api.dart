@@ -357,15 +357,19 @@ class FilesApi {
         onDone: () async {
           // when finished send all we have, if the file is decrypted, the rest will be filled with padding
           // this is why we pass true for isLast
-          await _writeChunkToFile(
-            fileBytesBuffer,
-            shouldDecrypt ? file.initVector : null,
-            processingFile,
-            true,
-            decryptKey,
-          );
-          // resolve with the destination on where the downloaded file is
-          onSuccess(processingFile.fileOnDevice);
+          try {
+            await _writeChunkToFile(
+              fileBytesBuffer,
+              shouldDecrypt ? file.initVector : null,
+              processingFile,
+              true,
+              decryptKey,
+            );
+            // resolve with the destination on where the downloaded file is
+            onSuccess(processingFile.fileOnDevice);
+          }catch(err){
+            onError(err.toString());
+          }
         },
         onError: (err) {
           // delete the file in case of an error

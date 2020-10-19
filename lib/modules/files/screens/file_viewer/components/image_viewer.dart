@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -41,7 +41,8 @@ class _ImageViewerState extends State<ImageViewer> {
     if (!AppStore.filesState.isOfflineMode) {
       Future.delayed(
         Duration(milliseconds: 250),
-        () => _fileViewerState.getPreviewImage(widget.password, (err) => showError(err), context),
+        () => _fileViewerState.getPreviewImage(
+            widget.password, (err) => showError(err), context),
       );
     } else if (_fileViewerState.file.initVector != null) {
       decryptFuture = _fileViewerState.decryptOfflineFile(widget.password);
@@ -55,13 +56,13 @@ class _ImageViewerState extends State<ImageViewer> {
   }
 
   void showError(String err) {
-    if (err == "Invalid password") {
+    if (err == "Invalid password"||err == "Instance of 'CryptoException'") {
       _isError = true;
       setState(() {});
     } else if (err.isNotEmpty)
       showSnack(
         context: context,
-        scaffoldState: widget.scaffoldState,
+        scaffoldState: Scaffold.of(context),
         msg: err,
       );
   }
@@ -85,7 +86,8 @@ class _ImageViewerState extends State<ImageViewer> {
             builder: (_) => Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                ProgressLoader(_fileViewerState.downloadProgress),
+                ProgressLoader(
+                    max(0, min(_fileViewerState.downloadProgress, 1))),
               ],
             ),
           ),
@@ -130,7 +132,8 @@ class _ImageViewerState extends State<ImageViewer> {
           fit: BoxFit.cover,
         );
         precacheImage(image.image, context, onError: (e, stack) {
-          Future.delayed(Duration(milliseconds: 100), () => setState(() => _isError = true));
+          Future.delayed(Duration(milliseconds: 100),
+              () => setState(() => _isError = true));
         });
         return ConstrainedBox(
           constraints: BoxConstraints(minHeight: 60.0),
@@ -185,7 +188,8 @@ class _ImageViewerState extends State<ImageViewer> {
       }
     } else {
       placeholder = CachedNetworkImage(
-        imageUrl: '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
+        imageUrl:
+            '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
         fit: BoxFit.cover,
         httpHeaders: getHeader(),
       );
@@ -198,7 +202,8 @@ class _ImageViewerState extends State<ImageViewer> {
               _fileViewerState.file.hash,
           child: SizedBox(
             width: double.infinity,
-            child: AppStore.filesState.isOfflineMode && _fileViewerState.fileWithContents != null
+            child: AppStore.filesState.isOfflineMode &&
+                    _fileViewerState.fileWithContents != null
                 ? _buildOfflineImage()
                 : Stack(
                     fit: StackFit.passthrough,
@@ -223,7 +228,8 @@ class _ImageViewerState extends State<ImageViewer> {
                       ),
                       Observer(
                         builder: (_) {
-                          if (prevProgress != _fileViewerState.downloadProgress) {
+                          if (prevProgress !=
+                              _fileViewerState.downloadProgress) {
                             builtImage = _buildImage();
                             prevProgress = _fileViewerState.downloadProgress;
                           }

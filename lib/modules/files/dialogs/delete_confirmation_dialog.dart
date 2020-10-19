@@ -32,9 +32,13 @@ class DeleteConfirmationDialog extends StatelessWidget {
 
     return AMDialog(
       title: Text(title),
-      content: Text(s.confirm_delete_file(itemsNumber != null && itemsNumber > 1
-          ? s.these_files(itemsNumber.toString())
-          : s.these_files(itemsNumber.toString()))),
+      content: Text(
+        s.confirm_delete_file(
+          itemsNumber != null && itemsNumber > 1
+              ? s.these_files(itemsNumber.toString())
+              : s.these_files(itemsNumber.toString()),
+        ),
+      ),
       actions: <Widget>[
         FlatButton(
           child: Text(s.cancel),

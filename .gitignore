@@ -121,11 +121,11 @@ crypto_plugin/ios/Classes/
 /ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png
 /lib/build_property.dart
 /android/app/google-services.json
-**/build_res/**/sign/
+**/build_res/afterlogic/sign/
 /ios/GoogleService-Info.plist
 /ios/AppShareExtension/AppShareExtension.entitlements
 /ios/Runner/Runner.entitlements
-**/build_res/**/crashlytics/
+**/build_res/afterlogic/crashlytics/
 sh/build_appbundle.sh
 sh/build_apk.sh
 ios/GoogleService-Info.plist

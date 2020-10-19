@@ -4,6 +4,7 @@ _appId: "com.afterlogic.aurora.files"
 _appIdIos: "com.afterlogic.aurorafiles"
 _iosDeveloperId: "J7AW6VHJK4"
 _appleGroupId: "group.com.afterlogic.aurora"
+_version: "2.2.2"
 
 backgroundColor: "#FFFFFF"
 splashGradientTop: "#FFFFFF"
@@ -16,5 +17,3 @@ autodiscover_url: "https://{domain}/aurora-autodiscover.json?email={email}"
 
 pgpEnable: true
 secureSharingEnable: true
-
-_version: "2.2.2"

@@ -22,10 +22,6 @@ class SignCheckBox extends StatefulWidget {
 }
 
 class SignCheckBoxState extends State<SignCheckBox> {
-  final _passwordController = TextEditingController();
-  bool _obscure = true;
-
-  String get password => _passwordController.text;
 
   @override
   Widget build(BuildContext context) {

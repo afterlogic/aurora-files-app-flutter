@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
@@ -8,8 +6,8 @@ import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
+import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
-import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
@@ -21,7 +19,6 @@ import 'package:aurorafiles/utils/pgp_key_util.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'encrypted_share_link.dart';
 import 'select_recipient.dart';
@@ -80,7 +77,7 @@ class _ShareLinkState extends State<ShareLink> {
 
       widget.filesState.createSecureLink(
         file: widget.file.localFile,
-        email:  "",
+        email: "",
         isKey: false,
         onSuccess: (link) {
           widget.file.localFile = widget.file.localFile.copyWith(
@@ -128,10 +125,8 @@ class _ShareLinkState extends State<ShareLink> {
     Navigator.pop(context);
   }
 
-  Future<bool> checkSign() async {
-    String password;
+  Future<bool> checkSign(String password) async {
     if (useSign && widget.userPrivateKey != null) {
-      password = signKey.currentState.password;
       if (password.isEmpty) {
         toastKey.currentState.show(s.password_is_empty);
         return false;
@@ -150,8 +145,8 @@ class _ShareLinkState extends State<ShareLink> {
     sendProgress = true;
     toastKey.currentState.show(s.sending);
     setState(() {});
-
-    if (!await checkSign()) {
+    final password = useSign ? await KeyRequestDialog.request(context) : null;
+    if (!await checkSign(password)) {
       sendProgress = false;
       setState(() {});
       return;
@@ -175,14 +170,15 @@ class _ShareLinkState extends State<ShareLink> {
 
     if (widget.selectRecipientResult.pgpKey != null) {
       final encrypt = await pgp.bufferPlatformSink(
-          template.body,
-          pgp.encrypt(
-              useSign ? widget.userPrivateKey.key : null,
-              [
-                widget.selectRecipientResult.pgpKey.key,
-                widget.userPublicKey?.key
-              ].where((item) => item != null).toList(),
-              useSign ? signKey.currentState.password : null));
+        template.body,
+        pgp.encrypt(
+          useSign ? widget.userPrivateKey.key : null,
+          [widget.selectRecipientResult.pgpKey.key, widget.userPublicKey?.key]
+              .where((item) => item != null)
+              .toList(),
+          password,
+        ),
+      );
 
       template.body = encrypt;
     }

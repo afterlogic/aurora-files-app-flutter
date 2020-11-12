@@ -86,6 +86,14 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   listenShare() {
+    ReceiveSharing.getInitialMedia().then((List<SharedMediaFile> files) {
+      ReceiveSharing.reset();
+      if (files.isNotEmpty) {
+        Navigator.popUntil(
+            context, (item) => item.settings.name == FilesRoute.name);
+        _filesState.onUploadShared(files);
+      }
+    });
     ReceiveSharing.getMediaStream().listen((List<SharedMediaFile> files) {
       if (files.isNotEmpty) {
         Navigator.popUntil(

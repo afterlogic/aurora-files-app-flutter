@@ -1,0 +1,27 @@
+#variables
+appName: ""
+# android App ID
+_appId: ""
+# IOS App ID
+_appIdIos: ""
+# ios Team ID
+_iosDeveloperId: ""
+# ios App Group ID
+_appleGroupId: ""
+_version: "2.2.2"
+# colors for android splash screen
+backgroundColor: "#FFFFFF"
+splashGradientTop: "#FFFFFF"
+splashGradientBottom: "#FFFFFF"
+splashGradientTopDark: "#000000"
+splashGradientBottomDark: "#000000"
+
+privacyPolicy: ""
+termsOfService: ""
+autodiscover_url: "https://{domain}/aurora-autodiscover.json?email={email}"
+
+pgpEnable: false
+secureSharingEnable: false
+canUpgradePlan: false
+legacyPgpKey: false
+logger: false

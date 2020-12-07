@@ -22,11 +22,12 @@ class WaitWebView extends FidoAuthState {}
 
 class WaitKeyState extends FidoAuthState {}
 
-class TouchKeyState extends FidoAuthState {
-}
+class TouchKeyState extends FidoAuthState {}
 
 class SendingFinishAuthRequestState extends FidoAuthState {
   final Completer waitSheet;
 
   SendingFinishAuthRequestState(this.waitSheet);
 }
+
+class Success extends FidoAuthState {}

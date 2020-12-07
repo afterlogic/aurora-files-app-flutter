@@ -10,6 +10,7 @@ import 'package:aurorafiles/modules/auth/repository/ios_fido_auth_bloc/event.dar
 import 'package:aurorafiles/modules/auth/repository/ios_fido_auth_bloc/state.dart';
 import 'package:aurorafiles/modules/auth/screens/component/two_factor_screen.dart';
 import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor_route.dart';
+import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,6 +91,14 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
       button: BlocListener<FidoAuthBloc, FidoAuthState>(
         bloc: bloc,
         listener: (BuildContext context, state) {
+          if (state is Success) {
+            Navigator.of(context).popUntil((Route<dynamic> route) {
+              return route.isFirst;
+            });
+            Navigator.pushReplacementNamed(context, FilesRoute.name,
+                arguments: FilesScreenArguments(path: ""));
+            return;
+          }
           if (state is ErrorState) {
             if (state.errorToShow != null) {
               _showError(context, state.errorToShow);

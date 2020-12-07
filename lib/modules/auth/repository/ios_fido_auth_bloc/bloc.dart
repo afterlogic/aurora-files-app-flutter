@@ -77,8 +77,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
       if (fidoRequest?.isNFC == false) {
         await waitSheet.future;
       }
-      final attestation =
-          Platform.isIOS ? event.result : event.result;
+      final attestation = Platform.isIOS ? event.result : event.result;
       final loginResponse = await authApi.verifySecurityKeyFinish(
         host,
         login,
@@ -86,7 +85,8 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
         attestation as Map,
       );
       await authState.initUser(loginResponse);
-    } catch (e) {
+      yield Success();
+    } catch (e, s) {
       if (e is PlatformException) {
         if (e.message == "No valid credentials provided.") {
           yield ErrorState(e.message);

@@ -29,7 +29,7 @@ class UpgradeAndroid extends StatelessWidget {
     final theme = Theme.of(context);
     return themeWidget(
       Scaffold(
-        body: MainGradient(
+        body: LoginGradient(
           child: Stack(
             children: <Widget>[
               if (!BuildProperty.useMainLogo)

@@ -102,7 +102,7 @@ abstract class _AuthState with Store {
   Future<bool> onLogin(
       {bool isFormValid,
       Function() onSuccess,
-      Function() onTwoFactorAuth,
+      Function(RequestTwoFactor) onTwoFactorAuth,
       Function(String message) onShowUpgrade,
       Function(String) onError}) async {
     if (isFormValid) {
@@ -133,11 +133,7 @@ abstract class _AuthState with Store {
       hostName = host;
       try {
         final Map<String, dynamic> res = await _authApi.login(email, password);
-        if (res["Result"].containsKey("TwoFactorAuth")) {
-          onTwoFactorAuth();
-          isLoggingIn = false;
-          return false;
-        }
+
         final String token = res['Result']['AuthToken'];
         final int id = res['AuthenticatedUserId'];
         await _setAuthSharedPrefs(
@@ -146,7 +142,9 @@ abstract class _AuthState with Store {
         onSuccess();
       } catch (err, s) {
         isLoggingIn = false;
-        if (err is SocketException && err.osError.errorCode == 7) {
+        if (err is RequestTwoFactor) {
+          onTwoFactorAuth(err);
+        } else if (err is SocketException && err.osError.errorCode == 7) {
           onError("\"$host\" is not a valid hostname");
         } else if (err is AllowAccess) {
           onShowUpgrade(null);
@@ -160,9 +158,12 @@ abstract class _AuthState with Store {
   }
 
   void onLogout() {
-    AppStore.filesState.currentStorages = new List();
+    try {
+      AppStore.filesState.currentStorages = new List();
+    } catch (e) {}
     _authLocal.deleteTokenFromStorage();
     _authLocal.deleteUserIdFromStorage();
+
     PgpKeyDao pgpKeyDao = DI.instance.get();
     pgpKeyDao.clear();
     authToken = null;
@@ -192,5 +193,14 @@ abstract class _AuthState with Store {
       id: userId,
     );
     return true;
+  }
+
+  Future initUser(Map<String, dynamic> map) async {
+    await _setAuthSharedPrefs(
+      host: map["hostname"],
+      token: map["token"],
+      email: map["emailFromLogin"],
+      id: map["userId"],
+    );
   }
 }

@@ -113,7 +113,7 @@ class _AppState extends State<App> {
                     child: SelectableText(
                         "Could not start the app, please make a screenshot of the error and send it to support@afterlogic.com and we'll fix it!\nERROR: $err")));
           } else {
-            return Material(child: MainGradient());
+            return Material(child: LoginGradient());
           }
         });
   }

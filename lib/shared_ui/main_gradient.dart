@@ -2,10 +2,10 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:theme/app_color.dart';
 import 'package:flutter/material.dart';
 
-class MainGradient extends StatelessWidget {
+class LoginGradient extends StatelessWidget {
   final Widget child;
 
-  const MainGradient({Key key, this.child}) : super(key: key);
+  const LoginGradient({Key key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

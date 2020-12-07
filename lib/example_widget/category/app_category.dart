@@ -16,7 +16,7 @@ class AppCategory extends StatelessWidget {
     return CategoryWidget(
       "App widgets",
       [
-        MainGradient(
+        LoginGradient(
           child: SizedBox(
             width: double.infinity,
             height: 400,

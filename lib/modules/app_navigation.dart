@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/auth/auth_android.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
-import 'package:aurorafiles/modules/auth/screens/two_factor_auth.dart';
-import 'package:aurorafiles/modules/auth/screens/two_factor_auth_route.dart';
+import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor.dart';
+import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_android.dart';
 import 'package:aurorafiles/modules/files/files_android.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
@@ -34,6 +34,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'auth/screens/fido_auth/fido_auth.dart';
+import 'auth/screens/fido_auth/fido_auth_route.dart';
+import 'auth/screens/two_factor_auth/two_factor_auth_route.dart';
+import 'auth/screens/two_factor_auth/two_factor_auth_widget.dart';
 import 'auth/screens/upgrade_route.dart';
 
 class AppNavigation {
@@ -112,12 +116,32 @@ class AppNavigation {
           page: UpgradeAndroid(args?.message),
         );
         break;
-      case TwoFactorAuthRoute.name:
+      case FidoAuthRoute.name:
+        final args = settings.arguments as FidoAuthRouteArgs;
         return FadeRoute(
-            settings: RouteSettings(
-              name: settings.name,
-            ),
-            page: TwoFactorAuth());
+          settings: RouteSettings(
+            name: settings.name,
+          ),
+          page: FidoAuthWidget(args),
+        );
+        break;
+      case SelectTwoFactorRoute.name:
+        final args = settings.arguments as SelectTwoFactorRouteArgs;
+        return FadeRoute(
+          settings: RouteSettings(
+            name: settings.name,
+          ),
+          page: SelectTwoFactorWidget(args),
+        );
+        break;
+      case TwoFactorAuthRoute.name:
+        final args = settings.arguments as TwoFactorAuthRouteArgs;
+        return FadeRoute(
+          settings: RouteSettings(
+            name: settings.name,
+          ),
+          page: TwoFactorAuthWidget(args),
+        );
         break;
       case SettingsRoute.name:
         if (PlatformOverride.isIOS) {
@@ -208,13 +232,13 @@ class AppNavigation {
                 name: settings.name,
               ),
               builder: (context) =>
-                  PgpKeyModelWidget(arguments[0],arguments[1], arguments[2]));
+                  PgpKeyModelWidget(arguments[0], arguments[1], arguments[2]));
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              page: PgpKeyModelWidget(arguments[0],arguments[1], arguments[2]),
+              page: PgpKeyModelWidget(arguments[0], arguments[1], arguments[2]),
               duration: 150);
         }
         break;

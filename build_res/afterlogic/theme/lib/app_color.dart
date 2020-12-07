@@ -14,4 +14,6 @@ class AppColor {
   static const surface = Color(0xFFFFFFFF);
 
   static const warning = Color(0xFFF44336);
+
+  static bool enableShadow = true;
 }

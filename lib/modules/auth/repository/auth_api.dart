@@ -41,9 +41,16 @@ class AuthApi {
     final res = await WebMailApi.request(AppStore.authState.apiUrl, body);
 
     final resBody = json.decode(res.body);
-
-    if (resBody['Result'] != null) {
-      if (resBody['Result']["AllowAccess"] != 1) {
+    if (resBody['Result'] != null &&
+        resBody['Result']['TwoFactorAuth'] != null) {
+      final twoFactor = resBody['Result']['TwoFactorAuth'];
+      throw RequestTwoFactor(
+        twoFactor["HasAuthenticatorApp"] as bool,
+        twoFactor["HasSecurityKey"] as bool,
+        twoFactor["HasBackupCodes"] as bool,
+      );
+    } else if (resBody['Result'] != null) {
+      if (BuildProperty.supportAllowAccess && resBody['Result']["AllowAccess"] != 1) {
         throw AllowAccess();
       }
       return resBody;
@@ -53,7 +60,7 @@ class AuthApi {
     } else {
       throw CustomException(getErrMsg(resBody));
     }
-    }
+  }
 
   Future<Map<String, dynamic>> verifyPin(
     String pin,
@@ -61,14 +68,14 @@ class AuthApi {
     String password,
   ) async {
     final parameters = json.encode({
-      "Pin": pin,
+      "Code": pin,
       "Login": login,
       "Password": password,
     });
 
     final body = new ApiBody(
             module: "TwoFactorAuth",
-            method: "VerifyPin",
+            method: "VerifyAuthenticatorAppCode",
             parameters: parameters)
         .toMap();
 
@@ -124,6 +131,93 @@ class AuthApi {
     }
     return emails;
   }
+
+  Future<SecurityKeyBegin> verifySecurityKeyBegin(
+    String host,
+    String login,
+    String password,
+  ) async {
+    final request = new ApiBody(
+        module: "TwoFactorAuth",
+        method: "VerifySecurityKeyBegin",
+        parameters: jsonEncode({
+          "Login": login,
+          "Password": password,
+        }));
+    final response = await WebMailApi.request(host, request.toMap());
+
+    final res = json.decode(response.body);
+    if (res is Map && res.containsKey("Result")) {
+      final map = res["Result"]["publicKey"];
+      return SecurityKeyBegin(
+        host,
+        (map["timeout"] as num).toDouble(),
+        map["challenge"] as String,
+        map["rpId"] as String,
+        (map["allowCredentials"] as List)
+            .map((e) => e["id"] as String)
+            .toList(),
+      );
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<Map<String, dynamic>> verifySecurityKeyFinish(
+    String host,
+    String login,
+    String password,
+    Map attestation,
+  ) async {
+    final request = new ApiBody(
+        module: "TwoFactorAuth",
+        method: "VerifySecurityKeyFinish",
+        parameters: jsonEncode({
+          "Login": login,
+          "Password": password,
+          "Attestation": attestation,
+        }));
+    final response = await WebMailApi.request(host, request.toMap());
+    final res = json.decode(response.body);
+    if (res["Result"] is! Map ||
+        !(res["Result"] as Map).containsKey("AuthToken")) {
+      throw CustomException(getErrMsg(res));
+    }
+    final userId = res['AuthenticatedUserId'] as int;
+    final token = res["Result"]["AuthToken"] as String;
+
+    return {
+      "userId": userId,
+      "token": token,
+      "hostname": host,
+      "emailFromLogin": login,
+    };
+  }
 }
 
 class AllowAccess extends Error {}
+
+class SecurityKeyBegin {
+  final String host;
+  final double timeout;
+  final String challenge;
+  final String rpId;
+  final List<String> allowCredentials;
+
+  SecurityKeyBegin(
+    this.host,
+    this.timeout,
+    this.challenge,
+    this.rpId,
+    this.allowCredentials,
+  );
+}
+
+class RequestTwoFactor extends Error {
+  final bool hasAuthenticatorApp;
+  final bool hasSecurityKey;
+  final bool hasBackupCodes;
+
+  RequestTwoFactor(
+      this.hasAuthenticatorApp, this.hasSecurityKey, this.hasBackupCodes);
+}

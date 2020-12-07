@@ -3,7 +3,8 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_data.dart';
-import 'package:aurorafiles/modules/auth/screens/two_factor_auth_route.dart';
+import 'package:aurorafiles/modules/auth/screens/fido_auth/fido_auth_route.dart';
+import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
@@ -82,8 +83,27 @@ class _AuthAndroidState extends State<AuthAndroid> {
     if (errMsg.isEmpty) {
       final showHost = await _authState.onLogin(
         isFormValid: _authFormKey.currentState.validate(),
-        onTwoFactorAuth: () =>
-            Navigator.pushNamed(context, TwoFactorAuthRoute.name),
+        onTwoFactorAuth: (request) {
+          if (request.hasSecurityKey == true) {
+            Navigator.pushNamed(
+              context,
+              FidoAuthRoute.name,
+              arguments: FidoAuthRouteArgs(
+                false,
+                request,
+              ),
+            );
+          } else if (request.hasAuthenticatorApp == true) {
+            Navigator.pushNamed(
+              context,
+              TwoFactorAuthRoute.name,
+              arguments: TwoFactorAuthRouteArgs(
+                false,
+                request,
+              ),
+            );
+          }
+        },
         onSuccess: () async {
           await AppStore.settingsState.getUserEncryptionKeys();
           Navigator.pushReplacementNamed(context, FilesRoute.name,
@@ -175,7 +195,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
       create: (_) => _authState,
       child: theme(
         Scaffold(
-          body: MainGradient(
+          body: LoginGradient(
             child: Stack(
               children: <Widget>[
                 if (!BuildProperty.useMainLogo)

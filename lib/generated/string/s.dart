@@ -245,4 +245,25 @@ abstract class S {
   String get error_backward_compatibility_sharing_not_supported;
   String get hint_backward_compatibility_aes_key;
   String get label_delete_folder;
+  String get fido_error_invalid_key;
+  String get tfa_label;
+  String get tfa_hint_step;
+  String get fido_btn_use_key;
+  String get fido_label_connect_your_key;
+  String get fido_label_success;
+  String get tfa_btn_other_options;
+  String get tfa_btn_use_backup_code;
+  String get tfa_btn_use_auth_app;
+  String get tfa_btn_use_security_key;
+  String get tfa_label_hint_security_options;
+  String get fido_label_touch_your_key;
+  String get fido_hint_follow_the_instructions;
+  String get fido_error_title;
+  String get fido_error_hint;
+  String get fido_btn_try_again;
+  String get tfa_input_hint_code_from_app;
+  String get btn_login_back_to_login;
+  String get input_2fa_pin;
+  String get btn_verify_pin;
+  String get error_invalid_pin;
 }

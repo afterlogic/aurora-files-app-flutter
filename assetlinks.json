@@ -1,0 +1,38 @@
+[
+  {
+    "relation" : [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target" : {
+      "namespace" : "web",
+      "site" : "https://test.afterlogic.com"
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "mail_app",
+      "package_name": "com.PrivateRouter.PrivateMailApplication",
+      "sha256_cert_fingerprints": [
+        "15:85:E0:F6:C2:CD:E0:30:48:EE:7B:3A:6B:5D:13:4C:1A:21:32:3E:FE:90:25:62:51:C7:FE:23:49:0D:72:4F"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "file_app",
+      "package_name": "com.PrivateRouter.PrivateMailFiles",
+      "sha256_cert_fingerprints": [
+        "84:4E:0A:4D:41:28:66:8F:7D:41:33:E0:8C:CA:EE:5B:D8:53:98:78:FA:DD:B5:C7:9D:3D:D9:40:64:D4:35:0B"
+      ]
+    }
+  }
+]

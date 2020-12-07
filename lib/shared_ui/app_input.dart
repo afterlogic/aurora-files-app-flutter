@@ -11,7 +11,7 @@ class AppInput extends StatelessWidget {
   final Widget suffix;
   final TextInputType keyboardType;
   final Widget prefix;
-
+  final bool enabled;
   final String Function(String) validator;
   final InputCase inputCase;
 
@@ -27,6 +27,7 @@ class AppInput extends StatelessWidget {
     this.prefix,
     this.inputCase = InputCase.Default,
     this.validator,
+    this.enabled,
   }) : super(key: key);
 
   @override
@@ -41,6 +42,7 @@ class AppInput extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       autocorrect: keyboardType != null ? false : true,
+      enabled: enabled,
       decoration: InputDecoration(
         alignLabelWithHint: true,
         labelText: labelText,

@@ -39,6 +39,8 @@ _jksName: "key.jks"
 _androidGoogleService: "google-services.json"
 _iosGoogleService: "GoogleService-Info.plist"
 
+deepLink: "{{_appId}}"
+
 #style
 #image
 icon: "{{_dir}}/image/icon.png"
@@ -63,5 +65,6 @@ pgpEnable: false
 secureSharingEnable: false
 canUpgradePlan: false
 legacyPgpKey: false
+supportAllowAccess: true
 
 logger: true

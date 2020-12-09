@@ -6,6 +6,7 @@ import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_local_storage.dart';
+import 'package:aurorafiles/modules/auth/repository/device_id_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
 import 'package:aurorafiles/modules/settings/repository/encryption_local_storage.dart';
 import 'package:flutter/material.dart';
@@ -76,6 +77,7 @@ abstract class _AuthState with Store {
       setIdentity(),
       setAccount(),
       AppStore.settingsState.updateSettings(),
+      setDevice(),
     ]);
   }
 
@@ -226,5 +228,11 @@ abstract class _AuthState with Store {
       id: userId,
     );
     return true;
+  }
+
+  Future setDevice() async {
+    final deviceId = await DeviceIdStorage.getDeviceId();
+    final deviceName = await DeviceIdStorage.getDeviceName();
+    _authApi.saveDevice(deviceId, deviceName, authToken);
   }
 }

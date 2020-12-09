@@ -7,6 +7,8 @@ import 'package:aurorafiles/modules/auth/screens/backup_code_auth/backup_code_au
 import 'package:aurorafiles/modules/auth/screens/backup_code_auth/backup_code_auth_widget.dart';
 import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor.dart';
 import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor_route.dart';
+import 'package:aurorafiles/modules/auth/screens/trust_device/trust_device_route.dart';
+import 'package:aurorafiles/modules/auth/screens/trust_device/trust_device_widget.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_android.dart';
 import 'package:aurorafiles/modules/files/files_android.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
@@ -134,6 +136,15 @@ class AppNavigation {
             name: settings.name,
           ),
           page: SelectTwoFactorWidget(args),
+        );
+        break;
+      case TrustDeviceRoute.name:
+        final args = settings.arguments as TrustDeviceRouteArgs;
+        return FadeRoute(
+          settings: RouteSettings(
+            name: settings.name,
+          ),
+          page: TrustDeviceWidget(args: args),
         );
         break;
       case BackupCodeAuthRoute.name:

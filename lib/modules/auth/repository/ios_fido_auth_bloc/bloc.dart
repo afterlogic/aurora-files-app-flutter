@@ -61,11 +61,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
   Stream<FidoAuthState> _cancelByUser(Cancel event) async* {
     fidoRequest?.close();
     fidoRequest = null;
-    if (event.error != null && event.error != FidoErrorCase.Canceled) {
-      yield ErrorState(event.error.toString());
-    } else {
-      yield ErrorState(null);
-    }
+    yield mapError(event.error);
   }
 
   Stream<FidoAuthState> _keyResult(KeyResult event) async* {
@@ -85,19 +81,10 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
         attestation,
       );
       await authState.initUser(loginResponse);
+      await AppStore.authState.successLogin();
       yield Success();
-    } catch (e, s) {
-      if (e is PlatformException) {
-        if (e.message == "No valid credentials provided.") {
-          yield ErrorState(e.message);
-          return;
-        }
-      }
-      if (e is CanceledByUser) {
-        yield ErrorState(null);
-        return;
-      }
-      yield ErrorState(e.toString());
+    } catch (e) {
+      yield mapError(e);
     }
   }
 
@@ -143,17 +130,29 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
           .then((value) => add(KeyResult(value)))
           .catchError((e) => add(Cancel(e)));
     } catch (e) {
-      if (e is PlatformException) {
-        if (e.message == "No valid credentials provided.") {
-          yield ErrorState(e.message);
-          return;
-        }
-      }
-      if (e is CanceledByUser) {
-        yield ErrorState(null);
-        return;
-      }
-      yield ErrorState(e.toString());
+      yield mapError(e);
     }
+  }
+
+  ErrorState mapError(dynamic e) {
+    if (e == null) {
+      return ErrorState(null);
+    }
+    if (e is FidoError) {
+      if (e.errorCase == FidoErrorCase.Canceled) {
+        return ErrorState(null);
+      } else if (e.message?.isNotEmpty == true) {
+        return ErrorState(e.message);
+      } else {
+        return ErrorState("The system misconfigured");
+      }
+    } else if (e is PlatformException) {
+      if (e.message == "No valid credentials provided.") {
+        return ErrorState(e.message);
+      }
+    } else if (e is CanceledByUser) {
+      return ErrorState(null);
+    }
+    return ErrorState(e.toString());
   }
 }

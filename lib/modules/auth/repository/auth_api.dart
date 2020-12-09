@@ -9,7 +9,13 @@ import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:http/http.dart' as http;
 
+import 'device_id_storage.dart';
+
 class AuthApi {
+  Future<Map<String, String>> deviceIdHeader() async {
+    return {"X-DeviceId": await DeviceIdStorage.getDeviceId()};
+  }
+
   Future<String> autoDiscoverHostname(String email) async {
     try {
       final dogIndex = email.indexOf("@") + 1;
@@ -38,7 +44,8 @@ class AuthApi {
       parameters: parameters,
     ).toMap();
 
-    final res = await WebMailApi.request(AppStore.authState.apiUrl, body);
+    final res = await WebMailApi.request(
+        AppStore.authState.apiUrl, body, await deviceIdHeader());
 
     final resBody = json.decode(res.body);
     if (resBody['Result'] != null &&
@@ -80,7 +87,7 @@ class AuthApi {
             parameters: parameters)
         .toMap();
 
-    final res = await WebMailApi.request(AppStore.authState.apiUrl, body);
+    final res = await WebMailApi.request(AppStore.authState.apiUrl, body,await deviceIdHeader());
 
     final resBody = json.decode(res.body);
     if (resBody['Result'] != null) {
@@ -145,7 +152,7 @@ class AuthApi {
           "Login": login,
           "Password": password,
         }));
-    final response = await WebMailApi.request(host, request.toMap());
+    final response = await WebMailApi.request(host, request.toMap(),await deviceIdHeader());
 
     final res = json.decode(response.body);
     if (res is Map && res.containsKey("Result")) {
@@ -178,7 +185,7 @@ class AuthApi {
           "Password": password,
           "Attestation": attestation,
         }));
-    final response = await WebMailApi.request(host, request.toMap());
+    final response = await WebMailApi.request(host, request.toMap(),await deviceIdHeader());
     final res = json.decode(response.body);
     if (res["Result"] is! Map ||
         !(res["Result"] as Map).containsKey("AuthToken")) {
@@ -212,7 +219,7 @@ class AuthApi {
             parameters: parameters)
         .toMap();
 
-    final res = await WebMailApi.request(AppStore.authState.apiUrl, body);
+    final res = await WebMailApi.request(AppStore.authState.apiUrl, body,await deviceIdHeader());
 
     final resBody = json.decode(res.body);
     if (resBody['Result'] != null) {
@@ -243,7 +250,7 @@ class AuthApi {
         .toMap();
 
     final res =
-        await WebMailApi.request(AppStore.authState.apiUrl, body, null, token);
+        await WebMailApi.request(AppStore.authState.apiUrl, body,await deviceIdHeader(), token);
     final response = jsonDecode(res.body);
 
     print(response);
@@ -270,7 +277,7 @@ class AuthApi {
         .toMap();
 
     final res =
-        await WebMailApi.request(AppStore.authState.apiUrl, body, null, token);
+        await WebMailApi.request(AppStore.authState.apiUrl, body,await deviceIdHeader(), token);
     final response = jsonDecode(res.body);
 
     print(response);

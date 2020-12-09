@@ -96,7 +96,6 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
                     SizedBox(
                       width: double.infinity,
                       child: AMButton(
-                        shadow: AppColor.enableShadow ? null : BoxShadow(),
                         child: Text(
                           s.tfa_button_continue,
                           style: TextStyle(color: AppTheme.loginTextColor),

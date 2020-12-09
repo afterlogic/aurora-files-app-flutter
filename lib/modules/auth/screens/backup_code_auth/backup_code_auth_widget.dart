@@ -107,7 +107,6 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
                     SizedBox(
                       width: double.infinity,
                       child: AMButton(
-                        shadow: AppColor.enableShadow ? null : BoxShadow(),
                         child: Text(
                           s.btn_verify_pin,
                           style: TextStyle(color: AppTheme.loginTextColor),

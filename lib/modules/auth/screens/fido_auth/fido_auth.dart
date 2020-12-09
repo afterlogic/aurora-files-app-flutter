@@ -150,8 +150,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                           SizedBox(
                             width: double.infinity,
                             child: AMButton(
-                              shadow:
-                                  AppColor.enableShadow ? null : BoxShadow(),
+
                               child: Text(
                                 s.fido_btn_try_again,
                                 style:

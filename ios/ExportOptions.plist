@@ -4,12 +4,12 @@
 <dict>
     <key>provisioningProfiles</key>
     <dict>
-        <key>com.afterlogic.aurorafiles</key>
+        <key>com.PrivateRouter.PrivateMailFiles</key>
         <string>Runner</string>
     </dict>
     <key>method</key>
     <string>app-store</string>
     <key>teamID</key>
-    <string>J7AW6VHJK4</string>
+    <string>K6298N65JA</string>
 </dict>
 </plist>

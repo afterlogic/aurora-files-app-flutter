@@ -108,7 +108,6 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
                       SizedBox(
                         width: double.infinity,
                         child: AMButton(
-                          shadow: AppColor.enableShadow ? null : BoxShadow(),
                           child: Text(
                             s.btn_verify_pin,
                             style: TextStyle(color: AppTheme.loginTextColor),

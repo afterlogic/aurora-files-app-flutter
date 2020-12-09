@@ -21,5 +21,6 @@ class ErrorState extends TwoFactorState {
 }
 
 class CompleteState extends TwoFactorState {
+
   CompleteState();
 }

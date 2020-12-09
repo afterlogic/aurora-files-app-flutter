@@ -266,4 +266,9 @@ abstract class S {
   String get input_2fa_pin;
   String get btn_verify_pin;
   String get error_invalid_pin;
+  String get tfa_label_enter_backup_code;
+  String get tfa_input_backup_code;
+  String get tfa_label_trust_device;
+  String get tfa_check_box_trust_device;
+  String get tfa_button_continue;
 }

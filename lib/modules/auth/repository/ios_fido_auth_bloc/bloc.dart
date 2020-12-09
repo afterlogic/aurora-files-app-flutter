@@ -82,7 +82,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
         host,
         login,
         password,
-        attestation as Map,
+        attestation,
       );
       await authState.initUser(loginResponse);
       yield Success();
@@ -104,7 +104,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
   Stream<FidoAuthState> _startAuth(StartAuth event) async* {
     try {
       yield SendingBeginAuthRequestState();
-      if (Platform.isAndroid) {
+      if (Platform.isAndroid && false) {
         final uri = Uri.parse(
             "${AppStore.authState.hostName}?verify-security-key&login=$login&password=$password&package_name=${BuildProperty.deepLink}");
 

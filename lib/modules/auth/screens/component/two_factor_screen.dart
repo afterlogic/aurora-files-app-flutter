@@ -2,6 +2,7 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/generated/string/s.dart';
+import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/component/mail_logo.dart';
 import 'package:aurorafiles/modules/auth/component/presentation_header.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
@@ -14,7 +15,7 @@ class TwoFactorScene extends StatefulWidget {
   final bool isDialog;
   final String logoHint;
   final Widget title;
-  final Widget button;
+  final List<Widget> button;
 
   const TwoFactorScene(
       {Key key, this.isDialog, this.logoHint, this.title, this.button})
@@ -69,7 +70,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
       top: false,
       child: Stack(
         children: <Widget>[
-          if (!BuildProperty.useMainLogo)
+          if (!widget.isDialog && !BuildProperty.useMainLogo)
             Positioned(
               top: -70.0,
               left: -70.0,
@@ -90,42 +91,44 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                   children: <Widget>[
                     Spacer(),
                     if (!widget.isDialog) ...[
-                      Flexible(
-                        flex: 3,
-                        child: PresentationHeader(
-                          message: widget.logoHint,
-                        ),
+                      PresentationHeader(
+                        message: widget.logoHint,
                       ),
                     ],
-                    Flexible(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            s.tfa_label,
-                            style: Theme.of(context)
-                                .textTheme
-                                .title
-                                .copyWith(color: AppTheme.loginTextColor),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            s.tfa_hint_step,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: AppTheme.loginTextColor),
-                          ),
-                        ],
-                      ),
-                    ),
                     if (widget.isDialog) SizedBox(height: 40.0),
                     Flexible(
                       flex: 4,
-                      child: widget.button,
+                      child: ListView(
+                        padding: EdgeInsets.zero,
+                        children: [
+                          widget.title ??
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    s.tfa_label,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .title
+                                        .copyWith(
+                                            color: AppTheme.loginTextColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    s.tfa_hint_step,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: AppTheme.loginTextColor),
+                                  ),
+                                ],
+                              ),
+                          SizedBox(height: 20),
+                          ...widget.button
+                        ],
+                      ),
                     ),
                     Flexible(
-                      flex: 1,
                       child: SizedBox(
                         width: double.infinity,
                         child: FlatButton(
@@ -136,7 +139,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                           onPressed: () {
                             Navigator.popUntil(
                               context,
-                              (v) => v.isFirst,
+                              ModalRoute.withName(AuthRoute.name),
                             );
                           },
                         ),

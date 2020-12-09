@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/auth/auth_android.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
+import 'package:aurorafiles/modules/auth/screens/backup_code_auth/backup_code_auth_route.dart';
+import 'package:aurorafiles/modules/auth/screens/backup_code_auth/backup_code_auth_widget.dart';
 import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor.dart';
 import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_android.dart';
@@ -132,6 +134,15 @@ class AppNavigation {
             name: settings.name,
           ),
           page: SelectTwoFactorWidget(args),
+        );
+        break;
+      case BackupCodeAuthRoute.name:
+        final args = settings.arguments as BackupCodeAuthRouteArgs;
+        return FadeRoute(
+          settings: RouteSettings(
+            name: settings.name,
+          ),
+          page: BackupCodeAuthWidget(args),
         );
         break;
       case TwoFactorAuthRoute.name:

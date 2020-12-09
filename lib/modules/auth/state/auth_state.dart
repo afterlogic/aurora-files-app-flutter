@@ -203,4 +203,28 @@ abstract class _AuthState with Store {
       id: map["userId"],
     );
   }
+
+  Future<bool> backupCodeAuth(String pin) async {
+    String email = emailCtrl.text;
+    String password = passwordCtrl.text;
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    final map = await _authApi.verifyPin(
+      pin,
+      email,
+      password,
+    );
+    if (map["Result"] is! Map || !map["Result"].containsKey("AuthToken")) {
+      return false;
+    }
+    final userId = map['AuthenticatedUserId'];
+    final token = map["Result"]["AuthToken"];
+
+    await _setAuthSharedPrefs(
+      host: hostName,
+      token: token,
+      email: email,
+      id: userId,
+    );
+    return true;
+  }
 }

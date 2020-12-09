@@ -10,6 +10,7 @@ import 'package:aurorafiles/modules/auth/repository/ios_fido_auth_bloc/event.dar
 import 'package:aurorafiles/modules/auth/repository/ios_fido_auth_bloc/state.dart';
 import 'package:aurorafiles/modules/auth/screens/component/two_factor_screen.dart';
 import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor_route.dart';
+import 'package:aurorafiles/modules/auth/screens/trust_device/trust_device_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
@@ -88,119 +89,126 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
           ),
         ],
       ),
-      button: BlocListener<FidoAuthBloc, FidoAuthState>(
-        bloc: bloc,
-        listener: (BuildContext context, state) {
-          if (state is Success) {
-            Navigator.of(context).popUntil((Route<dynamic> route) {
-              return route.isFirst;
-            });
-            Navigator.pushReplacementNamed(context, FilesRoute.name,
-                arguments: FilesScreenArguments(path: ""));
-            return;
-          }
-          if (state is ErrorState) {
-            if (state.errorToShow != null) {
-              _showError(context, state.errorToShow);
+      button: [
+        BlocListener<FidoAuthBloc, FidoAuthState>(
+          bloc: bloc,
+          listener: (BuildContext context, state) {
+            if (state is Success) {
+              Navigator.pushReplacementNamed(
+                context,
+                TrustDeviceRoute.name,
+                arguments: TrustDeviceRouteArgs(
+                  widget.args.isDialog,
+                ),
+              );
+              return;
             }
-          }
-          if (state is TouchKeyState) {
-            if (touchDialogKey.currentState != null) {
-              touchDialogKey.currentState.close();
+            if (state is ErrorState) {
+              if (state.errorToShow != null) {
+                _showError(context, state.errorToShow);
+              }
             }
-            IosPressOnKeyDialog(touchDialogKey, () => bloc.add(Cancel()))
-                .show(context);
-          } else if (state is SendingFinishAuthRequestState) {
-            if (touchDialogKey.currentState != null) {
-              touchDialogKey.currentState
-                  .success()
-                  .then((value) => state.waitSheet?.complete());
+            if (state is TouchKeyState) {
+              if (touchDialogKey.currentState != null) {
+                touchDialogKey.currentState.close();
+              }
+              IosPressOnKeyDialog(touchDialogKey, () => bloc.add(Cancel()))
+                  .show(context);
+            } else if (state is SendingFinishAuthRequestState) {
+              if (touchDialogKey.currentState != null) {
+                touchDialogKey.currentState
+                    .success()
+                    .then((value) => state.waitSheet?.complete());
+              } else {
+                state.waitSheet?.complete();
+              }
             } else {
-              state.waitSheet?.complete();
+              if (touchDialogKey.currentState != null) {
+                touchDialogKey.currentState.close();
+              }
             }
-          } else {
-            if (touchDialogKey.currentState != null) {
-              touchDialogKey.currentState.close();
-            }
-          }
-        },
-        child: BlocBuilder<FidoAuthBloc, FidoAuthState>(
-            bloc: bloc,
-            builder: (_, state) {
-              return state is InitState || state is ErrorState
-                  ? Column(
-                      children: [
-                        Text(
-                          s.fido_error_title,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.title
-                              .copyWith(color: AppTheme.loginTextColor),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          s.fido_error_hint,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: AppTheme.loginTextColor),
-                        ),
-                        SizedBox(height: 30),
-                        SizedBox(
-                          width: double.infinity,
-                          child: AMButton(
-                            shadow: AppColor.enableShadow ? null : BoxShadow(),
-                            child: Text(
-                              s.fido_btn_try_again,
-                              style: TextStyle(color: AppTheme.loginTextColor),
-                            ),
-                            onPressed: () {
-                              bloc.add(StartAuth(
-                                true,
-                                s.fido_label_connect_your_key,
-                                s.fido_label_success,
-                              ));
-                            },
+          },
+          child: BlocBuilder<FidoAuthBloc, FidoAuthState>(
+              bloc: bloc,
+              builder: (_, state) {
+                return state is InitState || state is ErrorState
+                    ? Column(
+                        children: [
+                          Text(
+                            s.fido_error_title,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.title
+                                .copyWith(color: AppTheme.loginTextColor),
                           ),
-                        ),
-                        SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FlatButton(
-                            child: Text(
-                              s.tfa_btn_other_options,
-                              style: TextStyle(color: AppTheme.loginTextColor),
-                            ),
-                            onPressed: () {
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                SelectTwoFactorRoute.name,
-                                ModalRoute.withName(AuthRoute.name),
-                                arguments: SelectTwoFactorRouteArgs(
-                                    widget.args.isDialog, widget.args.state),
-                              );
-                            },
+                          SizedBox(height: 10),
+                          Text(
+                            s.fido_error_hint,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: AppTheme.loginTextColor),
                           ),
-                        ),
-                      ],
-                    )
-                  : (state is WaitWebView
-                      ? Center(
-                          child: Column(
-                          children: [
-                            CircularProgressIndicator(),
-                            FlatButton(
-                              onPressed: () {
-                                bloc.add(Cancel());
-                              },
+                          SizedBox(height: 30),
+                          SizedBox(
+                            width: double.infinity,
+                            child: AMButton(
+                              shadow:
+                                  AppColor.enableShadow ? null : BoxShadow(),
                               child: Text(
-                                s.cancel,
+                                s.fido_btn_try_again,
+                                style:
+                                    TextStyle(color: AppTheme.loginTextColor),
                               ),
-                            )
-                          ],
-                        ))
-                      : Center(
-                          child: CircularProgressIndicator(),
-                        ));
-            }),
-      ),
+                              onPressed: () {
+                                bloc.add(StartAuth(
+                                  true,
+                                  s.fido_label_connect_your_key,
+                                  s.fido_label_success,
+                                ));
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            child: FlatButton(
+                              child: Text(
+                                s.tfa_btn_other_options,
+                                style:
+                                    TextStyle(color: AppTheme.loginTextColor),
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  SelectTwoFactorRoute.name,
+                                  ModalRoute.withName(AuthRoute.name),
+                                  arguments: SelectTwoFactorRouteArgs(
+                                      widget.args.isDialog, widget.args.state),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    : (state is WaitWebView
+                        ? Center(
+                            child: Column(
+                            children: [
+                              CircularProgressIndicator(),
+                              FlatButton(
+                                onPressed: () {
+                                  bloc.add(Cancel());
+                                },
+                                child: Text(
+                                  s.cancel,
+                                ),
+                              )
+                            ],
+                          ))
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          ));
+              }),
+        ),
+      ],
     );
   }
 

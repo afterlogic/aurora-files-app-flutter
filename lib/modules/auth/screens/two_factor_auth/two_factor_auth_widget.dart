@@ -5,6 +5,7 @@ import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/repository/two_factor_auth/bloc.dart';
 import 'package:aurorafiles/modules/auth/screens/component/two_factor_screen.dart';
 import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor_route.dart';
+import 'package:aurorafiles/modules/auth/screens/trust_device/trust_device_route.dart';
 import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
@@ -60,88 +61,87 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
           ),
         ],
       ),
-      button: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          BlocListener<TwoFactorBloc, TwoFactorState>(
-            bloc: bloc,
-            listener: (BuildContext context, state) {
-              if (state is ErrorState) {
-                pinCtrl.clear();
-                _showError(
-                  context,
-                  state.errorMsg,
+      button: [
+        BlocListener<TwoFactorBloc, TwoFactorState>(
+          bloc: bloc,
+          listener: (BuildContext context, state) {
+            if (state is ErrorState) {
+              pinCtrl.clear();
+              _showError(
+                context,
+                state.errorMsg,
+              );
+            } else if (state is CompleteState) {
+              Navigator.pushReplacementNamed(
+                context,
+                TrustDeviceRoute.name,
+                arguments: TrustDeviceRouteArgs(
+                  widget.args.isDialog,
+                ),
+              );
+            }
+          },
+          child: BlocBuilder<TwoFactorBloc, TwoFactorState>(
+              bloc: bloc,
+              builder: (context, state) {
+                final loading =
+                    state is ProgressState || state is CompleteState;
+                return Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        s.tfa_input_hint_code_from_app,
+                        style: TextStyle(color: AppTheme.loginTextColor),
+                      ),
+                      SizedBox(height: 20),
+                      AppInput(
+                        controller: pinCtrl,
+                        labelText: s.input_2fa_pin,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) =>
+                            validateInput(value, [ValidationTypes.empty]),
+                        enabled: !loading,
+                      ),
+                      SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: AMButton(
+                          shadow: AppColor.enableShadow ? null : BoxShadow(),
+                          child: Text(
+                            s.btn_verify_pin,
+                            style: TextStyle(color: AppTheme.loginTextColor),
+                          ),
+                          isLoading: loading,
+                          onPressed: () => _login(),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FlatButton(
+                          child: Text(
+                            "Other options",
+                            style: TextStyle(color: AppTheme.loginTextColor),
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              SelectTwoFactorRoute.name,
+                              ModalRoute.withName(AuthRoute.name),
+                              arguments: SelectTwoFactorRouteArgs(
+                                  widget.args.isDialog, widget.args.state),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 );
-              } else if (state is CompleteState) {
-                Navigator.of(context).popUntil((Route<dynamic> route) {
-                  return route.isFirst;
-                });
-                Navigator.pushReplacementNamed(context, FilesRoute.name,
-                    arguments: FilesScreenArguments(path: ""));
-              }
-            },
-            child: BlocBuilder<TwoFactorBloc, TwoFactorState>(
-                bloc: bloc,
-                builder: (context, state) {
-                  final loading =
-                      state is ProgressState || state is CompleteState;
-                  return Form(
-                    key: formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          s.tfa_input_hint_code_from_app,
-                          style: TextStyle(color: AppTheme.loginTextColor),
-                        ),
-                        SizedBox(height: 20),
-                        AppInput(
-                          controller: pinCtrl,
-                          labelText: s.input_2fa_pin,
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) =>
-                              validateInput(value, [ValidationTypes.empty]),
-                          enabled: !loading,
-                        ),
-                        SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          child: AMButton(
-                            shadow: AppColor.enableShadow ? null : BoxShadow(),
-                            child: Text(
-                              s.btn_verify_pin,
-                              style: TextStyle(color: AppTheme.loginTextColor),
-                            ),
-                            isLoading: loading,
-                            onPressed: () => _login(),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FlatButton(
-                            child: Text(
-                              "Other options",
-                              style: TextStyle(color: AppTheme.loginTextColor),
-                            ),
-                            onPressed: () {
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                SelectTwoFactorRoute.name,
-                                ModalRoute.withName(AuthRoute.name),
-                                arguments: SelectTwoFactorRouteArgs(
-                                    widget.args.isDialog, widget.args.state),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-          ),
-        ],
-      ),
+              }),
+        ),
+      ],
     );
   }
 

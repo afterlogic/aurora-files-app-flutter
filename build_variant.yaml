@@ -19,15 +19,15 @@ _copy:
 _buildPropertyPath: lib/build_property.dart
 #default config
 _buildVariant: "build_res/afterlogic/build_variant.yaml"
-#variables
 
+#variables
 #app
 appName: ""
 _appId: ""
 _appIdIos: "{{_appId}}"
 _iosDeveloperId: ""
 _appleGroupId: ""
-_build: 140
+_build: 141
 _version: ""
 _version_android: "{{_version}}{{_build}}"
 version_ios: "{{_version}}+{{_build}}"

@@ -8,12 +8,17 @@ class WebMailApi {
   static Function onLogout;
 
   static Future<http.Response> request(String url,
-      [dynamic body, Map<String, String> headers]) async {
+      [dynamic body, Map<String, String> headers, String token]) async {
     if (onRequest != null) onRequest("URL:$url\nBODY:$body");
-    final rawResponse = await http.post(url, body: body, headers: headers);
+    Map<String, String> _headers =
+        token == null ? {} : {'Authorization': 'Bearer $token'};
+    headers?.forEach((key, value) {
+      _headers[key] = value;
+    });
+    final rawResponse = await http.post(url, body: body, headers: _headers);
     final res = json.decode(rawResponse.body);
 
-      if (res["ErrorCode"] == 108) {
+    if (res["ErrorCode"] == 108) {
       try {
         onLogout?.call();
       } catch (e) {

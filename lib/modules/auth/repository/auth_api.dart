@@ -50,7 +50,8 @@ class AuthApi {
         twoFactor["HasBackupCodes"] as bool,
       );
     } else if (resBody['Result'] != null) {
-      if (BuildProperty.supportAllowAccess && resBody['Result']["AllowAccess"] != 1) {
+      if (BuildProperty.supportAllowAccess &&
+          resBody['Result']["AllowAccess"] != 1) {
         throw AllowAccess();
       }
       return resBody;
@@ -192,6 +193,87 @@ class AuthApi {
       "hostname": host,
       "emailFromLogin": login,
     };
+  }
+
+  Future<Map<String, dynamic>> backupCode(
+    String code,
+    String login,
+    String password,
+  ) async {
+    final parameters = json.encode({
+      "BackupCode": code,
+      "Login": login,
+      "Password": password,
+    });
+
+    final body = new ApiBody(
+            module: "TwoFactorAuth",
+            method: "VerifyBackupCode",
+            parameters: parameters)
+        .toMap();
+
+    final res = await WebMailApi.request(AppStore.authState.apiUrl, body);
+
+    final resBody = json.decode(res.body);
+    if (resBody['Result'] != null) {
+      return resBody;
+    }
+    if (resBody["ErrorCode"] == accessDenied) {
+      // the app is unavailable for this account, upgrade
+      throw accessDenied;
+    } else {
+      throw CustomException(getErrMsg(resBody));
+    }
+  }
+
+  Future saveDevice(
+    String deviceId,
+    String deviceName,
+    String token,
+  ) async {
+    final parameters = json.encode({
+      "DeviceId": deviceId,
+      "DeviceName": deviceName,
+    });
+
+    final body = new ApiBody(
+            module: "TwoFactorAuth",
+            method: "SaveDevice",
+            parameters: parameters)
+        .toMap();
+
+    final res =
+        await WebMailApi.request(AppStore.authState.apiUrl, body, null, token);
+    final response = jsonDecode(res.body);
+
+    print(response);
+  }
+
+  Future trustDevice(
+    String deviceId,
+    String deviceName,
+    String login,
+    String password,
+    String token,
+  ) async {
+    final parameters = json.encode({
+      "DeviceId": deviceId,
+      "DeviceName": deviceName,
+      "Login": login,
+      "Password": password,
+    });
+
+    final body = new ApiBody(
+            module: "TwoFactorAuth",
+            method: "TrustDevice",
+            parameters: parameters)
+        .toMap();
+
+    final res =
+        await WebMailApi.request(AppStore.authState.apiUrl, body, null, token);
+    final response = jsonDecode(res.body);
+
+    print(response);
   }
 }
 

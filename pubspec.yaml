@@ -1,7 +1,7 @@
 name: aurorafiles
 description: File management system for ...
 
-version: 2.2.2+140
+version: 2.2.2+141
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -69,7 +69,8 @@ dependencies:
   uuid:
   uni_links: 0.4.0
   package_info:
-
+  device_id: 0.2.0
+  device_info: 1.0.0
   get_it:
 
   #async util

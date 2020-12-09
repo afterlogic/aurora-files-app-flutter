@@ -30,4 +30,7 @@ class SendingFinishAuthRequestState extends FidoAuthState {
   SendingFinishAuthRequestState(this.waitSheet);
 }
 
-class Success extends FidoAuthState {}
+class Success extends FidoAuthState {
+
+  Success();
+}

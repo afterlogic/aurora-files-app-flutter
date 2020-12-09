@@ -322,4 +322,11 @@ class EnString extends S {
   final String input_2fa_pin = "Verification code";
   final String btn_verify_pin = "Verify";
   final String error_invalid_pin = "Invalid code";
+  final String tfa_label_enter_backup_code =
+      "Enter one of your 8-character backup codes";
+  final String tfa_input_backup_code = "Backup code";
+  final String tfa_label_trust_device = "You're all set";
+  final String tfa_check_box_trust_device =
+      "Don't ask again on this device for 30 days";
+  final String tfa_button_continue = "Continue";
 }

@@ -111,7 +111,7 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
                 borderRadius: BorderRadius.circular(size),
                 border: Border.all(color: Color(0xFF007bff), width: 6)),
             child: Image.asset(
-              "assets/images/use_key.png",
+              "lib/assets/images/use_key.png",
               width: size,
               height: size,
             ),

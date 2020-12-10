@@ -137,3 +137,5 @@ pubspec.lock
 /build_res/template/crashlytics/google-services.json
 /build_res/template/crashlytics/GoogleService-Info.plist
 /.gradle/
+/build_res/private_mail/crashlytics/
+/build_res/private_mail/sign/

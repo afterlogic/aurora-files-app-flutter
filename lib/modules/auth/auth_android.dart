@@ -3,6 +3,7 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_data.dart';
+import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/screens/fido_auth/fido_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
@@ -153,8 +154,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
       AppInput(
         controller: _authState.emailCtrl,
         keyboardType: TextInputType.emailAddress,
-        validator: (value) => validateInput(
-            value, [ValidationTypes.empty, ValidationTypes.email]),
+        validator: (value) => validateInput(value, [ValidationTypes.empty, ValidationTypes.email]),
         labelText: s.email,
         inputCase: InputCase.Underline,
       ),
@@ -219,8 +219,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
                         SizedBox(
                           width: double.infinity,
                           child: Observer(
-                            builder: (BuildContext context) =>
-                                _debugRouteToTwoFactor(
+                            builder: (BuildContext context) => _debugRouteToTwoFactor(
                               AMButton(
                                 isLoading: _authState.isLoggingIn,
                                 onPressed: () => _login(context),
@@ -251,6 +250,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         onDoubleTap: () => Navigator.pushNamed(
           context,
           TwoFactorAuthRoute.name,
+          arguments: TwoFactorAuthRouteArgs(false, RequestTwoFactor(true, true, true)),
         ),
         child: child,
       );

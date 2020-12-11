@@ -94,13 +94,22 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
           bloc: bloc,
           listener: (BuildContext context, state) {
             if (state is Success) {
-              Navigator.pushReplacementNamed(
-                context,
-                TrustDeviceRoute.name,
-                arguments: TrustDeviceRouteArgs(
-                  widget.args.isDialog,
-                ),
-              );
+              if (state.daysCount == 0) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  FilesRoute.name,
+                  arguments: FilesScreenArguments(path: ""),
+                );
+              } else {
+                Navigator.pushReplacementNamed(
+                  context,
+                  TrustDeviceRoute.name,
+                  arguments: TrustDeviceRouteArgs(
+                    widget.args.isDialog,
+                    state.daysCount,
+                  ),
+                );
+              }
               return;
             }
             if (state is ErrorState) {

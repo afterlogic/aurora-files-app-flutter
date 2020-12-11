@@ -21,5 +21,7 @@ class ErrorState extends BackupCodeState {
 }
 
 class CompleteState extends BackupCodeState {
-  CompleteState();
+  final int daysCount;
+
+  CompleteState(this.daysCount);
 }

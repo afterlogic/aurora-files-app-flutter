@@ -326,7 +326,7 @@ class EnString extends S {
       "Enter one of your 8-character backup codes";
   final String tfa_input_backup_code = "Backup code";
   final String tfa_label_trust_device = "You're all set";
-  final String tfa_check_box_trust_device =
-      "Don't ask again on this device for 30 days";
+  String tfa_check_box_trust_device(String daysCount) =>
+      "Don't ask again on this device for $daysCount days";
   final String tfa_button_continue = "Continue";
 }

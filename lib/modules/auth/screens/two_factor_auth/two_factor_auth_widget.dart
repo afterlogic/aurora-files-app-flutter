@@ -72,13 +72,22 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
                 state.errorMsg,
               );
             } else if (state is CompleteState) {
-              Navigator.pushReplacementNamed(
-                context,
-                TrustDeviceRoute.name,
-                arguments: TrustDeviceRouteArgs(
-                  widget.args.isDialog,
-                ),
-              );
+              if (state.daysCount == 0) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  FilesRoute.name,
+                  arguments: FilesScreenArguments(path: ""),
+                );
+              } else {
+                Navigator.pushReplacementNamed(
+                  context,
+                  TrustDeviceRoute.name,
+                  arguments: TrustDeviceRouteArgs(
+                    widget.args.isDialog,
+                    state.daysCount,
+                  ),
+                );
+              }
             }
           },
           child: BlocBuilder<TwoFactorBloc, TwoFactorState>(

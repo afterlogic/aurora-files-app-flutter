@@ -31,6 +31,8 @@ class SendingFinishAuthRequestState extends FidoAuthState {
 }
 
 class Success extends FidoAuthState {
+  final int daysCount;
 
-  Success();
+
+  Success(this.daysCount);
 }

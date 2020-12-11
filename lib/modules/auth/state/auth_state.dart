@@ -72,13 +72,22 @@ abstract class _AuthState with Store {
     userId = id;
   }
 
-  Future successLogin() {
+  Future successLogin() async {
     return Future.wait([
       setIdentity(),
       setAccount(),
       AppStore.settingsState.updateSettings(),
       setDevice(),
+      AppStore.settingsState.getUserEncryptionKeys(),
     ]);
+  }
+
+  Future<int> getTrustDevicesForDays() async {
+    try {
+      return await _authApi.getTwoFactorSettings();
+    } catch (e) {
+      return 0;
+    }
   }
 
   Future setIdentity() async {

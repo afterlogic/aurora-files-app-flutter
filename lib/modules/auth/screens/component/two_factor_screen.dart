@@ -16,10 +16,16 @@ class TwoFactorScene extends StatefulWidget {
   final String logoHint;
   final Widget title;
   final List<Widget> button;
+  final bool allowBack;
 
-  const TwoFactorScene(
-      {Key key, this.isDialog, this.logoHint, this.title, this.button})
-      : super(key: key);
+  const TwoFactorScene({
+    Key key,
+    this.isDialog,
+    this.logoHint,
+    this.title,
+    this.button,
+    this.allowBack = true,
+  }) : super(key: key);
 
   @override
   _SelectTwoFactorWidgetState createState() => _SelectTwoFactorWidgetState();
@@ -129,21 +135,24 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                       ),
                     ),
                     Flexible(
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: FlatButton(
-                          child: Text(
-                            s.btn_login_back_to_login,
-                            style: TextStyle(color: AppTheme.loginTextColor),
-                          ),
-                          onPressed: () {
-                            Navigator.popUntil(
-                              context,
-                              ModalRoute.withName(AuthRoute.name),
-                            );
-                          },
-                        ),
-                      ),
+                      child: widget.allowBack
+                          ? SizedBox(
+                              width: double.infinity,
+                              child: FlatButton(
+                                child: Text(
+                                  s.btn_login_back_to_login,
+                                  style:
+                                      TextStyle(color: AppTheme.loginTextColor),
+                                ),
+                                onPressed: () {
+                                  Navigator.popUntil(
+                                    context,
+                                    ModalRoute.withName(AuthRoute.name),
+                                  );
+                                },
+                              ),
+                            )
+                          : SizedBox.shrink(),
                     ),
                   ],
                 ),

@@ -25,7 +25,8 @@ class BackupCodeBloc extends Bloc<BackupCodeEvent, BackupCodeState> {
         return;
       }
       await AppStore.authState.successLogin();
-      yield CompleteState();
+      final daysCount = await AppStore.authState.getTrustDevicesForDays();
+      yield CompleteState(daysCount);
     } catch (err, s) {
       yield ErrorState(err.toString());
     }

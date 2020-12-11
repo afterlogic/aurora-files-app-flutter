@@ -269,6 +269,6 @@ abstract class S {
   String get tfa_label_enter_backup_code;
   String get tfa_input_backup_code;
   String get tfa_label_trust_device;
-  String get tfa_check_box_trust_device;
+  String tfa_check_box_trust_device(String daysCount);
   String get tfa_button_continue;
 }

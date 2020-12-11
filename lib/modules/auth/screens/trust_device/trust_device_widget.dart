@@ -87,7 +87,8 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
                           setState(() {});
                         },
                         title: Text(
-                          s.tfa_check_box_trust_device,
+                          s.tfa_check_box_trust_device(
+                              widget.args.daysCount.toString()),
                           style: TextStyle(color: AppTheme.loginTextColor),
                         ),
                       ),

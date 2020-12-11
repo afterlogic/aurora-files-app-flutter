@@ -106,7 +106,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
           }
         },
         onSuccess: () async {
-          await AppStore.settingsState.getUserEncryptionKeys();
           Navigator.pushReplacementNamed(context, FilesRoute.name,
               arguments: FilesScreenArguments(path: ""));
         },
@@ -154,7 +153,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
       AppInput(
         controller: _authState.emailCtrl,
         keyboardType: TextInputType.emailAddress,
-        validator: (value) => validateInput(value, [ValidationTypes.empty, ValidationTypes.email]),
+        validator: (value) => validateInput(
+            value, [ValidationTypes.empty, ValidationTypes.email]),
         labelText: s.email,
         inputCase: InputCase.Underline,
       ),
@@ -219,7 +219,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
                         SizedBox(
                           width: double.infinity,
                           child: Observer(
-                            builder: (BuildContext context) => _debugRouteToTwoFactor(
+                            builder: (BuildContext context) =>
+                                _debugRouteToTwoFactor(
                               AMButton(
                                 isLoading: _authState.isLoggingIn,
                                 onPressed: () => _login(context),
@@ -250,7 +251,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
         onDoubleTap: () => Navigator.pushNamed(
           context,
           TwoFactorAuthRoute.name,
-          arguments: TwoFactorAuthRouteArgs(false, RequestTwoFactor(true, true, true)),
+          arguments:
+              TwoFactorAuthRouteArgs(false, RequestTwoFactor(true, true, true)),
         ),
         child: child,
       );

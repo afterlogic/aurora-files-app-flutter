@@ -87,7 +87,8 @@ class AuthApi {
             parameters: parameters)
         .toMap();
 
-    final res = await WebMailApi.request(AppStore.authState.apiUrl, body,await deviceIdHeader());
+    final res = await WebMailApi.request(
+        AppStore.authState.apiUrl, body, await deviceIdHeader());
 
     final resBody = json.decode(res.body);
     if (resBody['Result'] != null) {
@@ -152,7 +153,8 @@ class AuthApi {
           "Login": login,
           "Password": password,
         }));
-    final response = await WebMailApi.request(host, request.toMap(),await deviceIdHeader());
+    final response =
+        await WebMailApi.request(host, request.toMap(), await deviceIdHeader());
 
     final res = json.decode(response.body);
     if (res is Map && res.containsKey("Result")) {
@@ -185,7 +187,8 @@ class AuthApi {
           "Password": password,
           "Attestation": attestation,
         }));
-    final response = await WebMailApi.request(host, request.toMap(),await deviceIdHeader());
+    final response =
+        await WebMailApi.request(host, request.toMap(), await deviceIdHeader());
     final res = json.decode(response.body);
     if (res["Result"] is! Map ||
         !(res["Result"] as Map).containsKey("AuthToken")) {
@@ -219,7 +222,8 @@ class AuthApi {
             parameters: parameters)
         .toMap();
 
-    final res = await WebMailApi.request(AppStore.authState.apiUrl, body,await deviceIdHeader());
+    final res = await WebMailApi.request(
+        AppStore.authState.apiUrl, body, await deviceIdHeader());
 
     final resBody = json.decode(res.body);
     if (resBody['Result'] != null) {
@@ -249,8 +253,8 @@ class AuthApi {
             parameters: parameters)
         .toMap();
 
-    final res =
-        await WebMailApi.request(AppStore.authState.apiUrl, body,await deviceIdHeader(), token);
+    final res = await WebMailApi.request(
+        AppStore.authState.apiUrl, body, await deviceIdHeader(), token);
     final response = jsonDecode(res.body);
 
     print(response);
@@ -276,11 +280,24 @@ class AuthApi {
             parameters: parameters)
         .toMap();
 
-    final res =
-        await WebMailApi.request(AppStore.authState.apiUrl, body,await deviceIdHeader(), token);
+    final res = await WebMailApi.request(
+        AppStore.authState.apiUrl, body, await deviceIdHeader(), token);
     final response = jsonDecode(res.body);
 
     print(response);
+  }
+
+  Future<int> getTwoFactorSettings() async {
+    final body = new ApiBody(
+      module: "TwoFactorAuth",
+      method: "GetSettings",
+    ).toMap();
+
+    final res = await WebMailApi.request(
+        AppStore.authState.apiUrl, body, await deviceIdHeader());
+    final map = json.decode(res.body);
+
+    return (map["Result"]["TrustDevicesForDays"] as num).toInt();
   }
 }
 

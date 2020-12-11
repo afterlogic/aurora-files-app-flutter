@@ -30,7 +30,6 @@ class TrustDeviceBloc extends Bloc<TrustDeviceEvent, TrustDeviceState> {
       if (state.trust) {
         await _methods.trustDevice(login, password);
       }
-      await AppStore.settingsState.getUserEncryptionKeys();
       yield CompleteState();
     } catch (err, s) {
       yield ErrorState(s.toString());

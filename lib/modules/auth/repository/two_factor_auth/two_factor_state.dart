@@ -21,6 +21,7 @@ class ErrorState extends TwoFactorState {
 }
 
 class CompleteState extends TwoFactorState {
+  final int daysCount;
 
-  CompleteState();
+  CompleteState(this.daysCount);
 }

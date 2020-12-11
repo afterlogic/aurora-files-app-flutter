@@ -82,7 +82,8 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
       );
       await authState.initUser(loginResponse);
       await AppStore.authState.successLogin();
-      yield Success();
+      final daysCount = await AppStore.authState.getTrustDevicesForDays();
+      yield Success(daysCount);
     } catch (e) {
       yield mapError(e);
     }

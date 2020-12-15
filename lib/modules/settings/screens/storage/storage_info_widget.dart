@@ -1,6 +1,7 @@
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/build_property.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -8,14 +9,21 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 
 class StorageInfoWidget extends StatelessWidget {
+  final bool fromDrawer;
+
+  const StorageInfoWidget({this.fromDrawer = false});
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final s = Str.of(context);
+    final isTablet = LayoutConfig.of(context).isTablet;
     return Scaffold(
-      appBar: AMAppBar(
-        title: Text(s.storage_info),
-      ),
+      appBar: isTablet && !fromDrawer
+          ? null
+          : AMAppBar(
+              title: Text(s.storage_info),
+            ),
       body: AppStore.filesState.quota == null
           ? Padding(
               padding: const EdgeInsets.all(18.0),

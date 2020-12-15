@@ -18,13 +18,12 @@ class FolderWidget extends StatelessWidget {
 
   Future _showModalBottomSheet(
       context, FilesState filesState, FilesPageState filesPageState) async {
-    Navigator.of(context).push(CustomBottomSheet(
-      child: FileOptionsBottomSheet(
-        file: folder,
-        filesState: filesState,
-        filesPageState: filesPageState,
-      ),
-    ));
+    FileOptionsBottomSheet.show(
+      context: context,
+      file: folder,
+      filesState: filesState,
+      filesPageState: filesPageState,
+    );
   }
 
   @override

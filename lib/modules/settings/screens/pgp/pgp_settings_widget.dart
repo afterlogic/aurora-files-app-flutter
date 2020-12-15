@@ -8,7 +8,9 @@ import 'package:aurorafiles/modules/settings/screens/pgp/dialog/key_from_text_wi
 import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
+import 'package:aurorafiles/modules/settings/settings_navigator.dart';
 import 'package:aurorafiles/shared_ui/error_dialog.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:aurorafiles/utils/stream_widget.dart';
 import 'package:flutter/material.dart';
@@ -38,13 +40,16 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
+    final isTablet = LayoutConfig.of(context).isTablet;
     final theme = Theme.of(context);
     final spacer = SizedBox(height: 10.0);
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AMAppBar(
-          title: Text(s.openPGP),
-        ),
+        appBar: isTablet
+            ? null
+            : AMAppBar(
+                title: Text(s.openPGP),
+              ),
         body: StreamWidget<KeysState>(
           keysState,
           (_, state) {
@@ -62,6 +67,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
                     child: ListView(
@@ -112,46 +118,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                       ],
                     ),
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      SizedBox(height: 25),
-                      if (publicKeys.isNotEmpty)
-                        SizedBox(
-                          width: double.infinity,
-                          child: AMButton(
-                            child: Text(s.export_all_public_keys),
-                            onPressed: () {
-                              exportAll(state.public);
-                            },
-                          ),
-                        ),
-                      if (publicKeys.isNotEmpty) spacer,
-                      SizedBox(
-                        width: double.infinity,
-                        child: AMButton(
-                          child: Text(s.import_keys_from_text),
-                          onPressed: importKeyDialog,
-                        ),
-                      ),
-                      spacer,
-                      SizedBox(
-                        width: double.infinity,
-                        child: AMButton(
-                          child: Text(s.import_keys_from_file),
-                          onPressed: _presenter.getKeysFromFile,
-                        ),
-                      ),
-                      spacer,
-                      SizedBox(
-                        width: double.infinity,
-                        child: AMButton(
-                          child: Text(s.generate_keys),
-                          onPressed: generateKeyDialog,
-                        ),
-                      ),
-                    ],
-                  )
+                  button(context, state, publicKeys),
                 ],
               ),
             );
@@ -160,16 +127,63 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
         ));
   }
 
+  Widget button(
+      BuildContext context, KeysState state, List<KeyWidget> publicKeys) {
+    final isTablet = LayoutConfig.of(context).isTablet;
+    final space = isTablet
+        ? SizedBox.shrink()
+        : SizedBox(
+            height: 10.0,
+            width: 10,
+          );
+    final children = <Widget>[
+      if (publicKeys.isNotEmpty)
+        AMButton(
+          child: Text(s.export_all_public_keys),
+          onPressed: () {
+            exportAll(state.public);
+          },
+        ),
+      if (publicKeys.isNotEmpty) space,
+      AMButton(
+        child: Text(s.import_keys_from_text),
+        onPressed: importKeyDialog,
+      ),
+      space,
+      AMButton(
+        child: Text(s.import_keys_from_file),
+        onPressed: _presenter.getKeysFromFile,
+      ),
+      space,
+      AMButton(
+        child: Text(s.generate_keys),
+        onPressed: generateKeyDialog,
+      ),
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: isTablet
+          ? Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: children,
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: children,
+            ),
+    );
+  }
+
   openKey(LocalPgpKey pgpKey) async {
     if (pgpKey.key == null) return;
     if (pgpKey.isPrivate) {
       final password = await KeyRequestDialog.request(context);
-      if(password==null){
+      if (password == null) {
         return;
       }
     }
-    final result = await Navigator.pushNamed(
-      context,
+    final result = await SettingsNavigatorWidget.of(context).pushNamed(
       PgpKeyModelRoute.name,
       arguments: [_presenter, pgpKey, _presenter.pgpKeyUtil],
     );
@@ -180,8 +194,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   exportAll(List<LocalPgpKey> keys) async {
-    Navigator.pushNamed(
-      context,
+    SettingsNavigatorWidget.of(context).pushNamed(
       PgpKeyExportRoute.name,
       arguments: [keys, _presenter.pgpKeyUtil],
     );

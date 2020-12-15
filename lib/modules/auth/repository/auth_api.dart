@@ -51,11 +51,19 @@ class AuthApi {
     if (resBody['Result'] != null &&
         resBody['Result']['TwoFactorAuth'] != null) {
       final twoFactor = resBody['Result']['TwoFactorAuth'];
-      throw RequestTwoFactor(
-        twoFactor["HasAuthenticatorApp"] as bool,
-        twoFactor["HasSecurityKey"] as bool,
-        twoFactor["HasBackupCodes"] as bool,
-      );
+      if (twoFactor == true) {
+        throw RequestTwoFactor(
+          true,
+          false,
+          false,
+        );
+      } else {
+        throw RequestTwoFactor(
+          twoFactor["HasAuthenticatorApp"] as bool,
+          twoFactor["HasSecurityKey"] as bool,
+          twoFactor["HasBackupCodes"] as bool,
+        );
+      }
     } else if (resBody['Result'] != null) {
       if (BuildProperty.supportAllowAccess &&
           resBody['Result']["AllowAccess"] != 1) {

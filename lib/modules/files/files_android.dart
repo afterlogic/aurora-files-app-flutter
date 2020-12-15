@@ -34,6 +34,7 @@ import 'dialogs/add_folder_dialog.dart';
 import 'dialogs/delete_confirmation_dialog.dart';
 import 'files_route.dart';
 import 'state/files_page_state.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 
 class FilesAndroid extends StatefulWidget {
   final String path;
@@ -87,6 +88,9 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   listenShare() {
     ReceiveSharing.getInitialMedia().then((List<SharedMediaFile> files) {
+      if (files == null) {
+        return;
+      }
       ReceiveSharing.reset();
       if (files.isNotEmpty) {
         Navigator.popUntil(
@@ -297,6 +301,94 @@ class _FilesAndroidState extends State<FilesAndroid>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     s = Str.of(context);
+    final isTablet = LayoutConfig.of(context).isTablet;
+
+    Widget body = Observer(
+      builder: (_) => RefreshIndicator(
+        onRefresh: () async {
+          if (_filesState.currentStorages.length <= 0) {
+            await _filesState.onGetStorages();
+          }
+          return _getFiles(context, FilesLoadingType.none);
+        },
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Positioned.fill(
+              child: _buildFiles(context),
+            ),
+            // LOADER
+            Positioned(
+              top: 0.0,
+              left: 0.0,
+              right: 0.0,
+              height: 6.0,
+              child: AnimatedOpacity(
+                duration: Duration(milliseconds: 150),
+                opacity: _filesPageState.filesLoading ==
+                        FilesLoadingType.filesVisible
+                    ? 1.0
+                    : 0.0,
+                child: LinearProgressIndicator(
+                    backgroundColor:
+                        Theme.of(context).disabledColor.withOpacity(0.1)),
+              ),
+            ),
+            if (_filesState.isShareUpload)
+              Positioned(
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                child: UploadOptions(
+                  filesState: _filesState,
+                  filesPageState: _filesPageState,
+                ),
+              ),
+            if (_filesState.isMoveModeEnabled)
+              Positioned(
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                child: MoveOptions(
+                  filesState: _filesState,
+                  filesPageState: _filesPageState,
+                ),
+              )
+          ],
+        ),
+      ),
+    );
+    if (isTablet) {
+      body = Row(
+        children: [
+          ClipRRect(
+            child: SizedBox(
+              width: 304,
+              child: Scaffold(
+                body: DecoratedBox(
+                  position: DecorationPosition.foreground,
+                  decoration: BoxDecoration(
+                      border: Border(right: BorderSide(width: 0.2))),
+                  child: MainDrawer(),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                FilesAppBar(
+                  onDeleteFiles: _deleteSelected,
+                  isAppBar: false,
+                ),
+                Divider(height: 1),
+                Expanded(child: body),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
     return MultiProvider(
       providers: [
         Provider<FilesState>(
@@ -316,74 +408,24 @@ class _FilesAndroidState extends State<FilesAndroid>
               : () async => !Navigator.of(context).userGestureInProgress,
           child: Scaffold(
             key: _filesPageState.scaffoldKey,
-            drawer: (_filesState.isMoveModeEnabled || _filesState.isShareUpload)
+            drawer: (_filesState.isMoveModeEnabled ||
+                    _filesState.isShareUpload ||
+                    isTablet)
                 ? null
                 : MainDrawer(),
             appBar: PreferredSize(
-                preferredSize: Size.fromHeight(AppBar().preferredSize.height *
+                preferredSize: Size.fromHeight(kToolbarHeight *
                     (_filesPageState.isSearchMode &&
                             !_filesState.isMoveModeEnabled &&
                             !_filesState.isShareUpload &&
-                            _filesPageState.selectedFilesIds.isEmpty
+                            _filesPageState.selectedFilesIds.isEmpty &&
+                            !isTablet
                         ? 2.3
                         : 1)),
-                child: FilesAppBar(onDeleteFiles: _deleteSelected)),
-            body: Observer(
-              builder: (_) => RefreshIndicator(
-                onRefresh: () async {
-                  if (_filesState.currentStorages.length <= 0) {
-                    await _filesState.onGetStorages();
-                  }
-                  return _getFiles(context, FilesLoadingType.none);
-                },
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: <Widget>[
-                    Positioned.fill(
-                      child: _buildFiles(context),
-                    ),
-                    // LOADER
-                    Positioned(
-                      top: 0.0,
-                      left: 0.0,
-                      right: 0.0,
-                      height: 6.0,
-                      child: AnimatedOpacity(
-                        duration: Duration(milliseconds: 150),
-                        opacity: _filesPageState.filesLoading ==
-                                FilesLoadingType.filesVisible
-                            ? 1.0
-                            : 0.0,
-                        child: LinearProgressIndicator(
-                            backgroundColor: Theme.of(context)
-                                .disabledColor
-                                .withOpacity(0.1)),
-                      ),
-                    ),
-                    if (_filesState.isShareUpload)
-                      Positioned(
-                        bottom: 0.0,
-                        left: 0.0,
-                        right: 0.0,
-                        child: UploadOptions(
-                          filesState: _filesState,
-                          filesPageState: _filesPageState,
-                        ),
-                      ),
-                    if (_filesState.isMoveModeEnabled)
-                      Positioned(
-                        bottom: 0.0,
-                        left: 0.0,
-                        right: 0.0,
-                        child: MoveOptions(
-                          filesState: _filesState,
-                          filesPageState: _filesPageState,
-                        ),
-                      )
-                  ],
-                ),
-              ),
-            ),
+                child: FilesAppBar(
+                  onDeleteFiles: _deleteSelected,
+                )),
+            body: body,
             floatingActionButton: Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).padding.bottom),

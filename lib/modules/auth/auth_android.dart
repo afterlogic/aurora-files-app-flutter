@@ -24,6 +24,7 @@ import 'package:theme/app_theme.dart';
 
 import 'component/mail_logo.dart';
 import 'component/presentation_header.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 
 class AuthAndroid extends StatefulWidget {
   @override
@@ -40,10 +41,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     _authState.isLoggingIn = false;
     _authState.emailCtrl.text = _authState.userEmail;
     _authState.passwordCtrl.text = "";
@@ -57,6 +54,18 @@ class _AuthAndroidState extends State<AuthAndroid> {
         _authState.emailCtrl.text = value;
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final isTablet = LayoutConfig.of(context).isTablet;
+    if (!isTablet) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
   }
 
   @override
@@ -204,32 +213,39 @@ class _AuthAndroidState extends State<AuthAndroid> {
                     left: -70.0,
                     child: MailLogo(isBackground: true),
                   ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 22.0),
-                  child: Form(
-                    key: _authFormKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        PresentationHeader(),
-                        Column(
-                          children: _buildTextFields(),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Observer(
-                            builder: (BuildContext context) =>
-                                _debugRouteToTwoFactor(
-                              AMButton(
-                                isLoading: _authState.isLoggingIn,
-                                onPressed: () => _login(context),
-                                child: Text(s.login),
+                Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: LayoutConfig.formWidth,
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 22.0),
+                      child: Form(
+                        key: _authFormKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            PresentationHeader(),
+                            Column(
+                              children: _buildTextFields(),
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: Observer(
+                                builder: (BuildContext context) =>
+                                    _debugRouteToTwoFactor(
+                                  AMButton(
+                                    isLoading: _authState.isLoggingIn,
+                                    onPressed: () => _login(context),
+                                    child: Text(s.login),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),

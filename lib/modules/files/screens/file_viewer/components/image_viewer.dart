@@ -56,7 +56,7 @@ class _ImageViewerState extends State<ImageViewer> {
   }
 
   void showError(String err) {
-    if (err == "Invalid password"||err == "Instance of 'CryptoException'") {
+    if (err == "Invalid password" || err == "Instance of 'CryptoException'") {
       _isError = true;
       setState(() {});
     } else if (err.isNotEmpty)
@@ -98,16 +98,13 @@ class _ImageViewerState extends State<ImageViewer> {
         }
         final image = Image.file(
           _fileViewerState.fileWithContents,
-          fit: BoxFit.cover,
+          fit: BoxFit.fitHeight,
         );
 //        precacheImage(image.image, context, onError: (e, stackTrace) {
 //          Future.delayed(Duration(milliseconds: 100),
 //              () => setState(() => _isError = true));
 //        });
-        return ConstrainedBox(
-          constraints: BoxConstraints(minHeight: 60.0),
-          child: image,
-        );
+        return image;
       }
     } else {
       if (_isError) {
@@ -121,24 +118,22 @@ class _ImageViewerState extends State<ImageViewer> {
           ],
         );
       } else if (_fileViewerState.fileWithContents == null) {
-        return Positioned.fill(
-          child: Center(
-            child: ProgressLoader(_fileViewerState.downloadProgress),
-          ),
+        return Center(
+          child: ProgressLoader(min(
+            1.0,
+            _fileViewerState.downloadProgress ?? 0,
+          )),
         );
       } else {
         final image = Image.file(
           _fileViewerState.fileWithContents,
-          fit: BoxFit.cover,
+          fit: BoxFit.fitHeight,
         );
         precacheImage(image.image, context, onError: (e, stack) {
           Future.delayed(Duration(milliseconds: 100),
               () => setState(() => _isError = true));
         });
-        return ConstrainedBox(
-          constraints: BoxConstraints(minHeight: 60.0),
-          child: image,
-        );
+        return image;
       }
     }
   }
@@ -161,13 +156,16 @@ class _ImageViewerState extends State<ImageViewer> {
           } else if (snap.data == null) {
             return SizedBox.shrink();
           }
-          return Image.memory(snap.data);
+          return Image.memory(
+            snap.data,
+            fit: BoxFit.cover,
+          );
         },
       );
     } else {
       return Image.file(
         _fileViewerState.fileWithContents,
-        fit: BoxFit.cover,
+        fit: BoxFit.fitHeight,
       );
     }
   }
@@ -183,14 +181,14 @@ class _ImageViewerState extends State<ImageViewer> {
       if (_fileViewerState.fileWithContents != null) {
         placeholder = Image.file(
           _fileViewerState.fileWithContents,
-          fit: BoxFit.cover,
+          fit: BoxFit.fitHeight,
         );
       }
     } else {
       placeholder = CachedNetworkImage(
         imageUrl:
             '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
-        fit: BoxFit.cover,
+        fit: BoxFit.fitHeight,
         httpHeaders: getHeader(),
       );
     }
@@ -200,21 +198,21 @@ class _ImageViewerState extends State<ImageViewer> {
           tag: _fileViewerState.file.localId ??
               _fileViewerState.file.guid ??
               _fileViewerState.file.hash,
-          child: SizedBox(
-            width: double.infinity,
-            child: AppStore.filesState.isOfflineMode &&
-                    _fileViewerState.fileWithContents != null
-                ? _buildOfflineImage()
-                : Stack(
-                    fit: StackFit.passthrough,
-                    children: <Widget>[
-                      if (!_isError && placeholder != null)
-                        ConstrainedBox(
-                          constraints: BoxConstraints(minHeight: 60.0),
-                          child: placeholder,
-                        ),
-                      Positioned.fill(
-                        child: ClipRect(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: 60.0,
+              maxHeight: MediaQuery.of(context).size.height * 0.7,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: AppStore.filesState.isOfflineMode &&
+                      _fileViewerState.fileWithContents != null
+                  ? _buildOfflineImage()
+                  : Stack(
+                      children: <Widget>[
+                        if (!_isError && placeholder != null)
+                          Positioned.fill(child: placeholder),
+                        ClipRect(
                           child: BackdropFilter(
                             filter: ImageFilter.blur(
                               sigmaX: 8.0,
@@ -225,19 +223,22 @@ class _ImageViewerState extends State<ImageViewer> {
                             ),
                           ),
                         ),
-                      ),
-                      Observer(
-                        builder: (_) {
-                          if (prevProgress !=
-                              _fileViewerState.downloadProgress) {
-                            builtImage = _buildImage();
-                            prevProgress = _fileViewerState.downloadProgress;
-                          }
-                          return builtImage;
-                        },
-                      ),
-                    ],
-                  ),
+                        Positioned.fill(
+                          child: Observer(
+                            builder: (_) {
+                              if (prevProgress !=
+                                  _fileViewerState.downloadProgress) {
+                                builtImage = _buildImage();
+                                prevProgress =
+                                    _fileViewerState.downloadProgress;
+                              }
+                              return builtImage;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
           ));
     } else {
       return SizedBox();

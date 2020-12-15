@@ -7,6 +7,7 @@ import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_k
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/export_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -160,12 +161,13 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
+    final isTablet = LayoutConfig.of(context).isTablet;
     return Provider<SettingsState>(
       create: (_) => _settingsState,
       child: Observer(
         builder: (_) => Scaffold(
           key: _scaffoldKey,
-          appBar: AMAppBar(title: Text(s.encryption)),
+          appBar: isTablet ? null : AMAppBar(title: Text(s.encryption)),
           body: ListView(
             padding: const EdgeInsets.all(16.0),
             children: <Widget>[

@@ -7,6 +7,8 @@ import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:theme/app_theme.dart';
 
+import 'package:aurorafiles/shared_ui/layout_config.dart';
+
 class UpgradeAndroid extends StatelessWidget {
   final String message;
 
@@ -38,34 +40,41 @@ class UpgradeAndroid extends StatelessWidget {
                   left: -70.0,
                   child: MailLogo(isBackground: true),
                 ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 22.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    PresentationHeader(
-                      message: "",
-                    ),
-                    Text(
-                      s.upgrade_your_plan,
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                    Column(
+              Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: LayoutConfig.formWidth,
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 22.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        SizedBox(height: 6.0),
-                        SizedBox(
-                          width: double.infinity,
-                          child: AMButton(
-                            child: Text(s.back_to_login),
-                            color: theme.colorScheme.surface,
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
+                        PresentationHeader(
+                          message: "",
+                        ),
+                        Text(
+                          s.upgrade_your_plan,
+                          style: TextStyle(fontSize: 20),
+                          textAlign: TextAlign.center,
+                        ),
+                        Column(
+                          children: <Widget>[
+                            SizedBox(height: 6.0),
+                            SizedBox(
+                              width: double.infinity,
+                              child: AMButton(
+                                child: Text(s.back_to_login),
+                                color: theme.colorScheme.surface,
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ],

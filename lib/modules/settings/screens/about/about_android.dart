@@ -7,6 +7,8 @@ import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 
+import 'package:aurorafiles/shared_ui/layout_config.dart';
+
 class AboutAndroid extends StatefulWidget {
   @override
   _AboutAndroidState createState() => _AboutAndroidState();
@@ -20,11 +22,19 @@ class _AboutAndroidState extends State<AboutAndroid> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     _initAppInfo();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final isTablet = LayoutConfig.of(context).isTablet;
+    if (!isTablet) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
   }
 
   @override
@@ -49,10 +59,13 @@ class _AboutAndroidState extends State<AboutAndroid> {
   @override
   Widget build(BuildContext context) {
     final s = Str.of(context);
+    final isTablet = LayoutConfig.of(context).isTablet;
     return Scaffold(
-      appBar: AMAppBar(
-        title: Text(s.about),
-      ),
+      appBar: isTablet
+          ? null
+          : AMAppBar(
+              title: Text(s.about),
+            ),
       body: loading
           ? Center(child: CircularProgressIndicator())
           : Column(
@@ -78,17 +91,17 @@ class _AboutAndroidState extends State<AboutAndroid> {
                 ),
                 SizedBox(height: 42.0),
                 if (BuildProperty.termsOfService.isNotEmpty)
-                GestureDetector(
-                  child: Text(
-                    s.terms,
-                    style: TextStyle(
-                      color: Theme.of(context).accentColor,
-                      decoration: TextDecoration.underline,
-                      fontSize: 18.0,
+                  GestureDetector(
+                    child: Text(
+                      s.terms,
+                      style: TextStyle(
+                        color: Theme.of(context).accentColor,
+                        decoration: TextDecoration.underline,
+                        fontSize: 18.0,
+                      ),
                     ),
+                    onTap: () => launch(BuildProperty.termsOfService),
                   ),
-                  onTap: () => launch(BuildProperty.termsOfService),
-                ),
                 SizedBox(height: 22.0),
                 if (BuildProperty.privacyPolicy.isNotEmpty)
                   GestureDetector(

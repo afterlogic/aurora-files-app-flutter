@@ -16,6 +16,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'settings_navigator.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
+import 'package:aurorafiles/modules/app_navigation.dart';
 
 class SettingsAndroid extends StatefulWidget {
   @override
@@ -23,73 +26,137 @@ class SettingsAndroid extends StatefulWidget {
 }
 
 class _SettingsAndroidState extends State<SettingsAndroid> {
+  final navigatorKey = GlobalKey<SettingsNavigatorState>();
+
   @override
   Widget build(BuildContext context) {
+    final isTablet = LayoutConfig.of(context).isTablet;
+    final current = isTablet
+        ? (navigatorKey?.currentState?.current?.name ??
+            CommonSettingsRoute.name)
+        : null;
     final authState = AppStore.authState;
     final s = Str.of(context);
-    return Provider<SettingsState>(
-      create: (_) => AppStore.settingsState,
-      child: Scaffold(
+    Widget body = ListView(
+      children: <Widget>[
+        ListTile(
+          selected: current == CommonSettingsRoute.name,
+          title: Text(s.common),
+          leading: AMCircleIcon(Icons.tune),
+          onTap: () => navigator().setRoot(CommonSettingsRoute.name),
+        ),
+        ListTile(
+          selected: current == EncryptionServerRoute.name,
+          title: Text(s.encryption),
+          leading: AMCircleIcon(MdiIcons.alien),
+          onTap: () => navigator().setRoot(EncryptionServerRoute.name),
+        ),
+        if (BuildProperty.pgpEnable)
+          ListTile(
+            selected: current == PgpSettingsRoute.name,
+            title: Text(s.openPGP),
+            leading: AMCircleIcon(MdiIcons.key),
+            onTap: () => navigator().setRoot(PgpSettingsRoute.name),
+          ),
+        ListTile(
+          selected: current == StorageInfoRoute.name,
+          title: Text(s.storage_info),
+          leading: AMCircleIcon(Icons.storage),
+          onTap: () => navigator().setRoot(StorageInfoRoute.name),
+        ),
+        ListTile(
+          selected: current == AboutRoute.name,
+          title: Text(s.about),
+          leading: AMCircleIcon(Icons.info_outline),
+          onTap: () => navigator().setRoot(AboutRoute.name),
+          onLongPress: BuildProperty.logger
+              ? () {
+                  logger.enable = !logger.enable;
+                }
+              : null,
+        ),
+        ListTile(
+          selected: current == AuthRoute.name,
+          leading: AMCircleIcon(Icons.exit_to_app),
+          title: Text(s.log_out),
+          onTap: () async {
+            final result = await AMConfirmationDialog.show(
+              context,
+              null,
+              s.confirm_exit,
+              s.exit,
+              s.cancel,
+            );
+            if (result == true) {
+              authState.onLogout();
+              Navigator.pushReplacementNamed(context, AuthRoute.name);
+            }
+          },
+        ),
+      ],
+    );
+    if (isTablet) {
+      body = Scaffold(
         appBar: AMAppBar(
           title: Text(s.settings),
         ),
-//        drawer: MainDrawer(),
-        body: ListView(
-          children: <Widget>[
-            ListTile(
-              title: Text(s.common),
-              leading: AMCircleIcon(Icons.tune),
-              onTap: () =>
-                  Navigator.pushNamed(context, CommonSettingsRoute.name),
-            ),
-            ListTile(
-              title: Text(s.encryption),
-              leading: AMCircleIcon(MdiIcons.alien),
-              onTap: () =>
-                  Navigator.pushNamed(context, EncryptionServerRoute.name),
-            ),
-            if (BuildProperty.pgpEnable)
-              ListTile(
-                title: Text(s.openPGP),
-                leading: AMCircleIcon(MdiIcons.key),
-                onTap: () =>
-                    Navigator.pushNamed(context, PgpSettingsRoute.name),
+        body: Row(
+          children: [
+            ClipRRect(
+              child: SizedBox(
+                width: 304,
+                child: Scaffold(
+                  body: DecoratedBox(
+                    position: DecorationPosition.foreground,
+                    decoration: BoxDecoration(
+                        border: Border(right: BorderSide(width: 0.2))),
+                    child: Drawer(
+                      child: ListTileTheme(
+                        style: ListTileStyle.drawer,
+                        selectedColor: Theme.of(context).accentColor,
+                        child: SafeArea(child: body),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ListTile(
-              title: Text(s.storage_info),
-              leading: AMCircleIcon(Icons.storage),
-              onTap: () => Navigator.pushNamed(context, StorageInfoRoute.name),
             ),
-            ListTile(
-              title: Text(s.about),
-              leading: AMCircleIcon(Icons.info_outline),
-              onTap: () => Navigator.pushNamed(context, AboutRoute.name),
-              onLongPress: BuildProperty.logger
-                  ? () {
-                      logger.enable = !logger.enable;
-                    }
-                  : null,
-            ),
-            ListTile(
-              leading: AMCircleIcon(Icons.exit_to_app),
-              title: Text(s.log_out),
-              onTap: () async {
-                final result = await AMConfirmationDialog.show(
-                  context,
-                  null,
-                  s.confirm_exit,
-                  s.exit,
-                  s.cancel,
-                );
-                if (result == true) {
-                  authState.onLogout();
-                  Navigator.pushReplacementNamed(context, AuthRoute.name);
-                }
-              },
+            Flexible(
+              child: ClipRRect(
+                child: Scaffold(
+                  body: SettingsNavigatorWidget(
+                    key: navigatorKey,
+                    onUpdate: () {
+                      setState(() {});
+                    },
+                    initialRoute: CommonSettingsRoute.name,
+                    routeFactory: AppNavigation.onGenerateRoute,
+                  ),
+                ),
+              ),
+              flex: 3,
             ),
           ],
         ),
-      ),
-    );
+      );
+    }
+    return Provider<SettingsState>(
+        create: (_) => AppStore.settingsState,
+        child: Scaffold(
+          appBar: isTablet
+              ? null
+              : AMAppBar(
+                  title: Text(s.settings),
+                ),
+          body: body,
+        ));
+  }
+
+  SettingsNavigator navigator() {
+    if (navigatorKey.currentState != null) {
+      return navigatorKey.currentState;
+    } else {
+      return SettingsNavigatorMock(Navigator.of(context));
+    }
   }
 }

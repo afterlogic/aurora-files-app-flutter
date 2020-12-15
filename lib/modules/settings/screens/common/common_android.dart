@@ -1,5 +1,6 @@
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -49,18 +50,22 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
+    final isTablet = LayoutConfig.of(context).isTablet;
     return Scaffold(
       key: scaffoldKey,
-      appBar: AMAppBar(
-        title: Text(s.common),
-      ),
+      appBar: isTablet
+          ? null
+          : AMAppBar(
+              title: Text(s.common),
+            ),
       body: ListView(
         children: <Widget>[
           Observer(
             builder: (_) => ListTile(
               leading: AMCircleIcon(MdiIcons.themeLightDark),
               title: Text(s.app_theme),
-              trailing: Text(_getThemeName(_settingsState.isDarkTheme),
+              trailing: Text(
+                _getThemeName(_settingsState.isDarkTheme),
                 style: Theme.of(context).textTheme.caption,
               ),
               onTap: () => ThemeSelectionDialog.show(

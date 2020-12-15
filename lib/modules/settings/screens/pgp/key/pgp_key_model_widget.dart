@@ -5,6 +5,7 @@ import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
@@ -50,82 +51,102 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
+    final isTablet = LayoutConfig.of(context).isTablet;
     final theme = Theme.of(context);
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AMAppBar(
-        titleSpacing: NavigationToolbar.kMiddleSpacing,
-        title: Text(widget._pgpKey.isPrivate ? s.private_key : s.public_key),
-      ),
-      body: OrientationBuilder(
-        builder: (context, orientation) => Padding(
-          padding: const EdgeInsets.all(20),
-          child: Flex(
-            direction: orientation == Orientation.landscape
-                ? Axis.horizontal
-                : Axis.vertical,
-            children: <Widget>[
-              Flexible(
-                flex: 3,
-                child: ListView(
-                  children: <Widget>[
-                    Text(
-                      widget._pgpKey.email,
-                      style: theme.textTheme.title,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SelectableText(
-                      widget._pgpKey.key,
-                    ),
-                  ],
-                ),
-              ),
-              Flexible(
-                flex: orientation == Orientation.landscape ? 2 : 0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 8,
-                    ),
-                    SizedBox(
+      appBar: isTablet
+          ? null
+          : AMAppBar(
+              titleSpacing: NavigationToolbar.kMiddleSpacing,
+              title:
+                  Text(widget._pgpKey.isPrivate ? s.private_key : s.public_key),
+            ),
+      body: Flex(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        direction: Axis.vertical,
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(8.0),
+              children: <Widget>[
+                if (isTablet)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
                       width: double.infinity,
-                      child: AMButton(
-                        child: Text(s.share),
-                        onPressed: share,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    if (!PlatformOverride.isIOS)
-                      SizedBox(
-                        width: double.infinity,
-                        child: AMButton(
-                          child: Text(s.download),
-                          onPressed: download,
+                      child: Center(
+                        child: Text(
+                          widget._pgpKey.isPrivate
+                              ? s.private_key
+                              : s.public_key,
+                          style: Theme.of(context).textTheme.title,
                         ),
                       ),
-                    if (!PlatformOverride.isIOS)
-                      SizedBox(
-                        height: 8,
-                      ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: AMButton(
-                        child: Text(s.delete),
-                        onPressed: delete,
-                      ),
                     ),
-                  ],
+                  ),
+                SizedBox(
+                  height: 8,
                 ),
-              ),
-            ],
+                Text(
+                  widget._pgpKey.email,
+                  style: theme.textTheme.title,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                SelectableText(
+                  widget._pgpKey.key,
+                ),
+              ],
+            ),
           ),
-        ),
+          button(context),
+        ],
       ),
+    );
+  }
+
+  Widget button(BuildContext context) {
+    final isTablet = LayoutConfig.of(context).isTablet;
+    final space = isTablet
+        ? SizedBox.shrink()
+        : SizedBox(
+            height: 10.0,
+            width: 10,
+          );
+    final children = <Widget>[
+      space,
+      AMButton(
+        child: Text(s.share),
+        onPressed: share,
+      ),
+      space,
+      if (!PlatformOverride.isIOS) ...[
+        AMButton(
+          child: Text(s.download),
+          onPressed: download,
+        ),
+        space,
+      ],
+      AMButton(
+        child: Text(s.delete),
+        onPressed: delete,
+      ),
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: isTablet
+          ? Wrap(
+
+              spacing: 10,
+              runSpacing: 10,
+              children: children,
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: children,
+            ),
     );
   }
 

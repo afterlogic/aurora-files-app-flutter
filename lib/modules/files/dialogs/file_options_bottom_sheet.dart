@@ -12,6 +12,8 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/asset_icon.dart';
+import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,12 +37,48 @@ class FileOptionsBottomSheet extends StatefulWidget {
   final FilesState filesState;
   final FilesPageState filesPageState;
 
-  const FileOptionsBottomSheet({
+  const FileOptionsBottomSheet._({
     Key key,
     @required this.file,
     @required this.filesState,
     @required this.filesPageState,
   }) : super(key: key);
+
+  static Future show({
+    BuildContext context,
+    LocalFile file,
+    FilesState filesState,
+    FilesPageState filesPageState,
+  }) {
+    final isTablet = LayoutConfig.of(context).isTablet;
+    if (isTablet) {
+      return showCupertinoDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => AMDialog(
+          content: SizedBox(
+            width: LayoutConfig.formWidth,
+            child: FileOptionsBottomSheet._(
+              file: file,
+              filesState: filesState,
+              filesPageState: filesPageState,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Navigator.push(
+        context,
+        CustomBottomSheet(
+          child: FileOptionsBottomSheet._(
+            file: file,
+            filesState: filesState,
+            filesPageState: filesPageState,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   _FileOptionsBottomSheetState createState() => _FileOptionsBottomSheetState();
@@ -103,6 +141,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final storage = widget.file.type;
     final isFolder = widget.file.isFolder;
     final offline = widget.filesState.isOfflineMode;
+    final isTablet = LayoutConfig.of(context).isTablet;
     bool enableSecureLink() {
       if (isFolder) {
         return false;
@@ -120,6 +159,137 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       }
     }
 
+    Widget content = SingleChildScrollView(
+      padding: EdgeInsets.only(
+        top: 0.0,
+        bottom: isTablet ? 0 : MediaQuery.of(context).padding.bottom,
+      ),
+      child: Column(
+        children: <Widget>[
+          if (widget.file.initVector == null &&
+              !offline &&
+              !BuildProperty.secureSharingEnable)
+            PublicLinkSwitch(
+              file: widget.file,
+              filesState: widget.filesState,
+              filesPageState: widget.filesPageState,
+            ),
+          if (!isFolder && !offline) Divider(height: 0),
+          if (!isFolder)
+            ListTile(
+              onTap: () =>
+                  onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
+              leading: Icon(Icons.airplanemode_active),
+              title: Text(s.offline),
+              trailing: Switch.adaptive(
+                value: widget.file.localId != null,
+                activeColor: Theme.of(context).accentColor,
+                onChanged: (bool val) =>
+                    onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
+              ),
+            ),
+          Divider(height: 0),
+          if (!offline)
+            ListTile(
+              leading: Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove),
+              title: Text(s.copy_or_move),
+              onTap: () {
+                widget.filesState.updateFilesCb =
+                    widget.filesPageState.onGetFiles;
+                widget.filesState.enableMoveMode(filesToMove: [widget.file]);
+                Navigator.pop(context);
+              },
+            ),
+          if (!offline &&
+              BuildProperty.secureSharingEnable &&
+              enableSecureLink())
+            ListTile(
+              leading: AssetIcon(
+                "lib/assets/svg/insert_link.svg",
+                addedSize: 14,
+              ),
+              title: Text(widget.file.initVector != null
+                  ? s.btn_encrypted_shareable_link
+                  : s.btn_shareable_link),
+              onTap: _secureSharing,
+            ),
+          if (!offline && enableTeamShare())
+            ListTile(
+              leading: Icon(PlatformOverride.isIOS
+                  ? MdiIcons.exportVariant
+                  : Icons.share),
+              title: Text(s.btn_share_to_email),
+              onTap: _shareWithTeammates,
+            ),
+          if (!isFolder)
+            ListTile(
+              leading: Icon(PlatformOverride.isIOS
+                  ? MdiIcons.exportVariant
+                  : Icons.share),
+              title: Text(s.share),
+              onTap: _shareFile,
+            ),
+          if (!PlatformOverride.isIOS && !isFolder)
+            ListTile(
+              leading: Icon(Icons.file_download),
+              title: Text(s.download),
+              onTap: _download,
+            ),
+          if (!offline)
+            ListTile(
+              leading: Icon(Icons.edit),
+              title: Text(s.rename),
+              onTap: () async {
+                Navigator.pop(context);
+                final result = await AMDialog.show(
+                  context: context,
+                  builder: (_) => RenameDialog(
+                    file: widget.file,
+                    filesState: widget.filesState,
+                    filesPageState: widget.filesPageState,
+                  ),
+                );
+              },
+            ),
+          if (!offline)
+            ListTile(
+              leading: Icon(Icons.delete_outline),
+              title: Text(s.delete),
+              onTap: () async {
+                Navigator.pop(context);
+                final shouldDelete = await AMDialog.show<bool>(
+                  context: context,
+                  builder: (_) => DeleteConfirmationDialog(
+                    itemsNumber: 1,
+                    isFolder: widget.file.isFolder,
+                  ),
+                );
+                if (shouldDelete == true) {
+                  widget.filesPageState.onDeleteFiles(
+                    storage: widget.filesState.selectedStorage,
+                    filesToDelete: [widget.file],
+                    onSuccess: () => widget.filesPageState.onGetFiles(),
+                    onError: (String err) => showSnack(
+                      context: context,
+                      scaffoldState:
+                          widget.filesPageState.scaffoldKey.currentState,
+                      msg: err,
+                    ),
+                  );
+                }
+              },
+            ),
+        ],
+      ),
+    );
+
+    if (!isTablet) {
+      content = LimitedBox(
+        maxHeight: offline ? 180.0 : 260.0,
+        child: content,
+      );
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,130 +302,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
           ),
         ),
         Divider(height: 0),
-        LimitedBox(
-          maxHeight: offline ? 180.0 : 260.0,
-          child: ListView(
-            padding: EdgeInsets.only(
-                top: 0.0, bottom: MediaQuery.of(context).padding.bottom),
-            children: <Widget>[
-              if (widget.file.initVector == null &&
-                  !offline &&
-                  !BuildProperty.secureSharingEnable)
-                PublicLinkSwitch(
-                  file: widget.file,
-                  filesState: widget.filesState,
-                  filesPageState: widget.filesPageState,
-                ),
-              if (!isFolder && !offline) Divider(height: 0),
-              if (!isFolder)
-                ListTile(
-                  onTap: () => onItemSelected(
-                      FileOptionsBottomSheetResult.toggleOffline),
-                  leading: Icon(Icons.airplanemode_active),
-                  title: Text(s.offline),
-                  trailing: Switch.adaptive(
-                    value: widget.file.localId != null,
-                    activeColor: Theme.of(context).accentColor,
-                    onChanged: (bool val) => onItemSelected(
-                        FileOptionsBottomSheetResult.toggleOffline),
-                  ),
-                ),
-              Divider(height: 0),
-              if (!offline)
-                ListTile(
-                  leading:
-                      Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove),
-                  title: Text(s.copy_or_move),
-                  onTap: () {
-                    widget.filesState.updateFilesCb =
-                        widget.filesPageState.onGetFiles;
-                    widget.filesState
-                        .enableMoveMode(filesToMove: [widget.file]);
-                    Navigator.pop(context);
-                  },
-                ),
-              if (!offline &&
-                  BuildProperty.secureSharingEnable &&
-                  enableSecureLink())
-                ListTile(
-                  leading: AssetIcon(
-                    "lib/assets/svg/insert_link.svg",
-                    addedSize: 14,
-                  ),
-                  title: Text(widget.file.initVector != null
-                      ? s.btn_encrypted_shareable_link
-                      : s.btn_shareable_link),
-                  onTap: _secureSharing,
-                ),
-              if (!offline && enableTeamShare())
-                ListTile(
-                  leading: Icon(PlatformOverride.isIOS
-                      ? MdiIcons.exportVariant
-                      : Icons.share),
-                  title: Text(s.btn_share_to_email),
-                  onTap: _shareWithTeammates,
-                ),
-              if (!isFolder)
-                ListTile(
-                  leading: Icon(PlatformOverride.isIOS
-                      ? MdiIcons.exportVariant
-                      : Icons.share),
-                  title: Text(s.share),
-                  onTap: _shareFile,
-                ),
-              if (!PlatformOverride.isIOS && !isFolder)
-                ListTile(
-                  leading: Icon(Icons.file_download),
-                  title: Text(s.download),
-                  onTap: _download,
-                ),
-              if (!offline)
-                ListTile(
-                  leading: Icon(Icons.edit),
-                  title: Text(s.rename),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final result = await AMDialog.show(
-                      context: context,
-                      builder: (_) => RenameDialog(
-                        file: widget.file,
-                        filesState: widget.filesState,
-                        filesPageState: widget.filesPageState,
-                      ),
-                    );
-                  },
-                ),
-              if (!offline)
-                ListTile(
-                  leading: Icon(Icons.delete_outline),
-                  title: Text(s.delete),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final shouldDelete = await AMDialog.show<bool>(
-                      context: context,
-                      builder: (_) => DeleteConfirmationDialog(
-                        itemsNumber: 1,
-                        isFolder: widget.file.isFolder,
-                      ),
-                    );
-                    if (shouldDelete == true) {
-                      widget.filesPageState.onDeleteFiles(
-                        storage: widget.filesState.selectedStorage,
-                        filesToDelete: [widget.file],
-                        onSuccess: () => widget.filesPageState.onGetFiles(),
-                        onError: (String err) => showSnack(
-                          context: context,
-                          scaffoldState:
-                              widget.filesPageState.scaffoldKey.currentState,
-                          msg: err,
-                        ),
-                      );
-                    }
-                  },
-                ),
-            ],
-          ),
-        ),
+        content,
       ],
     );
   }

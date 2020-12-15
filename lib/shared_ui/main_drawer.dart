@@ -4,6 +4,7 @@ import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
+import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,9 +14,14 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 class MainDrawer extends StatelessWidget {
   void _showAvailableSpaceInfo(BuildContext context, Quota quota) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            fullscreenDialog: true, builder: (_) => StorageInfoWidget()));
+      context,
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => StorageInfoWidget(
+          fromDrawer: true,
+        ),
+      ),
+    );
   }
 
   @override
@@ -94,24 +100,40 @@ class MainDrawer extends StatelessWidget {
                             !settingsState.isParanoidEncryptionEnabled) {
                           return SizedBox();
                         }
+
+                        bool enable = true;
+                        if (filesState.isMoveModeEnabled ||
+                            filesState.isShareUpload) {
+                          if (storage.type == "shared") {
+                            enable = false;
+                          }
+                        }
+                        if (filesState.isMoveModeEnabled) {
+                          final copyFromEncrypted =
+                              filesState.filesToMoveCopy.first.type ==
+                                  "encrypted";
+                          if (copyFromEncrypted) {
+                            if (storage.type != "encrypted") {
+                              enable = false;
+                            }
+                          }else{
+                            if (storage.type == "encrypted") {
+                              enable = false;
+                            }
+                          }
+                        }
                         return Container(
                           child: ListTile(
+                            enabled: enable,
                             selected:
                                 filesState.selectedStorage.type == storage.type,
                             leading: Icon(Icons.storage),
                             title: Text(storage.displayName),
                             onTap: () async {
-                              // close drawer
-                              Navigator.of(context).pop();
-                              // clear nav stack TODO: make more flexible
-                              Navigator.of(context)
-                                  .popUntil((Route<dynamic> route) {
-                                return route.isFirst;
-                              });
-                              // set new storage and reload files
                               filesState.selectedStorage = storage;
-                              Navigator.of(context).pushReplacementNamed(
+                              Navigator.of(context).pushNamedAndRemoveUntil(
                                 FilesRoute.name,
+                                (r) => false,
                                 arguments: FilesScreenArguments(
                                   path: "",
                                 ),
@@ -125,10 +147,12 @@ class MainDrawer extends StatelessWidget {
                         value: filesState.isOfflineMode,
                         activeColor: Theme.of(context).accentColor,
                         onChanged: (bool val) async {
-                          Navigator.popUntil(
-                            context,
-                            ModalRoute.withName(FilesRoute.name),
-                          );
+                          if (Navigator.canPop(context)) {
+                            Navigator.popUntil(
+                              context,
+                              ModalRoute.withName(FilesRoute.name),
+                            );
+                          }
                           Navigator.pushReplacementNamed(
                               context, FilesRoute.name,
                               arguments: FilesScreenArguments(path: ""));
@@ -162,7 +186,9 @@ class MainDrawer extends StatelessWidget {
               leading: Icon(Icons.settings),
               title: Text(s.settings),
               onTap: () {
-                Navigator.pop(context);
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
                 Navigator.pushNamed(context, SettingsRoute.name);
               },
             ),

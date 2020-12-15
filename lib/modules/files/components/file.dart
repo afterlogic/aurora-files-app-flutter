@@ -28,8 +28,13 @@ import 'files_item_tile.dart';
 
 class FileWidget extends StatefulWidget {
   final LocalFile file;
+  final Function onOpen;
 
-  const FileWidget({Key key, @required this.file}) : super(key: key);
+  const FileWidget({
+    Key key,
+    @required this.file,
+    this.onOpen,
+  }) : super(key: key);
 
   @override
   _FileWidgetState createState() => _FileWidgetState();
@@ -81,15 +86,12 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   Future _showModalBottomSheet(context) async {
-    final result = await Navigator.push(
-        context,
-        CustomBottomSheet(
-          child: FileOptionsBottomSheet(
-            file: widget.file,
-            filesState: _filesState,
-            filesPageState: _filesPageState,
-          ),
-        ));
+    final result = await FileOptionsBottomSheet.show(
+      context: context,
+      file: widget.file,
+      filesState: _filesState,
+      filesPageState: _filesPageState,
+    );
 
     switch (result) {
       case FileOptionsBottomSheetResult.toggleOffline:
@@ -231,8 +233,7 @@ class _FileWidgetState extends State<FileWidget> {
         ),
       );
     } else {
-      final file = await Navigator.pushNamed(
-        context,
+      final file = await Navigator.of(context).pushNamed(
         FileViewerRoute.name,
         arguments: FileViewerScreenArguments(
           file: widget.file,

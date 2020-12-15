@@ -3,6 +3,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
@@ -28,66 +29,84 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
     for (LocalPgpKey key in widget._pgpKeys) {
       if (key.key != null) keysText += key.key + "\n\n";
     }
+    final isTablet = LayoutConfig.of(context).isTablet;
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AMAppBar(
-        title: Text(s.all_public_keys),
-      ),
-      body: OrientationBuilder(
-        builder: (context, orientation) => Padding(
-          padding: const EdgeInsets.all(20),
-          child: Flex(
-            direction: orientation == Orientation.landscape
-                ? Axis.horizontal
-                : Axis.vertical,
-            children: <Widget>[
-              Flexible(
-                flex: 3,
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SelectableText(
-                      keysText,
-                    ),
-                  ],
-                ),
-              ),
-              Flexible(
-                flex: orientation == Orientation.landscape ? 2 : 0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 8,
-                    ),
-                    SizedBox(
+      appBar: isTablet
+          ? null
+          : AMAppBar(
+              title: Text(s.all_public_keys),
+            ),
+      body: Flex(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        direction: Axis.vertical,
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(8.0),
+              children: <Widget>[
+                if (isTablet)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
                       width: double.infinity,
-                      child: AMButton(
-                        child: Text(s.send_all),
-                        onPressed: () => share(keysText),
-                      ),
-                    ),
-                    if (!PlatformOverride.isIOS)
-                    SizedBox(
-                      height: 8,
-                    ),
-                    if (!PlatformOverride.isIOS)
-                      SizedBox(
-                        width: double.infinity,
-                        child: AMButton(
-                          child: Text(s.download_all),
-                          onPressed: download,
+                      child: Center(
+                        child: Text(
+                          s.all_public_keys,
+                          style: Theme.of(context).textTheme.title,
                         ),
                       ),
-                  ],
+                    ),
+                  ),
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-            ],
+                SelectableText(
+                  keysText,
+                ),
+              ],
+            ),
           ),
-        ),
+          button(context, keysText),
+        ],
       ),
+    );
+  }
+
+  Widget button(BuildContext context, String keysText) {
+    final isTablet = LayoutConfig.of(context).isTablet;
+    final space = isTablet
+        ? SizedBox.shrink()
+        : SizedBox(
+            height: 10.0,
+            width: 10,
+          );
+    final children = <Widget>[
+      space,
+      AMButton(
+        child: Text(s.send_all),
+        onPressed: () => share(keysText),
+      ),
+      if (!PlatformOverride.isIOS) ...[
+        space,
+        AMButton(
+          child: Text(s.download_all),
+          onPressed: download,
+        ),
+      ]
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: isTablet
+          ? Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: children,
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: children,
+            ),
     );
   }
 

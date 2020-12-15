@@ -102,7 +102,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   void _moveFile() {
     widget.filesState.updateFilesCb = widget.filesPageState.onGetFiles;
     widget.filesState.enableMoveMode(filesToMove: [_file]);
-    Navigator.pop(context);
+    Navigator.pop(context, _file);
   }
 
   void _shareFile(PreparedForShare preparedForShare) {

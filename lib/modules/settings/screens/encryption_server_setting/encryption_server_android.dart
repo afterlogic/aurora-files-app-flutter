@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_k
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/export_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,12 +44,12 @@ class _EncryptionServerState extends State<EncryptionServer> {
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
-    final spacer = const SizedBox(height: 10.0);
+    final isTablet = LayoutConfig.of(context).isTablet;
     return Provider<SettingsState>(
       create: (_) => _settingsState,
       child: Scaffold(
         key: scaffoldKey,
-        appBar: AMAppBar(title: Text(s.encryption)),
+        appBar: isTablet ? null : AMAppBar(title: Text(s.encryption)),
         body: encryptionSetting == null
             ? SizedBox.shrink()
             : ListView(

@@ -12,7 +12,7 @@ mixin _$FilesState on _FilesState, Store {
   final _$currentStoragesAtom = Atom(name: '_FilesState.currentStorages');
 
   @override
-  List<Storage>  get currentStorages {
+  List<Storage> get currentStorages {
     _$currentStoragesAtom.context.enforceReadPolicy(_$currentStoragesAtom);
     _$currentStoragesAtom.reportObserved();
     return super.currentStorages;

@@ -26,4 +26,22 @@ mixin _$FileViewerState on _FileViewerState, Store {
       _$downloadProgressAtom.reportChanged();
     }, _$downloadProgressAtom, name: '${_$downloadProgressAtom.name}_set');
   }
+
+  final _$fileWithContentsAtom =
+      Atom(name: '_FileViewerState.fileWithContents');
+
+  @override
+  File get fileWithContents {
+    _$fileWithContentsAtom.context.enforceReadPolicy(_$fileWithContentsAtom);
+    _$fileWithContentsAtom.reportObserved();
+    return super.fileWithContents;
+  }
+
+  @override
+  set fileWithContents(File value) {
+    _$fileWithContentsAtom.context.conditionallyRunInAction(() {
+      super.fileWithContents = value;
+      _$fileWithContentsAtom.reportChanged();
+    }, _$fileWithContentsAtom, name: '${_$fileWithContentsAtom.name}_set');
+  }
 }

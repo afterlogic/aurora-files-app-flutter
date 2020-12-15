@@ -39,7 +39,7 @@ abstract class _FileViewerState with Store {
 
   @observable
   double downloadProgress;
-
+  @observable
   File fileWithContents;
 
   ProcessingFile processingFile;
@@ -79,7 +79,7 @@ abstract class _FileViewerState with Store {
       }
     }
     downloadProgress = 0.0;
-
+    await Future.delayed(Duration(milliseconds: 100));
     // get file contents
     if (AppStore.filesState.isOfflineMode) {
       fileWithContents = new File(file.localPath);
@@ -88,6 +88,7 @@ abstract class _FileViewerState with Store {
     } else {
       if (await fileToView.length() > 0) {
         fileWithContents = fileToView;
+
         downloadProgress = null;
         if (onDownloadEnd != null) onDownloadEnd(fileToView);
       } else {

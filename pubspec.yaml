@@ -1,7 +1,7 @@
 name: aurorafiles
 description: File management system for ...
 
-version: 10.6.0+147
+version: 10.6.0+148
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

@@ -23,7 +23,7 @@ class DeviceIdStorage {
 
   static Future<String> getDeviceId() async {
     try {
-      return (kDebugMode ? "debug7" : "") + await DeviceId.getID;
+      return (kDebugMode ? "DEBUG" : "") + await DeviceId.getID;
     } catch (_) {
       try {
         return await DeviceId.getIMEI;

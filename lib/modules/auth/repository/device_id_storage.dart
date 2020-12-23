@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aurorafiles/build_property.dart';
 import 'package:device_id/device_id.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
@@ -10,9 +11,14 @@ class DeviceIdStorage {
   DeviceIdStorage._();
 
   static Future<String> getDeviceName() async {
-    return Platform.isIOS
-        ? (await _deviceInfo.iosInfo).model
-        : (await _deviceInfo.androidInfo).model;
+    String device;
+    if (Platform.isIOS) {
+      final info = await _deviceInfo.iosInfo;
+      device = "${info.name} ${info.systemName} ${info.systemVersion}";
+    } else {
+      device = (await _deviceInfo.androidInfo).model;
+    }
+    return BuildProperty.appName + " " + device;
   }
 
   static Future<String> getDeviceId() async {

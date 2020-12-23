@@ -307,6 +307,19 @@ class AuthApi {
 
     return (map["Result"]["TrustDevicesForDays"] as num).toInt();
   }
+
+  void logout() async{
+    final body = new ApiBody(
+      module: "Core",
+      method: "Logout",
+    ).toMap();
+
+    final res = await WebMailApi.request(
+        AppStore.authState.apiUrl, body);
+    final map = json.decode(res.body);
+
+    print(map);
+  }
 }
 
 class AllowAccess extends Error {}

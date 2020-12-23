@@ -172,6 +172,7 @@ abstract class _AuthState with Store {
     try {
       AppStore.filesState.currentStorages = new List();
     } catch (e) {}
+    _authApi.logout();
     _authLocal.deleteTokenFromStorage();
     _authLocal.deleteUserIdFromStorage();
 
@@ -219,7 +220,7 @@ abstract class _AuthState with Store {
     String email = emailCtrl.text;
     String password = passwordCtrl.text;
     SystemChannels.textInput.invokeMethod('TextInput.hide');
-    final map = await _authApi.verifyPin(
+    final map = await _authApi.backupCode(
       pin,
       email,
       password,

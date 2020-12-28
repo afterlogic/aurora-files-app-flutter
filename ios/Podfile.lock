@@ -160,7 +160,7 @@ PODS:
   - SDWebImage (5.8.4):
     - SDWebImage/Core (= 5.8.4)
   - SDWebImage/Core (5.8.4)
-  - share_extend (0.0.1):
+  - share (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
@@ -208,7 +208,7 @@ DEPENDENCIES:
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - receive_sharing (from `.symlinks/plugins/receive_sharing/ios`)
-  - share_extend (from `.symlinks/plugins/share_extend/ios`)
+  - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
@@ -285,8 +285,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler/ios"
   receive_sharing:
     :path: ".symlinks/plugins/receive_sharing/ios"
-  share_extend:
-    :path: ".symlinks/plugins/share_extend/ios"
+  share:
+    :path: ".symlinks/plugins/share/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   shared_preferences_macos:
@@ -348,7 +348,7 @@ SPEC CHECKSUMS:
   receive_sharing: d6db01a09636ce060b2bd1a5ca8a41eea4437a3d
   RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
   SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
-  share_extend: b6748dc53695587891126a89533b862b92548c7b
+  share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9

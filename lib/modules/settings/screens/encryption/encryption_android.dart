@@ -25,7 +25,13 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
   S s;
 
   void _shareKey() async {
-    _settingsState.onShareEncryptionKey();
+    _settingsState.onShareEncryptionKey(
+      Rect.fromCenter(
+        center: MediaQuery.of(context).size.bottomCenter(Offset.zero),
+        width: 0,
+        height: 0,
+      ),
+    );
   }
 
   void _downloadKey() async {
@@ -53,8 +59,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
 
   List<Widget> _buildAddingKey() {
     final spacer = const SizedBox(height: 10.0);
-    if (_settingsState.isParanoidEncryptionEnabled &&
-        _settingsState.selectedKeyName == null) {
+    if (_settingsState.isParanoidEncryptionEnabled && _settingsState.selectedKeyName == null) {
       return [
         Text(s.encryption_keys),
         SizedBox(height: 32.0),
@@ -122,8 +127,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         SizedBox(height: 32.0),
         AMButton(child: Text(s.share_key), onPressed: _shareKey),
         if (!PlatformOverride.isIOS) spacer,
-        if (!PlatformOverride.isIOS)
-          AMButton(child: Text(s.download_key), onPressed: _downloadKey),
+        if (!PlatformOverride.isIOS) AMButton(child: Text(s.download_key), onPressed: _downloadKey),
         spacer,
         AMButton(
           color: theme.errorColor,

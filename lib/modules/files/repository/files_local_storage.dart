@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
@@ -15,7 +16,7 @@ import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share/share.dart';
 
 class FilesLocalStorage {
   Aes aes = DI.get();
@@ -30,7 +31,7 @@ class FilesLocalStorage {
   }
 
   // is used to download files on iOS
-  Future<void> shareFile(File storedFile, LocalFile file) async {
+  Future<void> shareFile(File storedFile, LocalFile file, Rect rect) async {
     String fileType;
     if (file.contentType.startsWith("image"))
       fileType = "image";
@@ -39,7 +40,11 @@ class FilesLocalStorage {
     else
       fileType = "file";
 
-    await ShareExtend.share(storedFile.path, fileType);
+    await Share.shareFiles(
+      [storedFile.path],
+      mimeTypes: [fileType],
+      sharePositionOrigin: rect,
+    );
   }
 
   Future<void> openFileWith(File file) async {
@@ -85,8 +90,8 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getTemporaryDirectory();
-    final File dartFile = new File(
-        "${dir.path}/files_to_delete/${useName == true ? file.name : file.guid}");
+    final File dartFile =
+        new File("${dir.path}/files_to_delete/${useName == true ? file.name : file.guid}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {
@@ -102,8 +107,7 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getTemporaryDirectory();
-    final File dartFile =
-        new File("${dir.path}/images/${file.guid}_${file.name}");
+    final File dartFile = new File("${dir.path}/images/${file.guid}_${file.name}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {
@@ -237,8 +241,8 @@ class FilesLocalStorage {
 
     await processingFile.fileOnDevice.create(recursive: true);
 
-    final key = prefixEncrypt.Key.fromBase16(await PgpKeyUtil.instance
-        .userDecrypt(encryptedDecryptionKey, password));
+    final key = prefixEncrypt.Key.fromBase16(
+        await PgpKeyUtil.instance.userDecrypt(encryptedDecryptionKey, password));
 
     List<int> fileBytesBuffer = new List();
     int progress = 0;
@@ -251,21 +255,19 @@ class FilesLocalStorage {
 
       // if this is the final part that forms a chunk
       if (Aes.chunkMaxSize <= fileBytesBuffer.length + contents.length) {
-        contentsForCurrent =
-            contents.sublist(0, Aes.chunkMaxSize - fileBytesBuffer.length);
+        contentsForCurrent = contents.sublist(0, Aes.chunkMaxSize - fileBytesBuffer.length);
 
-        contentsForNext = contents.sublist(
-            Aes.chunkMaxSize - fileBytesBuffer.length, contents.length);
+        contentsForNext =
+            contents.sublist(Aes.chunkMaxSize - fileBytesBuffer.length, contents.length);
 
         fileBytesBuffer.addAll(contentsForCurrent);
 
-        final decrypted = await aes.decrypt(
-            fileBytesBuffer, key.base64, processingFile.ivBase64, false);
-        await processingFile.fileOnDevice
-            .writeAsBytes(decrypted, mode: FileMode.append);
+        final decrypted =
+            await aes.decrypt(fileBytesBuffer, key.base64, processingFile.ivBase64, false);
+        await processingFile.fileOnDevice.writeAsBytes(decrypted, mode: FileMode.append);
         // update vector with the last 16 bytes of the chunk
-        final newVector = fileBytesBuffer.sublist(
-            fileBytesBuffer.length - 16, fileBytesBuffer.length);
+        final newVector =
+            fileBytesBuffer.sublist(fileBytesBuffer.length - 16, fileBytesBuffer.length);
         processingFile.ivBase64 = IV(Uint8List.fromList(newVector)).base64;
 
         // flush the buffer
@@ -279,10 +281,9 @@ class FilesLocalStorage {
       processingFile.updateProgress(num);
     }
     if (fileBytesBuffer.isNotEmpty) {
-      final decrypted = await aes.decrypt(
-          fileBytesBuffer, key.base64, processingFile.ivBase64, true);
-      await processingFile.fileOnDevice
-          .writeAsBytes(decrypted, mode: FileMode.append);
+      final decrypted =
+          await aes.decrypt(fileBytesBuffer, key.base64, processingFile.ivBase64, true);
+      await processingFile.fileOnDevice.writeAsBytes(decrypted, mode: FileMode.append);
     }
 
     return processingFile.fileOnDevice;

@@ -6,7 +6,7 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share/share.dart';
 
 class ExportPgpKeyWidget extends StatefulWidget {
   final List<LocalPgpKey> _pgpKeys;
@@ -111,7 +111,15 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   }
 
   share(String keys) {
-    ShareExtend.share(keys, "text");
+    Share.share(
+      keys,
+      subject: "PGP public keys",
+      sharePositionOrigin: Rect.fromCenter(
+        center: MediaQuery.of(context).size.bottomCenter(Offset.zero),
+        width: 0,
+        height: 0,
+      ),
+    );
   }
 
   download() async {

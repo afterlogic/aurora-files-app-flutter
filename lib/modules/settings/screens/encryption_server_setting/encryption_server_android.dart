@@ -98,8 +98,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
                   if (!showBackwardCompatibility)
                     AMButton(
                       child: Text(s.btn_enable_backward_compatibility),
-                      onPressed: () =>
-                          setState(() => showBackwardCompatibility = true),
+                      onPressed: () => setState(() => showBackwardCompatibility = true),
                     ),
                   if (showBackwardCompatibility) ...[
                     Text(s.hint_backward_compatibility_aes_key),
@@ -125,10 +124,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
     }).catchError((e) {
       progress = false;
       setState(() {});
-      showSnack(
-          context: context,
-          scaffoldState: scaffoldKey.currentState,
-          msg: e.toString());
+      showSnack(context: context, scaffoldState: scaffoldKey.currentState, msg: e.toString());
     });
   }
 
@@ -147,7 +143,13 @@ class _EncryptionServerState extends State<EncryptionServer> {
   }
 
   void _shareKey() async {
-    _settingsState.onShareEncryptionKey();
+    _settingsState.onShareEncryptionKey(
+      Rect.fromCenter(
+        center: MediaQuery.of(context).size.bottomCenter(Offset.zero),
+        width: 0,
+        height: 0,
+      ),
+    );
   }
 
   void _downloadKey() async {
@@ -175,8 +177,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
 
   List<Widget> _buildAddingKey() {
     final spacer = const SizedBox(height: 10.0);
-    if (_settingsState.isParanoidEncryptionEnabled &&
-        _settingsState.selectedKeyName == null) {
+    if (_settingsState.isParanoidEncryptionEnabled && _settingsState.selectedKeyName == null) {
       return [
         Text(s.encryption_keys),
         SizedBox(height: 32.0),
@@ -237,8 +238,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
         SizedBox(height: 32.0),
         AMButton(child: Text(s.share_key), onPressed: _shareKey),
         if (!PlatformOverride.isIOS) spacer,
-        if (!PlatformOverride.isIOS)
-          AMButton(child: Text(s.download_key), onPressed: _downloadKey),
+        if (!PlatformOverride.isIOS) AMButton(child: Text(s.download_key), onPressed: _downloadKey),
         spacer,
         AMButton(
           color: theme.errorColor,

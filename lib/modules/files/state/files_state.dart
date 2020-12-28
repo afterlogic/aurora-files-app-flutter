@@ -36,8 +36,8 @@ part 'files_state.g.dart';
 
 class FilesState = _FilesState with _$FilesState;
 
-final dummyStorage = new Storage(
-    type: "", displayName: "", isExternal: false, isDroppable: false, order: 0);
+final dummyStorage =
+    new Storage(type: "", displayName: "", isExternal: false, isDroppable: false, order: 0);
 
 // Global files state
 abstract class _FilesState with Store {
@@ -136,9 +136,7 @@ abstract class _FilesState with Store {
         selectedStorage = currentStorages[0];
       }
     } catch (err) {
-      if (!isOfflineMode &&
-          AppStore.settingsState.internetConnection !=
-              ConnectivityResult.none) {
+      if (!isOfflineMode && AppStore.settingsState.internetConnection != ConnectivityResult.none) {
         onError(err.toString());
       }
     }
@@ -238,12 +236,9 @@ abstract class _FilesState with Store {
     final List<Map<String, dynamic>> mappedFiles = [];
 
     filesToMoveCopy.forEach((file) {
-      mappedFiles.add(FileToMove(
-              type: file.type,
-              path: file.path,
-              name: file.name,
-              isFolder: file.isFolder)
-          .toMap());
+      mappedFiles.add(
+          FileToMove(type: file.type, path: file.path, name: file.name, isFolder: file.isFolder)
+              .toMap());
     });
 
     try {
@@ -256,9 +251,7 @@ abstract class _FilesState with Store {
         toPath: toPath,
       );
       onSuccess();
-      if (updateFilesCb != null &&
-          !copy &&
-          selectedStorage.type == filesToMoveCopy[0].type) {
+      if (updateFilesCb != null && !copy && selectedStorage.type == filesToMoveCopy[0].type) {
         updateFilesCb(path: filesToMoveCopy[0].path);
       }
     } catch (err) {
@@ -266,8 +259,7 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future addDecryptedKey(
-      BuildContext context, LocalFile file, List<String> contactKey) async {
+  Future addDecryptedKey(BuildContext context, LocalFile file, List<String> contactKey) async {
     if (contactKey.isEmpty) {
       return _filesApi.updateKeyShared(file, null, [], null);
     }
@@ -275,8 +267,7 @@ abstract class _FilesState with Store {
     if (password == null) {
       throw "";
     }
-    final key = (await PgpKeyUtil.instance
-        .userDecrypt(file.encryptedDecryptionKey, password));
+    final key = (await PgpKeyUtil.instance.userDecrypt(file.encryptedDecryptionKey, password));
     return _filesApi.updateKeyShared(file, key, contactKey, password);
   }
 
@@ -286,8 +277,7 @@ abstract class _FilesState with Store {
     if (password == null) {
       throw "";
     }
-    final key = (await PgpKeyUtil.instance
-        .userDecrypt(file.encryptedDecryptionKey, password));
+    final key = (await PgpKeyUtil.instance.userDecrypt(file.encryptedDecryptionKey, password));
     return _filesApi.updateExtendedPropsPublicKey(
         file,
         (await PgpKeyUtil.instance.encrypt(
@@ -298,8 +288,7 @@ abstract class _FilesState with Store {
             .replaceAll("\n", "\r\n"));
   }
 
-  Future addDecryptedPublicPassword(
-      BuildContext context, LocalFile file, String password) async {
+  Future addDecryptedPublicPassword(BuildContext context, LocalFile file, String password) async {
     return _filesApi.updateExtendedPropsPublicKey(file, password);
   }
 
@@ -312,8 +301,8 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     try {
-      final String link = await _filesApi.createPublicLink(
-          selectedStorage.type, path, name, size, isFolder);
+      final String link =
+          await _filesApi.createPublicLink(selectedStorage.type, path, name, size, isFolder);
       onSuccess(link);
     } catch (err) {
       onError(err.toString());
@@ -510,8 +499,7 @@ abstract class _FilesState with Store {
           AppStore.settingsState.currentKey == null) {
         throw CustomException("You need an encryption key to download files.");
       }
-      if (file.encryptedDecryptionKey != null &&
-          !(await PgpKeyUtil.instance.hasUserKey())) {
+      if (file.encryptedDecryptionKey != null && !(await PgpKeyUtil.instance.hasUserKey())) {
         throw CustomException("You need an encryption key to download files.");
       }
       if (_isFileIsBeingProcessed(file.guid)) {
@@ -526,19 +514,15 @@ abstract class _FilesState with Store {
       }
       if (isOfflineMode) {
         try {
-          final fileForDownload =
-              await _filesLocal.createFileForDownloadAndroid(file);
+          final fileForDownload = await _filesLocal.createFileForDownloadAndroid(file);
           final processingFile = addFileToProcessing(
             file,
             fileForDownload,
             ProcessingType.download,
-            file.initVector != null
-                ? IV.fromBase16(file.initVector).base64
-                : null,
+            file.initVector != null ? IV.fromBase16(file.initVector).base64 : null,
           );
           onStart(processingFile);
-          final downloadedFile =
-              await _filesLocal.downloadOffline(file, processingFile, password);
+          final downloadedFile = await _filesLocal.downloadOffline(file, processingFile, password);
           onSuccess(downloadedFile);
           deleteFromProcessing(file.guid);
         } catch (err) {
@@ -549,16 +533,13 @@ abstract class _FilesState with Store {
       }
 
       // if file exists in cache, just copy it to downloads folder
-      final Directory dir = (await getExternalStorageDirectories(
-              type: StorageDirectory.downloads))
-          .first;
-      final File copiedFile =
-          await _filesLocal.copyFromCache(file, "${dir.path}/${file.name}");
+      final Directory dir =
+          (await getExternalStorageDirectories(type: StorageDirectory.downloads)).first;
+      final File copiedFile = await _filesLocal.copyFromCache(file, "${dir.path}/${file.name}");
       if (copiedFile != null && file.size == copiedFile.lengthSync()) {
         onSuccess(copiedFile);
       } else {
-        final fileToDownloadInto =
-            await _filesLocal.createFileForDownloadAndroid(file);
+        final fileToDownloadInto = await _filesLocal.createFileForDownloadAndroid(file);
 
         final processingFile = addFileToProcessing(
           file,
@@ -592,8 +573,8 @@ abstract class _FilesState with Store {
     }
   }
 
-  share(PreparedForShare preparedForShare) {
-    _filesLocal.shareFile(preparedForShare.file, preparedForShare.localFile);
+  share(PreparedForShare preparedForShare, Rect rect) {
+    _filesLocal.shareFile(preparedForShare.file, preparedForShare.localFile, rect);
   }
 
   Future<void> prepareForShare(
@@ -615,26 +596,21 @@ abstract class _FilesState with Store {
       if (_isFileIsBeingProcessed(file.guid)) {
         onError("This file is occupied with another operation.");
       }
-      if (file.initVector != null &&
-          !(await PgpKeyUtil.instance.hasUserKey())) {}
+      if (file.initVector != null && !(await PgpKeyUtil.instance.hasUserKey())) {}
       await clearCache();
 
       if (isOfflineMode) {
         try {
-          final tempFile =
-              await _filesLocal.createTempFile(file, useName: true);
+          final tempFile = await _filesLocal.createTempFile(file, useName: true);
           final processingFile = addFileToProcessing(
             file,
             tempFile,
             ProcessingType.download,
-            file.initVector != null
-                ? IV.fromBase16(file.initVector).base64
-                : null,
+            file.initVector != null ? IV.fromBase16(file.initVector).base64 : null,
           );
           onStart(processingFile);
-          final prepareForShare = await _filesLocal
-              .shareOffline(file, processingFile, password)
-              .catchError(onError);
+          final prepareForShare =
+              await _filesLocal.shareOffline(file, processingFile, password).catchError(onError);
           onSuccess(prepareForShare);
           deleteFromProcessing(file.guid);
         } catch (err) {
@@ -647,16 +623,14 @@ abstract class _FilesState with Store {
 
       File fileWithContents;
       if (storedFile == null) {
-        final File tempFileForShare =
-            await _filesLocal.createTempFile(file, useName: true);
-        final processingFile = addFileToProcessing(
-            file, tempFileForShare, ProcessingType.share, file.initVector);
+        final File tempFileForShare = await _filesLocal.createTempFile(file, useName: true);
+        final processingFile =
+            addFileToProcessing(file, tempFileForShare, ProcessingType.share, file.initVector);
         if (await tempFileForShare.length() <= 0) {
           onStart(processingFile);
           // ignore: cancel_subscriptions
           final sub = await _filesApi.getFileContentsFromServer(
-              file.downloadUrl, file, processingFile, true, password,
-              onSuccess: (File savedFile) {
+              file.downloadUrl, file, processingFile, true, password, onSuccess: (File savedFile) {
             fileWithContents = savedFile;
             onSuccess(PreparedForShare(fileWithContents, file));
             deleteFromProcessing(file.guid);
@@ -693,14 +667,13 @@ abstract class _FilesState with Store {
           "${dir.path}/offline${file.path + (file.path.isNotEmpty ? "/" : "")}${file.guid}_${file.name}";
       File fileForOffline = await _filesLocal.copyFromCache(file, offlineDir);
       if (fileForOffline != null && fileForOffline.lengthSync() == file.size) {
-        final FilesCompanion filesCompanion =
-            getCompanionFromLocalFile(file, fileForOffline.path);
+        final FilesCompanion filesCompanion = getCompanionFromLocalFile(file, fileForOffline.path);
         await _filesDao.addFile(filesCompanion);
         onSuccess();
       } else {
         fileForOffline = await _filesLocal.createFileForOffline(file);
-        final processingFile = addFileToProcessing(
-            file, fileForOffline, ProcessingType.offline, file.initVector);
+        final processingFile =
+            addFileToProcessing(file, fileForOffline, ProcessingType.offline, file.initVector);
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
             file.downloadUrl, file, processingFile, false, null,
@@ -729,13 +702,12 @@ abstract class _FilesState with Store {
     }
   }
 
-  ProcessingFile addFileToProcessing(LocalFile file, File deviceLocation,
-      ProcessingType type, String ivBase64) {
+  ProcessingFile addFileToProcessing(
+      LocalFile file, File deviceLocation, ProcessingType type, String ivBase64) {
     ProcessingFile processingFile;
     // if exists
     try {
-      processingFile =
-          processedFiles.firstWhere((process) => process.guid == file.guid);
+      processingFile = processedFiles.firstWhere((process) => process.guid == file.guid);
       return processingFile;
     } catch (err) {}
 
@@ -756,8 +728,7 @@ abstract class _FilesState with Store {
 
   void deleteFromProcessing(String guid, {bool deleteLocally = false}) {
     try {
-      final fileToDelete =
-          processedFiles.firstWhere((file) => file.guid == guid);
+      final fileToDelete = processedFiles.firstWhere((file) => file.guid == guid);
       fileToDelete.endProcess();
       if (deleteLocally) fileToDelete.fileOnDevice.delete(recursive: true);
       processedFiles.removeWhere((file) => file.guid == guid);
@@ -766,8 +737,7 @@ abstract class _FilesState with Store {
   }
 
   Future<void> clearCache({deleteCachedImages = false}) async {
-    return _filesLocal.deleteFilesFromCache(
-        deleteCachedImages: deleteCachedImages);
+    return _filesLocal.deleteFilesFromCache(deleteCachedImages: deleteCachedImages);
   }
 
   Future<void> createPublicLink({
@@ -819,12 +789,10 @@ abstract class _FilesState with Store {
     } else {
       final accountID = accounts.first.accountID;
       final folders = await _mailApi.getFolder(accountID);
-      final sendFolder = folders.folders.firstWhere(
-          (item) => item.type == Folder.sendType,
+      final sendFolder = folders.folders.firstWhere((item) => item.type == Folder.sendType,
           orElse: () => Folder(Folder.sentFolder, 2, ""));
       final sendFolderPath = folders.namespace + sendFolder.fullName;
-      await _mailApi.sendMail(
-          accountID, sendFolderPath, template.subject, template.body, to);
+      await _mailApi.sendMail(accountID, sendFolderPath, template.subject, template.body, to);
     }
   }
 

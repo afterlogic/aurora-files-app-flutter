@@ -106,7 +106,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _shareFile(PreparedForShare preparedForShare) {
-    widget.filesState.share(preparedForShare);
+    widget.filesState.share(
+      preparedForShare,
+      Rect.fromCenter(
+        center: MediaQuery.of(context).size.bottomCenter(Offset.zero),
+        width: 0,
+        height: 0,
+      ),
+    );
   }
 
   void _prepareShareFile(Function(PreparedForShare) complete) async {
@@ -193,8 +200,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       file: _file,
       onStart: (ProcessingFile process) {
         // TODO VO: update ui without refreshing files
-        widget.filesPageState
-            .onGetFiles(showLoading: FilesLoadingType.filesHidden);
+        widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesHidden);
         showSnack(
           context: context,
           scaffoldState: _fileViewerScaffoldKey.currentState,
@@ -225,8 +231,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       widget.filesState.onSetFileOffline(_file, context,
           onStart: (process) {
             _fileViewerState.processingFile = process;
-            widget.filesPageState
-                .onGetFiles(showLoading: FilesLoadingType.filesHidden);
+            widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesHidden);
           },
           onSuccess: () async {
             _fileViewerState.processingFile = null;
@@ -251,8 +256,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         await widget.filesState.onSetFileOffline(_file, context,
             onStart: (process) {
               _fileViewerState.processingFile = process;
-              widget.filesPageState
-                  .onGetFiles(showLoading: FilesLoadingType.filesHidden);
+              widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesHidden);
             },
             onSuccess: () async {
               _fileViewerState.processingFile = null;
@@ -309,8 +313,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       );
       if (file is LocalFile) {
         _file = file;
-        widget.filesPageState
-            .onGetFiles(showLoading: FilesLoadingType.filesVisible);
+        widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesVisible);
         setState(() {});
       }
     }
@@ -379,10 +382,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     if (_file.initVector != null && _showEncrypt == false) {
       return Column(
         children: <Widget>[
-          Icon(Icons.lock_outline,
-              size: previewIconSize, color: Theme.of(context).disabledColor),
-          if ([FileType.image, FileType.text, FileType.code]
-              .contains(_fileType))
+          Icon(Icons.lock_outline, size: previewIconSize, color: Theme.of(context).disabledColor),
+          if ([FileType.image, FileType.text, FileType.code].contains(_fileType))
             FlatButton(
               child: Text(s.btn_show_encrypt),
               onPressed: () async {
@@ -438,8 +439,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     bool hasShares = false;
     if (_file.extendedProps != null) {
       try {
-        hasShares =
-            (jsonDecode(_file.extendedProps)["Shares"] as List).isNotEmpty;
+        hasShares = (jsonDecode(_file.extendedProps)["Shares"] as List).isNotEmpty;
       } catch (e) {}
     }
     bool enableSecureLink() {
@@ -481,9 +481,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             actions: widget.filesState.isOfflineMode
                 ? [
                     IconButton(
-                      icon: Icon(PlatformOverride.isIOS
-                          ? MdiIcons.exportVariant
-                          : Icons.share),
+                      icon: Icon(PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
                       tooltip: s.share,
                       onPressed: () => _shareFile(
                         PreparedForShare(
@@ -528,9 +526,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         PopupMenuItem(
                           value: () => _prepareShareFile(_shareFile),
                           child: ListTile(
-                            leading: Icon(PlatformOverride.isIOS
-                                ? MdiIcons.exportVariant
-                                : Icons.share),
+                            leading:
+                                Icon(PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
                             title: Text(s.share),
                           ),
                         ),
@@ -538,9 +535,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           PopupMenuItem(
                             value: _shareWithTeammates,
                             child: ListTile(
-                              leading: Icon(PlatformOverride.isIOS
-                                  ? MdiIcons.exportVariant
-                                  : Icons.share),
+                              leading: Icon(
+                                  PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
                               title: Text(s.btn_share_to_email),
                             ),
                           ),
@@ -580,8 +576,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: InfoListTile(
-                        label: s.size, content: filesize(_file.size)),
+                    child: InfoListTile(label: s.size, content: filesize(_file.size)),
                   ),
                   SizedBox(width: 30),
                   Expanded(
@@ -596,8 +591,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               ),
               InfoListTile(label: s.location, content: _file.type + _file.path),
               InfoListTile(label: s.owner, content: _file.owner),
-              if (!widget.filesState.isOfflineMode &&
-                  !BuildProperty.secureSharingEnable)
+              if (!widget.filesState.isOfflineMode && !BuildProperty.secureSharingEnable)
                 PublicLinkSwitch(
                   file: _file,
                   isFileViewer: true,
@@ -612,9 +606,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 trailing: Switch.adaptive(
                   value: _isFileOffline,
                   activeColor: Theme.of(context).accentColor,
-                  onChanged: _isSyncingForOffline
-                      ? null
-                      : (bool val) => _setFileForOffline(),
+                  onChanged: _isSyncingForOffline ? null : (bool val) => _setFileForOffline(),
                 ),
               ),
               SizedBox(

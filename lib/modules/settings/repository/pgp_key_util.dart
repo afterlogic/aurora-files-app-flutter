@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
@@ -9,7 +10,7 @@ import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share/share.dart';
 
 import 'encryption_local_storage.dart';
 
@@ -98,8 +99,12 @@ class PgpKeyUtil {
     return validateText(contents);
   }
 
-  Future<void> shareKeys(String text) async {
-    await ShareExtend.share(text, "text");
+  Future<void> shareKeys(String text,String title,Rect rect) async {
+    await Share.share(
+        text,
+        subject: title,
+        sharePositionOrigin: rect
+    );
   }
 
   Future<String> keysFolder() async {

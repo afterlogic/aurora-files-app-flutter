@@ -8,7 +8,7 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share/share.dart';
 
 class PgpKeyModelWidget extends StatefulWidget {
   final LocalPgpKey _pgpKey;
@@ -21,8 +21,7 @@ class PgpKeyModelWidget extends StatefulWidget {
   _PgpKeyModelWidgetState createState() => _PgpKeyModelWidgetState();
 }
 
-class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
-    with WidgetsBindingObserver {
+class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> with WidgetsBindingObserver {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isPoped = false;
   S s;
@@ -59,8 +58,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
           ? null
           : AMAppBar(
               titleSpacing: NavigationToolbar.kMiddleSpacing,
-              title:
-                  Text(widget._pgpKey.isPrivate ? s.private_key : s.public_key),
+              title: Text(widget._pgpKey.isPrivate ? s.private_key : s.public_key),
             ),
       body: Flex(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,9 +75,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
                       width: double.infinity,
                       child: Center(
                         child: Text(
-                          widget._pgpKey.isPrivate
-                              ? s.private_key
-                              : s.public_key,
+                          widget._pgpKey.isPrivate ? s.private_key : s.public_key,
                           style: Theme.of(context).textTheme.title,
                         ),
                       ),
@@ -138,7 +134,6 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: isTablet
           ? Wrap(
-
               spacing: 10,
               runSpacing: 10,
               children: children,
@@ -163,7 +158,15 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
         return;
       }
     }
-    ShareExtend.share(widget._pgpKey.key, "text");
+    Share.share(
+      widget._pgpKey.key,
+      subject: widget._pgpKey.name,
+      sharePositionOrigin: Rect.fromCenter(
+        center: MediaQuery.of(context).size.bottomCenter(Offset.zero),
+        width: 0,
+        height: 0,
+      ),
+    );
   }
 
   download() async {
@@ -193,8 +196,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     final result = await AMDialog.show(
       context: context,
       builder: (_) {
-        return ConfirmDeleteKeyWidget(
-            s.confirm_delete_pgp_key(widget._pgpKey.email));
+        return ConfirmDeleteKeyWidget(s.confirm_delete_pgp_key(widget._pgpKey.email));
       },
     );
     if (result == true) {

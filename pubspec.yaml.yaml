@@ -95,6 +95,10 @@ dependencies:
   yubico_flutter:
     git: https://github.com/afterlogic/yubico_flutter
 
+  # logger
+  aurora_logger:
+    git: https://github.com/afterlogic/aurora_logger_flutter
+
   flutter_bloc: 3.2.0
   flutter_custom_tabs: 0.6.0
   equatable: 1.1.1

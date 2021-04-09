@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class WebMailApi {
+  static Function(String) onResponse;
   static Function(String) onRequest;
   static Function(String) onError;
   static Function onLogout;
@@ -28,7 +29,7 @@ class WebMailApi {
     if (res["Result"] != null && (res["Result"] != false)) {
       return rawResponse;
     } else {
-      if (onError != null) onError("${rawResponse.body}");
+      onError.call("${rawResponse.body}");
       return rawResponse;
     }
   }

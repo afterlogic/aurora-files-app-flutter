@@ -1,14 +1,15 @@
+import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/example_widget/example_widget.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/logger/logger.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption_server_setting/encryption_server_route.dart';
+import 'package:aurorafiles/modules/settings/screens/logger/logger_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
@@ -26,14 +27,28 @@ class SettingsAndroid extends StatefulWidget {
 }
 
 class _SettingsAndroidState extends State<SettingsAndroid> {
+  bool showDebug = false;
   final navigatorKey = GlobalKey<SettingsNavigatorState>();
+  final loggerStorage = LoggerStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    loggerStorage
+        .getDebugEnable()
+        .then((value) {
+      setState(() => showDebug = value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = LayoutConfig.of(context).isTablet;
+    final isTablet = LayoutConfig
+        .of(context)
+        .isTablet;
     final current = isTablet
         ? (navigatorKey?.currentState?.current?.name ??
-            CommonSettingsRoute.name)
+        CommonSettingsRoute.name)
         : null;
     final authState = AppStore.authState;
     final s = Str.of(context);
@@ -71,10 +86,18 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           onTap: () => navigator().setRoot(AboutRoute.name),
           onLongPress: BuildProperty.logger
               ? () {
-                  logger.enable = !logger.enable;
-                }
+            loggerStorage.setDebugEnable(true);
+            setState(() => showDebug = true);
+          }
               : null,
         ),
+        if (showDebug)
+          ListTile(
+            selected: current == LoggerRoute.name,
+            leading: AMCircleIcon(Icons.perm_device_information),
+            title: Text("Debug"),
+            onTap: () => navigator().setRoot(LoggerRoute.name),
+          ),
         ListTile(
           selected: current == AuthRoute.name,
           leading: AMCircleIcon(Icons.exit_to_app),
@@ -113,7 +136,9 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
                     child: Drawer(
                       child: ListTileTheme(
                         style: ListTileStyle.drawer,
-                        selectedColor: Theme.of(context).accentColor,
+                        selectedColor: Theme
+                            .of(context)
+                            .accentColor,
                         child: SafeArea(child: body),
                       ),
                     ),
@@ -146,8 +171,8 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           appBar: isTablet
               ? null
               : AMAppBar(
-                  title: Text(s.settings),
-                ),
+            title: Text(s.settings),
+          ),
           body: body,
         ));
   }

@@ -271,4 +271,8 @@ abstract class S {
   String get tfa_label_trust_device;
   String tfa_check_box_trust_device(String daysCount);
   String get tfa_button_continue;
+  String get logger_label_show_debug_view;
+  String get logger_btn_delete_all;
+  String get logger_hint_delete_all_logs;
+  String get logger_hint_delete_log;
 }

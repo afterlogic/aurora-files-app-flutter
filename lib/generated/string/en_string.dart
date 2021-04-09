@@ -329,4 +329,10 @@ class EnString extends S {
   String tfa_check_box_trust_device(String daysCount) =>
       "Don't ask again on this device for $daysCount days";
   final String tfa_button_continue = "Continue";
+  final String logger_label_show_debug_view = "Show debug view";
+  final String logger_btn_delete_all = "Delete all";
+  final String logger_hint_delete_all_logs =
+      "Are you sure you want to delete all logs";
+  final String logger_hint_delete_log =
+      "Are you sure you want to delete the file";
 }

@@ -263,5 +263,9 @@
   "tfa_input_backup_code": "Backup code",
   "tfa_label_trust_device": "You're all set",
   "tfa_check_box_trust_device": "Don't ask again on this device for $daysCount days",
-  "tfa_button_continue": "Continue"
+  "tfa_button_continue": "Continue",
+  "logger_label_show_debug_view": "Show debug view",
+  "logger_btn_delete_all": "Delete all",
+  "logger_hint_delete_all_logs": "Are you sure you want to delete all logs",
+  "logger_hint_delete_log": "Are you sure you want to delete the file"
 }

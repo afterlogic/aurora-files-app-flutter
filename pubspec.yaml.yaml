@@ -59,7 +59,7 @@ dependencies:
   shimmer:
   cached_network_image:
   percent_indicator:
-  flutter_svg: 0.18.0
+  flutter_svg: 0.21.0
   #  fluttertoast: 3.0.5
 
   # misc
@@ -102,6 +102,11 @@ dependencies:
   flutter_bloc: 3.2.0
   flutter_custom_tabs: 0.6.0
   equatable: 1.1.1
+dependency_overrides:
+  yaml: ^2.1.15
+  dart_style: ^1.0.0
+  image: ^2.1.1
+  xml: ^4.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

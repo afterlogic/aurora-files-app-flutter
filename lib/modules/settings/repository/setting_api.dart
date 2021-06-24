@@ -1,8 +1,8 @@
 import 'dart:convert';
+
+import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:aurorafiles/models/api_body.dart';
-import 'package:aurorafiles/modules/app_store.dart';
 
 class SettingApi {
   Future<EncryptionSetting> getEncryptSetting() async {
@@ -15,9 +15,13 @@ class SettingApi {
     final resBody = await sendRequest(body);
 
     if (resBody['Result'] != null) {
+      final encryptionMode = resBody['Result']["EncryptionMode"] as int;
       return EncryptionSetting(
-        UploadEncryptMode.values[resBody['Result']["EncryptionMode"] as int],
-        resBody['Result']["EnableModule"],
+        encryptionMode == null ||
+                encryptionMode >= UploadEncryptMode.values.length
+            ? UploadEncryptMode.Never
+            : UploadEncryptMode.values[encryptionMode],
+        resBody['Result']["EnableModule"] ?? false,
       );
     } else {
       throw CustomException(getErrMsg(resBody));
@@ -35,7 +39,7 @@ class SettingApi {
       parameters: parameters,
     );
 
-    final resBody = await sendRequest( body);
+    final resBody = await sendRequest(body);
 
     if (resBody['Result'] == true) {
       return;

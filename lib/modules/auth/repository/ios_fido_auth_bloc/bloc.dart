@@ -97,7 +97,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
             "${AppStore.authState.hostName}?verify-security-key&login=$login&password=$password&package_name=${BuildProperty.deepLink}");
 
         tab.launch(uri.toString(),
-            option: tab.CustomTabsOption(
+            customTabsOption: tab.CustomTabsOption(
               enableUrlBarHiding: true,
               enableInstantApps: true,
               extraCustomTabs: <String>[

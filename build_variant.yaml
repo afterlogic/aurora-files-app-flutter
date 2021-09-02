@@ -68,3 +68,11 @@ legacyPgpKey: false
 supportAllowAccess: true
 
 logger: true
+
+canUpgradePlan: false
+legacyPgpKey: false
+logger: false
+pgpEnable: false
+secureSharingEnable: false
+supportAllowAccess: false
+useMainLogo: true

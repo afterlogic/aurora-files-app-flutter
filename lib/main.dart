@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aurora_logger/aurora_logger.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'dart:io';
 
@@ -12,11 +13,12 @@ import 'modules/app_screen.dart';
 import 'modules/settings/screens/logger/logger_interceptor_adapter.dart';
 import 'override_platform.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   if (!kDebugMode) {
-    Crashlytics.instance.enableInDevMode = true;
-    FlutterError.onError = Crashlytics.instance.recordFlutterError;
+    // FirebaseCrashlytics.instance.enableInDevMode = true;
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   }
   LoggerSetting.init(LoggerSetting(
     defaultInterceptor: LoggerInterceptorAdapter(),
@@ -36,6 +38,6 @@ void main() {
     () {
       runApp(LoggerControllerWidget.wrap((App())));
     },
-    onError: Crashlytics.instance.recordError,
+    onError: FirebaseCrashlytics.instance.recordError,
   );
 }

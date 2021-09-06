@@ -93,7 +93,7 @@ dependencies:
     git: https://github.com/afterlogic/receive_sharing
   # fido
   yubico_flutter:
-    git: https://github.com/afterlogic/yubico_flutter
+    {{yubico_flutter_lib}}
 
   # logger
   aurora_logger:

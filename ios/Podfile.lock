@@ -183,10 +183,6 @@ PODS:
     - Flutter
   - url_launcher (0.0.1):
     - Flutter
-  - yubico_flutter (0.0.1):
-    - Flutter
-    - YubiKit
-  - YubiKit (3.1.0)
 
 DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
@@ -212,8 +208,6 @@ DEPENDENCIES:
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - yubico_flutter (from `.symlinks/plugins/yubico_flutter/ios`)
-  - YubiKit (from `https://github.com/Yubico/yubikit-ios.git`, commit `89fac6206a4c44eed84764a7f9528ba936d13693`)
 
 SPEC REPOS:
   trunk:
@@ -280,16 +274,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/uni_links/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
-  yubico_flutter:
-    :path: ".symlinks/plugins/yubico_flutter/ios"
-  YubiKit:
-    :commit: 89fac6206a4c44eed84764a7f9528ba936d13693
-    :git: https://github.com/Yubico/yubikit-ios.git
-
-CHECKOUT OPTIONS:
-  YubiKit:
-    :commit: 89fac6206a4c44eed84764a7f9528ba936d13693
-    :git: https://github.com/Yubico/yubikit-ios.git
 
 SPEC CHECKSUMS:
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
@@ -332,9 +316,7 @@ SPEC CHECKSUMS:
   SwiftyGif: 5d4af95df24caf1c570dbbcb32a3b8a0763bc6d7
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  yubico_flutter: 3fee5838c73d3946031a1405ef347de018bbd944
-  YubiKit: b9f3b240e75feec0cf81a8ade503c072eea6dc3a
 
-PODFILE CHECKSUM: 029e5b8a6b52982a3c04aa67db5748105d6f2da5
+PODFILE CHECKSUM: d56511219647900a4b096573ebf4373c4cc17900
 
 COCOAPODS: 1.10.1

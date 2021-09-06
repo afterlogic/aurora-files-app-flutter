@@ -16,7 +16,9 @@ _copy:
   "{{_dir}}/sign/{{_jksName}}": "android/app/key.jks"
   "{{_dir}}/crashlytics/{{_androidGoogleService}}": "android/app/google-services.json"
   "{{_dir}}/crashlytics/{{_iosGoogleService}}": "ios/GoogleService-Info.plist"
+
 _buildPropertyPath: lib/build_property.dart
+
 #default config
 _buildVariant: "build_res/afterlogic/build_variant.yaml"
 
@@ -53,26 +55,22 @@ backgroundColor: ""
 splashGradientTop: ""
 splashGradientBottom: ""
 
-useMainLogo: false
-
 #url
 privacyPolicy: ""
 termsOfService: ""
 autodiscover_url: ""
 
 #module
-pgpEnable: false
-secureSharingEnable: false
 canUpgradePlan: false
 legacyPgpKey: false
-supportAllowAccess: true
-
 logger: true
-
-canUpgradePlan: false
-legacyPgpKey: false
-logger: false
 pgpEnable: false
 secureSharingEnable: false
 supportAllowAccess: false
 useMainLogo: true
+
+# fido
+useYubiKit: false
+yubico_flutter_lib: "path: module/mocks/yubico_flutter"
+#useYubiKit: true
+#yubico_flutter_lib: "git: https://github.com/afterlogic/yubico_flutter"

@@ -47,14 +47,14 @@
 		};
 		DBEB4DFF23E081F200E957F6 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
 				DBEB4DFE23E081F200E957F6 /* AppShareExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -280,7 +280,7 @@
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = K6298N65JA;
+						DevelopmentTeam = J7AW6VHJK4;
 						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -291,7 +291,7 @@
 					};
 					DBEB4DF323E081F200E957F6 = {
 						CreatedOnToolsVersion = 11.3;
-						DevelopmentTeam = K6298N65JA;
+						DevelopmentTeam = J7AW6VHJK4;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -669,7 +669,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(PRODUCT_BUILD_CODE)";
-				DEVELOPMENT_TEAM = K6298N65JA;
+				DEVELOPMENT_TEAM = J7AW6VHJK4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -684,6 +684,7 @@
 				);
 				MARKETING_VERSION = "$(PRODUCT_VERSION)";
 				NEW_SETTING = "${PRODUCT_ID}";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_ID)";
 				PRODUCT_NAME = Runner;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -900,9 +901,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(PRODUCT_BUILD_CODE)";
-				DEVELOPMENT_TEAM = K6298N65JA;
+				DEVELOPMENT_TEAM = J7AW6VHJK4;
 				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"EXCLUDED_ARCHS[sdk=*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -916,7 +918,7 @@
 				);
 				MARKETING_VERSION = "$(PRODUCT_VERSION)";
 				NEW_SETTING = "${PRODUCT_ID}";
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_ID)";
 				PRODUCT_NAME = Runner;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -941,7 +943,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(PRODUCT_BUILD_CODE)";
-				DEVELOPMENT_TEAM = K6298N65JA;
+				DEVELOPMENT_TEAM = J7AW6VHJK4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -956,6 +958,7 @@
 				);
 				MARKETING_VERSION = "$(PRODUCT_VERSION)";
 				NEW_SETTING = "${PRODUCT_ID}";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_ID)";
 				PRODUCT_NAME = Runner;
 				PROVISIONING_PROFILE_SPECIFIER = "";

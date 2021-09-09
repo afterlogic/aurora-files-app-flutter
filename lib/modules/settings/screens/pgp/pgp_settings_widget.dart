@@ -118,7 +118,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                       ],
                     ),
                   ),
-                  button(context, state, publicKeys),
+                  buttons(context, state, publicKeys),
                 ],
               ),
             );
@@ -127,7 +127,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
         ));
   }
 
-  Widget button(
+  Widget buttons(
       BuildContext context, KeysState state, List<KeyWidget> publicKeys) {
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet

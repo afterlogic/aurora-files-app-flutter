@@ -21,7 +21,8 @@ class PgpKeyModelWidget extends StatefulWidget {
   _PgpKeyModelWidgetState createState() => _PgpKeyModelWidgetState();
 }
 
-class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> with WidgetsBindingObserver {
+class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
+    with WidgetsBindingObserver {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isPoped = false;
   S s;
@@ -58,52 +59,57 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> with WidgetsBindi
           ? null
           : AMAppBar(
               titleSpacing: NavigationToolbar.kMiddleSpacing,
-              title: Text(widget._pgpKey.isPrivate ? s.private_key : s.public_key),
+              title:
+                  Text(widget._pgpKey.isPrivate ? s.private_key : s.public_key),
             ),
-      body: Flex(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        direction: Axis.vertical,
-        children: <Widget>[
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(8.0),
-              children: <Widget>[
-                if (isTablet)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          widget._pgpKey.isPrivate ? s.private_key : s.public_key,
-                          style: Theme.of(context).textTheme.title,
+      body: SafeArea(
+        child: Flex(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          direction: Axis.vertical,
+          children: <Widget>[
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(8.0),
+                children: <Widget>[
+                  if (isTablet)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            widget._pgpKey.isPrivate
+                                ? s.private_key
+                                : s.public_key,
+                            style: Theme.of(context).textTheme.title,
+                          ),
                         ),
                       ),
                     ),
+                  SizedBox(
+                    height: 8,
                   ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  widget._pgpKey.email,
-                  style: theme.textTheme.title,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                SelectableText(
-                  widget._pgpKey.key,
-                ),
-              ],
+                  Text(
+                    widget._pgpKey.email,
+                    style: theme.textTheme.title,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SelectableText(
+                    widget._pgpKey.key,
+                  ),
+                ],
+              ),
             ),
-          ),
-          button(context),
-        ],
+            buttons(context),
+          ],
+        ),
       ),
     );
   }
 
-  Widget button(BuildContext context) {
+  Widget buttons(BuildContext context) {
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet
         ? SizedBox.shrink()
@@ -131,7 +137,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> with WidgetsBindi
       ),
     ];
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: isTablet
           ? Wrap(
               spacing: 10,
@@ -196,7 +202,8 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget> with WidgetsBindi
     final result = await AMDialog.show(
       context: context,
       builder: (_) {
-        return ConfirmDeleteKeyWidget(s.confirm_delete_pgp_key(widget._pgpKey.email));
+        return ConfirmDeleteKeyWidget(
+            s.confirm_delete_pgp_key(widget._pgpKey.email));
       },
     );
     if (result == true) {

@@ -37,43 +37,45 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
           : AMAppBar(
               title: Text(s.all_public_keys),
             ),
-      body: Flex(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        direction: Axis.vertical,
-        children: <Widget>[
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(8.0),
-              children: <Widget>[
-                if (isTablet)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          s.all_public_keys,
-                          style: Theme.of(context).textTheme.title,
+      body: SafeArea(
+        child: Flex(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          direction: Axis.vertical,
+          children: <Widget>[
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(8.0),
+                children: <Widget>[
+                  if (isTablet)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            s.all_public_keys,
+                            style: Theme.of(context).textTheme.title,
+                          ),
                         ),
                       ),
                     ),
+                  SizedBox(
+                    height: 20,
                   ),
-                SizedBox(
-                  height: 20,
-                ),
-                SelectableText(
-                  keysText,
-                ),
-              ],
+                  SelectableText(
+                    keysText,
+                  ),
+                ],
+              ),
             ),
-          ),
-          button(context, keysText),
-        ],
+            buttons(context, keysText),
+          ],
+        ),
       ),
     );
   }
 
-  Widget button(BuildContext context, String keysText) {
+  Widget buttons(BuildContext context, String keysText) {
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet
         ? SizedBox.shrink()
@@ -96,7 +98,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
       ]
     ];
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: isTablet
           ? Wrap(
               spacing: 10,

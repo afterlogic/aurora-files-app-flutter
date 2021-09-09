@@ -90,7 +90,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
       final showHost = await _authState.onLogin(
         isFormValid: _authFormKey.currentState.validate(),
         onTwoFactorAuth: (request) {
-          if (request.hasSecurityKey == true) {
+          if (request.hasSecurityKey == true && BuildProperty.useYubiKit) {
             Navigator.pushNamed(
               context,
               FidoAuthRoute.name,

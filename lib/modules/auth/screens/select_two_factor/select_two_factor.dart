@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/backup_code_auth/backup_code_auth_route.dart';
@@ -60,7 +61,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
           style: TextStyle(color: AppTheme.loginTextColor),
         ),
         SizedBox(height: 20),
-        if (widget.args.state.hasSecurityKey) ...[
+        if (widget.args.state.hasSecurityKey && BuildProperty.useYubiKit) ...[
           SizedBox(
             width: double.infinity,
             child: AMButton(

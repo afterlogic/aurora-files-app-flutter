@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:aurorafiles/build_property.dart';
-import 'package:device_id/device_id.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 
 class DeviceIdStorage {
@@ -22,18 +21,14 @@ class DeviceIdStorage {
   }
 
   static Future<String> getDeviceId() async {
-    try {
-      return (kDebugMode ? "DEBUG" : "") + await DeviceId.getID;
-    } catch (_) {
-      try {
-        return await DeviceId.getIMEI;
-      } catch (_) {
-        try {
-          return await DeviceId.getMEID;
-        } catch (_) {
-          return null;
-        }
-      }
+    if (Platform.isIOS) {
+      final iosInfo = await _deviceInfo.iosInfo;
+      return (kDebugMode ? "DEBUG" : "") + iosInfo.identifierForVendor;
+    } else if (Platform.isAndroid) {
+      final androidInfo = await _deviceInfo.androidInfo;
+      return (kDebugMode ? "DEBUG" : "") + androidInfo.androidId;
+    } else {
+      return null;
     }
   }
 }

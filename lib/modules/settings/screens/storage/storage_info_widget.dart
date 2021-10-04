@@ -70,15 +70,15 @@ class StorageInfoWidget extends StatelessWidget {
                               quota.usedFormatted, quota.limitFormatted),
                           style: theme.textTheme.subhead),
                       SizedBox(height: 46.0),
-                      if (BuildProperty.canUpgradePlan)
-                        SizedBox(
-                          width: double.infinity,
-                          child: AMButton(
-                            child: Text(s.upgrade_now),
-                            onPressed: () => launch(
-                                "https://privatemail.com/members/supporttickets.php"),
-                          ),
-                        )
+                      // if (BuildProperty.canUpgradePlan)
+                      //   SizedBox(
+                      //     width: double.infinity,
+                      //     child: AMButton(
+                      //       child: Text(s.upgrade_now),
+                      //       onPressed: () => launch(
+                      //           "https://privatemail.com/members/supporttickets.php"),
+                      //     ),
+                      //   )
                     ],
                   );
                 },

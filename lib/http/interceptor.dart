@@ -18,8 +18,8 @@ class WebMailApi {
     });
     final rawResponse = await http.post(url, body: body, headers: _headers);
     final res = json.decode(rawResponse.body);
-
-    if (res["ErrorCode"] == 108) {
+    // invalidEmailPassword || accessDenied
+    if (res["ErrorCode"] == 102 || res["ErrorCode"] == 108) {
       try {
         onLogout?.call();
       } catch (e) {

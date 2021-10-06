@@ -1,19 +1,16 @@
 import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/example_widget/example_widget.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
-import 'package:aurorafiles/modules/settings/screens/encryption/encryption_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption_server_setting/encryption_server_route.dart';
 import 'package:aurorafiles/modules/settings/screens/logger/logger_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -180,26 +177,14 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
     final result = await AMOptionalDialog.show(
       context: context,
       title: s.confirm_exit,
-      // description: '',
       options: {clearCacheText: true},
       actionText: s.exit,
       cancelText: s.cancel,
     );
     if (result is OptionalResult && result.generalResult == true) {
-      print('!!! Exit invoked, clearCacheText = ${result.options[clearCacheText]}');
-      authState.onLogout();
+      final clearCache = result.options[clearCacheText];
+      authState.onLogout(clearCache);
       Navigator.pushReplacementNamed(context, AuthRoute.name);
     }
   }
-
-
-// if (result is OptionalResult && result.generalResult == true) {
-//   final authBloc = BlocProvider.of<AuthBloc>(context);
-//   if (result.options[clearCacheText] == true) {
-//     authBloc.add(DeleteUser(authBloc.currentUser));
-//   } else {
-//     authBloc.add(InvalidateCurrentUserToken());
-//   }
-// }
-
 }

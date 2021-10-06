@@ -144,9 +144,12 @@ abstract class _AuthState with Store {
       hostName = host;
       try {
         final Map<String, dynamic> res = await _authApi.login(email, password);
-
         final String token = res['Result']['AuthToken'];
         final int id = res['AuthenticatedUserId'];
+        final oldUserId = await _authLocal.getUserIdFromStorage();
+        if (oldUserId != id) {
+          _clearPgpKeys();
+        }
         await _setAuthSharedPrefs(
             host: host, token: token, email: email, id: id);
         await successLogin();
@@ -168,21 +171,24 @@ abstract class _AuthState with Store {
     return false;
   }
 
-  void onLogout({bool clearCache = false}) {
+  void onLogout([bool clearCache = false]) {
     try {
       AppStore.filesState.currentStorages = [];
     } catch (e) {}
     _authApi.logout();
     _authLocal.deleteTokenFromStorage();
-    _authLocal.deleteUserIdFromStorage();
-
     if (clearCache) {
-      PgpKeyDao pgpKeyDao = DI.instance.get();
-      pgpKeyDao.clear();
+      _authLocal.deleteUserIdFromStorage();
+      _clearPgpKeys();
     }
     authToken = null;
     userId = null;
     EncryptionLocalStorage.instance.setStorePasswordStorage(false);
+  }
+
+  void _clearPgpKeys() {
+    PgpKeyDao pgpKeyDao = DI.instance.get();
+    pgpKeyDao.clear();
   }
 
   Future<bool> twoFactorAuth(String pin) async {

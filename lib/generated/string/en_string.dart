@@ -250,7 +250,7 @@ class EnString extends S {
   final String upload_file = "Upload file";
   String upload_files(String count) => "Upload $count files";
   final String login_to_continue = "Log in to continue";
-  final String confirm_exit = "Are you sure want to exit";
+  final String confirm_exit = "Are you sure want to exit?";
   final String exit = "Exit";
   final String error_required_pgp_key = "Required PGP key";
   final String label_required_pgp_key = "Required PGP key";
@@ -335,4 +335,5 @@ class EnString extends S {
       "Are you sure you want to delete all logs";
   final String logger_hint_delete_log =
       "Are you sure you want to delete the file";
+  final String clear_cache_during_logout = "Delete cached data and keys";
 }

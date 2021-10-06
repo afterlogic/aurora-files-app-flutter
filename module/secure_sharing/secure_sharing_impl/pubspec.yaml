@@ -20,7 +20,8 @@ dependencies:
   secure_sharing:
     path: ../secure_sharing
   aurora_ui_kit:
-    git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
+#    git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
+    path: ../../../../aurora_ui_kit_flutter
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -203,7 +203,7 @@
   "upload_file": "Upload file",
   "upload_files": "Upload $count files",
   "login_to_continue": "Log in to continue",
-  "confirm_exit": "Are you sure want to exit",
+  "confirm_exit": "Are you sure want to exit?",
   "exit": "Exit",
   "error_required_pgp_key": "Required PGP key",
   "label_required_pgp_key": "Required PGP key",
@@ -267,5 +267,6 @@
   "logger_label_show_debug_view": "Show debug view",
   "logger_btn_delete_all": "Delete all",
   "logger_hint_delete_all_logs": "Are you sure you want to delete all logs",
-  "logger_hint_delete_log": "Are you sure you want to delete the file"
+  "logger_hint_delete_log": "Are you sure you want to delete the file",
+  "clear_cache_during_logout": "Delete cached data and keys"
 }

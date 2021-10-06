@@ -168,16 +168,18 @@ abstract class _AuthState with Store {
     return false;
   }
 
-  void onLogout() {
+  void onLogout({bool clearCache = false}) {
     try {
-      AppStore.filesState.currentStorages = new List();
+      AppStore.filesState.currentStorages = [];
     } catch (e) {}
     _authApi.logout();
     _authLocal.deleteTokenFromStorage();
     _authLocal.deleteUserIdFromStorage();
 
-    PgpKeyDao pgpKeyDao = DI.instance.get();
-    pgpKeyDao.clear();
+    if (clearCache) {
+      PgpKeyDao pgpKeyDao = DI.instance.get();
+      pgpKeyDao.clear();
+    }
     authToken = null;
     userId = null;
     EncryptionLocalStorage.instance.setStorePasswordStorage(false);

@@ -41,8 +41,8 @@ class _AppState extends State<App> {
     super.dispose();
   }
 
-  onLogout() {
-    _authState.onLogout();
+  onLogout({bool clearCache}) {
+    _authState.onLogout(clearCache: clearCache);
     navigatorKey.currentState.pushReplacementNamed(AuthRoute.name);
   }
 

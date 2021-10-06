@@ -50,7 +50,6 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
         ? (navigatorKey?.currentState?.current?.name ??
         CommonSettingsRoute.name)
         : null;
-    final authState = AppStore.authState;
     final s = Str.of(context);
     Widget body = ListView(
       children: <Widget>[
@@ -102,19 +101,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           selected: current == AuthRoute.name,
           leading: AMCircleIcon(Icons.exit_to_app),
           title: Text(s.log_out),
-          onTap: () async {
-            final result = await AMConfirmationDialog.show(
-              context,
-              null,
-              s.confirm_exit,
-              s.exit,
-              s.cancel,
-            );
-            if (result == true) {
-              authState.onLogout();
-              Navigator.pushReplacementNamed(context, AuthRoute.name);
-            }
-          },
+          onTap: _exit,
         ),
       ],
     );
@@ -184,4 +171,35 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
       return SettingsNavigatorMock(Navigator.of(context));
     }
   }
+
+  _exit() async {
+    final s = Str.of(context);
+    final authState = AppStore.authState;
+    final clearCacheText = s.clear_cache_during_logout;
+
+    final result = await AMOptionalDialog.show(
+      context: context,
+      title: s.confirm_exit,
+      // description: '',
+      options: {clearCacheText: true},
+      actionText: s.exit,
+      cancelText: s.cancel,
+    );
+    if (result is OptionalResult && result.generalResult == true) {
+      print('!!! Exit invoked, clearCacheText = ${result.options[clearCacheText]}');
+      authState.onLogout();
+      Navigator.pushReplacementNamed(context, AuthRoute.name);
+    }
+  }
+
+
+// if (result is OptionalResult && result.generalResult == true) {
+//   final authBloc = BlocProvider.of<AuthBloc>(context);
+//   if (result.options[clearCacheText] == true) {
+//     authBloc.add(DeleteUser(authBloc.currentUser));
+//   } else {
+//     authBloc.add(InvalidateCurrentUserToken());
+//   }
+// }
+
 }

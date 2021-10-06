@@ -275,4 +275,5 @@ abstract class S {
   String get logger_btn_delete_all;
   String get logger_hint_delete_all_logs;
   String get logger_hint_delete_log;
+  String get clear_cache_during_logout;
 }

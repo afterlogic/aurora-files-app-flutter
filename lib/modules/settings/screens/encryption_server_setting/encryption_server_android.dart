@@ -32,10 +32,11 @@ class _EncryptionServerState extends State<EncryptionServer> {
   void initState() {
     super.initState();
     _settingsState.getEncryptionSetting().then((value) {
-      encryptionSetting = value;
-      encryptionEnable = value.enable;
-      encryptionInPersonalStorage = value.enableInPersonalStorage;
-      setState(() {});
+      setState(() {
+        encryptionSetting = value;
+        encryptionEnable = value.enable;
+        encryptionInPersonalStorage = value.enableInPersonalStorage;
+      });
     });
   }
 
@@ -66,7 +67,6 @@ class _EncryptionServerState extends State<EncryptionServer> {
                       });
                     },
                   ),
-                  SizedBox(height: 20),
                   CheckboxListTile(
                     value: encryptionInPersonalStorage,
                     title: Text(s.btn_encryption_personal_storage),
@@ -76,7 +76,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
                       });
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 48),
                   AMButton(
                     isLoading: progress,
                     child: Text(s.btn_encryption_save),
@@ -101,18 +101,22 @@ class _EncryptionServerState extends State<EncryptionServer> {
   }
 
   save() async {
-    progress = true;
-    setState(() {});
-    AppStore.settingsState
-        .setEncryptionSetting(EncryptionSetting(
-      encryptionEnable,
-      encryptionInPersonalStorage,
-    ))
+    setState(() {
+      progress = true;
+    });
+    _settingsState
+        .setEncryptionSetting(
+      EncryptionSetting(
+        encryptionEnable,
+        encryptionInPersonalStorage,
+      ),
+    )
         .then((_) {
       Navigator.pop(context);
     }).catchError((e) {
-      progress = false;
-      setState(() {});
+      setState(() {
+        progress = false;
+      });
       showSnack(
           context: context,
           scaffoldState: scaffoldKey.currentState,

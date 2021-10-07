@@ -14,7 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsLocalStorage {
   final secureStorage = new FlutterSecureStorage();
 
-  String _getNameWithOwner([String keyName = ""]) => "${AppStore.authState.userEmail}_$keyName";
+  String _getNameWithOwner([String keyName = ""]) =>
+      "${AppStore.authState.userEmail}_$keyName";
 
   Key generateKey() => Key.fromSecureRandom(32);
 
@@ -25,12 +26,14 @@ class SettingsLocalStorage {
     await getStoragePermissions();
     Directory dir = await getDownloadDirectory();
     if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
-    if (!dir.existsSync()) throw CustomException("Could not resolve save directory");
+    if (!dir.existsSync())
+      throw CustomException("Could not resolve save directory");
 
     final formattedKeyName = keyName.replaceAll("/", "").replaceAll(" ", "_");
 
-    final String filePath =
-        dir.path + (dir.path.endsWith("/") ? "" : "/") + "$formattedKeyName key.txt";
+    final String filePath = dir.path +
+        (dir.path.endsWith("/") ? "" : "/") +
+        "$formattedKeyName key.txt";
 
     final exportedTextFile = new File(filePath);
     await exportedTextFile.create(recursive: true);
@@ -83,10 +86,9 @@ class SettingsLocalStorage {
     return secureStorage.delete(key: nameWithOwner);
   }
 
-  // Dark Theme
   Future<bool> getDarkThemeFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("isDarkThemeEnabled");
+    return prefs.getBool("isDarkThemeEnabled") ?? false;
   }
 
   Future<bool> setDarkThemeToStorage(bool value) async {
@@ -94,9 +96,9 @@ class SettingsLocalStorage {
     return prefs.setBool("isDarkThemeEnabled", value);
   }
 
-  Future<bool> deleteDarkThemeFromStorage() async {
+  Future<bool> getEncryptEnable() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove("isDarkThemeEnabled");
+    return prefs.getBool("EncryptEnable") ?? false;
   }
 
   Future<void> setEncryptEnable(bool value) async {
@@ -104,18 +106,13 @@ class SettingsLocalStorage {
     return prefs.setBool("EncryptEnable", value);
   }
 
-  Future<bool> getEncryptEnable() async {
+  Future<bool> getEncryptInPersonalStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove("EncryptEnable");
+    return prefs.getBool("EncryptPersonalStorage") ?? false;
   }
 
   Future<void> setEncryptInPersonalStorage(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setBool("EncryptPersonalStorage", value);
-  }
-
-  Future<bool> getEncryptInPersonalStorage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove("EncryptPersonalStorage");
   }
 }

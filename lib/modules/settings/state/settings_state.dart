@@ -62,7 +62,7 @@ abstract class _SettingsState with Store {
       _settingsLocal.getDarkThemeFromStorage(),
       connectivity.checkConnectivity(),
     ]);
-    if (result[0] != null) isDarkTheme = result[0];
+    isDarkTheme = result[0];
     internetConnection = result[1];
     return true;
   }

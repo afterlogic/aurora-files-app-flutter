@@ -197,25 +197,15 @@ class _FilesAndroidState extends State<FilesAndroid>
         final encryptionSettings = await _settingsState.getEncryptionSetting();
         bool shouldEncrypt = false;
         if (encryptionSettings.enable) {
-          // switch (encryptionSettings.uploadEncryptMode) {
-          //   case UploadEncryptMode.Always:
-          //     shouldEncrypt = true;
-          //     break;
-          //   case UploadEncryptMode.Ask:
-          //     shouldEncrypt = await AMDialog.show<bool>(
-          //         builder: (_) => EncryptAskDialog(
-          //             file.path.split(Platform.pathSeparator).last),
-          //         context: context);
-          //     break;
-          //   case UploadEncryptMode.Never:
-          //     shouldEncrypt = false;
-          //     break;
-          //   case UploadEncryptMode.InEncryptedFolder:
-          //     shouldEncrypt = _filesState.selectedStorage.type == "encrypted";
-          //     break;
-          // }
+          shouldEncrypt = _filesState.selectedStorage.type == "encrypted";
         }
-
+        if (encryptionSettings.enableInPersonalStorage &&
+            _filesState.selectedStorage.type == "personal") {
+          shouldEncrypt = await AMDialog.show<bool>(
+              builder: (_) => EncryptAskDialog(
+                  file.path.split(Platform.pathSeparator).last),
+              context: context);
+        }
         if (shouldEncrypt == true &&
             !(await PgpKeyUtil.instance.hasUserKey())) {
           showSnack(
@@ -225,7 +215,7 @@ class _FilesAndroidState extends State<FilesAndroid>
           );
           return null;
         }
-        return shouldEncrypt ?? false;
+        return shouldEncrypt;
       },
       path: widget.path,
       onUploadStart: _addUploadingFileToFiles,

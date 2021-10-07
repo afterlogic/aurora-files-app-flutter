@@ -61,6 +61,9 @@ class _FilesAndroidState extends State<FilesAndroid>
   @override
   void initState() {
     super.initState();
+
+    print('!!! FilesAndroid, initState()');
+
     _filesState.folderNavStack.add(widget.path);
     _settingsState = AppStore.settingsState;
     _initFiles();
@@ -194,23 +197,23 @@ class _FilesAndroidState extends State<FilesAndroid>
         final encryptionSettings = await _settingsState.getEncryptionSetting();
         bool shouldEncrypt = false;
         if (encryptionSettings.enable) {
-          switch (encryptionSettings.uploadEncryptMode) {
-            case UploadEncryptMode.Always:
-              shouldEncrypt = true;
-              break;
-            case UploadEncryptMode.Ask:
-              shouldEncrypt = await AMDialog.show<bool>(
-                  builder: (_) => EncryptAskDialog(
-                      file.path.split(Platform.pathSeparator).last),
-                  context: context);
-              break;
-            case UploadEncryptMode.Never:
-              shouldEncrypt = false;
-              break;
-            case UploadEncryptMode.InEncryptedFolder:
-              shouldEncrypt = _filesState.selectedStorage.type == "encrypted";
-              break;
-          }
+          // switch (encryptionSettings.uploadEncryptMode) {
+          //   case UploadEncryptMode.Always:
+          //     shouldEncrypt = true;
+          //     break;
+          //   case UploadEncryptMode.Ask:
+          //     shouldEncrypt = await AMDialog.show<bool>(
+          //         builder: (_) => EncryptAskDialog(
+          //             file.path.split(Platform.pathSeparator).last),
+          //         context: context);
+          //     break;
+          //   case UploadEncryptMode.Never:
+          //     shouldEncrypt = false;
+          //     break;
+          //   case UploadEncryptMode.InEncryptedFolder:
+          //     shouldEncrypt = _filesState.selectedStorage.type == "encrypted";
+          //     break;
+          // }
         }
 
         if (shouldEncrypt == true &&

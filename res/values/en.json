@@ -268,5 +268,6 @@
   "logger_btn_delete_all": "Delete all",
   "logger_hint_delete_all_logs": "Are you sure you want to delete all logs",
   "logger_hint_delete_log": "Are you sure you want to delete the file",
-  "clear_cache_during_logout": "Delete cached data and keys"
+  "clear_cache_during_logout": "Delete cached data and keys",
+  "btn_encryption_personal_storage": "Allow encrypt files in Personal Storage"
 }

@@ -336,4 +336,6 @@ class EnString extends S {
   final String logger_hint_delete_log =
       "Are you sure you want to delete the file";
   final String clear_cache_during_logout = "Delete cached data and keys";
+  final String btn_encryption_personal_storage =
+      "Allow encrypt files in Personal Storage";
 }

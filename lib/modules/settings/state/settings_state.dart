@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -149,19 +148,19 @@ abstract class _SettingsState with Store {
   Future updateSettings() async {
     final setting = await settingApi.getEncryptSetting();
     await _settingsLocal.setEncryptEnable(setting.enable);
-    await _settingsLocal.setUploadEncryptMode(setting.uploadEncryptMode.index);
+    await _settingsLocal.setEncryptInPersonalStorage(setting.enableInPersonalStorage);
   }
 
   Future<EncryptionSetting> getEncryptionSetting() async {
     return EncryptionSetting(
-      UploadEncryptMode.values[(await _settingsLocal.getUploadEncryptMode()) ?? 0],
       await _settingsLocal.getEncryptEnable(),
+      await _settingsLocal.getEncryptInPersonalStorage(),
     );
   }
 
   Future setEncryptionSetting(EncryptionSetting setting) async {
     await settingApi.setEncryptSetting(setting);
-    await _settingsLocal.setUploadEncryptMode(setting.uploadEncryptMode.index);
     await _settingsLocal.setEncryptEnable(setting.enable);
+    await _settingsLocal.setEncryptInPersonalStorage(setting.enableInPersonalStorage);
   }
 }

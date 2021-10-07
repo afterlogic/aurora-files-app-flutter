@@ -1,5 +1,4 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
@@ -12,7 +11,6 @@ import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class EncryptionServer extends StatefulWidget {
@@ -25,20 +23,20 @@ class _EncryptionServerState extends State<EncryptionServer> {
   bool showBackwardCompatibility = false;
   S s;
   bool progress = false;
-  UploadEncryptMode uploadEncryptMode;
-  bool enable;
+  bool encryptionEnable;
+  bool encryptionInPersonalStorage;
   EncryptionSetting encryptionSetting;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
+    super.initState();
     _settingsState.getEncryptionSetting().then((value) {
       encryptionSetting = value;
-      uploadEncryptMode = value.uploadEncryptMode;
-      enable = value.enable;
+      encryptionEnable = value.enable;
+      encryptionInPersonalStorage = value.enableInPersonalStorage;
       setState(() {});
     });
-    super.initState();
   }
 
   @override
@@ -60,45 +58,36 @@ class _EncryptionServerState extends State<EncryptionServer> {
                     style: Theme.of(context).textTheme.caption,
                   ),
                   CheckboxListTile(
-                    value: enable,
+                    value: encryptionEnable,
                     title: Text(s.btn_encryption_enable),
                     onChanged: (bool value) {
-                      enable = value;
-                      setState(() {});
+                      setState(() {
+                        encryptionEnable = value;
+                      });
                     },
                   ),
-                  DropdownButtonFormField(
-                    decoration: InputDecoration(
-                      labelText: s.label_encryption_mode,
-                      alignLabelWithHint: true,
-                    ),
-                    value: uploadEncryptMode,
-                    items: UploadEncryptMode.values.map((value) {
-                      return DropdownMenuItem<UploadEncryptMode>(
-                        value: value,
-                        child: Text(map(value)),
-                      );
-                    }).toList(),
-                    onChanged: (v) {
-                      uploadEncryptMode = v;
-                      setState(() {});
+                  SizedBox(height: 20),
+                  CheckboxListTile(
+                    value: encryptionInPersonalStorage,
+                    title: Text(s.btn_encryption_personal_storage),
+                    onChanged: (bool value) {
+                      setState(() {
+                        encryptionInPersonalStorage = value;
+                      });
                     },
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 20),
                   AMButton(
                     isLoading: progress,
                     child: Text(s.btn_encryption_save),
                     onPressed: progress ? null : save,
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 20),
                   if (!showBackwardCompatibility)
                     AMButton(
                       child: Text(s.btn_enable_backward_compatibility),
-                      onPressed: () => setState(() => showBackwardCompatibility = true),
+                      onPressed: () =>
+                          setState(() => showBackwardCompatibility = true),
                     ),
                   if (showBackwardCompatibility) ...[
                     Text(s.hint_backward_compatibility_aes_key),
@@ -116,30 +105,19 @@ class _EncryptionServerState extends State<EncryptionServer> {
     setState(() {});
     AppStore.settingsState
         .setEncryptionSetting(EncryptionSetting(
-      uploadEncryptMode,
-      enable,
+      encryptionEnable,
+      encryptionInPersonalStorage,
     ))
         .then((_) {
       Navigator.pop(context);
     }).catchError((e) {
       progress = false;
       setState(() {});
-      showSnack(context: context, scaffoldState: scaffoldKey.currentState, msg: e.toString());
+      showSnack(
+          context: context,
+          scaffoldState: scaffoldKey.currentState,
+          msg: e.toString());
     });
-  }
-
-  String map(UploadEncryptMode mode) {
-    switch (mode) {
-      case UploadEncryptMode.Always:
-        return s.label_encryption_always;
-      case UploadEncryptMode.Ask:
-        return s.label_encryption_ask;
-      case UploadEncryptMode.Never:
-        return s.label_encryption_never;
-      case UploadEncryptMode.InEncryptedFolder:
-        return s.label_encryption_always_in_encryption_folder;
-    }
-    return "";
   }
 
   void _shareKey() async {
@@ -177,7 +155,8 @@ class _EncryptionServerState extends State<EncryptionServer> {
 
   List<Widget> _buildAddingKey() {
     final spacer = const SizedBox(height: 10.0);
-    if (_settingsState.isParanoidEncryptionEnabled && _settingsState.selectedKeyName == null) {
+    if (_settingsState.isParanoidEncryptionEnabled &&
+        _settingsState.selectedKeyName == null) {
       return [
         Text(s.encryption_keys),
         SizedBox(height: 32.0),
@@ -238,7 +217,8 @@ class _EncryptionServerState extends State<EncryptionServer> {
         SizedBox(height: 32.0),
         AMButton(child: Text(s.share_key), onPressed: _shareKey),
         if (!PlatformOverride.isIOS) spacer,
-        if (!PlatformOverride.isIOS) AMButton(child: Text(s.download_key), onPressed: _downloadKey),
+        if (!PlatformOverride.isIOS)
+          AMButton(child: Text(s.download_key), onPressed: _downloadKey),
         spacer,
         AMButton(
           color: theme.errorColor,

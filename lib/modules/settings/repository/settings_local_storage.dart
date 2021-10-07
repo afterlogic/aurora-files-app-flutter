@@ -9,7 +9,6 @@ import 'package:encrypt/encrypt.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsLocalStorage {
@@ -100,17 +99,7 @@ class SettingsLocalStorage {
     return prefs.remove("isDarkThemeEnabled");
   }
 
-  Future<int> getUploadEncryptMode() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt("UploadEncryptMode");
-  }
-
-  Future setUploadEncryptMode(int value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setInt("UploadEncryptMode", value);
-  }
-
-  Future<bool> setEncryptEnable(bool value) async {
+  Future<void> setEncryptEnable(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setBool("EncryptEnable", value);
   }
@@ -118,5 +107,15 @@ class SettingsLocalStorage {
   Future<bool> getEncryptEnable() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.remove("EncryptEnable");
+  }
+
+  Future<void> setEncryptInPersonalStorage(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool("EncryptPersonalStorage", value);
+  }
+
+  Future<bool> getEncryptInPersonalStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove("EncryptPersonalStorage");
   }
 }

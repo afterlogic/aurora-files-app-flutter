@@ -15,13 +15,9 @@ class SettingApi {
     final resBody = await sendRequest(body);
 
     if (resBody['Result'] != null) {
-      final encryptionMode = resBody['Result']["EncryptionMode"] as int;
       return EncryptionSetting(
-        encryptionMode == null ||
-                encryptionMode >= UploadEncryptMode.values.length
-            ? UploadEncryptMode.Never
-            : UploadEncryptMode.values[encryptionMode],
         resBody['Result']["EnableModule"] ?? false,
+        resBody['Result']["EnableInPersonalStorage"] ?? false,
       );
     } else {
       throw CustomException(getErrMsg(resBody));
@@ -31,7 +27,7 @@ class SettingApi {
   Future setEncryptSetting(EncryptionSetting encryptionSetting) async {
     final parameters = json.encode({
       "EnableModule": encryptionSetting.enable,
-      "EncryptionMode": encryptionSetting.uploadEncryptMode.index,
+      "EnableInPersonalStorage": encryptionSetting.enableInPersonalStorage,
     });
     final body = ApiBody(
       module: "CoreParanoidEncryptionWebclientPlugin",
@@ -49,16 +45,9 @@ class SettingApi {
   }
 }
 
-enum UploadEncryptMode {
-  Always,
-  Ask,
-  Never,
-  InEncryptedFolder,
-}
-
 class EncryptionSetting {
-  final UploadEncryptMode uploadEncryptMode;
   final bool enable;
+  final bool enableInPersonalStorage;
 
-  EncryptionSetting(this.uploadEncryptMode, this.enable);
+  EncryptionSetting(this.enable, this.enableInPersonalStorage);
 }

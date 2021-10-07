@@ -190,7 +190,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         },
       );
       widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;
-      Navigator.pop(context);
+      Navigator.pop(context, _file);
     }
   }
 
@@ -236,7 +236,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           onSuccess: () async {
             _fileViewerState.processingFile = null;
             await widget.filesPageState.onGetFiles();
-            Navigator.pop(context);
+            Navigator.pop(context, _file);
           },
           onError: (err) => _fileViewerState.processingFile = null);
     } else {

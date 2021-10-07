@@ -1,7 +1,6 @@
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/encryption_local_storage.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
-import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
 import 'package:flutter/material.dart';
 
 class KeyRequestDialog extends StatefulWidget {
@@ -28,9 +27,6 @@ class KeyRequestDialog extends StatefulWidget {
       if (await EncryptionLocalStorage.instance.getStorePasswordStorage()) {
         EncryptionLocalStorage.memoryPassword = password;
       }
-    }
-    if (password == null) {
-      throw "";
     }
     return password;
   }
@@ -77,6 +73,7 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
               obscureText: obscure,
               decoration: InputDecoration(
                 labelText: s.password,
+                helperText: '',
                 suffixIcon: Padding(
                   padding: EdgeInsets.only(top: 11),
                   child: IconButton(

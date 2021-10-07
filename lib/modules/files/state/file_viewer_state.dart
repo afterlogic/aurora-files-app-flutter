@@ -74,7 +74,7 @@ abstract class _FileViewerState with Store {
       if (password == null) {
         password = await KeyRequestDialog.request(context);
         if (password == null) {
-          throw "";
+          throw "Password is null";
         }
       }
     }

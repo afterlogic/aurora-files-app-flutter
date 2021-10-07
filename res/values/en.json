@@ -207,7 +207,7 @@
   "exit": "Exit",
   "error_required_pgp_key": "Required PGP key",
   "label_required_pgp_key": "Required PGP key",
-  "hint_upload_encrypt_ask": "Encrypt '$name'?.",
+  "hint_upload_encrypt_ask": "Encrypt '$name'?",
   "btn_do_not_encrypt": "Do not encrypt",
   "label_encryption_always_in_encryption_folder": "Always in Encrypted folder",
   "label_encryption_always": "Always",

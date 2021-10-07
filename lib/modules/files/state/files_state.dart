@@ -274,7 +274,7 @@ abstract class _FilesState with Store {
     }
     final password = await KeyRequestDialog.request(context);
     if (password == null) {
-      throw "";
+      throw "Password is null";
     }
     final key = (await PgpKeyUtil.instance
         .userDecrypt(file.encryptedDecryptionKey, password));
@@ -285,7 +285,7 @@ abstract class _FilesState with Store {
       BuildContext context, LocalFile file, List<String> contactKey) async {
     final password = await KeyRequestDialog.request(context);
     if (password == null) {
-      throw "";
+      throw "Password is null";
     }
     final key = (await PgpKeyUtil.instance
         .userDecrypt(file.encryptedDecryptionKey, password));
@@ -425,13 +425,16 @@ abstract class _FilesState with Store {
     bool passwordEncryption,
     List<LocalPgpKey> addedPgpKey,
   }) async {
-    final privateKey = await PgpKeyUtil.instance.userPrivateKey();
     String password;
-    if (privateKey != null) {
-      try {
-        password = await KeyRequestDialog.request(context, forSign: true);
-      } catch (e) {
-        print(e);
+    if (shouldEncrypt) {
+      final privateKey = await PgpKeyUtil.instance.userPrivateKey();
+      if (privateKey != null) {
+        try {
+          password = await KeyRequestDialog.request(context, forSign: true);
+          if (password == null) return;
+        } catch (e) {
+          print(e);
+        }
       }
     }
     final fileName = name ?? FileUtils.getFileNameFromPath(file.path);
@@ -521,9 +524,7 @@ abstract class _FilesState with Store {
       String password;
       if (file.encryptedDecryptionKey != null) {
         password = await KeyRequestDialog.request(context);
-        if (password == null) {
-          return;
-        }
+        if (password == null) return;
       }
       if (isOfflineMode) {
         try {
@@ -608,9 +609,7 @@ abstract class _FilesState with Store {
       String password;
       if (file.encryptedDecryptionKey != null) {
         password = await KeyRequestDialog.request(context);
-        if (password == null) {
-          return;
-        }
+        if (password == null) return;
       }
       if (_isFileIsBeingProcessed(file.guid)) {
         onError("This file is occupied with another operation.");

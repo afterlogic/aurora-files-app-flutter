@@ -98,7 +98,8 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
       ]
     ];
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding:
+          EdgeInsets.symmetric(horizontal: 16.0, vertical: isTablet ? 8 : 0),
       child: isTablet
           ? Wrap(
               spacing: 10,

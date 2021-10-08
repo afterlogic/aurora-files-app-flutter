@@ -59,8 +59,8 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
             final publicKeys =
                 state.public.map((item) => KeyWidget(item, openKey)).toList();
-            final userKeys =
-                state.user?.map((item) => KeyWidget(item, openKey))?.toList();
+            final externalKeys =
+                state.external?.map((item) => KeyWidget(item, openKey))?.toList();
             final privateKeys =
                 state.private.map((item) => KeyWidget(item, openKey)).toList();
 
@@ -98,7 +98,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                           ),
                         if (privateKeys.isNotEmpty)
                           Column(children: privateKeys),
-                        if (userKeys?.isEmpty != true)
+                        if (externalKeys?.isEmpty != true)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10, top: 25),
                             child: Text(
@@ -106,9 +106,9 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                               style: theme.textTheme.subhead,
                             ),
                           ),
-                        if (userKeys?.isNotEmpty == true)
-                          Column(children: userKeys),
-                        if (userKeys == null)
+                        if (externalKeys?.isNotEmpty == true)
+                          Column(children: externalKeys),
+                        if (externalKeys == null)
                           Padding(
                             padding: EdgeInsets.all(16),
                             child: Center(
@@ -118,7 +118,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                       ],
                     ),
                   ),
-                  buttons(context, state, publicKeys),
+                  buttons(context, state, externalKeys),
                 ],
               ),
             );
@@ -128,7 +128,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   Widget buttons(
-      BuildContext context, KeysState state, List<KeyWidget> publicKeys) {
+      BuildContext context, KeysState state, List<KeyWidget> externalKeys) {
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet
         ? SizedBox.shrink()
@@ -137,14 +137,14 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
             width: 10,
           );
     final children = <Widget>[
-      if (publicKeys.isNotEmpty)
+      if (externalKeys?.isNotEmpty == true)
         AMButton(
           child: Text(s.export_all_public_keys),
           onPressed: () {
-            exportAll(state.public);
+            exportAll(state.external);
           },
         ),
-      if (publicKeys.isNotEmpty) space,
+      if (externalKeys?.isNotEmpty == true) space,
       AMButton(
         child: Text(s.import_keys_from_text),
         onPressed: importKeyDialog,

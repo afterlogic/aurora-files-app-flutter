@@ -70,7 +70,6 @@ class PgpSettingPresenter {
 
   getKeysFromText(String text) async {
     final result = await pgpKeyUtil.validateText(text);
-
     if (result.isNotEmpty) {
       _view.showImportDialog(await _sortKeys(result));
     } else {
@@ -93,6 +92,7 @@ class PgpSettingPresenter {
     userEmail.add(AppStore.authState.userEmail);
     final userKeys = <LocalPgpKey>[];
     final contactKeys = <LocalPgpKey>[];
+    final alienPrivateKeys = <LocalPgpKey>[];
 
     if (BuildProperty.legacyPgpKey) {
       userKeys.addAll(keys);
@@ -101,14 +101,19 @@ class PgpSettingPresenter {
         if (userEmail.contains(key.email)) {
           userKeys.add(key);
         } else {
-          if (!key.isPrivate) contactKeys.add(key);
+          if (!key.isPrivate) {
+            contactKeys.add(key);
+          } else {
+            alienPrivateKeys.add(key);
+          }
         }
       }
     }
     final existUserKeys = await _userKeyMarkIfNotExist(userKeys);
     final existContactKeys = await _contactKeyMarkIfNotExist(contactKeys);
+    final existAlienPrivateKeys = await _alienKeyMarkIfNotExist(alienPrivateKeys);
 
-    return PgpKeyMap(existUserKeys, existContactKeys);
+    return PgpKeyMap(existUserKeys, existContactKeys, existAlienPrivateKeys);
   }
 
   Future<Map<LocalPgpKey, bool>> _userKeyMarkIfNotExist(
@@ -122,6 +127,15 @@ class PgpSettingPresenter {
   }
 
   Future<Map<LocalPgpKey, bool>> _contactKeyMarkIfNotExist(
+      List<LocalPgpKey> keys) async {
+    final map = <LocalPgpKey, bool>{};
+    for (var key in keys) {
+      map[key] = true;
+    }
+    return map;
+  }
+
+  Future<Map<LocalPgpKey, bool>> _alienKeyMarkIfNotExist(
       List<LocalPgpKey> keys) async {
     final map = <LocalPgpKey, bool>{};
     for (var key in keys) {

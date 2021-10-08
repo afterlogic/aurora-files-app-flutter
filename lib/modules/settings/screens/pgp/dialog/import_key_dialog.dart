@@ -11,11 +11,13 @@ import 'package:flutter/material.dart';
 class ImportKeyDialog extends StatefulWidget {
   final Map<LocalPgpKey, bool> contactKeys;
   final Map<LocalPgpKey, bool> userKeys;
+  final Map<LocalPgpKey, bool> alienKeys;
   final PgpSettingPresenter presenter;
 
   const ImportKeyDialog(
     this.userKeys,
     this.contactKeys,
+    this.alienKeys,
     this.presenter,
   );
 
@@ -26,8 +28,10 @@ class ImportKeyDialog extends StatefulWidget {
 class _ImportKeyDialogState extends State<ImportKeyDialog> {
   final List<LocalPgpKey> userKeys = [];
   final List<LocalPgpKey> contactKeys = [];
+  final List<LocalPgpKey> alienKeys = [];
   bool keyAlreadyExist = false;
   bool isProgress = false;
+  bool isKeysToImport = false;
 
   @override
   void initState() {
@@ -40,11 +44,14 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
     });
     widget.contactKeys.forEach((key, value) {
       contactKeys.add(key);
-
       if (value == null) {
         keyAlreadyExist = true;
       }
     });
+    widget.alienKeys.forEach((key, value) {
+      alienKeys.add(key);
+    });
+    isKeysToImport = userKeys.isNotEmpty || contactKeys.isNotEmpty;
   }
 
   @override
@@ -55,6 +62,11 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
       content: SizedDialogContent(
         child: ListView(
           children: <Widget>[
+            if (!isKeysToImport)
+              Padding(
+                padding: EdgeInsets.only(top: 8, bottom: 32),
+                child: Text('The text contains no keys that can be imported.'),
+              ),
             if (keyAlreadyExist)
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8),
@@ -88,6 +100,18 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
                 }).toList(),
               ),
             ],
+            if (alienKeys.isNotEmpty) ...[
+              Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Text(
+                    'External private keys are not supported and will not be imported'),
+              ),
+              Column(
+                children: alienKeys.map((key) {
+                  return KeyItem(key, null, null);
+                }).toList(),
+              ),
+            ],
           ],
         ),
       ),
@@ -96,12 +120,13 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
           child: Text(s.cancel),
           onPressed: () => Navigator.pop(context),
         ),
-        FlatButton(
-          child: !isProgress
-              ? Text(s.btn_pgp_import_selected_key)
-              : CircularProgressIndicator(),
-          onPressed: !isProgress ? _import : null,
-        ),
+        if (isKeysToImport)
+          FlatButton(
+            child: !isProgress
+                ? Text(s.btn_pgp_import_selected_key)
+                : CircularProgressIndicator(),
+            onPressed: !isProgress ? _import : null,
+          ),
       ],
     );
   }
@@ -134,6 +159,7 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
     setState(() {});
   }
 }
+
 class CheckAnalog extends StatelessWidget {
   final bool isCheck;
   final Function(bool) onChange;
@@ -144,18 +170,18 @@ class CheckAnalog extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlatformOverride.isIOS
         ? GestureDetector(
-      onTap: () => onChange(!isCheck),
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Icon(
-          isCheck ? Icons.check_box : Icons.check_box_outline_blank,
-          color: onChange == null ? Colors.grey : null,
-        ),
-      ),
-    )
+            onTap: () => onChange(!isCheck),
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(
+                isCheck ? Icons.check_box : Icons.check_box_outline_blank,
+                color: onChange == null ? Colors.grey : null,
+              ),
+            ),
+          )
         : Checkbox(
-      value: isCheck,
-      onChanged: onChange,
-    );
+            value: isCheck,
+            onChanged: onChange,
+          );
   }
 }

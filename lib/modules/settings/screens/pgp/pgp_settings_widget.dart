@@ -216,8 +216,9 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     final result = await AMDialog.show(
       context: context,
       builder: (_) => ImportKeyDialog(
-        keys.userKey,
-        keys.contactKey,
+        keys.userKeys,
+        keys.contactKeys,
+        keys.alienKeys,
         _presenter,
       ),
     );

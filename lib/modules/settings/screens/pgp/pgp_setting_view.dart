@@ -36,8 +36,9 @@ class KeysState {
 }
 
 class PgpKeyMap {
-  final Map<LocalPgpKey, bool> userKey;
-  final Map<LocalPgpKey, bool> contactKey;
+  final Map<LocalPgpKey, bool> userKeys;
+  final Map<LocalPgpKey, bool> contactKeys;
+  final Map<LocalPgpKey, bool> alienKeys;
 
-  PgpKeyMap(this.userKey, this.contactKey);
+  PgpKeyMap(this.userKeys, this.contactKeys, this.alienKeys);
 }

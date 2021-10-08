@@ -20,6 +20,7 @@ class EncryptionServer extends StatefulWidget {
 
 class _EncryptionServerState extends State<EncryptionServer> {
   final _settingsState = AppStore.settingsState;
+  final _filesState = AppStore.filesState;
   bool showBackwardCompatibility = false;
   S s;
   bool progress = false;
@@ -112,6 +113,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
       ),
     )
         .then((_) {
+      _refreshStorages();
       Navigator.pop(context);
     }).catchError((e) {
       setState(() {
@@ -122,6 +124,16 @@ class _EncryptionServerState extends State<EncryptionServer> {
           scaffoldState: scaffoldKey.currentState,
           msg: e.toString());
     });
+  }
+
+  Future<void> _refreshStorages() async {
+    final currentStorageName = _filesState.selectedStorage.displayName;
+    await _filesState.onGetStorages();
+    final index = _filesState.currentStorages
+        .indexWhere((e) => e.displayName == currentStorageName);
+    if (index != -1) {
+      _filesState.selectedStorage = _filesState.currentStorages[index];
+    }
   }
 
   void _shareKey() async {

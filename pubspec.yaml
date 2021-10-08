@@ -1,7 +1,7 @@
 name: aurorafiles
 description: File management system for ...
 
-version: 10.6.1+152
+version: 2.3.1+153
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -79,10 +79,9 @@ dependencies:
   firebase_crashlytics: ^2.2.1
 
   theme:
-    path: aurora-files-app-customs/private_mail/theme
+    path: build_res/afterlogic/theme
   aurora_ui_kit:
-#    git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
-    path: ../aurora_ui_kit_flutter
+    git: https://github.com/afterlogic/aurora_ui_kit_flutter.git
   crypto_stream:
     git:
       url: https://github.com/afterlogic/flutter_crypto_stream
@@ -91,7 +90,7 @@ dependencies:
     git: https://github.com/afterlogic/receive_sharing
   # fido
   yubico_flutter:
-    git: https://github.com/afterlogic/yubico_flutter
+    path: module/mocks/yubico_flutter
 
   # logger
   aurora_logger:
@@ -120,9 +119,9 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path: aurora-files-app-customs/private_mail/image/icon.png
-  adaptive_icon_background: "#34113C"
-  adaptive_icon_foreground: aurora-files-app-customs/private_mail/image/icon_foreground.png
+  image_path: build_res/afterlogic/image/icon.png
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: build_res/afterlogic/image/icon_foreground.png
 
 flutter:
 
@@ -135,8 +134,8 @@ flutter:
   assets:
     - lib/assets/images/
     - lib/assets/svg/
-    - aurora-files-app-customs/private_mail/image/icon.png
-    - aurora-files-app-customs/private_mail/image/main_logo.png
+    - build_res/afterlogic/image/icon.png
+    - build_res/afterlogic/image/main_logo.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

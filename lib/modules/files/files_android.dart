@@ -61,9 +61,6 @@ class _FilesAndroidState extends State<FilesAndroid>
   @override
   void initState() {
     super.initState();
-
-    print('!!! FilesAndroid, initState()');
-
     _filesState.folderNavStack.add(widget.path);
     _settingsState = AppStore.settingsState;
     _initFiles();
@@ -211,7 +208,7 @@ class _FilesAndroidState extends State<FilesAndroid>
           showSnack(
             context: context,
             scaffoldState: _filesPageState.scaffoldKey.currentState,
-            msg: s.error_required_pgp_key,
+            msg: s.error_pgp_required_key(AppStore.authState.userEmail),
           );
           return null;
         }
@@ -419,52 +416,48 @@ class _FilesAndroidState extends State<FilesAndroid>
                   onDeleteFiles: _deleteSelected,
                 )),
             body: body,
-            floatingActionButton: Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
-              child: Observer(
-                builder: (_) => _filesState.isShareUpload ||
-                        _filesState.isMoveModeEnabled ||
-                        _filesState.isOfflineMode ||
-                        (_settingsState.internetConnection ==
-                                ConnectivityResult.none &&
-                            _filesPageState.currentFiles.isEmpty) ||
-                        _filesPageState.isSearchMode ||
-                        _filesState.selectedStorage.type == "shared" ||
-                        _filesPageState.isInsideZip
-                    ? SizedBox()
-                    : FloatingActionButton(
-                        backgroundColor: theme.accentColor,
-                        heroTag: widget.path,
-                        child: IconTheme(
-                          data: AppTheme.floatIconTheme,
-                          child: Icon(
-                            Icons.add,
-                          ),
+            floatingActionButton: Observer(
+              builder: (_) => _filesState.isShareUpload ||
+                      _filesState.isMoveModeEnabled ||
+                      _filesState.isOfflineMode ||
+                      (_settingsState.internetConnection ==
+                              ConnectivityResult.none &&
+                          _filesPageState.currentFiles.isEmpty) ||
+                      _filesPageState.isSearchMode ||
+                      _filesState.selectedStorage.type == "shared" ||
+                      _filesPageState.isInsideZip
+                  ? SizedBox()
+                  : FloatingActionButton(
+                      backgroundColor: theme.accentColor,
+                      heroTag: widget.path,
+                      child: IconTheme(
+                        data: AppTheme.floatIconTheme,
+                        child: Icon(
+                          Icons.add,
                         ),
-                        onPressed: () {
-                          _filesPageState.scaffoldKey.currentState
-                              .removeCurrentSnackBar();
-                          Navigator.push(
-                              context,
-                              CustomSpeedDial(tag: widget.path, children: [
-                                MiniFab(
-                                  icon: Icon(Icons.create_new_folder),
-                                  onPressed: () => AMDialog.show(
-                                    context: context,
-                                    builder: (_) => AddFolderDialogAndroid(
-                                      filesState: _filesState,
-                                      filesPageState: _filesPageState,
-                                    ),
+                      ),
+                      onPressed: () {
+                        _filesPageState.scaffoldKey.currentState
+                            .removeCurrentSnackBar();
+                        Navigator.push(
+                            context,
+                            CustomSpeedDial(tag: widget.path, children: [
+                              MiniFab(
+                                icon: Icon(Icons.create_new_folder),
+                                onPressed: () => AMDialog.show(
+                                  context: context,
+                                  builder: (_) => AddFolderDialogAndroid(
+                                    filesState: _filesState,
+                                    filesPageState: _filesPageState,
                                   ),
                                 ),
-                                MiniFab(
-                                    icon: Icon(MdiIcons.filePlus),
-                                    onPressed: _uploadFile),
-                              ]));
-                        },
-                      ),
-              ),
+                              ),
+                              MiniFab(
+                                  icon: Icon(MdiIcons.filePlus),
+                                  onPressed: _uploadFile),
+                            ]));
+                      },
+                    ),
             ),
           ),
         ),

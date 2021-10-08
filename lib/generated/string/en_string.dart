@@ -277,7 +277,8 @@ class EnString extends S {
       "The keys will be imported to contacts";
   final String btn_pgp_import_selected_key = "Import selected keys";
   final String label_pgp_contact_public_keys = "External public keys";
-  String error_pgp_required_key(String user) => "Required PGP key for $user";
+  String error_pgp_required_key(String user) =>
+      "No private key found for $user user.";
   final String btn_share_to_email = "Share with teammates";
   final String hint_pgp_share_warning =
       "You are going to share you private PGP key. The key must be kept from the 3rd parties. Do you want to continue?";

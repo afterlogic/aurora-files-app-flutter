@@ -269,5 +269,7 @@
   "logger_hint_delete_all_logs": "Are you sure you want to delete all logs",
   "logger_hint_delete_log": "Are you sure you want to delete the file",
   "clear_cache_during_logout": "Delete cached data and keys",
-  "btn_encryption_personal_storage": "Allow encrypt files in Personal Storage"
+  "btn_encryption_personal_storage": "Allow encrypt files in Personal Storage",
+  "hint_pgp_no_keys_to_import": "The text contains no keys that can be imported.",
+  "hint_pgp_external_private_keys": "External private keys are not supported and will not be imported"
 }

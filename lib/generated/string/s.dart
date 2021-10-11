@@ -277,4 +277,6 @@ abstract class S {
   String get logger_hint_delete_log;
   String get clear_cache_during_logout;
   String get btn_encryption_personal_storage;
+  String get hint_pgp_no_keys_to_import;
+  String get hint_pgp_external_private_keys;
 }

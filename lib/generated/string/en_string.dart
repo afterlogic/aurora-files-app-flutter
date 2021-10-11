@@ -339,4 +339,8 @@ class EnString extends S {
   final String clear_cache_during_logout = "Delete cached data and keys";
   final String btn_encryption_personal_storage =
       "Allow encrypt files in Personal Storage";
+  final String hint_pgp_no_keys_to_import =
+      "The text contains no keys that can be imported.";
+  final String hint_pgp_external_private_keys =
+      "External private keys are not supported and will not be imported";
 }

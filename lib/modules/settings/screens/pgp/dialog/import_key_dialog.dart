@@ -65,7 +65,7 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
             if (!isKeysToImport)
               Padding(
                 padding: EdgeInsets.only(top: 8, bottom: 32),
-                child: Text('The text contains no keys that can be imported.'),
+                child: Text(s.hint_pgp_no_keys_to_import),
               ),
             if (keyAlreadyExist)
               Padding(
@@ -103,12 +103,11 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
             if (alienKeys.isNotEmpty) ...[
               Padding(
                 padding: EdgeInsets.only(top: 8),
-                child: Text(
-                    'External private keys are not supported and will not be imported'),
+                child: Text(s.hint_pgp_external_private_keys),
               ),
               Column(
                 children: alienKeys.map((key) {
-                  return KeyItem(key, null, null);
+                  return KeyItem(key, null, (_) {});
                 }).toList(),
               ),
             ],
@@ -125,22 +124,28 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
             child: !isProgress
                 ? Text(s.btn_pgp_import_selected_key)
                 : CircularProgressIndicator(),
-            onPressed: !isProgress ? _import : null,
+            onPressed: _canImport() ? _import : null,
           ),
       ],
     );
+  }
+
+  bool _canImport() {
+    if (isProgress) return false;
+    return widget.userKeys.values.contains(true) ||
+        widget.contactKeys.values.contains(true);
   }
 
   _import() async {
     final userKey = <LocalPgpKey>[];
     final contactKey = <LocalPgpKey>[];
     widget.userKeys.forEach((key, value) {
-      if (value) {
+      if (value ?? false) {
         userKey.add(key);
       }
     });
     widget.contactKeys.forEach((key, value) {
-      if (value) {
+      if (value ?? false) {
         contactKey.add(key);
       }
     });

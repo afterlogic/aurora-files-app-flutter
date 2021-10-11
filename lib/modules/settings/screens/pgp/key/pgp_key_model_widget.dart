@@ -69,7 +69,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
           children: <Widget>[
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                 children: <Widget>[
                   if (isTablet)
                     Padding(
@@ -118,7 +118,6 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
             width: 10,
           );
     final children = <Widget>[
-      space,
       AMButton(
         child: Text(s.share),
         onPressed: share,
@@ -137,7 +136,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
       ),
     ];
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: isTablet ? 8 : 0),
+      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       child: isTablet
           ? Wrap(
               spacing: 10,

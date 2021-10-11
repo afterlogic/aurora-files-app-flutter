@@ -59,68 +59,66 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
             final publicKeys =
                 state.public.map((item) => KeyWidget(item, openKey)).toList();
-            final externalKeys =
-                state.external?.map((item) => KeyWidget(item, openKey))?.toList();
+            final externalKeys = state.external
+                ?.map((item) => KeyWidget(item, openKey))
+                ?.toList();
             final privateKeys =
                 state.private.map((item) => KeyWidget(item, openKey)).toList();
 
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: ListView(
-                      children: <Widget>[
-                        CheckboxListTile(
-                          value: state.storePassword,
-                          title: Text(s.label_store_password_in_session),
-                          onChanged: (bool value) {
-                            _presenter.setStorePassword(value);
-                          },
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    children: <Widget>[
+                      CheckboxListTile(
+                        value: state.storePassword,
+                        title: Text(s.label_store_password_in_session),
+                        onChanged: (bool value) {
+                          _presenter.setStorePassword(value);
+                        },
+                      ),
+                      if (publicKeys.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10, top: 25),
+                          child: Text(
+                            s.public_keys,
+                            style: theme.textTheme.subhead,
+                          ),
                         ),
-                        if (publicKeys.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10, top: 25),
-                            child: Text(
-                              s.public_keys,
-                              style: theme.textTheme.subhead,
-                            ),
+                      if (publicKeys.isNotEmpty) Column(children: publicKeys),
+                      if (privateKeys.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10, top: 25),
+                          child: Text(
+                            s.private_keys,
+                            style: theme.textTheme.subhead,
                           ),
-                        if (publicKeys.isNotEmpty) Column(children: publicKeys),
-                        if (privateKeys.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10, top: 25),
-                            child: Text(
-                              s.private_keys,
-                              style: theme.textTheme.subhead,
-                            ),
+                        ),
+                      if (privateKeys.isNotEmpty) Column(children: privateKeys),
+                      if (externalKeys?.isEmpty != true)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10, top: 25),
+                          child: Text(
+                            s.label_pgp_contact_public_keys,
+                            style: theme.textTheme.subhead,
                           ),
-                        if (privateKeys.isNotEmpty)
-                          Column(children: privateKeys),
-                        if (externalKeys?.isEmpty != true)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10, top: 25),
-                            child: Text(
-                              s.label_pgp_contact_public_keys,
-                              style: theme.textTheme.subhead,
-                            ),
+                        ),
+                      if (externalKeys?.isNotEmpty == true)
+                        Column(children: externalKeys),
+                      if (externalKeys == null)
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Center(
+                            child: CircularProgressIndicator(),
                           ),
-                        if (externalKeys?.isNotEmpty == true)
-                          Column(children: externalKeys),
-                        if (externalKeys == null)
-                          Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                      ],
-                    ),
+                        ),
+                    ],
                   ),
-                  buttons(context, state, externalKeys),
-                ],
-              ),
+                ),
+                buttons(context, state, externalKeys),
+              ],
             );
           },
           initialData: KeysState([], [], [], null, true),
@@ -161,7 +159,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
       ),
     ];
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       child: isTablet
           ? Wrap(
               spacing: 10,

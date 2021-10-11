@@ -28,7 +28,7 @@ class PgpKeyUtil {
   PgpKeyUtil._(this.pgp, this.pgpKeyDao);
 
   Future<List<LocalPgpKey>> validateText(String text) async {
-    final keys = RegExp("$keyStart((\\D|\\d)*)$keyEnd")
+    final keys = RegExp("$keyStart(\\D|\\d)+?$keyEnd")
         .allMatches(text)
         .map((regExp) => regExp.group(0))
         .toList();

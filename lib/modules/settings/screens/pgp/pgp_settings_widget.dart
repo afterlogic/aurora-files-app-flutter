@@ -158,18 +158,20 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
         onPressed: generateKeyDialog,
       ),
     ];
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
-      child: isTablet
-          ? Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: children,
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: children,
-            ),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+        child: isTablet
+            ? Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: children,
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: children,
+              ),
+      ),
     );
   }
 

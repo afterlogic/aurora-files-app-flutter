@@ -106,6 +106,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
   }
 
   void _shareFile() async {
+    final bottomCenter = MediaQuery.of(context).size.bottomCenter(Offset.zero);
     bool canDownload = true;
     if (widget.file.initVector != null) {
       if (widget.file.encryptedDecryptionKey != null) {
@@ -127,7 +128,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         widget.filesState.share(
           result,
           Rect.fromCenter(
-            center: MediaQuery.of(context).size.bottomCenter(Offset.zero),
+            center: bottomCenter,
             width: 0,
             height: 0,
           ),

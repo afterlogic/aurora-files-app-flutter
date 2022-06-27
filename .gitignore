@@ -130,9 +130,7 @@ sh/build_appbundle.sh
 sh/build_apk.sh
 ios/GoogleService-Info.plist
 ios/dist/
-build_res/afterlogic/theme/pubspec.lock
 ios/Flutter/.last_build_id
-pubspec.lock
 /ios/RunnerArchive.xcarchive
 /build_res/template/crashlytics/google-services.json
 /build_res/template/crashlytics/GoogleService-Info.plist

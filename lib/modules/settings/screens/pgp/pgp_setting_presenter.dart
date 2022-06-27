@@ -61,7 +61,7 @@ class PgpSettingPresenter {
 
   getKeysFromFile() async {
     final result = await pgpKeyUtil.importKeyFromFile();
-    if (result.isNotEmpty) {
+    if (result?.isNotEmpty == true) {
       _view.showImportDialog(await _sortKeys(result));
     } else {
       _view.keysNotFound();

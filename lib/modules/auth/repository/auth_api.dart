@@ -261,11 +261,15 @@ class AuthApi {
             parameters: parameters)
         .toMap();
 
-    final res = await WebMailApi.request(
-        AppStore.authState.apiUrl, body, await deviceIdHeader(), token);
-    final response = jsonDecode(res.body);
+    try {
+      final res = await WebMailApi.request(
+          AppStore.authState.apiUrl, body, await deviceIdHeader(), token);
+      final response = jsonDecode(res.body);
 
-    print(response);
+      print(response);
+    } catch (err) {
+      print("saveDevice ERROR: $err");
+    }
   }
 
   Future trustDevice(
@@ -308,14 +312,16 @@ class AuthApi {
     return (map["Result"]["TrustDevicesForDays"] as num).toInt();
   }
 
-  void logout() async{
+  void logout() async {
     final body = new ApiBody(
       module: "Core",
       method: "Logout",
     ).toMap();
 
     final res = await WebMailApi.request(
-        AppStore.authState.apiUrl, body);
+      AppStore.authState.apiUrl,
+      body,
+    );
     final map = json.decode(res.body);
 
     print(map);

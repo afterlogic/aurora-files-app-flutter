@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_local_storage.dart';
@@ -106,7 +105,9 @@ abstract class _AuthState with Store {
         await _authLocal.setFriendlyName(account.first.friendlyName);
         friendlyName = account.first.friendlyName;
       }
-    } catch (e) {}
+    } catch (err) {
+      print("setAccount ERROR: $err");
+    }
   }
 
   // returns true the host field needs to be revealed because auto discover was unsuccessful

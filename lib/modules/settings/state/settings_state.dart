@@ -45,7 +45,7 @@ abstract class _SettingsState with Store {
       }
       return true;
     } catch (err) {
-      print("getUserEncryptionKeys ERRORR: $err");
+      print("getUserEncryptionKeys ERROR: $err");
       selectedKeyName = null;
       return true;
     }
@@ -79,7 +79,9 @@ abstract class _SettingsState with Store {
     Function(String) onError,
   }) async {
     // if encryptionKey is provided - import as text, else generate new key
-    final newKey = encryptionKey == null ? _settingsLocal.generateKey().base16 : encryptionKey;
+    final newKey = encryptionKey == null
+        ? _settingsLocal.generateKey().base16
+        : encryptionKey;
     try {
       await _settingsLocal.addKey(name, newKey);
     } catch (err) {
@@ -87,9 +89,11 @@ abstract class _SettingsState with Store {
     }
   }
 
-  Future<void> onImportKeyFromFile({Function() onSuccess, Function(String) onError}) async {
+  Future<void> onImportKeyFromFile(
+      {Function() onSuccess, Function(String) onError}) async {
     try {
-      final Map<String, String> encryptionKeyFromFile = await _settingsLocal.importKeyFromFile();
+      final Map<String, String> encryptionKeyFromFile =
+          await _settingsLocal.importKeyFromFile();
       if (encryptionKeyFromFile == null) return;
       String keyName = encryptionKeyFromFile.keys.toList()[0];
       String keyValue = encryptionKeyFromFile.values.toList()[0];
@@ -122,7 +126,8 @@ abstract class _SettingsState with Store {
     String exportedFileDir;
     try {
       final keyName = selectedKeyName;
-      exportedFileDir = await _settingsLocal.exportKey(keyName, encryptionKeys[keyName]);
+      exportedFileDir =
+          await _settingsLocal.exportKey(keyName, encryptionKeys[keyName]);
       if (exportedFileDir == null) {
         throw CustomException("Unresolved directory");
       } else {
@@ -146,9 +151,15 @@ abstract class _SettingsState with Store {
   }
 
   Future updateSettings() async {
-    final setting = await settingApi.getEncryptSetting();
-    await _settingsLocal.setEncryptEnable(setting.enable);
-    await _settingsLocal.setEncryptInPersonalStorage(setting.enableInPersonalStorage);
+    EncryptionSetting setting;
+    try {
+      setting = await settingApi.getEncryptSetting();
+    } catch (err) {
+      print("getEncryptSetting ERROR: $err");
+    }
+    await _settingsLocal.setEncryptEnable(setting.enable ?? false);
+    await _settingsLocal
+        .setEncryptInPersonalStorage(setting.enableInPersonalStorage ?? false);
   }
 
   Future<EncryptionSetting> getEncryptionSetting() async {
@@ -161,6 +172,7 @@ abstract class _SettingsState with Store {
   Future setEncryptionSetting(EncryptionSetting setting) async {
     await settingApi.setEncryptSetting(setting);
     await _settingsLocal.setEncryptEnable(setting.enable);
-    await _settingsLocal.setEncryptInPersonalStorage(setting.enableInPersonalStorage);
+    await _settingsLocal
+        .setEncryptInPersonalStorage(setting.enableInPersonalStorage);
   }
 }

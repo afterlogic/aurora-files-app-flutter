@@ -1,5 +1,6 @@
 name: aurorafiles
 description: File management system for ...
+publish_to: none
 
 version: {{version_ios}}
 

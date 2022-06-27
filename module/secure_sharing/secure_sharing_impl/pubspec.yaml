@@ -1,8 +1,7 @@
 name: secure_sharing_impl
 description: A new Flutter package.
 version: 0.0.1
-author:
-homepage:
+publish_to: none
 
 environment:
   sdk: ">=2.2.2 <3.0.0"

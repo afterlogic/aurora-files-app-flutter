@@ -26,8 +26,8 @@ class FilesApi {
   Aes aes = DI.get();
 
   List<LocalFile> _sortFiles(List<LocalFile> unsortedFiles) {
-    final List<LocalFile> folders = List();
-    final List<LocalFile> files = List();
+    final List<LocalFile> folders = [];
+    final List<LocalFile> files = [];
 
     unsortedFiles.forEach((item) {
       if (item.isFolder)
@@ -172,7 +172,7 @@ class FilesApi {
 
     int bytesUploaded = 0;
 
-    List<int> fileBytesBuffer = new List();
+    List<int> fileBytesBuffer = [];
     controller = StreamController<List<int>>(onListen: () {
       fileReadSub =
           processingFile.fileOnDevice.openRead().listen((contents) async {
@@ -210,7 +210,7 @@ class FilesApi {
             controller.add(encrypted);
             fileReadSub.resume();
             // flush the buffer
-            fileBytesBuffer = new List();
+            fileBytesBuffer = [];
           }
           fileBytesBuffer.addAll(contentsForNext);
         }
@@ -225,7 +225,7 @@ class FilesApi {
       }, onError: (err, stack) {
         print("_openFileRead err: $err");
         print("_openFileRead stack: $stack");
-        onError("Error occured, could not upload file.");
+        onError("Error occurred, could not upload file.");
       }, cancelOnError: true);
     },
 //        onPause: fileReadSub.pause,
@@ -265,8 +265,8 @@ class FilesApi {
     HttpClient client = new HttpClient();
 
     try {
-      final HttpClientRequest request =
-          await client.getUrl(Uri.parse(isRedirect ? url : hostName + url));
+      final HttpClientRequest request = await client
+          .getUrl(Uri.parse(isRedirect ? url : hostName + '/' + url));
       // disable auto redirects because it automatically applies the same headers, but we want different headers
       request.followRedirects = false;
       // token can only be applied to our api, in case of redirect we go to a different server, so we don't want to apply our token to such request
@@ -291,7 +291,7 @@ class FilesApi {
         );
       }
       // temporary buffer, which can hold not more than aes.chunkMaxSize
-      List<int> fileBytesBuffer = new List();
+      List<int> fileBytesBuffer = [];
 
       // set initial vector that comes with the LocalFile object that we get from our api
       String decryptKey;
@@ -343,7 +343,7 @@ class FilesApi {
               decryptKey,
             );
             // flush the buffer
-            fileBytesBuffer = new List();
+            fileBytesBuffer = [];
             downloadSubscription.resume();
           }
           fileBytesBuffer.addAll(contentsForNext);
@@ -367,7 +367,7 @@ class FilesApi {
             );
             // resolve with the destination on where the downloaded file is
             onSuccess(processingFile.fileOnDevice);
-          }catch(err){
+          } catch (err) {
             onError(err.toString());
           }
         },

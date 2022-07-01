@@ -157,13 +157,13 @@ class PgpKeyUtil {
   }
 
   Future<String> userEncrypt(String string, String password) async {
-    final publicKey = (await userPublicKey()).key;
+    final publicKey = (await userPublicKey())?.key;
     final privateKey = (await userPrivateKey())?.key;
     return pgp.bufferPlatformSink(
       string,
       pgp.encrypt(
         password != null ? privateKey : null,
-        [publicKey],
+        publicKey != null ? [publicKey] : null,
         password,
       ),
     );

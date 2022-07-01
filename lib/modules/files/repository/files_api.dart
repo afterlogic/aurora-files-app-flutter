@@ -101,7 +101,7 @@ class FilesApi {
     }
 
     final vectorLength = 16;
-    final String url = AppStore.authState.apiUrl;
+    final String apiUrl = AppStore.authState.apiUrl;
 
     final Map<String, dynamic> params = {
       "Type": storageType,
@@ -139,16 +139,16 @@ class FilesApi {
     final lengthWithPadding =
         ((length / vectorLength) + 1).toInt() * vectorLength;
 
-    final uri = Uri.parse(url);
-
-    final requestMultipart = new http.MultipartRequest("POST", uri);
     final multipartFile = new http.MultipartFile(
-        'file', stream, shouldEncrypt ? lengthWithPadding : length,
-        filename: name ??
-            FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path));
+      'file',
+      stream,
+      shouldEncrypt ? lengthWithPadding : length,
+      filename: name ??
+          FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path),
+    );
 
+    final requestMultipart = http.MultipartRequest("POST", Uri.parse(apiUrl));
     requestMultipart.headers.addAll(getHeader());
-
     requestMultipart.fields.addAll(body);
     requestMultipart.files.add(multipartFile);
 

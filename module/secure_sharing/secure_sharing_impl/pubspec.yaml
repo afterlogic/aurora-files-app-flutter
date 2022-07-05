@@ -15,7 +15,8 @@ dependencies:
   crypto_stream:
     git:
       url: https://github.com/afterlogic/flutter_crypto_stream
-      ref: master
+      ref: pgp_without_public_key
+#      ref: master
   secure_sharing:
     path: ../secure_sharing
   aurora_ui_kit:

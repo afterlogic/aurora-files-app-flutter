@@ -1,7 +1,7 @@
 name: aurorafiles
 description: File management system for ...
 
-version: 2.3.1+154
+version: 2.3.1+155
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -85,7 +85,8 @@ dependencies:
   crypto_stream:
     git:
       url: https://github.com/afterlogic/flutter_crypto_stream
-      ref: master
+      ref: pgp_without_public_key
+#      ref: master
   receive_sharing:
     git: https://github.com/afterlogic/receive_sharing
   # fido

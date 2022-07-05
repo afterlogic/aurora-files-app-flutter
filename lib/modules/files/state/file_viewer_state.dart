@@ -139,7 +139,10 @@ abstract class _FileViewerState with Store {
   }
 
   Future<void> getPreviewImage(
-      String password, Function(String) onError, BuildContext context) async {
+    String password,
+    Function(String) onError,
+    BuildContext context,
+  ) async {
     downloadProgress = 0.0;
     // try to retrieve the file from cache
     // if no cache, get file

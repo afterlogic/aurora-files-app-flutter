@@ -11,7 +11,6 @@ import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
-import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
@@ -212,7 +211,7 @@ class _FileWidgetState extends State<FileWidget> {
             scaffoldState: filesPageState.scaffoldKey.currentState,
             msg: err.toString()),
       );
-    } catch (err, s) {
+    } catch (err) {
       showSnack(
         context: context,
         scaffoldState: filesPageState.scaffoldKey.currentState,
@@ -300,7 +299,7 @@ class _FileWidgetState extends State<FileWidget> {
         return Icon(MdiIcons.fileCode,
             size: thumbnailSize, color: Theme.of(context).disabledColor);
       case FileType.pdf:
-        return Icon(MdiIcons.filePdfOutline,
+        return Icon(MdiIcons.filePdfBox,
             size: thumbnailSize, color: Theme.of(context).disabledColor);
       case FileType.zip:
         return Icon(MdiIcons.zipBoxOutline,

@@ -131,8 +131,11 @@ class _ImageViewerState extends State<ImageViewer> {
           fit: fit,
         );
         precacheImage(image.image, context, onError: (e, stack) {
-          Future.delayed(Duration(milliseconds: 100),
-              () => setState(() => _isError = true));
+          Future.delayed(
+              Duration(milliseconds: 100),
+              () => setState(
+                    () => _isError = true,
+                  ));
         });
         return Positioned.fill(child: image);
       }
@@ -195,7 +198,6 @@ class _ImageViewerState extends State<ImageViewer> {
     }
 
     if (_fileViewerState.file.viewUrl != null) {
-
       return Hero(
           tag: _fileViewerState.file.localId ??
               _fileViewerState.file.guid ??

@@ -108,7 +108,8 @@ class FilesLocalStorage {
 
     final Directory dir = await getTemporaryDirectory();
     final File dartFile = new File("${dir.path}/images/${file.guid}_${file.name}");
-    if (await dartFile.exists()) {
+    final bool exist = await dartFile.exists();
+    if (exist) {
       return dartFile;
     } else {
       await dartFile.create(recursive: true);
@@ -244,7 +245,7 @@ class FilesLocalStorage {
     final key = prefixEncrypt.Key.fromBase16(
         await PgpKeyUtil.instance.userDecrypt(encryptedDecryptionKey, password));
 
-    List<int> fileBytesBuffer = new List();
+    List<int> fileBytesBuffer = [];
     int progress = 0;
 
     await for (final contents in encryptedFile.openRead()) {
@@ -271,7 +272,7 @@ class FilesLocalStorage {
         processingFile.ivBase64 = IV(Uint8List.fromList(newVector)).base64;
 
         // flush the buffer
-        fileBytesBuffer = new List();
+        fileBytesBuffer = [];
       }
       fileBytesBuffer.addAll(contentsForNext);
       // the callback to update the UI download progress

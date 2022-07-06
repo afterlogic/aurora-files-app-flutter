@@ -307,6 +307,9 @@ class _FileWidgetState extends State<FileWidget> {
       case FileType.image:
         return Icon(MdiIcons.fileImageOutline,
             size: thumbnailSize, color: Theme.of(context).disabledColor);
+      case FileType.svg:
+        return Icon(MdiIcons.fileImageOutline,
+            size: thumbnailSize, color: Theme.of(context).disabledColor);
       case FileType.unknown:
         return Icon(MdiIcons.fileOutline,
             size: thumbnailSize, color: Theme.of(context).disabledColor);

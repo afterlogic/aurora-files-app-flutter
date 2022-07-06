@@ -405,6 +405,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           fileViewerState: _fileViewerState,
           scaffoldState: _fileViewerScaffoldKey.currentState,
         );
+      case FileType.svg:
+        return Icon(MdiIcons.fileImageOutline,
+            size: previewIconSize, color: Theme.of(context).disabledColor);
       case FileType.text:
       case FileType.code:
         return TextViewer(

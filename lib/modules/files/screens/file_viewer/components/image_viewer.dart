@@ -189,12 +189,17 @@ class _ImageViewerState extends State<ImageViewer> {
         );
       }
     } else {
-      placeholder = CachedNetworkImage(
-        imageUrl:
-            '${AppStore.authState.hostName}/${_fileViewerState.file.thumbnailUrl}',
-        fit: BoxFit.cover,
-        httpHeaders: getHeader(),
-      );
+      final thumbUrl = _fileViewerState.file.thumbnailUrl;
+      placeholder = thumbUrl != null
+          ? CachedNetworkImage(
+              imageUrl: '${AppStore.authState.hostName}/$thumbUrl',
+              fit: BoxFit.cover,
+              httpHeaders: getHeader(),
+            )
+          : Image.asset(
+              "lib/assets/images/image_placeholder.jpg",
+              fit: BoxFit.cover,
+            );
     }
 
     if (_fileViewerState.file.viewUrl != null) {

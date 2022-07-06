@@ -7,9 +7,11 @@ enum FileType {
   pdf,
   zip,
   image,
+  svg,
 }
 
 FileType getFileType(LocalFile file) {
+  if (file.contentType.startsWith("image/svg")) return FileType.svg;
   if (file.contentType.startsWith("image")) return FileType.image;
 
   switch (file.contentType) {

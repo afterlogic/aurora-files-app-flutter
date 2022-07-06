@@ -257,7 +257,7 @@ packages:
     description:
       path: "."
       ref: pgp_without_public_key
-      resolved-ref: a0f80f179f2b1da8154850735c5ead25c0aabfb6
+      resolved-ref: b080ec7d1ef7835263c4ebe6af5c958e06526a0f
       url: "https://github.com/afterlogic/flutter_crypto_stream"
     source: git
     version: "0.0.1"

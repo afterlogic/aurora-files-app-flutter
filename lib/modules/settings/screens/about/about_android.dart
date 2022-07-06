@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
@@ -52,8 +53,20 @@ class _AboutAndroidState extends State<AboutAndroid> {
     setState(() => loading = true);
     final packageInfo = await PackageInfo.fromPlatform();
     _appName = packageInfo.appName;
-    _version = packageInfo.version + "+" + packageInfo.buildNumber;
+    _version =
+        _getPackageVersion(packageInfo.version, packageInfo.buildNumber) +
+            "+" +
+            packageInfo.buildNumber;
     setState(() => loading = false);
+  }
+
+  String _getPackageVersion(String version, String build) {
+    if (Platform.isAndroid) {
+      final startIndex = version.length - build.length - 1;
+      return version.replaceFirst(build, '', startIndex);
+    } else {
+      return version;
+    }
   }
 
   @override

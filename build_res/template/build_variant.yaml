@@ -27,6 +27,7 @@ pgpEnable: false
 secureSharingEnable: false
 supportAllowAccess: false
 useMainLogo: true
+sharingEnable: false
 
 # fido
 useYubiKit: false

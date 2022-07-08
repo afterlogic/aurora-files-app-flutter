@@ -9,8 +9,8 @@ import 'package:aurorafiles/shared_ui/sized_dialog_content.dart';
 import 'package:flutter/material.dart';
 
 class ImportKeyDialog extends StatefulWidget {
-  final Map<LocalPgpKey, bool> contactKeys;
   final Map<LocalPgpKey, bool> userKeys;
+  final Map<LocalPgpKey, bool> contactKeys;
   final Map<LocalPgpKey, bool> alienKeys;
   final PgpSettingPresenter presenter;
 
@@ -29,7 +29,7 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
   final List<LocalPgpKey> userKeys = [];
   final List<LocalPgpKey> contactKeys = [];
   final List<LocalPgpKey> alienKeys = [];
-  bool keyAlreadyExist = false;
+  bool areExistingKeys = false;
   bool isProgress = false;
   bool isKeysToImport = false;
 
@@ -39,13 +39,13 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
     widget.userKeys.forEach((key, value) {
       userKeys.add(key);
       if (value == null) {
-        keyAlreadyExist = true;
+        areExistingKeys = true;
       }
     });
     widget.contactKeys.forEach((key, value) {
       contactKeys.add(key);
       if (value == null) {
-        keyAlreadyExist = true;
+        areExistingKeys = true;
       }
     });
     widget.alienKeys.forEach((key, value) {
@@ -67,7 +67,7 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
                 padding: EdgeInsets.only(top: 8, bottom: 32),
                 child: Text(s.hint_pgp_no_keys_to_import),
               ),
-            if (keyAlreadyExist)
+            if (areExistingKeys)
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: Text(s.hint_pgp_already_have_keys),
@@ -79,10 +79,14 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
               ),
             Column(
               children: userKeys.map((key) {
-                return KeyItem(key, widget.userKeys[key], (select) {
-                  widget.userKeys[key] = select;
-                  setState(() {});
-                });
+                return KeyItem(
+                    pgpKey: key,
+                    selected: widget.userKeys[key],
+                    onSelect: (select) {
+                      setState(() {
+                        widget.userKeys[key] = select;
+                      });
+                    });
               }).toList(),
             ),
             if (!BuildProperty.legacyPgpKey) ...[
@@ -93,10 +97,15 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
                 ),
               Column(
                 children: contactKeys.map((key) {
-                  return KeyItem(key, widget.contactKeys[key], (select) {
-                    widget.contactKeys[key] = select;
-                    setState(() {});
-                  });
+                  return KeyItem(
+                      pgpKey: key,
+                      selected: widget.contactKeys[key],
+                      external: true,
+                      onSelect: (select) {
+                        setState(() {
+                          widget.contactKeys[key] = select;
+                        });
+                      });
                 }).toList(),
               ),
             ],
@@ -107,7 +116,12 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
               ),
               Column(
                 children: alienKeys.map((key) {
-                  return KeyItem(key, null, (_) {});
+                  return KeyItem(
+                    pgpKey: key,
+                    selected: null,
+                    external: true,
+                    onSelect: (_) {},
+                  );
                 }).toList(),
               ),
             ],
@@ -115,12 +129,12 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.cancel),
           onPressed: () => Navigator.pop(context),
         ),
         if (isKeysToImport)
-          FlatButton(
+          TextButton(
             child: !isProgress
                 ? Text(s.btn_pgp_import_selected_key)
                 : CircularProgressIndicator(),

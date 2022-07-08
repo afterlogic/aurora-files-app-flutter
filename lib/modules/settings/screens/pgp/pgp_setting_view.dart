@@ -5,9 +5,9 @@ import 'package:rxdart/rxdart.dart';
 mixin PgpSettingView<W extends StatefulWidget> on State<W> {
   final keysState = BehaviorSubject<KeysState>();
 
-  importKeyDialog();
+  Future<void> importKeyDialog();
 
-  close() {
+  void close() {
     keysState.close();
   }
 
@@ -17,11 +17,11 @@ mixin PgpSettingView<W extends StatefulWidget> on State<W> {
     super.dispose();
   }
 
-  showImportDialog(PgpKeyMap result);
+  Future<void> showImportDialog(PgpKeyMap keys);
 
-  keysNotFound();
+  Future<void> keysNotFound();
 
-  showError(String error);
+  Future<void> showError(String error);
 }
 
 class KeysState {

@@ -16,14 +16,14 @@ class PgpSettingPresenter {
   final PgpKeyApi _pgpKeyApi = PgpKeyApi();
   final encryptionStorage = EncryptionLocalStorage.instance;
   bool storePassword;
-  List<LocalPgpKey> contactsKey;
+  List<LocalPgpKey> externalKeys;
 
   PgpSettingPresenter(this._view, this._pgpKeyDao)
       : pgpKeyUtil = PgpKeyUtil.instance {
     initContactKeys();
   }
 
-  Future refreshKeys(
+  Future<void> refreshKeys(
       [List<LocalPgpKey> addedPublic, List<LocalPgpKey> addedPrivate]) async {
     storePassword = await encryptionStorage.getStorePasswordStorage();
     return _pgpKeyDao.getKeys().then(
@@ -38,40 +38,40 @@ class PgpSettingPresenter {
           }
         });
         _view.keysState
-            .add(KeysState(public, private, contactsKey, storePassword));
+            .add(KeysState(public, private, externalKeys, storePassword));
       },
       onError: (e) {
-        _view.keysState.add(KeysState([], [], contactsKey, storePassword));
+        _view.keysState.add(KeysState([], [], externalKeys, storePassword));
       },
     );
   }
 
-  initContactKeys() async {
-    contactsKey = await _pgpKeyApi.getKeyFromContacts();
+  Future<void> initContactKeys() async {
+    externalKeys = await _pgpKeyApi.getKeyFromContacts();
     if (_view.keysState.value is KeysState) {
       _view.keysState.add(KeysState(
         _view.keysState.value.public,
         _view.keysState.value.private,
-        contactsKey,
+        externalKeys,
         storePassword,
         _view.keysState.value.isProgress,
       ));
     }
   }
 
-  getKeysFromFile() async {
-    final result = await pgpKeyUtil.importKeyFromFile();
-    if (result?.isNotEmpty == true) {
-      _view.showImportDialog(await _sortKeys(result));
+  Future<void> getKeysFromFile() async {
+    final keys = await pgpKeyUtil.importKeyFromFile();
+    if (keys?.isNotEmpty == true) {
+      _view.showImportDialog(await _sortKeys(keys));
     } else {
       _view.keysNotFound();
     }
   }
 
-  getKeysFromText(String text) async {
-    final result = await pgpKeyUtil.validateText(text);
-    if (result.isNotEmpty) {
-      _view.showImportDialog(await _sortKeys(result));
+  Future<void> getKeysFromText(String text) async {
+    final keys = await pgpKeyUtil.validateText(text);
+    if (keys.isNotEmpty) {
+      _view.showImportDialog(await _sortKeys(keys));
     } else {
       _view.keysNotFound();
     }
@@ -110,8 +110,9 @@ class PgpSettingPresenter {
       }
     }
     final existUserKeys = await _userKeyMarkIfNotExist(userKeys);
-    final existContactKeys = await _contactKeyMarkIfNotExist(contactKeys);
-    final existAlienPrivateKeys = await _alienKeyMarkIfNotExist(alienPrivateKeys);
+    final existContactKeys = _contactKeyMarkIfNotExist(contactKeys);
+    final existAlienPrivateKeys =
+        await _userKeyMarkIfNotExist(alienPrivateKeys);
 
     return PgpKeyMap(existUserKeys, existContactKeys, existAlienPrivateKeys);
   }
@@ -126,25 +127,16 @@ class PgpSettingPresenter {
     return map;
   }
 
-  Future<Map<LocalPgpKey, bool>> _contactKeyMarkIfNotExist(
-      List<LocalPgpKey> keys) async {
+  Map<LocalPgpKey, bool> _contactKeyMarkIfNotExist(List<LocalPgpKey> keys) {
     final map = <LocalPgpKey, bool>{};
     for (var key in keys) {
-      map[key] = true;
+      final index = externalKeys?.indexWhere((e) => e.key == key.key);
+      map[key] = index == -1 ? true : null;
     }
     return map;
   }
 
-  Future<Map<LocalPgpKey, bool>> _alienKeyMarkIfNotExist(
-      List<LocalPgpKey> keys) async {
-    final map = <LocalPgpKey, bool>{};
-    for (var key in keys) {
-      map[key] = true;
-    }
-    return map;
-  }
-
-  Future saveKeys(
+  Future<void> saveKeys(
       List<LocalPgpKey> userKey, List<LocalPgpKey> contactKey) async {
     await pgpKeyUtil.saveKeys(userKey);
     if (contactKey.isNotEmpty) {
@@ -154,13 +146,17 @@ class PgpSettingPresenter {
     refreshKeys();
   }
 
-  addPrivateKey(CreateKeyResult result) async {
+  Future<void> addPrivateKey(CreateKeyResult result) async {
     var privateKey = LocalPgpKey(
+        id: null,
+        key: null,
         email: result.email,
         isPrivate: true,
         length: result.length,
         name: result.name);
     var publicKey = LocalPgpKey(
+        id: null,
+        key: null,
         email: result.email,
         isPrivate: false,
         length: result.length,
@@ -176,17 +172,17 @@ class PgpSettingPresenter {
     refreshKeys();
   }
 
-  deleteKey(String email) async {
+  Future<void> deleteKey(String email) async {
     try {
       await _pgpKeyApi.deleteContactKey(email);
-      contactsKey.removeWhere((element) => element.email == email);
+      externalKeys.removeWhere((element) => element.email == email);
       refreshKeys();
     } catch (e) {
       _view.showError(e.toString());
     }
   }
 
-  void setStorePassword(bool value) async {
+  Future<void> setStorePassword(bool value) async {
     await encryptionStorage.setStorePasswordStorage(value);
     refreshKeys();
   }

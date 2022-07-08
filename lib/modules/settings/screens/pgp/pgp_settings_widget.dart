@@ -42,7 +42,6 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     s = Str.of(context);
     final isTablet = LayoutConfig.of(context).isTablet;
     final theme = Theme.of(context);
-    final spacer = SizedBox(height: 10.0);
     return Scaffold(
         key: _scaffoldKey,
         appBar: isTablet
@@ -84,7 +83,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                           padding: const EdgeInsets.only(bottom: 10, top: 25),
                           child: Text(
                             s.public_keys,
-                            style: theme.textTheme.subhead,
+                            style: theme.textTheme.subtitle1,
                           ),
                         ),
                       if (publicKeys.isNotEmpty) Column(children: publicKeys),
@@ -93,20 +92,25 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                           padding: const EdgeInsets.only(bottom: 10, top: 25),
                           child: Text(
                             s.private_keys,
-                            style: theme.textTheme.subhead,
+                            style: theme.textTheme.subtitle1,
                           ),
                         ),
                       if (privateKeys.isNotEmpty) Column(children: privateKeys),
-                      if (externalKeys?.isEmpty != true)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10, top: 25),
-                          child: Text(
-                            s.label_pgp_contact_public_keys,
-                            style: theme.textTheme.subhead,
-                          ),
-                        ),
                       if (externalKeys?.isNotEmpty == true)
-                        Column(children: externalKeys),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 10, top: 25),
+                              child: Text(
+                                s.label_pgp_contact_public_keys,
+                                style: theme.textTheme.subtitle1,
+                              ),
+                            ),
+                            ...externalKeys,
+                          ],
+                        ),
                       if (externalKeys == null)
                         Padding(
                           padding: EdgeInsets.all(16),
@@ -175,7 +179,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     );
   }
 
-  openKey(LocalPgpKey pgpKey) async {
+  Future<void> openKey(LocalPgpKey pgpKey) async {
     if (pgpKey.key == null) return;
     if (pgpKey.isPrivate) {
       final password = await KeyRequestDialog.request(context);
@@ -201,7 +205,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   @override
-  importKeyDialog() async {
+  Future<void> importKeyDialog() async {
     final result = await AMDialog.show(
       context: context,
       builder: (_) => KeyFromTextWidget(),
@@ -212,8 +216,8 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   @override
-  showImportDialog(PgpKeyMap keys) async {
-    final result = await AMDialog.show(
+  Future<void> showImportDialog(PgpKeyMap keys) async {
+    AMDialog.show(
       context: context,
       builder: (_) => ImportKeyDialog(
         keys.userKeys,
@@ -224,14 +228,14 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     );
   }
 
-  keysNotFound() {
+  Future<void> keysNotFound() async {
     AMDialog.show(
       context: context,
       builder: (_) => ErrorDialog(s.failed, s.keys_not_found),
     );
   }
 
-  generateKeyDialog() async {
+  Future<void> generateKeyDialog() async {
     final result = await AMDialog.show(
       context: context,
       builder: (_) => CreateKeyDialog(_presenter.pgpKeyUtil),
@@ -242,7 +246,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   @override
-  showError(String error) {
+  Future<void> showError(String error) async {
     showSnack(
       context: context,
       scaffoldState: _scaffoldKey.currentState,

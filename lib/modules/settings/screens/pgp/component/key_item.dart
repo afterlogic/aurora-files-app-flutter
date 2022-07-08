@@ -5,9 +5,15 @@ import 'package:flutter/material.dart';
 class KeyItem extends StatefulWidget {
   final LocalPgpKey pgpKey;
   final bool selected;
+  final bool external;
   final Function(bool) onSelect;
 
-  const KeyItem(this.pgpKey, this.selected, this.onSelect);
+  const KeyItem({
+    this.pgpKey,
+    this.selected,
+    this.external = false,
+    this.onSelect,
+  });
 
   @override
   _KeyItemState createState() => _KeyItemState();
@@ -24,7 +30,8 @@ class _KeyItemState extends State<KeyItem> {
         : "(";
 
     final description =
-        "$length ${widget.pgpKey.isPrivate ? "private" : "public"})";
+        '$length ${widget.pgpKey.isPrivate ? "private" : "public"})'
+        '${widget.external ? " (external)" : ""}';
 
     if (widget.selected != true && widget.onSelect != null) {
       textTheme = textTheme.apply(
@@ -52,7 +59,7 @@ class _KeyItemState extends State<KeyItem> {
                       widget.pgpKey.formatName(),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      style: textTheme.body1,
+                      style: textTheme.bodyText2,
                     ),
                     Text(
                       description,

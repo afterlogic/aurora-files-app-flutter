@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
@@ -272,8 +273,7 @@ class _FileWidgetState extends State<FileWidget> {
             decoration: BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.cover,
-                    image:
-                        AssetImage("lib/assets/images/image_placeholder.jpg"))),
+                    image: AssetImage(Asset.images.imagePlaceholder))),
             child: Hero(
               tag: widget.file.localId ?? widget.file.guid ?? widget.file.hash,
               child: filesState.isOfflineMode && widget.file.localPath != null

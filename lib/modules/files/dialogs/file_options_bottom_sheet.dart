@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
@@ -174,7 +175,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       ),
       child: Column(
         children: <Widget>[
-          if (widget.file.initVector == null && !offline && !BuildProperty.secureSharingEnable)
+          if (widget.file.initVector == null &&
+              !offline &&
+              !BuildProperty.secureSharingEnable)
             PublicLinkSwitch(
               file: widget.file,
               filesState: widget.filesState,
@@ -183,13 +186,15 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
           if (!isFolder && !offline) Divider(height: 0),
           if (!isFolder)
             ListTile(
-              onTap: () => onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
+              onTap: () =>
+                  onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
               leading: Icon(Icons.airplanemode_active),
               title: Text(s.offline),
               trailing: Switch.adaptive(
                 value: widget.file.localId != null,
                 activeColor: Theme.of(context).accentColor,
-                onChanged: (bool val) => onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
+                onChanged: (bool val) =>
+                    onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
               ),
             ),
           Divider(height: 0),
@@ -198,15 +203,18 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               leading: Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove),
               title: Text(s.copy_or_move),
               onTap: () {
-                widget.filesState.updateFilesCb = widget.filesPageState.onGetFiles;
+                widget.filesState.updateFilesCb =
+                    widget.filesPageState.onGetFiles;
                 widget.filesState.enableMoveMode(filesToMove: [widget.file]);
                 Navigator.pop(context);
               },
             ),
-          if (!offline && BuildProperty.secureSharingEnable && enableSecureLink())
+          if (!offline &&
+              BuildProperty.secureSharingEnable &&
+              enableSecureLink())
             ListTile(
               leading: AssetIcon(
-                "lib/assets/svg/insert_link.svg",
+                Asset.svg.insertLink,
                 addedSize: 14,
               ),
               title: Text(widget.file.initVector != null
@@ -216,13 +224,17 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!offline && enableTeamShare())
             ListTile(
-              leading: Icon(PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
+              leading: Icon(PlatformOverride.isIOS
+                  ? MdiIcons.exportVariant
+                  : Icons.share),
               title: Text(s.btn_share_to_email),
               onTap: _shareWithTeammates,
             ),
           if (!isFolder)
             ListTile(
-              leading: Icon(PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
+              leading: Icon(PlatformOverride.isIOS
+                  ? MdiIcons.exportVariant
+                  : Icons.share),
               title: Text(s.share),
               onTap: _shareFile,
             ),
@@ -268,7 +280,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     onSuccess: () => widget.filesPageState.onGetFiles(),
                     onError: (String err) => showSnack(
                       context: context,
-                      scaffoldState: widget.filesPageState.scaffoldKey.currentState,
+                      scaffoldState:
+                          widget.filesPageState.scaffoldKey.currentState,
                       msg: err,
                     ),
                   );
@@ -335,7 +348,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       s,
     );
 
-    await widget.filesState.updateFile(getCompanionFromLocalFile(preparedForShare.localFile));
+    await widget.filesState
+        .updateFile(getCompanionFromLocalFile(preparedForShare.localFile));
     setState(() {});
   }
 
@@ -363,7 +377,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
 
   _shareWithTeammates() async {
     Navigator.pop(context);
-    if (widget.file.initVector != null && widget.file.encryptedDecryptionKey == null) {
+    if (widget.file.initVector != null &&
+        widget.file.encryptedDecryptionKey == null) {
       return AMDialog.show(
         context: context,
         builder: (_) => AMDialog(
@@ -386,7 +401,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         ),
       );
       if (file is LocalFile) {
-        widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesVisible);
+        widget.filesPageState
+            .onGetFiles(showLoading: FilesLoadingType.filesVisible);
       }
     }
   }

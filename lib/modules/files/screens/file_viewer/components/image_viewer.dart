@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
@@ -197,7 +198,7 @@ class _ImageViewerState extends State<ImageViewer> {
               httpHeaders: getHeader(),
             )
           : Image.asset(
-              "lib/assets/images/image_placeholder.jpg",
+              Asset.images.imagePlaceholder,
               fit: BoxFit.cover,
             );
     }

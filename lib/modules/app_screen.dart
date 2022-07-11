@@ -54,6 +54,10 @@ class _AppState extends State<App> {
     ]);
   }
 
+  Future _updateAppSettings() async {
+    _settingsState.updateEncryptionSettings();
+  }
+
   ThemeData _getTheme(bool isDarkTheme) {
     if (isDarkTheme == false)
       return AppTheme.light;
@@ -79,6 +83,7 @@ class _AppState extends State<App> {
         builder: (_, AsyncSnapshot<List<bool>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
+            _updateAppSettings();
             return Observer(
               builder: (_) {
                 final theme = _getTheme(_settingsState.isDarkTheme);

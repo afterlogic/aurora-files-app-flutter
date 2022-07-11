@@ -4,6 +4,7 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
+import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
 import 'package:aurorafiles/modules/settings/screens/common/common_route.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption_server_setting/encryption_server_route.dart';
@@ -25,27 +26,34 @@ class SettingsAndroid extends StatefulWidget {
 
 class _SettingsAndroidState extends State<SettingsAndroid> {
   bool showDebug = false;
+  bool showEncryption = false;
   final navigatorKey = GlobalKey<SettingsNavigatorState>();
   final loggerStorage = LoggerStorage();
+  final _settingsLocal = SettingsLocalStorage();
 
   @override
   void initState() {
     super.initState();
-    loggerStorage
-        .getDebugEnable()
-        .then((value) {
-      setState(() => showDebug = value);
-    });
+    _updateShowDebug();
+    _updateShowEncryption();
+  }
+
+  Future<void> _updateShowDebug() async {
+    showDebug = await loggerStorage.getDebugEnable();
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _updateShowEncryption() async {
+    showEncryption = await _settingsLocal.getEncryptExist();
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = LayoutConfig
-        .of(context)
-        .isTablet;
+    final isTablet = LayoutConfig.of(context).isTablet;
     final current = isTablet
         ? (navigatorKey?.currentState?.current?.name ??
-        CommonSettingsRoute.name)
+            CommonSettingsRoute.name)
         : null;
     final s = Str.of(context);
     Widget body = ListView(
@@ -56,12 +64,13 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           leading: AMCircleIcon(Icons.tune),
           onTap: () => navigator().setRoot(CommonSettingsRoute.name),
         ),
-        ListTile(
-          selected: current == EncryptionServerRoute.name,
-          title: Text(s.encryption),
-          leading: AMCircleIcon(MdiIcons.alien),
-          onTap: () => navigator().setRoot(EncryptionServerRoute.name),
-        ),
+        if (showEncryption)
+          ListTile(
+            selected: current == EncryptionServerRoute.name,
+            title: Text(s.encryption),
+            leading: AMCircleIcon(MdiIcons.alien),
+            onTap: () => navigator().setRoot(EncryptionServerRoute.name),
+          ),
         if (BuildProperty.pgpEnable)
           ListTile(
             selected: current == PgpSettingsRoute.name,
@@ -82,9 +91,9 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           onTap: () => navigator().setRoot(AboutRoute.name),
           onLongPress: BuildProperty.logger
               ? () {
-            loggerStorage.setDebugEnable(true);
-            setState(() => showDebug = true);
-          }
+                  loggerStorage.setDebugEnable(true);
+                  setState(() => showDebug = true);
+                }
               : null,
         ),
         if (showDebug)
@@ -120,9 +129,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
                     child: Drawer(
                       child: ListTileTheme(
                         style: ListTileStyle.drawer,
-                        selectedColor: Theme
-                            .of(context)
-                            .accentColor,
+                        selectedColor: Theme.of(context).accentColor,
                         child: SafeArea(child: body),
                       ),
                     ),
@@ -155,8 +162,8 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           appBar: isTablet
               ? null
               : AMAppBar(
-            title: Text(s.settings),
-          ),
+                  title: Text(s.settings),
+                ),
           body: body,
         ));
   }
@@ -169,7 +176,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
     }
   }
 
-  _exit() async {
+  Future<void> _exit() async {
     final s = Str.of(context);
     final authState = AppStore.authState;
     final clearCacheText = s.clear_cache_during_logout;

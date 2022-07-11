@@ -115,4 +115,14 @@ class SettingsLocalStorage {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setBool("EncryptPersonalStorage", value);
   }
+
+  Future<bool> getEncryptExist() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool("EncryptExist") ?? false;
+  }
+
+  Future<void> setEncryptExist(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool("EncryptExist", value);
+  }
 }

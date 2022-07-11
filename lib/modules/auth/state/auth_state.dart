@@ -75,7 +75,7 @@ abstract class _AuthState with Store {
     return Future.wait([
       setIdentity(),
       setAccount(),
-      AppStore.settingsState.updateSettings(),
+      AppStore.settingsState.updateEncryptionSettings(),
       setDevice(),
       AppStore.settingsState.getUserEncryptionKeys(),
       AppStore.filesState.onGetStorages(),

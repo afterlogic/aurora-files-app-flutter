@@ -343,4 +343,6 @@ class EnString extends S {
       "The text contains no keys that can be imported.";
   final String hint_pgp_external_private_keys =
       "External private keys are not supported and will not be imported";
+  final String label_encryption_module_not_exist =
+      "The encryption module\nis not available on the backend";
 }

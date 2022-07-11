@@ -49,12 +49,12 @@ abstract class _FilesState with Store {
 
   final filesTileLeadingSize = 48.0;
 
-  final List<String> folderNavStack = new List();
+  final List<String> folderNavStack = [];
 
   bool isOfflineMode = false;
 
   @observable
-  List<Storage> currentStorages = new List();
+  List<Storage> currentStorages = [];
 
   @observable
   Quota quota;
@@ -62,7 +62,7 @@ abstract class _FilesState with Store {
   @observable
   Storage selectedStorage = dummyStorage;
 
-  List<ProcessingFile> processedFiles = new List();
+  List<ProcessingFile> processedFiles = [];
 
   @observable
   bool isMoveModeEnabled = false;
@@ -70,8 +70,8 @@ abstract class _FilesState with Store {
   @observable
   bool isShareUpload = false;
 
-  List<SharedMediaFile> filesToShareUpload = List();
-  List<LocalFile> filesToMoveCopy = new List();
+  List<SharedMediaFile> filesToShareUpload = [];
+  List<LocalFile> filesToMoveCopy = [];
 
   // after moving files, both current page and the page files were moved from have to be updated
   // this cb updates the page the files were moved from
@@ -117,7 +117,7 @@ abstract class _FilesState with Store {
   }
 
   void disableMoveMode() {
-    filesToMoveCopy = new List();
+    filesToMoveCopy = [];
     isMoveModeEnabled = false;
   }
 
@@ -180,7 +180,7 @@ abstract class _FilesState with Store {
   }
 
   disableUploadShared() {
-    filesToShareUpload = new List();
+    filesToShareUpload = [];
     isShareUpload = false;
   }
 

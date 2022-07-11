@@ -150,22 +150,28 @@ abstract class _SettingsState with Store {
     }
   }
 
-  Future<void> updateSettings() async {
+  Future<void> updateEncryptionSettings() async {
     EncryptionSetting setting;
     try {
       setting = await settingApi.getEncryptSetting();
+      await _settingsLocal.setEncryptExist(setting.exist);
+      await _settingsLocal.setEncryptEnable(setting.enable);
+      await _settingsLocal
+          .setEncryptInPersonalStorage(setting.enableInPersonalStorage);
     } catch (err) {
       print("getEncryptSetting ERROR: $err");
+      await _settingsLocal.setEncryptExist(false);
+      await _settingsLocal.setEncryptEnable(false);
+      await _settingsLocal.setEncryptInPersonalStorage(false);
     }
-    await _settingsLocal.setEncryptEnable(setting?.enable ?? false);
-    await _settingsLocal
-        .setEncryptInPersonalStorage(setting?.enableInPersonalStorage ?? false);
   }
 
   Future<EncryptionSetting> getEncryptionSetting() async {
     return EncryptionSetting(
-      await _settingsLocal.getEncryptEnable(),
-      await _settingsLocal.getEncryptInPersonalStorage(),
+      exist: await _settingsLocal.getEncryptExist(),
+      enable: await _settingsLocal.getEncryptEnable(),
+      enableInPersonalStorage:
+          await _settingsLocal.getEncryptInPersonalStorage(),
     );
   }
 

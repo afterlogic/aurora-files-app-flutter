@@ -279,4 +279,5 @@ abstract class S {
   String get btn_encryption_personal_storage;
   String get hint_pgp_no_keys_to_import;
   String get hint_pgp_external_private_keys;
+  String get label_encryption_module_not_exist;
 }

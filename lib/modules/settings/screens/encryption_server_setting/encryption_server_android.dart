@@ -24,21 +24,16 @@ class _EncryptionServerState extends State<EncryptionServer> {
   bool showBackwardCompatibility = false;
   S s;
   bool progress = false;
+  bool isInit = true;
+  bool encryptionExist;
   bool encryptionEnable;
   bool encryptionInPersonalStorage;
-  EncryptionSetting encryptionSetting;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _settingsState.getEncryptionSetting().then((value) {
-      setState(() {
-        encryptionSetting = value;
-        encryptionEnable = value.enable;
-        encryptionInPersonalStorage = value.enableInPersonalStorage;
-      });
-    });
+    _updateEncryptionSettings();
   }
 
   @override
@@ -50,79 +45,102 @@ class _EncryptionServerState extends State<EncryptionServer> {
       child: Scaffold(
         key: scaffoldKey,
         appBar: isTablet ? null : AMAppBar(title: Text(s.encryption)),
-        body: encryptionSetting == null
-            ? SizedBox.shrink()
-            : ListView(
-                padding: const EdgeInsets.all(16.0),
-                children: <Widget>[
-                  Text(
-                    s.encryption_description,
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                  CheckboxListTile(
-                    value: encryptionEnable,
-                    title: Text(s.btn_encryption_enable),
-                    onChanged: (bool value) {
-                      setState(() {
-                        encryptionEnable = value;
-                      });
-                    },
-                  ),
-                  CheckboxListTile(
-                    value: encryptionInPersonalStorage,
-                    title: Text(s.btn_encryption_personal_storage),
-                    onChanged: (bool value) {
-                      setState(() {
-                        encryptionInPersonalStorage = value;
-                      });
-                    },
-                  ),
-                  SizedBox(height: 48),
-                  AMButton(
-                    isLoading: progress,
-                    child: Text(s.btn_encryption_save),
-                    onPressed: progress ? null : save,
-                  ),
-                  SizedBox(height: 20),
-                  if (!showBackwardCompatibility)
-                    AMButton(
-                      child: Text(s.btn_enable_backward_compatibility),
-                      onPressed: () =>
-                          setState(() => showBackwardCompatibility = true),
+        body: isInit
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : !encryptionExist
+                ? Center(
+                    child: Text(
+                      s.label_encryption_module_not_exist,
+                      textAlign: TextAlign.center,
                     ),
-                  if (showBackwardCompatibility) ...[
-                    Text(s.hint_backward_compatibility_aes_key),
-                    ..._buildAddingKey(),
-                    ..._buildKeyOptions(),
-                  ]
-                ],
-              ),
+                  )
+                : ListView(
+                    padding: const EdgeInsets.all(16.0),
+                    children: <Widget>[
+                      Text(
+                        s.encryption_description,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                      CheckboxListTile(
+                        value: encryptionEnable,
+                        title: Text(s.btn_encryption_enable),
+                        onChanged: (bool value) {
+                          setState(() {
+                            encryptionEnable = value;
+                          });
+                        },
+                      ),
+                      CheckboxListTile(
+                        value: encryptionInPersonalStorage,
+                        title: Text(s.btn_encryption_personal_storage),
+                        onChanged: (bool value) {
+                          setState(() {
+                            encryptionInPersonalStorage = value;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 48),
+                      AMButton(
+                        isLoading: progress,
+                        child: Text(s.btn_encryption_save),
+                        onPressed: progress ? null : () => _onSave(context),
+                      ),
+                      SizedBox(height: 20),
+                      if (!showBackwardCompatibility)
+                        AMButton(
+                          child: Text(s.btn_enable_backward_compatibility),
+                          onPressed: () =>
+                              setState(() => showBackwardCompatibility = true),
+                        ),
+                      if (showBackwardCompatibility) ...[
+                        Text(s.hint_backward_compatibility_aes_key),
+                        ..._buildAddingKey(),
+                        ..._buildKeyOptions(),
+                      ]
+                    ],
+                  ),
       ),
     );
   }
 
-  save() async {
-    setState(() {
-      progress = true;
-    });
-    _settingsState
-        .setEncryptionSetting(
-      EncryptionSetting(
-        encryptionEnable,
-        encryptionInPersonalStorage,
-      ),
-    )
-        .then((_) {
+  Future<void> _updateEncryptionSettings() async {
+    await AppStore.settingsState.updateEncryptionSettings();
+    final settings = await _settingsState.getEncryptionSetting();
+    encryptionExist = settings.exist;
+    encryptionEnable = settings.enable;
+    encryptionInPersonalStorage = settings.enableInPersonalStorage;
+    isInit = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _onSave(BuildContext context) async {
+    _setProgress(true);
+    try {
+      await _settingsState.setEncryptionSetting(
+        EncryptionSetting(
+          exist: encryptionExist,
+          enable: encryptionEnable,
+          enableInPersonalStorage: encryptionInPersonalStorage,
+        ),
+      );
       _refreshStorages();
       Navigator.pop(context);
-    }).catchError((e) {
-      setState(() {
-        progress = false;
-      });
+    } catch (err) {
+      _setProgress(false);
       showSnack(
           context: context,
           scaffoldState: scaffoldKey.currentState,
-          msg: e.toString());
+          msg: err.toString());
+    }
+  }
+
+  void _setProgress(bool value) {
+    setState(() {
+      progress = value;
     });
   }
 

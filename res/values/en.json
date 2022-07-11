@@ -271,5 +271,6 @@
   "clear_cache_during_logout": "Delete cached data and keys",
   "btn_encryption_personal_storage": "Allow encrypt files in Personal Storage",
   "hint_pgp_no_keys_to_import": "The text contains no keys that can be imported.",
-  "hint_pgp_external_private_keys": "External private keys are not supported and will not be imported"
+  "hint_pgp_external_private_keys": "External private keys are not supported and will not be imported",
+  "label_encryption_module_not_exist": "The encryption module\nis not available on the backend"
 }

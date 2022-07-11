@@ -111,7 +111,7 @@ abstract class _SettingsState with Store {
     }
   }
 
-  onShareEncryptionKey(Rect rect) {
+  void onShareEncryptionKey(Rect rect) {
     Share.share(
       encryptionKeys[selectedKeyName],
       subject: selectedKeyName,
@@ -150,16 +150,16 @@ abstract class _SettingsState with Store {
     }
   }
 
-  Future updateSettings() async {
+  Future<void> updateSettings() async {
     EncryptionSetting setting;
     try {
       setting = await settingApi.getEncryptSetting();
     } catch (err) {
       print("getEncryptSetting ERROR: $err");
     }
-    await _settingsLocal.setEncryptEnable(setting.enable ?? false);
+    await _settingsLocal.setEncryptEnable(setting?.enable ?? false);
     await _settingsLocal
-        .setEncryptInPersonalStorage(setting.enableInPersonalStorage ?? false);
+        .setEncryptInPersonalStorage(setting?.enableInPersonalStorage ?? false);
   }
 
   Future<EncryptionSetting> getEncryptionSetting() async {
@@ -169,7 +169,7 @@ abstract class _SettingsState with Store {
     );
   }
 
-  Future setEncryptionSetting(EncryptionSetting setting) async {
+  Future<void> setEncryptionSetting(EncryptionSetting setting) async {
     await settingApi.setEncryptSetting(setting);
     await _settingsLocal.setEncryptEnable(setting.enable);
     await _settingsLocal

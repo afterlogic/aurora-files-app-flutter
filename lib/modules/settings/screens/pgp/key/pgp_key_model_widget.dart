@@ -1,3 +1,4 @@
+import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
@@ -41,9 +42,11 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint('!!! state = $state');
+    Logger.notifications('PgpKeyModelWidget, state = $state');
     if (state == AppLifecycleState.inactive && !isPoped) {
       isPoped = true;
-      Navigator.pop(context);
+      // Navigator.pop(context);
     }
     super.didChangeAppLifecycleState(state);
   }
@@ -150,7 +153,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
   }
 
-  share() async {
+  Future<void> share() async {
     if (widget._pgpKey.isPrivate) {
       final result = await AMConfirmationDialog.show(
         context,
@@ -174,7 +177,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
   }
 
-  download() async {
+  Future<void> download() async {
     if (widget._pgpKey.isPrivate) {
       final result = await AMConfirmationDialog.show(
         context,
@@ -188,7 +191,6 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
       }
     }
     final result = await widget._pgpKeyUtil.downloadKey(widget._pgpKey);
-
     showSnack(
       context: context,
       scaffoldState: _scaffoldKey.currentState,
@@ -197,7 +199,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
   }
 
-  delete() async {
+  Future<void> delete() async {
     final result = await AMDialog.show(
       context: context,
       builder: (_) {
@@ -207,9 +209,14 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
     if (result == true) {
       if (widget._pgpKey.id != null) {
+        Logger.notifications('PgpKeyModelWidget, pgpKeyUtil.deleteKey - start');
         await widget._pgpKeyUtil.deleteKey(widget._pgpKey);
+        Logger.notifications('PgpKeyModelWidget, pgpKeyUtil.deleteKey - end');
+
       } else {
+        Logger.notifications('PgpKeyModelWidget, presenter.deleteKey - start');
         widget.presenter.deleteKey(widget._pgpKey.email);
+        Logger.notifications('PgpKeyModelWidget, presenter.deleteKey - end');
       }
       Navigator.pop(context, true);
     }

@@ -75,11 +75,13 @@ class _EncryptionServerState extends State<EncryptionServer> {
                       CheckboxListTile(
                         value: encryptionInPersonalStorage,
                         title: Text(s.btn_encryption_personal_storage),
-                        onChanged: (bool value) {
-                          setState(() {
-                            encryptionInPersonalStorage = value;
-                          });
-                        },
+                        onChanged: encryptionEnable
+                            ? (bool value) {
+                                setState(() {
+                                  encryptionInPersonalStorage = value;
+                                });
+                              }
+                            : null,
                       ),
                       SizedBox(height: 48),
                       AMButton(
@@ -88,13 +90,13 @@ class _EncryptionServerState extends State<EncryptionServer> {
                         onPressed: progress ? null : () => _onSave(context),
                       ),
                       SizedBox(height: 20),
-                      if (!showBackwardCompatibility)
+                      if (!showBackwardCompatibility && encryptionEnable)
                         AMButton(
                           child: Text(s.btn_enable_backward_compatibility),
                           onPressed: () =>
                               setState(() => showBackwardCompatibility = true),
                         ),
-                      if (showBackwardCompatibility) ...[
+                      if (showBackwardCompatibility && encryptionEnable) ...[
                         Text(s.hint_backward_compatibility_aes_key),
                         ..._buildAddingKey(),
                         ..._buildKeyOptions(),

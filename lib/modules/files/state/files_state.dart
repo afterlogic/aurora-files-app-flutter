@@ -38,7 +38,12 @@ part 'files_state.g.dart';
 class FilesState = _FilesState with _$FilesState;
 
 final dummyStorage = new Storage(
-    type: "", displayName: "", isExternal: false, isDroppable: false, order: 0);
+  type: StorageType.personal,
+  displayName: "",
+  isExternal: false,
+  isDroppable: false,
+  order: 0,
+);
 
 // Global files state
 abstract class _FilesState with Store {
@@ -49,12 +54,12 @@ abstract class _FilesState with Store {
 
   final filesTileLeadingSize = 48.0;
 
-  final List<String> folderNavStack = new List();
+  final List<String> folderNavStack = [];
 
   bool isOfflineMode = false;
 
   @observable
-  List<Storage> currentStorages = new List();
+  List<Storage> currentStorages = [];
 
   @observable
   Quota quota;
@@ -62,7 +67,7 @@ abstract class _FilesState with Store {
   @observable
   Storage selectedStorage = dummyStorage;
 
-  List<ProcessingFile> processedFiles = new List();
+  List<ProcessingFile> processedFiles = [];
 
   @observable
   bool isMoveModeEnabled = false;
@@ -70,8 +75,8 @@ abstract class _FilesState with Store {
   @observable
   bool isShareUpload = false;
 
-  List<SharedMediaFile> filesToShareUpload = List();
-  List<LocalFile> filesToMoveCopy = new List();
+  List<SharedMediaFile> filesToShareUpload = [];
+  List<LocalFile> filesToMoveCopy = [];
 
   // after moving files, both current page and the page files were moved from have to be updated
   // this cb updates the page the files were moved from
@@ -117,7 +122,7 @@ abstract class _FilesState with Store {
   }
 
   void disableMoveMode() {
-    filesToMoveCopy = new List();
+    filesToMoveCopy = [];
     isMoveModeEnabled = false;
   }
 
@@ -158,21 +163,23 @@ abstract class _FilesState with Store {
 
   Future<void> refreshQuota() async {
     final response = await _filesApi.getFiles(
-      AppStore.filesState.selectedStorage.type,
+      StorageTypeHelper.toName(
+        AppStore.filesState.selectedStorage.type,
+      ),
       "",
       "",
     );
     quota = response.quota;
   }
 
-  Future<LocalFile> getFileFromServer(LocalFile file) {
-    return _filesApi.getFiles(file.type, file.path, file.name).then(
-          (value) => value.items.firstWhere(
-            (element) => element.name == file.name,
-            orElse: () => null,
-          ),
-        );
-  }
+  // Future<LocalFile> getFileFromServer(LocalFile file) {
+  //   return _filesApi.getFiles(file.type, file.path, file.name).then(
+  //         (value) => value.items.firstWhere(
+  //           (element) => element.name == file.name,
+  //           orElse: () => null,
+  //         ),
+  //       );
+  // }
 
   onUploadShared(List<SharedMediaFile> files) {
     isShareUpload = true;
@@ -180,7 +187,7 @@ abstract class _FilesState with Store {
   }
 
   disableUploadShared() {
-    filesToShareUpload = new List();
+    filesToShareUpload = [];
     isShareUpload = false;
   }
 
@@ -252,7 +259,7 @@ abstract class _FilesState with Store {
         copy: copy,
         files: mappedFiles,
         fromType: filesToMoveCopy[0].type,
-        toType: selectedStorage.type,
+        toType: StorageTypeHelper.toName(selectedStorage.type),
         fromPath: filesToMoveCopy[0].path,
         toPath: toPath,
       );
@@ -314,7 +321,12 @@ abstract class _FilesState with Store {
   }) async {
     try {
       final String link = await _filesApi.createPublicLink(
-          selectedStorage.type, path, name, size, isFolder);
+        StorageTypeHelper.toName(selectedStorage.type),
+        path,
+        name,
+        size,
+        isFolder,
+      );
       onSuccess(link);
     } catch (err) {
       onError(err.toString());
@@ -334,7 +346,7 @@ abstract class _FilesState with Store {
   }) async {
     try {
       final SecureLink result = await _filesApi.createSecureLink(
-        selectedStorage.type,
+        StorageTypeHelper.toName(selectedStorage.type),
         path,
         name,
         size,
@@ -356,7 +368,11 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     try {
-      await _filesApi.deletePublicLink(selectedStorage.type, path, name);
+      await _filesApi.deletePublicLink(
+        StorageTypeHelper.toName(selectedStorage.type),
+        path,
+        name,
+      );
       onSuccess();
     } catch (err) {
       onError(err.toString());
@@ -482,7 +498,7 @@ abstract class _FilesState with Store {
         shouldEncrypt,
         name: name,
         passwordEncryption: passwordEncryption,
-        storageType: selectedStorage.type,
+        storageType: StorageTypeHelper.toName(selectedStorage.type),
         path: path,
         password: password,
         encryptionRecipientEmail: encryptionRecipientEmail,
@@ -496,7 +512,7 @@ abstract class _FilesState with Store {
           onError(err.toString());
         },
       );
-    } catch (err, s) {
+    } catch (err) {
       deleteFromProcessing(processingFile.guid);
       onError(err.toString());
     }
@@ -586,7 +602,7 @@ abstract class _FilesState with Store {
         );
         processingFile.subscription = sub;
       }
-    } catch (err, s) {
+    } catch (err) {
       onError(err.toString());
       deleteFromProcessing(file.guid);
     }

@@ -5,7 +5,7 @@ import 'package:moor_flutter/moor_flutter.dart';
 
 Storage getStorageFromName(String name) {
   return new Storage(
-    type: name,
+    type: StorageTypeHelper.toEnum(name),
     displayName: name[0].toUpperCase() + name.substring(1),
     isExternal: false,
     isDroppable: false,
@@ -46,7 +46,9 @@ FilesCompanion getCompanionFromLocalFile(LocalFile file, [String pathToFile]) {
 }
 
 LocalFile getFolderFromName(String name, String path) {
-  String storageType = AppStore.filesState.selectedStorage.type;
+  String storageType = StorageTypeHelper.toName(
+    AppStore.filesState.selectedStorage.type,
+  );
   String userEmail = AppStore.authState.userEmail;
   return new LocalFile(
     localId: null,

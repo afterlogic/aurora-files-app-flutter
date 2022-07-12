@@ -24,7 +24,9 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
 
   String get hostName => AppStore.authState.hostName;
 
-  String get storageType => AppStore.filesState.selectedStorage.type;
+  String get storageType => StorageTypeHelper.toName(
+        AppStore.filesState.selectedStorage.type,
+      );
 
   Future<List<LocalFile>> getAllFiles() {
     return (select(files)..where((file) => file.owner.equals(userEmail))).get();

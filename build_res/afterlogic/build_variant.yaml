@@ -17,4 +17,4 @@ autodiscover_url: "https://{domain}/aurora-autodiscover.json?email={email}"
 
 pgpEnable: true
 secureSharingEnable: true
-sharingEnable: true
+teamSharingEnable: true

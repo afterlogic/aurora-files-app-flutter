@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:flutter/foundation.dart';
 
 class SettingApi {
   Future<EncryptionSetting> getEncryptSetting() async {
@@ -24,7 +25,7 @@ class SettingApi {
     }
   }
 
-  Future setEncryptSetting(EncryptionSetting encryptionSetting) async {
+  Future<void> setEncryptSetting(EncryptionSetting encryptionSetting) async {
     final parameters = json.encode({
       "EnableModule": encryptionSetting.enable,
       "EnableInPersonalStorage": encryptionSetting.enableInPersonalStorage,
@@ -43,6 +44,26 @@ class SettingApi {
       throw CustomException(getErrMsg(resBody));
     }
   }
+
+  Future<AppData> getAppData() async {
+    final body = ApiBody(
+      module: "Core",
+      method: "GetAppData",
+    );
+    final resBody = await sendRequest(body);
+    final result = resBody['Result'];
+    if (result != null) {
+      final modules = (result['Core']['AvailableClientModules'] as List)
+          .map((e) => e as String)
+          .toList();
+      final appData = AppData(
+        availableClientModules: modules,
+      );
+      return appData;
+    } else {
+      throw CustomException(getErrMsg(resBody));
+    }
+  }
 }
 
 class EncryptionSetting {
@@ -50,4 +71,10 @@ class EncryptionSetting {
   final bool enableInPersonalStorage;
 
   EncryptionSetting(this.enable, this.enableInPersonalStorage);
+}
+
+class AppData {
+  final List<String> availableClientModules;
+
+  AppData({@required this.availableClientModules});
 }

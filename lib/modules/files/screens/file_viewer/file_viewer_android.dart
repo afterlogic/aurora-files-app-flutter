@@ -75,9 +75,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       ? [StorageType.corporate, StorageType.personal].contains(storageType)
       : storageType != StorageType.shared;
 
-  bool get _enableTeamShare => isFolder
-      ? storageType == StorageType.personal
-      : [StorageType.encrypted, StorageType.personal].contains(storageType);
+  bool get _enableTeamShare =>
+      storageType == StorageType.personal &&
+      AppStore.settingsState.isTeamSharingEnable;
 
   @override
   void initState() {
@@ -241,7 +241,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     );
   }
 
-  Future _setFileForOffline() async {
+  Future<void> _setFileForOffline() async {
     if (widget.filesState.isOfflineMode) {
       widget.filesState.onSetFileOffline(_file, context,
           onStart: (process) {
@@ -304,7 +304,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
   }
 
-  _shareWithTeammates() async {
+  Future<void> _shareWithTeammates() async {
     if (widget.immutableFile.initVector != null &&
         widget.immutableFile.encryptedDecryptionKey == null) {
       return AMDialog.show(
@@ -337,7 +337,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     }
   }
 
-  _secureSharing() async {
+  Future<void> _secureSharing() async {
     if (_file.published == false && widget.immutableFile.initVector != null) {
       if (widget.immutableFile.encryptedDecryptionKey == null) {
         return AMDialog.show(
@@ -372,7 +372,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     setState(() {});
   }
 
-  _secureEncryptSharing(PreparedForShare preparedForShare) async {
+  Future<void> _secureEncryptSharing(PreparedForShare preparedForShare) async {
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
@@ -543,10 +543,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           PopupMenuItem(
                             value: _shareWithTeammates,
                             child: ListTile(
-                              leading: Icon(PlatformOverride.isIOS
-                                  ? MdiIcons.exportVariant
-                                  : Icons.share),
-                              title: Text(s.btn_share_to_email),
+                              leading: Icon(Icons.share),
+                              title: Text(s.label_share_with_teammates),
                             ),
                           ),
                         PopupMenuItem(

@@ -54,6 +54,10 @@ class _AppState extends State<App> {
     ]);
   }
 
+  Future _updateAppSettings() async {
+    _settingsState.updateAppData();
+  }
+
   ThemeData _getTheme(bool isDarkTheme) {
     if (isDarkTheme == false)
       return AppTheme.light;
@@ -79,6 +83,7 @@ class _AppState extends State<App> {
         builder: (_, AsyncSnapshot<List<bool>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
+            _updateAppSettings();
             return Observer(
               builder: (_) {
                 final theme = _getTheme(_settingsState.isDarkTheme);
@@ -113,7 +118,9 @@ class _AppState extends State<App> {
                     child: SelectableText(
                         "Could not start the app, please make a screenshot of the error and send it to support@afterlogic.com and we'll fix it!\nERROR: $err")));
           } else {
-            return Material(child: LoginGradient());
+            return Material(
+              child: LoginGradient(),
+            );
           }
         });
   }

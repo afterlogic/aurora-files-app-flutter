@@ -4,6 +4,7 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_to_email_dialog.dart';
@@ -89,6 +90,23 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
   S s;
   SecureSharing secureSharing = DI.get();
+  StorageType storageType;
+  bool isFolder;
+
+  bool get _enableSecureLink => isFolder
+      ? [StorageType.corporate, StorageType.personal].contains(storageType)
+      : storageType != StorageType.shared;
+
+  bool get _enableTeamShare =>
+      storageType == StorageType.personal &&
+      AppStore.settingsState.isTeamSharingEnable;
+
+  @override
+  void initState() {
+    super.initState();
+    storageType = StorageTypeHelper.toEnum(widget.file.type);
+    isFolder = widget.file.isFolder;
+  }
 
   void _download() async {
     bool canDownload = true;
@@ -147,27 +165,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
-    final storage = widget.file.type;
-    final isFolder = widget.file.isFolder;
     final offline = widget.filesState.isOfflineMode;
     final isTablet = LayoutConfig.of(context).isTablet;
-    bool enableSecureLink() {
-      if (isFolder) {
-        return false;
-        return ["corporate", "personal"].contains(storage);
-      } else {
-        return storage != "shared";
-      }
-    }
-
-    bool enableTeamShare() {
-      if (isFolder) {
-        return storage == "personal";
-      } else {
-        return ["encrypted", "personal"].contains(storage);
-      }
-    }
-
     Widget content = SingleChildScrollView(
       padding: EdgeInsets.only(
         top: 0.0,
@@ -211,7 +210,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!offline &&
               BuildProperty.secureSharingEnable &&
-              enableSecureLink())
+              _enableSecureLink)
             ListTile(
               leading: AssetIcon(
                 Asset.svg.insertLink,
@@ -222,12 +221,10 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   : s.btn_shareable_link),
               onTap: _secureSharing,
             ),
-          if (!offline && enableTeamShare())
+          if (!offline && _enableTeamShare)
             ListTile(
-              leading: Icon(PlatformOverride.isIOS
-                  ? MdiIcons.exportVariant
-                  : Icons.share),
-              title: Text(s.btn_share_to_email),
+              leading: Icon(Icons.share),
+              title: Text(s.label_share_with_teammates),
               onTap: _shareWithTeammates,
             ),
           if (!isFolder)
@@ -375,7 +372,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     setState(() {});
   }
 
-  _shareWithTeammates() async {
+  Future<void> _shareWithTeammates() async {
     Navigator.pop(context);
     if (widget.file.initVector != null &&
         widget.file.encryptedDecryptionKey == null) {
@@ -384,7 +381,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         builder: (_) => AMDialog(
           content: Text(s.error_backward_compatibility_sharing_not_supported),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text(s.oK),
               onPressed: () => Navigator.pop(context),
             ),

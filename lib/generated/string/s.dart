@@ -233,7 +233,7 @@ abstract class S {
   String get btn_pgp_import_selected_key;
   String get label_pgp_contact_public_keys;
   String error_pgp_required_key(String user);
-  String get btn_share_to_email;
+  String get label_share_with_teammates;
   String get hint_pgp_share_warning;
   String get label_pgp_share_warning;
   String get hint_share_folder;

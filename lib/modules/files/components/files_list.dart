@@ -28,10 +28,10 @@ class _FilesListState extends State<FilesList> {
       padding: EdgeInsets.only(bottom: mq.padding.bottom + 70.0),
       itemCount: widget._filesPageState.currentFiles.length,
       itemBuilder: (BuildContext context, int index) {
-        if (widget._filesPageState.currentFiles.isEmpty) return SizedBox();
+        if (widget._filesPageState.currentFiles.isEmpty) return SizedBox.shrink();
         final item = widget._filesPageState.currentFiles[index];
         if (item == null) {
-          return SizedBox();
+          return SizedBox.shrink();
         } else if (item.isFolder) {
           return FolderWidget(key: Key(item.guid), folder: item);
         } else {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
@@ -27,10 +28,16 @@ abstract class _SettingsState with Store {
   bool isParanoidEncryptionEnabled = true;
 
   @observable
-  Map<String, String> encryptionKeys = new Map();
+  Map<String, String> encryptionKeys = {};
 
   @observable
   String selectedKeyName;
+
+  List<String> _availableModules = [];
+
+  bool get isTeamSharingEnable =>
+      BuildProperty.teamSharingEnable &&
+      _availableModules.contains('SharedFiles');
 
   String get currentKey => encryptionKeys[selectedKeyName];
 
@@ -150,7 +157,7 @@ abstract class _SettingsState with Store {
     }
   }
 
-  Future updateSettings() async {
+  Future updateEncryptionSettings() async {
     EncryptionSetting setting;
     try {
       setting = await settingApi.getEncryptSetting();
@@ -174,5 +181,14 @@ abstract class _SettingsState with Store {
     await _settingsLocal.setEncryptEnable(setting.enable);
     await _settingsLocal
         .setEncryptInPersonalStorage(setting.enableInPersonalStorage);
+  }
+
+  Future updateAppData() async {
+    try {
+      final appData = await settingApi.getAppData();
+      _availableModules = appData.availableClientModules;
+    } catch (err) {
+      print("getAppData ERROR: $err");
+    }
   }
 }

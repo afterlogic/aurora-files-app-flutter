@@ -121,7 +121,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   Widget build(BuildContext context) {
     s = Str.of(context);
     return AMDialog(
-      title: Text(s.btn_share_to_email),
+      title: Text(s.label_share_with_teammates),
       content: SizedBox(
         width: double.infinity,
         child: SingleChildScrollView(

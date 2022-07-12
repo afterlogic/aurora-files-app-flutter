@@ -85,7 +85,7 @@ class _FileWidgetState extends State<FileWidget> {
     if (mounted) setState(() => _progress = num);
   }
 
-  Future _showModalBottomSheet(context) async {
+  Future<void> _showModalBottomSheet(context) async {
     final result = await FileOptionsBottomSheet.show(
       context: context,
       file: widget.file,
@@ -410,7 +410,7 @@ class _FileWidgetState extends State<FileWidget> {
                                 if (hasShares)
                                   Icon(
                                     Icons.share,
-                                    semanticLabel: s.btn_share_to_email,
+                                    semanticLabel: s.label_share_with_teammates,
                                   ),
                                 if (hasShares) SizedBox(width: margin),
                                 if (widget.file.published)

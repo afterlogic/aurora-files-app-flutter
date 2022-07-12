@@ -258,11 +258,11 @@ class _FilesAndroidState extends State<FilesAndroid>
           Icon(Icons.signal_wifi_off, size: 48.0),
           Text(s.no_internet_connection),
           SizedBox(height: 16.0),
-          FlatButton(
+          TextButton(
             child: Text(s.retry),
             onPressed: () => _getFiles(context),
           ),
-          FlatButton(
+          TextButton(
             child: Text(s.go_offline),
             onPressed: () => _goOffline(),
           ),

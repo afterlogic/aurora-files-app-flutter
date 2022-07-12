@@ -57,10 +57,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "3da7d4a3161d816ca60acd2b1eb62010e927fefb"
+      resolved-ref: "38cae2a81de9555b93b212980ae62cbe91633af4"
       url: "https://github.com/afterlogic/aurora_ui_kit_flutter.git"
     source: git
-    version: "0.0.4"
+    version: "0.0.5"
   bloc:
     dependency: transitive
     description:
@@ -665,7 +665,7 @@ packages:
       name: material_design_icons_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.6595"
+    version: "5.0.6996"
   meta:
     dependency: "direct main"
     description:

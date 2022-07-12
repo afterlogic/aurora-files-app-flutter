@@ -4,13 +4,13 @@ import 'dart:io';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/upload_options.dart';
 import 'package:aurorafiles/modules/files/dialogs/encrypt_ask_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
-import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
@@ -194,10 +194,11 @@ class _FilesAndroidState extends State<FilesAndroid>
         final encryptionSettings = await _settingsState.getEncryptionSetting();
         bool shouldEncrypt = false;
         if (encryptionSettings.enable) {
-          shouldEncrypt = _filesState.selectedStorage.type == "encrypted";
+          shouldEncrypt =
+              _filesState.selectedStorage.type == StorageType.encrypted;
         }
         if (encryptionSettings.enableInPersonalStorage &&
-            _filesState.selectedStorage.type == "personal") {
+            _filesState.selectedStorage.type == StorageType.personal) {
           shouldEncrypt = await AMDialog.show<bool>(
               builder: (_) => EncryptAskDialog(
                   file.path.split(Platform.pathSeparator).last),
@@ -424,7 +425,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                               ConnectivityResult.none &&
                           _filesPageState.currentFiles.isEmpty) ||
                       _filesPageState.isSearchMode ||
-                      _filesState.selectedStorage.type == "shared" ||
+                      _filesState.selectedStorage.type == StorageType.shared ||
                       _filesPageState.isInsideZip
                   ? SizedBox()
                   : FloatingActionButton(

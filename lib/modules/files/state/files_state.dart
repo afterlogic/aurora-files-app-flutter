@@ -222,7 +222,7 @@ abstract class _FilesState with Store {
           onUploadStart: (_) {},
           onSuccess: onSuccess,
           onError: onError,
-          shouldEncrypt: selectedStorage.type == "encrypted",
+          shouldEncrypt: selectedStorage.type == StorageType.encrypted,
         );
       }
     } catch (e) {}

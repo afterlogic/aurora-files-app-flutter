@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/auth/auth_android.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
@@ -50,6 +48,8 @@ class AppNavigation {
   static String currentRoute = "/";
 
   static Route onGenerateRoute(RouteSettings settings) {
+    debugPrint('!!! onGenerateRoute: ${settings.name}');
+
     if (settings.name.startsWith(FilesRoute.name)) {
       final FilesScreenArguments args = settings.arguments;
       if (PlatformOverride.isIOS && false) {

@@ -1,10 +1,10 @@
-import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
+import 'package:aurorafiles/modules/settings/settings_navigator.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -22,34 +22,10 @@ class PgpKeyModelWidget extends StatefulWidget {
   _PgpKeyModelWidgetState createState() => _PgpKeyModelWidgetState();
 }
 
-class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
-    with WidgetsBindingObserver {
+class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>{
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isPoped = false;
   S s;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    WidgetsBinding.instance.removeObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    debugPrint('!!! state = $state');
-    Logger.notifications('PgpKeyModelWidget, state = $state');
-    if (state == AppLifecycleState.inactive && !isPoped) {
-      isPoped = true;
-      // Navigator.pop(context);
-    }
-    super.didChangeAppLifecycleState(state);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,19 +99,19 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     final children = <Widget>[
       AMButton(
         child: Text(s.share),
-        onPressed: share,
+        onPressed: () => share(context),
       ),
       space,
       if (!PlatformOverride.isIOS) ...[
         AMButton(
           child: Text(s.download),
-          onPressed: download,
+          onPressed: () => download(context),
         ),
         space,
       ],
       AMButton(
         child: Text(s.delete),
-        onPressed: delete,
+        onPressed: () => delete(context),
       ),
     ];
     return Padding(
@@ -153,7 +129,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
   }
 
-  Future<void> share() async {
+  Future<void> share(BuildContext context) async {
     if (widget._pgpKey.isPrivate) {
       final result = await AMConfirmationDialog.show(
         context,
@@ -177,7 +153,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
   }
 
-  Future<void> download() async {
+  Future<void> download(BuildContext context) async {
     if (widget._pgpKey.isPrivate) {
       final result = await AMConfirmationDialog.show(
         context,
@@ -199,7 +175,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
   }
 
-  Future<void> delete() async {
+  Future<void> delete(BuildContext context) async {
     final result = await AMDialog.show(
       context: context,
       builder: (_) {
@@ -209,16 +185,12 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
     if (result == true) {
       if (widget._pgpKey.id != null) {
-        Logger.notifications('PgpKeyModelWidget, pgpKeyUtil.deleteKey - start');
         await widget._pgpKeyUtil.deleteKey(widget._pgpKey);
-        Logger.notifications('PgpKeyModelWidget, pgpKeyUtil.deleteKey - end');
 
       } else {
-        Logger.notifications('PgpKeyModelWidget, presenter.deleteKey - start');
-        widget.presenter.deleteKey(widget._pgpKey.email);
-        Logger.notifications('PgpKeyModelWidget, presenter.deleteKey - end');
+        await widget.presenter.deleteKey(widget._pgpKey.email);
       }
-      Navigator.pop(context, true);
+      SettingsNavigatorWidget.of(context).pop();
     }
   }
 }

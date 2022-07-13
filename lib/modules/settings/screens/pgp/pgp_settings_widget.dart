@@ -187,14 +187,10 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
         return;
       }
     }
-    final result = await SettingsNavigatorWidget.of(context).pushNamed(
+    await SettingsNavigatorWidget.of(context).pushNamed(
       PgpKeyModelRoute.name,
       arguments: [_presenter, pgpKey, _presenter.pgpKeyUtil],
     );
-
-    if (result == true) {
-      _presenter.refreshKeys();
-    }
   }
 
   exportAll(List<LocalPgpKey> keys) async {

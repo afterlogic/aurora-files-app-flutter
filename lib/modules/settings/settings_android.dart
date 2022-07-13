@@ -62,33 +62,33 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           selected: current == CommonSettingsRoute.name,
           title: Text(s.common),
           leading: AMCircleIcon(Icons.tune),
-          onTap: () => navigator().setRoot(CommonSettingsRoute.name),
+          onTap: () => navigator(context).setRoot(CommonSettingsRoute.name),
         ),
         if (showEncryption)
           ListTile(
             selected: current == EncryptionServerRoute.name,
             title: Text(s.encryption),
             leading: AMCircleIcon(MdiIcons.alien),
-            onTap: () => navigator().setRoot(EncryptionServerRoute.name),
+            onTap: () => navigator(context).setRoot(EncryptionServerRoute.name),
           ),
         if (BuildProperty.pgpEnable)
           ListTile(
             selected: current == PgpSettingsRoute.name,
             title: Text(s.openPGP),
             leading: AMCircleIcon(MdiIcons.key),
-            onTap: () => navigator().setRoot(PgpSettingsRoute.name),
+            onTap: () => navigator(context).setRoot(PgpSettingsRoute.name),
           ),
         ListTile(
           selected: current == StorageInfoRoute.name,
           title: Text(s.storage_info),
           leading: AMCircleIcon(Icons.storage),
-          onTap: () => navigator().setRoot(StorageInfoRoute.name),
+          onTap: () => navigator(context).setRoot(StorageInfoRoute.name),
         ),
         ListTile(
           selected: current == AboutRoute.name,
           title: Text(s.about),
           leading: AMCircleIcon(Icons.info_outline),
-          onTap: () => navigator().setRoot(AboutRoute.name),
+          onTap: () => navigator(context).setRoot(AboutRoute.name),
           onLongPress: BuildProperty.logger
               ? () {
                   loggerStorage.setDebugEnable(true);
@@ -101,7 +101,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             selected: current == LoggerRoute.name,
             leading: AMCircleIcon(Icons.perm_device_information),
             title: Text("Debug"),
-            onTap: () => navigator().setRoot(LoggerRoute.name),
+            onTap: () => navigator(context).setRoot(LoggerRoute.name),
           ),
         ListTile(
           selected: current == AuthRoute.name,
@@ -168,7 +168,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
         ));
   }
 
-  SettingsNavigator navigator() {
+  SettingsNavigator navigator(BuildContext context) {
     if (navigatorKey.currentState != null) {
       return navigatorKey.currentState;
     } else {

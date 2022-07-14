@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/localization_string_widget.dart';
 import 'package:aurorafiles/http/interceptor.dart';
@@ -84,32 +85,34 @@ class _AppState extends State<App> {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
             _updateAppSettings();
-            return Observer(
-              builder: (_) {
-                final theme = _getTheme(_settingsState.isDarkTheme);
-                return MaterialApp(
-                  navigatorKey: navigatorKey,
-                  debugShowCheckedModeBanner: false,
-                  title: BuildProperty.appName,
-                  theme: theme ?? AppTheme.light,
-                  darkTheme: theme ?? AppTheme.dark,
-                  onGenerateRoute: AppNavigation.onGenerateRoute,
-                  localizationsDelegates: [
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                    LocalizationStringWidget.delegate,
-                  ],
-                  supportedLocales:
-                      LocalizationStringWidget.delegate.supportedLocales,
-                  localeResolutionCallback: LocalizationStringWidget.delegate
-                      .resolution(
-                          fallback: new Locale("en", ""), withCountry: false),
-                  initialRoute: _canEnterMainApp(snapshot.data)
-                      ? FilesRoute.name
-                      : AuthRoute.name,
-                );
-              },
+            return LoggerControllerWidget.wrap(
+              Observer(
+                builder: (_) {
+                  final theme = _getTheme(_settingsState.isDarkTheme);
+                  return MaterialApp(
+                    navigatorKey: navigatorKey,
+                    debugShowCheckedModeBanner: false,
+                    title: BuildProperty.appName,
+                    theme: theme ?? AppTheme.light,
+                    darkTheme: theme ?? AppTheme.dark,
+                    onGenerateRoute: AppNavigation.onGenerateRoute,
+                    localizationsDelegates: [
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                      LocalizationStringWidget.delegate,
+                    ],
+                    supportedLocales:
+                        LocalizationStringWidget.delegate.supportedLocales,
+                    localeResolutionCallback: LocalizationStringWidget.delegate
+                        .resolution(
+                            fallback: new Locale("en", ""), withCountry: false),
+                    initialRoute: _canEnterMainApp(snapshot.data)
+                        ? FilesRoute.name
+                        : AuthRoute.name,
+                  );
+                },
+              ),
             );
           } else if (snapshot.hasError) {
             final err = snapshot.error.toString();

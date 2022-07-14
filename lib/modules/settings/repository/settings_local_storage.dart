@@ -86,43 +86,63 @@ class SettingsLocalStorage {
     return secureStorage.delete(key: nameWithOwner);
   }
 
+  static const _isDarkThemeEnabled = "isDarkThemeEnabled";
+
   Future<bool> getDarkThemeFromStorage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("isDarkThemeEnabled") ?? false;
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_isDarkThemeEnabled) ?? false;
   }
 
   Future<bool> setDarkThemeToStorage(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setBool("isDarkThemeEnabled", value);
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(_isDarkThemeEnabled, value);
   }
 
+  static const _encryptEnable = "EncryptEnable";
+
   Future<bool> getEncryptEnable() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("EncryptEnable") ?? false;
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_encryptEnable) ?? false;
   }
 
   Future<void> setEncryptEnable(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setBool("EncryptEnable", value);
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(_encryptEnable, value);
   }
 
+  static const _encryptPersonalStorage = "EncryptPersonalStorage";
+
   Future<bool> getEncryptInPersonalStorage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("EncryptPersonalStorage") ?? false;
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_encryptPersonalStorage) ?? false;
   }
 
   Future<void> setEncryptInPersonalStorage(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setBool("EncryptPersonalStorage", value);
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(_encryptPersonalStorage, value);
   }
 
+  static const _encryptExist = "EncryptExist";
+
   Future<bool> getEncryptExist() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("EncryptExist") ?? false;
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_encryptExist) ?? false;
   }
 
   Future<void> setEncryptExist(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setBool("EncryptExist", value);
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(_encryptExist, value);
+  }
+
+  static const _showResponseBody = "ShowResponseBody";
+
+  Future<bool> getShowResponseBody() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_showResponseBody) ?? false;
+  }
+
+  Future setShowResponseBody(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(_showResponseBody, value);
   }
 }

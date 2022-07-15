@@ -46,12 +46,10 @@ packages:
   aurora_logger:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: d3150a5fafc049749ed544b037314f3612c5b91c
-      url: "https://github.com/afterlogic/aurora_logger_flutter"
-    source: git
-    version: "0.0.1"
+      path: "../aurora_logger_flutter"
+      relative: true
+    source: path
+    version: "0.0.3"
   aurora_ui_kit:
     dependency: "direct main"
     description:

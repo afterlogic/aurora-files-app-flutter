@@ -31,7 +31,7 @@ _iosDeveloperId: ""
 _appleGroupId: ""
 _build: 157
 _version: ""
-_version_android: "{{_version}}{{_build}}"
+_version_android: "{{_version}}+{{_build}}"
 version_ios: "{{_version}}+{{_build}}"
 
 #android sign

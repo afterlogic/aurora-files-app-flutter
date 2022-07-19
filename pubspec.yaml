@@ -60,6 +60,7 @@ dependencies:
   percent_indicator: 3.0.1
   flutter_svg: 0.21.0
   #  fluttertoast: 3.0.5
+  dropdown_search: 2.0.1
 
   # misc
   url_launcher: ^6.0.9

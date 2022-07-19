@@ -7,7 +7,7 @@ import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
-import 'package:aurorafiles/modules/files/dialogs/share_to_email_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/share_teammate_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -389,12 +389,11 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         ),
       );
     } else {
-      final file = await AMDialog.show(
+      final file = await AMDialog.show<LocalFile>(
         context: context,
-        builder: (_) => ShareToEmailDialog(
-          widget.filesState,
-          widget.file,
-          context,
+        builder: (_) => ShareTeammateDialog(
+          fileState: widget.filesState,
+          file: widget.file,
         ),
       );
       if (file is LocalFile) {

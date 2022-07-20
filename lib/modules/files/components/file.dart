@@ -110,35 +110,21 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _cantDownloadMessage() {
-    showSnack(
-      context: context,
-      scaffoldState: _filesPageState.scaffoldKey.currentState,
-      msg: s.need_an_encryption_to_download,
-    );
+    showSnack(context, msg: s.need_an_encryption_to_download);
   }
 
   void _cantShareMessage() {
-    showSnack(
-      context: context,
-      scaffoldState: _filesPageState.scaffoldKey.currentState,
-      msg: s.need_an_encryption_to_share,
-    );
+    showSnack(context, msg: s.need_an_encryption_to_share);
   }
 
   void _openEncryptedFile(BuildContext context) async {
     if (widget.file.encryptedDecryptionKey == null) {
       if (AppStore.settingsState.selectedKeyName == null) {
-        return showSnack(
-            context: context,
-            scaffoldState: _filesPageState.scaffoldKey.currentState,
-            msg: s.set_any_encryption_key);
+        return showSnack(context, msg: s.set_any_encryption_key);
       }
     } else {
       if (!await PgpKeyUtil.instance.hasUserKey()) {
-        return showSnack(
-            context: context,
-            scaffoldState: _filesPageState.scaffoldKey.currentState,
-            msg: s.set_any_encryption_key);
+        return showSnack(context, msg: s.set_any_encryption_key);
       }
     }
     _openFile(context);
@@ -153,30 +139,23 @@ class _FileWidgetState extends State<FileWidget> {
       onStart: (ProcessingFile process) {
         _subscribeToProgress(process);
         showSnack(
-          context: context,
-          scaffoldState: filesPageState.scaffoldKey.currentState,
+          context,
           msg: s.downloading(widget.file.name),
           isError: false,
         );
       },
       onSuccess: (File savedFile) => showSnack(
-          context: context,
-          scaffoldState: filesPageState.scaffoldKey.currentState,
-          msg: s.downloaded_successfully_into(widget.file.name, savedFile.path),
-          isError: false,
-          duration: Duration(minutes: 10),
-          action: SnackBarAction(
-            label: s.oK,
-            onPressed:
-                filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
-          )),
-      onError: (String err) => err.isNotEmpty == true
-          ? showSnack(
-              context: context,
-              scaffoldState: filesPageState.scaffoldKey.currentState,
-              msg: err,
-            )
-          : null,
+        context,
+        msg: s.downloaded_successfully_into(widget.file.name, savedFile.path),
+        isError: false,
+        duration: Duration(minutes: 10),
+        action: SnackBarAction(
+          label: s.oK,
+          onPressed: () => hideSnack(context),
+        ),
+      ),
+      onError: (String err) =>
+          err.isNotEmpty == true ? showSnack(context, msg: err) : null,
     );
   }
 
@@ -186,8 +165,7 @@ class _FileWidgetState extends State<FileWidget> {
     try {
       if (widget.file.localId == null) {
         showSnack(
-          context: context,
-          scaffoldState: filesPageState.scaffoldKey.currentState,
+          context,
           msg: s.synch_file_progress,
           isError: false,
         );
@@ -199,25 +177,17 @@ class _FileWidgetState extends State<FileWidget> {
         onSuccess: () {
           if (widget.file.localId == null) {
             showSnack(
-              context: context,
-              scaffoldState: filesPageState.scaffoldKey.currentState,
+              context,
               msg: s.synched_successfully,
               isError: false,
             );
           }
           filesPageState.onGetFiles();
         },
-        onError: (err) => showSnack(
-            context: context,
-            scaffoldState: filesPageState.scaffoldKey.currentState,
-            msg: err.toString()),
+        onError: (err) => showSnack(context, msg: err.toString()),
       );
     } catch (err) {
-      showSnack(
-        context: context,
-        scaffoldState: filesPageState.scaffoldKey.currentState,
-        msg: err.toString(),
-      );
+      showSnack(context, msg: err.toString());
     }
   }
 
@@ -358,7 +328,7 @@ class _FileWidgetState extends State<FileWidget> {
         return SelectableFilesItemTile(
           file: widget.file,
           onTap: () {
-            _filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
+            hideSnack(context);
             widget.file.initVector != null
                 ? _openEncryptedFile(context)
                 : _openFile(context);

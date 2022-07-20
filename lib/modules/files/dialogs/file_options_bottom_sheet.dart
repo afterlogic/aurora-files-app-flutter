@@ -225,7 +225,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ListTile(
               leading: Icon(Icons.share),
               title: Text(s.label_share_with_teammates),
-              onTap: _shareWithTeammates,
+              onTap: () => _shareWithTeammates(context),
             ),
           if (!isFolder)
             ListTile(
@@ -275,12 +275,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     storage: widget.filesState.selectedStorage,
                     filesToDelete: [widget.file],
                     onSuccess: () => widget.filesPageState.onGetFiles(),
-                    onError: (String err) => showSnack(
-                      context: context,
-                      scaffoldState:
-                          widget.filesPageState.scaffoldKey.currentState,
-                      msg: err,
-                    ),
+                    onError: (String err) => showSnack(context, msg: err),
                   );
                 }
               },
@@ -372,7 +367,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     setState(() {});
   }
 
-  Future<void> _shareWithTeammates() async {
+  Future<void> _shareWithTeammates(BuildContext context) async {
     Navigator.pop(context);
     if (widget.file.initVector != null &&
         widget.file.encryptedDecryptionKey == null) {

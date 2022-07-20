@@ -16,6 +16,7 @@ import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
+import 'package:aurorafiles/modules/files/repository/share_access_entry.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/download_directory.dart';
@@ -845,6 +846,27 @@ abstract class _FilesState with Store {
 
   Future<List<Recipient>> searchContact(String pattern) async {
     return _mailApi.searchContact(pattern);
+  }
+
+  Future<List<ShareAccessEntry>> getFileShares(LocalFile file) async {
+    final props = await _filesApi.getFileExtendedProps(file);
+    final result = <ShareAccessEntry>[];
+    if (props["Shares"] == null) {
+      return result;
+    }
+    final shares = props["Shares"] as List;
+    for (final value in shares) {
+      final share = ShareAccessEntry.fromShareJson(value);
+      if (share != null) {
+        result.add(share);
+      }
+    }
+    return result;
+  }
+
+  Future<List<Map>> shareFileToTeammate(
+      LocalFile localFile, List<ShareAccessEntry> shares) async {
+    return _mailApi.shareFileToTeammate(localFile, shares);
   }
 
   Future<void> shareFileToContact(

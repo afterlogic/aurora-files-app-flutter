@@ -221,6 +221,6 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
   }
 
   void _showError(BuildContext context, String msg) {
-    showSnack(context: context, scaffoldState: Scaffold.of(context), msg: msg);
+    showSnack(context, msg: msg);
   }
 }

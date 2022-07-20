@@ -125,8 +125,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
     final result = await widget._pgpKeyUtil.downloadPublicKeys(widget._pgpKeys);
 
     showSnack(
-      context: context,
-      scaffoldState: _scaffoldKey.currentState,
+      context,
       msg: s.downloading_to(result.path),
       isError: false,
     );

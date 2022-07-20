@@ -137,16 +137,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         context,
         storedFile: _fileViewerState.fileWithContents,
         onSuccess: complete,
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-          msg: err,
-        ),
+        onError: (String err) => showSnack(context, msg: err),
       );
     } else if (_fileViewerState.downloadProgress != null) {
       showSnack(
-        context: context,
-        scaffoldState: _fileViewerScaffoldKey.currentState,
+        context,
         msg: s.please_wait_until_loading,
         isError: false,
       );
@@ -196,11 +191,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         },
         onError: (String err) {
           widget.filesPageState.filesLoading = FilesLoadingType.none;
-          showSnack(
-            context: context,
-            scaffoldState: _fileViewerScaffoldKey.currentState,
-            msg: err,
-          );
+          showSnack(context, msg: err);
         },
       );
       widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;
@@ -217,27 +208,20 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         widget.filesPageState
             .onGetFiles(showLoading: FilesLoadingType.filesHidden);
         showSnack(
-          context: context,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
+          context,
           msg: s.downloading(_file.name),
           isError: false,
         );
       },
-      onSuccess: (File savedFile) => showSnack(
-          context: context,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
+      onSuccess: (File savedFile) => showSnack(context,
           msg: s.downloaded_successfully_into(_file.name, savedFile.path),
           isError: false,
           duration: Duration(minutes: 10),
           action: SnackBarAction(
             label: s.oK,
-            onPressed: _fileViewerScaffoldKey.currentState.hideCurrentSnackBar,
+            onPressed: () => hideSnack(context),
           )),
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: _fileViewerScaffoldKey.currentState,
-        msg: err,
-      ),
+      onError: (String err) => showSnack(context, msg: err),
     );
   }
 
@@ -263,8 +247,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         });
         if (_file.localId == null) {
           showSnack(
-            context: context,
-            scaffoldState: _fileViewerScaffoldKey.currentState,
+            context,
             msg: s.synch_file_progress,
             isError: false,
           );
@@ -279,8 +262,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
               _fileViewerState.processingFile = null;
               if (_file.localId == null) {
                 showSnack(
-                  context: context,
-                  scaffoldState: _fileViewerScaffoldKey.currentState,
+                  context,
                   msg: s.synched_successfully,
                   isError: false,
                 );
@@ -295,11 +277,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           _isSyncingForOffline = false;
           _isFileOffline = !_isFileOffline;
         });
-        showSnack(
-          context: context,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-          msg: err.toString(),
-        );
+        showSnack(context, msg: err.toString());
       }
     }
   }

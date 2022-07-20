@@ -3,7 +3,7 @@ import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
+import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +37,7 @@ class FolderWidget extends StatelessWidget {
         file: folder,
         isSelected: filesPageState.selectedFilesIds[folder.id] != null,
         onTap: () {
-          filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
+          hideSnack(context);
           Navigator.pushNamed(
             context,
             FilesRoute.name,

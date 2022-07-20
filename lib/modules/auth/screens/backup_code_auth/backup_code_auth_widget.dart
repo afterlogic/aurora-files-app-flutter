@@ -154,11 +154,7 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
   }
 
   void _showError(BuildContext context, String error) {
-    showSnack(
-      context: context,
-      scaffoldState: Scaffold.of(context),
-      msg: error,
-    );
+    showSnack(context, msg: error);
   }
 
   _login() {

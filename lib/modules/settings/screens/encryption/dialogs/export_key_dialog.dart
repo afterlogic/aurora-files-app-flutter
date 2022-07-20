@@ -50,10 +50,7 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
                         Navigator.pop(context, exportedDir),
                     onError: (String err) {
                       Navigator.pop(context);
-                      showSnack(
-                          context: context,
-                          scaffoldState: widget.scaffoldState,
-                          msg: err);
+                      showSnack(context, msg: err);
                     },
                   );
                 },

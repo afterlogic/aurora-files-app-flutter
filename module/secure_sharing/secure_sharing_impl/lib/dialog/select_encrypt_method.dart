@@ -52,7 +52,6 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
       child: Stack(
         children: <Widget>[
           ListView(
-
             padding: EdgeInsets.all(0),
             children: <Widget>[
               RecipientWidget(
@@ -103,7 +102,9 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
                     ? s.password_sign
                     : widget.pgpKey == null
                         ? s.sign_data_with_not_key(s.data)
-                        : useSign ? s.data_signed : s.data_not_signed(s.data),
+                        : useSign
+                            ? s.data_signed
+                            : s.data_not_signed(s.data),
                 style: theme.textTheme.caption,
               )
             ],
@@ -237,6 +238,7 @@ class RadioAnalog extends StatelessWidget {
         : Radio(
             value: false,
             groupValue: !isCheck,
+            onChanged: null,
           );
   }
 }

@@ -44,4 +44,19 @@ class ShareAccessRightHelper {
         return 0;
     }
   }
+
+  static ShareAccessRight fromCode(int code) {
+    switch (code) {
+      case 2:
+        return ShareAccessRight.read;
+      case 1:
+        return ShareAccessRight.readWrite;
+      case 3:
+        return ShareAccessRight.readWriteReshare;
+      case 0:
+        return ShareAccessRight.noAccess;
+      default:
+        return null;
+    }
+  }
 }

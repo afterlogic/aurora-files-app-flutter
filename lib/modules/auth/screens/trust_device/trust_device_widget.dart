@@ -117,10 +117,6 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
   }
 
   void _showError(BuildContext context, String msg) {
-    showSnack(
-      context: context,
-      scaffoldState: Scaffold.of(context),
-      msg: msg,
-    );
+    showSnack(context, msg: msg);
   }
 }

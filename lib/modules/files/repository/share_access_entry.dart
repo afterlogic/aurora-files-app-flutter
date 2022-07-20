@@ -14,6 +14,21 @@ class ShareAccessEntry {
     String id,
   }) : id = id ?? Uuid().v4();
 
+  static ShareAccessEntry fromShareJson(Map<String, dynamic> map) {
+    final recipient = Recipient(
+      email: map["PublicId"],
+    );
+    final right = ShareAccessRightHelper.fromCode(map["Access"]);
+    if (recipient.email == null || right == null) {
+      return null;
+    } else {
+      return ShareAccessEntry(
+        recipient: recipient,
+        right: right,
+      );
+    }
+  }
+
   ShareAccessEntry copyWith({ShareAccessRight right}) {
     return ShareAccessEntry(
       recipient: this.recipient,

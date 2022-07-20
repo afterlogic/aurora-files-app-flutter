@@ -5,10 +5,11 @@ import 'package:aurorafiles/models/account.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/folder.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/files/repository/share_access_entry.dart';
+import 'package:aurorafiles/modules/files/repository/share_access_right.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-
-import '../../app_store.dart';
 
 class MailApi {
   Future<List<Recipient>> getRecipient() async {
@@ -123,6 +124,39 @@ class MailApi {
       return (res["Result"]["List"] as List)
           .map((item) => Recipient.fromJson(item))
           .toList();
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<List<Map>> shareFileToTeammate(
+    LocalFile localFile,
+    List<ShareAccessEntry> shares,
+  ) async {
+    final shareList = <Map>[];
+    for (var share in shares) {
+      shareList.add({
+        "PublicId": share.recipient.email,
+        "Access": ShareAccessRightHelper.toCode(share.right),
+      });
+    }
+    final parameters = {
+      "Storage": localFile.type,
+      "Path": localFile.path,
+      "Id": localFile.id,
+      "Shares": shareList,
+      "IsDir": localFile.isFolder,
+    };
+    final body = new ApiBody(
+      module: "SharedFiles",
+      method: "UpdateShare",
+      parameters: json.encode(parameters),
+    );
+
+    final res = (await sendRequest(body)) as Map;
+
+    if (res["Result"] == true) {
+      return shareList;
     } else {
       throw CustomException(getErrMsg(res));
     }

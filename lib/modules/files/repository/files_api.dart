@@ -632,6 +632,25 @@ class FilesApi {
       throw CustomException(getErrMsg(res));
     }
   }
+
+  Future<Map<String, dynamic>> getFileExtendedProps(LocalFile file) async {
+    final parameters = json.encode({
+      "Type": file.type,
+      "Path": file.path,
+      "Name": file.name,
+    });
+    final body = new ApiBody(
+      module: "Files",
+      method: "GetExtendedProps",
+      parameters: parameters,
+    );
+    final res = (await sendRequest(body)) as Map;
+    if (res.containsKey("Result")) {
+      return res["Result"] as Map<String, dynamic>;
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
 }
 
 class GetFilesResponse {

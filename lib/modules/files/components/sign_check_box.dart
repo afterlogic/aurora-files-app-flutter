@@ -11,7 +11,7 @@ class SignCheckBox extends StatefulWidget {
   final Function(bool check) onCheck;
 
   const SignCheckBox({
-    @required Key key,
+    Key key,
     @required this.checked,
     @required this.enable,
     @required this.onCheck,

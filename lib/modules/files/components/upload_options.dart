@@ -28,11 +28,7 @@ class _UploadOptionsState extends State<UploadOptions> {
     widget.filesState.uploadShared(context,
         toPath: widget.filesPageState.pagePath, onSuccess: () async {
       await widget.filesPageState.onGetFiles(
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-          msg: err,
-        ),
+        onError: (String err) => showSnack(context, msg: err),
       );
       setState(() => _buttonsDisabled = false);
       widget.filesState.disableUploadShared();
@@ -41,11 +37,7 @@ class _UploadOptionsState extends State<UploadOptions> {
     }, onError: (err) {
       setState(() => _buttonsDisabled = false);
       widget.filesPageState.filesLoading = FilesLoadingType.none;
-      showSnack(
-        context: context,
-        scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-        msg: err,
-      );
+      showSnack(context, msg: err);
     });
   }
 

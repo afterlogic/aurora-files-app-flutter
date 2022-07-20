@@ -62,12 +62,7 @@ class _ImageViewerState extends State<ImageViewer> {
     if (err == "Invalid password" || err == "Instance of 'CryptoException'") {
       _isError = true;
       setState(() {});
-    } else if (err.isNotEmpty)
-      showSnack(
-        context: context,
-        scaffoldState: Scaffold.of(context),
-        msg: err,
-      );
+    } else if (err.isNotEmpty) showSnack(context, msg: err);
   }
 
   Widget _buildImage() {

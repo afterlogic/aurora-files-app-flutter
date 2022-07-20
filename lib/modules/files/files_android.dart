@@ -70,11 +70,7 @@ class _FilesAndroidState extends State<FilesAndroid>
         if (_filesState.currentStorages.length <= 0) {
           _filesPageState.filesLoading = FilesLoadingType.filesHidden;
           await _filesState.onGetStorages(
-            onError: (String err) => showSnack(
-              context: context,
-              scaffoldState: _filesPageState.scaffoldKey.currentState,
-              msg: err,
-            ),
+            onError: (String err) => showSnack(context, msg: err),
           );
         }
         _getFiles(
@@ -123,11 +119,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (_filesState.currentStorages.length <= 0) {
       _filesPageState.filesLoading = FilesLoadingType.filesHidden;
       await _filesState.onGetStorages(
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: err,
-        ),
+        onError: (String err) => showSnack(context, msg: err),
       );
     }
     if (_filesState.selectedStorage != null) {
@@ -142,11 +134,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) async {
     return _filesPageState.onGetFiles(
       showLoading: showLoading,
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: _filesPageState.scaffoldKey.currentState,
-        msg: err,
-      ),
+      onError: (String err) => showSnack(context, msg: err),
     );
   }
 
@@ -178,11 +166,7 @@ class _FilesAndroidState extends State<FilesAndroid>
           _filesPageState.quitSelectMode();
           _getFiles(context);
         },
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: err,
-        ),
+        onError: (String err) => showSnack(context, msg: err),
       );
     }
   }
@@ -206,11 +190,8 @@ class _FilesAndroidState extends State<FilesAndroid>
         }
         if (shouldEncrypt == true &&
             !(await PgpKeyUtil.instance.hasUserKey())) {
-          showSnack(
-            context: context,
-            scaffoldState: _filesPageState.scaffoldKey.currentState,
-            msg: s.error_pgp_required_key(AppStore.authState.userEmail),
-          );
+          showSnack(context,
+              msg: s.error_pgp_required_key(AppStore.authState.userEmail));
           return null;
         }
         return shouldEncrypt;
@@ -218,16 +199,11 @@ class _FilesAndroidState extends State<FilesAndroid>
       path: widget.path,
       onUploadStart: _addUploadingFileToFiles,
       onSuccess: () => showSnack(
-        context: context,
-        scaffoldState: _filesPageState.scaffoldKey.currentState,
+        context,
         msg: s.successfully_uploaded,
         isError: false,
       ),
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: _filesPageState.scaffoldKey.currentState,
-        msg: err,
-      ),
+      onError: (String err) => showSnack(context, msg: err),
     );
   }
 
@@ -438,8 +414,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                         ),
                       ),
                       onPressed: () {
-                        _filesPageState.scaffoldKey.currentState
-                            .removeCurrentSnackBar();
+                        hideSnack(context);
                         Navigator.push(
                             context,
                             CustomSpeedDial(tag: widget.path, children: [

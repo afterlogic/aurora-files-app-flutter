@@ -5,11 +5,13 @@ import 'package:aurorafiles/models/account.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/folder.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/models/share_access_history.dart';
+import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/modules/files/repository/share_access_entry.dart';
-import 'package:aurorafiles/modules/files/repository/share_access_right.dart';
+import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
+import 'package:flutter/cupertino.dart';
 
 class MailApi {
   Future<List<Recipient>> getRecipient() async {
@@ -191,6 +193,54 @@ class MailApi {
 
     if (res["Result"] == true) {
       return;
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<ShareAccessHistory> getFileShareHistory({
+    @required LocalFile file,
+    int offset = 0,
+    int limit = 5,
+  }) async {
+    final parameters = {
+      "ResourceType": "file",
+      "ResourceId": file.type + file.fullPath,
+      "Offset": offset,
+      "Limit": limit,
+    };
+    final body = new ApiBody(
+      module: "ActivityHistory",
+      method: "GetList",
+      parameters: json.encode(parameters),
+    );
+
+    final res = (await sendRequest(body)) as Map;
+
+    if (res.containsKey("Result")) {
+      return ShareAccessHistory.fromJson(res["Result"]);
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<bool> deleteFileShareHistory({
+    @required LocalFile file,
+  }) async {
+    final parameters = {
+      "ResourceType": "file",
+      "ResourceId": file.type + file.fullPath,
+    };
+    final body = new ApiBody(
+      module: "ActivityHistory",
+      method: "Delete",
+      parameters: json.encode(parameters),
+    );
+
+    final res = (await sendRequest(body)) as Map;
+
+    if (res.containsKey("Result")) {
+      return true;
     } else {
       throw CustomException(getErrMsg(res));
     }

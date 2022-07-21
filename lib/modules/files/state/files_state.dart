@@ -10,13 +10,15 @@ import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/secure_link.dart';
+import 'package:aurorafiles/models/share_access_history.dart';
+import 'package:aurorafiles/models/share_access_history_item.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
-import 'package:aurorafiles/modules/files/repository/share_access_entry.dart';
+import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/download_directory.dart';
@@ -872,5 +874,29 @@ abstract class _FilesState with Store {
   Future<void> shareFileToContact(
       LocalFile localFile, Set<String> canEdit, Set<String> canSee) async {
     return _mailApi.shareFileToContact(localFile, canEdit, canSee);
+  }
+
+  Future<ShareAccessHistory> getFileShareHistory(LocalFile file) async {
+    final itemsPerPage = 100;
+    int page = 0;
+    int totalCount = 0;
+    List<ShareAccessHistoryItem> items = [];
+
+    do {
+      final chunk = await _mailApi.getFileShareHistory(
+        file: file,
+        offset: page * itemsPerPage,
+        limit: itemsPerPage,
+      );
+      totalCount = chunk.count;
+      items.addAll(chunk.items);
+      page++;
+    } while (items.length < totalCount);
+
+    return ShareAccessHistory(count: totalCount, items: items);
+  }
+
+  Future<bool> deleteFileShareHistory(LocalFile file) {
+    return _mailApi.deleteFileShareHistory(file: file);
   }
 }

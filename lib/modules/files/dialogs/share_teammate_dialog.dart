@@ -5,9 +5,10 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/files/dialogs/share_history_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_teammate_dialog_item.dart';
-import 'package:aurorafiles/modules/files/repository/share_access_entry.dart';
-import 'package:aurorafiles/modules/files/repository/share_access_right.dart';
+import 'package:aurorafiles/models/share_access_entry.dart';
+import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -31,8 +32,6 @@ class ShareTeammateDialog extends StatefulWidget {
 class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
   List<Recipient> _teammates = [];
   List<ShareAccessEntry> _shares = [];
-
-  // Recipient _selectedRecipient;
   ShareAccessRight _lastSelectedRight = ShareAccessRight.read;
   bool _rebuildingDropdown = false;
   bool _progress = true;
@@ -55,39 +54,29 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
   }
 
   Future<void> _initTeammates() async {
-    final result = await _searchContact('');
-    if (result.isNotEmpty) {
-      result.removeWhere((e) => e.email == _userEmail);
-      _teammates.addAll(result);
+    try {
+      final result = await _searchContact('');
+      if (result.isNotEmpty) {
+        result.removeWhere((e) => e.email == _userEmail);
+        _teammates.addAll(result);
+      }
+    } catch (err) {
+      _onError(err);
     }
   }
 
   Future<void> _initShares() async {
-    final shares = await widget.fileState.getFileShares(widget.file);
-    _shares.addAll(shares);
-
-    // if (widget.file.extendedProps == null) return;
-    // final map = json.decode(widget.file.extendedProps);
-    // if (map["Shares"] != null) {
-    //   final shares = map["Shares"] as List;
-    //   for (final value in shares) {
-    //     final share = ShareAccessEntry.fromShareJson(value);
-    //     if (share != null) {
-    //       _shares.add(share);
-    //     }
-    //   }
-    // }
+    try {
+      final shares = await widget.fileState.getFileShares(widget.file);
+      _shares.addAll(shares);
+    } catch (err) {
+      _onError(err);
+    }
   }
 
   Future<List<Recipient>> _searchContact(String pattern) {
     return widget.fileState.searchContact(pattern.replaceAll(" ", ""));
   }
-
-  // void _selectRecipient(Recipient recipient) {
-  //   setState(() {
-  //     _selectedRecipient = recipient;
-  //   });
-  // }
 
   void _addShare(
     Recipient recipient, [
@@ -98,7 +87,6 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     final share = ShareAccessEntry(recipient: recipient, right: actualRight);
     setState(() {
       _shares.add(share);
-      // _selectedRecipient = null;
     });
     _rebuildDropdownWidget();
   }
@@ -114,7 +102,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     });
   }
 
-  void _changeShare(ShareAccessEntry share, ShareAccessRight right) {
+  void _changeShareRight(ShareAccessEntry share, ShareAccessRight right) {
     if (share == null || right == null) return;
     _lastSelectedRight = right;
     final index = _shares.indexOf(share);
@@ -127,17 +115,11 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     setState(() {
       _shares.remove(share);
     });
-    // final index = _shares.indexWhere((e) => e.id == share.id);
-    // if (index != -1) {
-    //   setState(() {
-    //     _shares.removeAt(index);
-    //   });
-    // }
   }
 
   bool _recipientNotInShares(Recipient recipient) {
     final index =
-        _shares.indexWhere((e) => e.recipient.idUser == recipient.idUser);
+        _shares.indexWhere((e) => e.recipient.email == recipient.email);
     return index == -1;
   }
 
@@ -147,7 +129,15 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     });
   }
 
-  void _onShowHistory() {}
+  Future<void> _onShowHistory() async {
+    AMDialog.show(
+      context: context,
+      builder: (_) => ShareHistoryDialog(
+        fileState: widget.fileState,
+        file: widget.file,
+      ),
+    );
+  }
 
   Future<void> _onSave() async {
     _setProgress(true);
@@ -193,7 +183,6 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
             mode: Mode.MENU,
             items: _teammates,
             onChanged: _addShare,
-            //_selectRecipient,
             filterFn: (item, _) => _recipientNotInShares(item),
             itemAsString: (Recipient r) => r.email,
             maxHeight: screenHeight / 3,
@@ -223,22 +212,6 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
                       child: dropdownSearch,
                     ),
                   ),
-                  // PopupMenuButton<ShareAccessRight>(
-                  //   itemBuilder: (context) {
-                  //     return ShareAccessRight.values
-                  //         .map((value) => PopupMenuItem<ShareAccessRight>(
-                  //               value: value,
-                  //               child: Text(ShareAccessRightHelper.toName(value)),
-                  //             ))
-                  //         .toList();
-                  //   },
-                  //   enabled: _selectedRecipient != null,
-                  //   onSelected: (right) => _addShare(_selectedRecipient, right),
-                  //   icon: Icon(
-                  //     Icons.add_circle_outline,
-                  //     color: theme.disabledColor,
-                  //   ),
-                  // ),
                 ],
               ),
               Container(
@@ -271,7 +244,8 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
                               final item = _shares[index];
                               return ShareTeammateDialogItem(
                                 share: item,
-                                onChange: (right) => _changeShare(item, right),
+                                onChange: (right) =>
+                                    _changeShareRight(item, right),
                                 onDelete: () => _removeShare(item),
                               );
                             },

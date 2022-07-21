@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'app_color.dart';
 
@@ -44,6 +42,7 @@ class AppTheme {
       ),
     ),
     floatingActionButtonTheme: _floatTheme,
+    cardTheme: _cardTheme,
   );
 
   static final dark = ThemeData(
@@ -86,6 +85,7 @@ class AppTheme {
       ),
     ),
     floatingActionButtonTheme: _floatTheme,
+    cardTheme: _cardTheme,
     bottomAppBarColor: Colors.black,
   );
 
@@ -104,8 +104,13 @@ class AppTheme {
     hoverColor: AppColor.accent.withOpacity(0.8),
     backgroundColor: AppColor.accent,
   );
+
   static final floatIconTheme = IconThemeData(
     color: Colors.white,
+  );
+
+  static final _cardTheme = CardTheme(
+    elevation: 0,
   );
 
   static Color loginTextColor;

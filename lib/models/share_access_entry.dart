@@ -1,5 +1,5 @@
 import 'package:aurorafiles/models/recipient.dart';
-import 'package:aurorafiles/modules/files/repository/share_access_right.dart';
+import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 

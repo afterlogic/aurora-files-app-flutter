@@ -1,5 +1,5 @@
-import 'package:aurorafiles/modules/files/repository/share_access_entry.dart';
-import 'package:aurorafiles/modules/files/repository/share_access_right.dart';
+import 'package:aurorafiles/models/share_access_entry.dart';
+import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:flutter/material.dart';
 
 class ShareTeammateDialogItem extends StatelessWidget {
@@ -51,15 +51,16 @@ class ShareTeammateDialogItem extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(width: 4),
             SizedBox(
               width: 50,
               child: PopupMenuButton<ShareAccessRight>(
                 itemBuilder: (context) {
                   return ShareAccessRight.values
                       .map((value) => PopupMenuItem<ShareAccessRight>(
-                    value: value,
-                    child: Text(ShareAccessRightHelper.toName(value)),
-                  ))
+                            value: value,
+                            child: Text(ShareAccessRightHelper.toName(value)),
+                          ))
                       .toList();
                 },
                 onSelected: onChange,
@@ -75,29 +76,8 @@ class ShareTeammateDialogItem extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // TextButton(
-              //   onPressed: onChangeAccess,
-              //   child: Text(
-              //     ShareAccessRightHelper.toShortName(share.right),
-              //     style: TextStyle(
-              //       color: theme.primaryColor,
-              //       decoration: TextDecoration.underline,
-              //       decorationStyle: TextDecorationStyle.dotted,
-              //     ),
-              //   ),
-              // ),
             ),
-            const SizedBox(width: 8),
-            // IconButton(
-            //   icon: Icon(
-            //     Icons.close,
-            //     size: 16,
-            //     color: theme.disabledColor,
-            //   ),
-            //   onPressed: onDelete,
-            //   padding: EdgeInsets.zero,
-            // ),
+            const SizedBox(width: 4),
           ],
         ),
       ),

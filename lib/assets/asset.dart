@@ -12,6 +12,7 @@ class _Images {
 class _Svg {
   static const _path = 'lib/assets/svg/';
   final iconSharedWithMe = _path + 'icon_shared_with_me.svg';
+  final iconSharedWithMeBig = _path + 'icon_shared_with_me_big.svg';
   final iconStorageCorporate = _path + 'icon_storage_corporate.svg';
   final iconStorageEncrypted = _path + 'icon_storage_encrypted.svg';
   final iconStoragePersonal = _path + 'icon_storage_personal.svg';

@@ -8,6 +8,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
@@ -16,9 +17,12 @@ import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dar
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
-import 'package:aurorafiles/modules/files/dialogs/share_to_email_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/share_teammate_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
+import 'package:aurorafiles/modules/files/screens/file_viewer/components/image_viewer.dart';
+import 'package:aurorafiles/modules/files/screens/file_viewer/components/info_list_tile.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
+import 'package:aurorafiles/modules/files/screens/file_viewer/components/text_viewer.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -31,13 +35,10 @@ import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:secure_sharing/secure_sharing.dart';
-
-import 'components/image_viewer.dart';
-import 'components/info_list_tile.dart';
-import 'components/text_viewer.dart';
 
 class FileViewerAndroid extends StatefulWidget {
   final LocalFile immutableFile;
@@ -70,6 +71,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   String password;
   StorageType storageType;
   bool isFolder;
+  Map<String, dynamic> _extendedProps = {};
+  bool _hasShares = false;
+  bool _sharedWithMe = false;
 
   bool get _enableSecureLink => isFolder
       ? [StorageType.corporate, StorageType.personal].contains(storageType)
@@ -92,6 +96,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     _fileType = getFileType(_file);
     storageType = StorageTypeHelper.toEnum(widget.immutableFile.type);
     isFolder = widget.immutableFile.isFolder;
+    _initExtendedProps();
+    _initShareProps();
   }
 
   @override
@@ -101,6 +107,36 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     if (_fileViewerState.processingFile != null) {
       _fileViewerState.processingFile.subscription?.cancel();
       _fileViewerState.processingFile.fileOnDevice?.delete();
+    }
+  }
+
+  void _initExtendedProps() {
+    if (_file.extendedProps != null) {
+      try {
+        _extendedProps = jsonDecode(_file.extendedProps);
+      } catch (err) {
+        print('extendedProps decode ERROR: $err');
+      }
+    }
+  }
+
+  void _initShareProps() {
+    if (!_extendedProps.containsKey("Shares")) return;
+    // init _hasShares
+    List<ShareAccessEntry> shares = [];
+    final list = _extendedProps["Shares"] as List;
+    for (final value in list) {
+      final share = ShareAccessEntry.fromShareJson(value);
+      if (share != null) {
+        shares.add(share);
+      }
+    }
+    _hasShares = shares.isNotEmpty;
+    // init _sharedWithMe
+    if (_hasShares) {
+      final _userEmail = AppStore.authState.userEmail;
+      final index = shares.indexWhere((e) => e.recipient.email == _userEmail);
+      _sharedWithMe = index != -1;
     }
   }
 
@@ -300,10 +336,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     } else {
       final file = await AMDialog.show(
         context: context,
-        builder: (_) => ShareToEmailDialog(
-          widget.filesState,
-          _file,
-          context,
+        builder: (_) => ShareTeammateDialog(
+          fileState: widget.filesState,
+          file: _file,
         ),
       );
       if (file is LocalFile) {
@@ -373,10 +408,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     setState(() {});
   }
 
-  Widget _getPreviewContent() {
+  Widget _getPreviewContent(BuildContext context) {
     final previewIconSize = 120.0;
+    Widget result;
     if (_file.initVector != null && _showEncrypt == false) {
-      return Column(
+      result = Column(
         children: <Widget>[
           Icon(Icons.lock_outline,
               size: previewIconSize, color: Theme.of(context).disabledColor),
@@ -395,52 +431,52 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             )
         ],
       );
+    } else {
+      switch (_fileType) {
+        case FileType.image:
+          result = ImageViewer(
+            password: password,
+            fileViewerState: _fileViewerState,
+            scaffoldState: _fileViewerScaffoldKey.currentState,
+          );
+          break;
+        case FileType.svg:
+          result = Icon(MdiIcons.fileImageOutline,
+              size: previewIconSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.text:
+        case FileType.code:
+          result = TextViewer(
+            password: password,
+            fileViewerState: _fileViewerState,
+            scaffoldState: _fileViewerScaffoldKey.currentState,
+          );
+          break;
+        case FileType.pdf:
+          result = PdfViewer(
+            file: _file,
+            scaffoldState: _fileViewerScaffoldKey.currentState,
+          );
+          break;
+        case FileType.zip:
+          result = Icon(MdiIcons.zipBoxOutline,
+              size: previewIconSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.unknown:
+          result = Icon(MdiIcons.fileOutline,
+              size: previewIconSize, color: Theme.of(context).disabledColor);
+          break;
+        default:
+          result = Icon(MdiIcons.fileOutline,
+              size: previewIconSize, color: Theme.of(context).disabledColor);
+      }
     }
-    switch (_fileType) {
-      case FileType.image:
-        return ImageViewer(
-          password: password,
-          fileViewerState: _fileViewerState,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-        );
-      case FileType.svg:
-        return Icon(MdiIcons.fileImageOutline,
-            size: previewIconSize, color: Theme.of(context).disabledColor);
-      case FileType.text:
-      case FileType.code:
-        return TextViewer(
-          password: password,
-          fileViewerState: _fileViewerState,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-        );
-      case FileType.pdf:
-        return PdfViewer(
-          file: _file,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-        );
-      case FileType.zip:
-        return Icon(MdiIcons.zipBoxOutline,
-            size: previewIconSize, color: Theme.of(context).disabledColor);
-
-      case FileType.unknown:
-        return Icon(MdiIcons.fileOutline,
-            size: previewIconSize, color: Theme.of(context).disabledColor);
-      default:
-        return Icon(MdiIcons.fileOutline,
-            size: previewIconSize, color: Theme.of(context).disabledColor);
-    }
+    return result;
   }
 
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
-    bool hasShares = false;
-    if (_file.extendedProps != null) {
-      try {
-        hasShares =
-            (jsonDecode(_file.extendedProps)["Shares"] as List).isNotEmpty;
-      } catch (e) {}
-    }
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, _file);
@@ -543,66 +579,76 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     ),
                   ],
           ),
-          body: ListView(
-            padding: const EdgeInsets.all(16.0),
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: 30.0),
-                child: _getPreviewContent(),
-              ),
-              InfoListTile(
-                label: s.filename,
-                content: _file.name,
-                isPublic: _file.published,
-                isShared: hasShares,
-                isOffline: _file.localId != null,
-                isEncrypted: _file.initVector != null,
-              ),
-              Row(
+          body: Stack(
+            alignment: Alignment.topRight,
+            children: [
+              ListView(
+                padding: const EdgeInsets.all(16.0),
                 children: <Widget>[
-                  Expanded(
-                    child: InfoListTile(
-                      label: s.size,
-                      content: filesize(_file.size),
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 30.0),
+                    child: _getPreviewContent(context),
                   ),
-                  SizedBox(width: 30),
-                  Expanded(
-                    child: InfoListTile(
-                      label: s.created,
-                      content: DateFormatting.formatDateFromSeconds(
-                        timestamp: _file.lastModified,
+                  InfoListTile(
+                    label: s.filename,
+                    content: _file.name,
+                    isPublic: _file.published,
+                    isShared: _hasShares,
+                    isOffline: _file.localId != null,
+                    isEncrypted: _file.initVector != null,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: InfoListTile(
+                          label: s.size,
+                          content: filesize(_file.size),
+                        ),
                       ),
+                      SizedBox(width: 30),
+                      Expanded(
+                        child: InfoListTile(
+                          label: s.created,
+                          content: DateFormatting.formatDateFromSeconds(
+                            timestamp: _file.lastModified,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  InfoListTile(
+                      label: s.location, content: _file.type + _file.path),
+                  InfoListTile(label: s.owner, content: _file.owner),
+                  if (!widget.filesState.isOfflineMode &&
+                      !BuildProperty.secureSharingEnable)
+                    PublicLinkSwitch(
+                      file: _file,
+                      isFileViewer: true,
+                      updateFile: _updateFile,
+                      scaffoldKey: _fileViewerScaffoldKey,
+                    ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    onTap: _isSyncingForOffline ? null : _setFileForOffline,
+                    leading: Icon(Icons.airplanemode_active),
+                    title: Text(s.offline),
+                    trailing: Switch.adaptive(
+                      value: _isFileOffline,
+                      activeColor: Theme.of(context).accentColor,
+                      onChanged: _isSyncingForOffline
+                          ? null
+                          : (bool val) => _setFileForOffline(),
                     ),
                   ),
+                  SizedBox(
+                    height: 16.0 + MediaQuery.of(context).padding.bottom,
+                  )
                 ],
               ),
-              InfoListTile(label: s.location, content: _file.type + _file.path),
-              InfoListTile(label: s.owner, content: _file.owner),
-              if (!widget.filesState.isOfflineMode &&
-                  !BuildProperty.secureSharingEnable)
-                PublicLinkSwitch(
-                  file: _file,
-                  isFileViewer: true,
-                  updateFile: _updateFile,
-                  scaffoldKey: _fileViewerScaffoldKey,
+              if (_sharedWithMe)
+                SvgPicture.asset(
+                  Asset.svg.iconSharedWithMeBig,
                 ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                onTap: _isSyncingForOffline ? null : _setFileForOffline,
-                leading: Icon(Icons.airplanemode_active),
-                title: Text(s.offline),
-                trailing: Switch.adaptive(
-                  value: _isFileOffline,
-                  activeColor: Theme.of(context).accentColor,
-                  onChanged: _isSyncingForOffline
-                      ? null
-                      : (bool val) => _setFileForOffline(),
-                ),
-              ),
-              SizedBox(
-                height: 16.0 + MediaQuery.of(context).padding.bottom,
-              )
             ],
           ),
         ),

@@ -333,12 +333,15 @@ class _FileWidgetState extends State<FileWidget> {
     }
 
     return Stack(
-      alignment: Alignment.topRight,
       children: [
         result,
         if (_sharedWithMe)
-          SvgPicture.asset(
-            Asset.svg.iconSharedWithMe,
+          Positioned(
+            top: -2,
+            right: -2,
+            child: SvgPicture.asset(
+              Asset.svg.iconSharedWithMe,
+            ),
           ),
       ],
     );

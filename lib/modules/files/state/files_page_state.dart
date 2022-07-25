@@ -180,7 +180,7 @@ abstract class _FilesPageState with Store {
   }
 
   // supports both extracting files from selected ids and passing file(s) directly
-  void onDeleteFiles({
+  Future<void> onDeleteFiles({
     List<LocalFile> filesToDelete,
     @required Storage storage,
     @required Function onSuccess,

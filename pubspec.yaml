@@ -96,8 +96,7 @@ dependencies:
 
   # logger
   aurora_logger:
-    path: ../aurora_logger_flutter
-#    git: https://github.com/afterlogic/aurora_logger_flutter
+    git: https://github.com/afterlogic/aurora_logger_flutter
 
   flutter_bloc: 3.2.0
   flutter_custom_tabs: 1.0.2

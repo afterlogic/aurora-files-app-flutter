@@ -228,66 +228,63 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
       children: [
         AMDialog(
           title: Text(s.label_share_with_teammates),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 48,
-                      child: dropdownSearch,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                width: double.infinity,
-                height: screenHeight / 4,
-                margin: EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.disabledColor,
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+          content: SizedBox(
+            width: 350,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SizedBox(
+                  height: 48,
+                  child: dropdownSearch,
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                  child: _shares.isEmpty
-                      ? Align(
-                          alignment: Alignment.topCenter,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Text(
-                              'No shares yet',
-                              style: TextStyle(color: theme.disabledColor),
+                Container(
+                  height: screenHeight / 4,
+                  margin: EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.disabledColor,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                    child: _shares.isEmpty
+                        ? Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Text(
+                                'No shares yet',
+                                style: TextStyle(color: theme.disabledColor),
+                              ),
+                            ),
+                          )
+                        : Scrollbar(
+                            child: ListView.builder(
+                              itemCount: _shares.length,
+                              itemBuilder: (context, index) {
+                                final item = _shares[index];
+                                final enabled = !_isShareForMe(item);
+                                return ShareTeammateDialogItem(
+                                  share: item,
+                                  enabled: enabled,
+                                  onChange: (right) =>
+                                      _changeShareRight(item, right),
+                                  onDelete: enabled
+                                      ? () => _removeShare(item)
+                                      : () => _leaveShare(item),
+                                  confirmDelete: enabled
+                                      ? () => Future.value(true)
+                                      : _confirmLeaveShare,
+                                );
+                              },
+                              padding: EdgeInsets.zero,
                             ),
                           ),
-                        )
-                      : Scrollbar(
-                          child: ListView.builder(
-                            itemCount: _shares.length,
-                            itemBuilder: (context, index) {
-                              final item = _shares[index];
-                              final enabled = !_isShareForMe(item);
-                              return ShareTeammateDialogItem(
-                                share: item,
-                                enabled: enabled,
-                                onChange: (right) =>
-                                    _changeShareRight(item, right),
-                                onDelete: enabled
-                                    ? () => _removeShare(item)
-                                    : () => _leaveShare(item),
-                                confirmDelete: enabled
-                                    ? () => Future.value(true)
-                                    : _confirmLeaveShare,
-                              );
-                            },
-                          ),
-                        ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           actions: [
             TextButton(

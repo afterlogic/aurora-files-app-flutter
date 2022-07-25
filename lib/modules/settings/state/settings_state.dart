@@ -183,7 +183,7 @@ abstract class _SettingsState with Store {
         .setEncryptInPersonalStorage(setting.enableInPersonalStorage);
   }
 
-  Future updateAppData() async {
+  Future<void> updateAppData() async {
     try {
       final appData = await settingApi.getAppData();
       _availableModules = appData.availableClientModules;

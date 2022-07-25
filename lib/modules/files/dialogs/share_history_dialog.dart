@@ -91,6 +91,7 @@ class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
+                width: double.maxFinite,
                 height: screenHeight / 2,
                 child: _HistoryPaginatedDataTable(history: _history),
               ),

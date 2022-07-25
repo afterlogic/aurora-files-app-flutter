@@ -167,7 +167,6 @@ class _FileWidgetState extends State<FileWidget> {
 
   void _downloadFile() {
     final filesState = _filesState;
-    final filesPageState = _filesPageState;
     filesState.onDownloadFile(
       context,
       file: widget.file,
@@ -249,10 +248,12 @@ class _FileWidgetState extends State<FileWidget> {
           filesPageState: _filesPageState,
         ),
       );
-      for (var i = 0; i < _filesPageState.currentFiles.length; i++) {
-        if (_filesPageState.currentFiles[i].id == widget.file.id) {
-          _filesPageState.currentFiles[i] = file;
-          break;
+      if (file != null && file is LocalFile) {
+        for (var i = 0; i < _filesPageState.currentFiles.length; i++) {
+          if (_filesPageState.currentFiles[i].id == widget.file.id) {
+            _filesPageState.currentFiles[i] = file;
+            break;
+          }
         }
       }
     }
@@ -363,6 +364,13 @@ class _FileWidgetState extends State<FileWidget> {
     }
   }
 
+  void _onItemTap(BuildContext context) {
+    hideSnack(context);
+    widget.file.initVector != null
+        ? _openEncryptedFile(context)
+        : _openFile(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
@@ -378,12 +386,7 @@ class _FileWidgetState extends State<FileWidget> {
             !_filesPageState.isInsideZip;
         return SelectableFilesItemTile(
           file: widget.file,
-          onTap: () {
-            hideSnack(context);
-            widget.file.initVector != null
-                ? _openEncryptedFile(context)
-                : _openFile(context);
-          },
+          onTap: () => _onItemTap(context),
           isSelected: _filesPageState.selectedFilesIds[widget.file.id] != null,
           child: Stack(children: [
             ListTile(

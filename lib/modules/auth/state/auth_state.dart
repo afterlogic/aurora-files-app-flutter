@@ -78,6 +78,7 @@ abstract class _AuthState with Store {
       AppStore.settingsState.updateEncryptionSettings(),
       setDevice(),
       AppStore.settingsState.getUserEncryptionKeys(),
+      AppStore.settingsState.updateAppData(),
     ]);
   }
 

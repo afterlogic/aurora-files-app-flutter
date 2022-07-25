@@ -41,8 +41,7 @@ class ShareTeammateDialogItem extends StatelessWidget {
       ),
       onDismissed: (_) => onDelete(),
       confirmDismiss: (_) => confirmDelete(),
-      child: Container(
-        width: double.infinity,
+      child: SizedBox(
         height: 40,
         child: Row(
           children: [

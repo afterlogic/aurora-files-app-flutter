@@ -264,6 +264,13 @@ class _FilesAndroidState extends State<FilesAndroid>
     }
   }
 
+  Future<void> _refreshFilesList() async {
+    if (_filesState.currentStorages.length <= 0) {
+      await _filesState.onGetStorages();
+    }
+    _getFiles(context, FilesLoadingType.none);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -272,12 +279,7 @@ class _FilesAndroidState extends State<FilesAndroid>
 
     Widget body = Observer(
       builder: (_) => RefreshIndicator(
-        onRefresh: () async {
-          if (_filesState.currentStorages.length <= 0) {
-            await _filesState.onGetStorages();
-          }
-          return _getFiles(context, FilesLoadingType.none);
-        },
+        onRefresh: _refreshFilesList,
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[

@@ -210,14 +210,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _deleteFile() async {
-    final shouldDelete = await AMDialog.show(
-      context: context,
-      builder: (_) => DeleteConfirmationDialog(
-        itemsNumber: 1,
-        isFolder: false,
-      ),
-    );
-    if (shouldDelete != null && shouldDelete) {
+    final shouldDelete = await AMDialog.show<bool>(
+            context: context,
+            builder: (_) => DeleteConfirmationDialog(
+              itemsNumber: 1,
+              isFolder: _file.isFolder,
+            ),
+          );
+    if (shouldDelete == true) {
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [_file],
         storage: widget.filesState.selectedStorage,
@@ -358,6 +358,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       } catch (err) {
         _onError(err);
       }
+      widget.filesPageState.onGetFiles();
       Navigator.pop(context);
     }
   }

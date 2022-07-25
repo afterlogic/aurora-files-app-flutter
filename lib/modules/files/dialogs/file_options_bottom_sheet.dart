@@ -175,6 +175,142 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     Navigator.pop(context, result);
   }
 
+  void _deleteFile() async {
+    final shouldDelete = await AMDialog.show<bool>(
+            context: context,
+            builder: (_) => DeleteConfirmationDialog(
+              itemsNumber: 1,
+              isFolder: widget.file.isFolder,
+            ),
+          );
+    if (shouldDelete == true) {
+      widget.filesPageState.onDeleteFiles(
+        filesToDelete: [widget.file],
+        storage: widget.filesState.selectedStorage,
+        onSuccess: () => widget.filesPageState.onGetFiles(),
+        onError: _onError,
+      );
+    }
+  }
+
+  _secureSharing() async {
+    if (widget.file.published == false && widget.file.initVector != null) {
+      if (widget.file.encryptedDecryptionKey == null) {
+        return AMDialog.show(
+          context: context,
+          builder: (_) => AMDialog(
+            content: Text(s.error_backward_compatibility_sharing_not_supported),
+            actions: [
+              TextButton(
+                child: Text(s.oK),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+      }
+      return _secureEncryptSharing(PreparedForShare(null, widget.file));
+    }
+    final preparedForShare = PreparedForShare(null, widget.file);
+    final pgpKeyUtil = PgpKeyUtil.instance;
+    final userPrivateKey = await pgpKeyUtil.userPrivateKey();
+    final userPublicKey = await pgpKeyUtil.userPublicKey();
+    await secureSharing.sharing(
+      context,
+      widget.filesState,
+      userPrivateKey,
+      userPublicKey,
+      pgpKeyUtil,
+      preparedForShare,
+      s,
+    );
+
+    await widget.filesState
+        .updateFile(getCompanionFromLocalFile(preparedForShare.localFile));
+    setState(() {});
+  }
+
+  _secureEncryptSharing(PreparedForShare preparedForShare) async {
+    final pgpKeyUtil = PgpKeyUtil.instance;
+    final userPrivateKey = await pgpKeyUtil.userPrivateKey();
+    final userPublicKey = await pgpKeyUtil.userPublicKey();
+    secureSharing.encryptSharing(
+      context,
+      widget.filesState,
+      userPrivateKey,
+      userPublicKey,
+      pgpKeyUtil,
+      preparedForShare,
+          () {
+        widget.filesPageState.onGetFiles(
+          showLoading: FilesLoadingType.filesVisible,
+        );
+      },
+      DI.get(),
+      s,
+    );
+    setState(() {});
+  }
+
+  Future<void> _shareWithTeammates(BuildContext context) async {
+    Navigator.pop(context);
+    if (widget.file.initVector != null &&
+        widget.file.encryptedDecryptionKey == null) {
+      return AMDialog.show(
+        context: context,
+        builder: (_) => AMDialog(
+          content: Text(s.error_backward_compatibility_sharing_not_supported),
+          actions: [
+            TextButton(
+              child: Text(s.oK),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      );
+    } else {
+      final file = await AMDialog.show<LocalFile>(
+        context: context,
+        builder: (_) => ShareTeammateDialog(
+          fileState: widget.filesState,
+          file: widget.file,
+        ),
+      );
+      if (file is LocalFile) {
+        widget.filesPageState
+            .onGetFiles(showLoading: FilesLoadingType.filesVisible);
+      }
+    }
+  }
+
+  Future<void> _leaveShare(BuildContext context) async {
+    final result = await _confirmLeaveShare();
+    if (result == true) {
+      try {
+        await widget.filesState.leaveFileShare(widget.file);
+      } catch (err) {
+        _onError(err);
+      }
+      widget.filesPageState.onGetFiles();
+      Navigator.pop(context);
+    }
+  }
+
+  Future<bool> _confirmLeaveShare() async {
+    final result = await AMDialog.show<bool>(
+      context: context,
+      builder: (_) => LeaveShareDialog(
+        name: widget.file.name,
+        isFolder: widget.file.isFolder,
+      ),
+    );
+    return result == true;
+  }
+
+  void _onError(dynamic error) {
+    showSnack(context, msg: '$error');
+  }
+
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
@@ -285,23 +421,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ListTile(
               leading: Icon(Icons.delete_outline),
               title: Text(s.delete),
-              onTap: () async {
+              onTap: () {
                 Navigator.pop(context);
-                final shouldDelete = await AMDialog.show<bool>(
-                  context: context,
-                  builder: (_) => DeleteConfirmationDialog(
-                    itemsNumber: 1,
-                    isFolder: widget.file.isFolder,
-                  ),
-                );
-                if (shouldDelete == true) {
-                  widget.filesPageState.onDeleteFiles(
-                    storage: widget.filesState.selectedStorage,
-                    filesToDelete: [widget.file],
-                    onSuccess: () => widget.filesPageState.onGetFiles(),
-                    onError: _onError,
-                  );
-                }
+                _deleteFile();
               },
             ),
         ],
@@ -332,120 +454,5 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     );
   }
 
-  _secureSharing() async {
-    if (widget.file.published == false && widget.file.initVector != null) {
-      if (widget.file.encryptedDecryptionKey == null) {
-        return AMDialog.show(
-          context: context,
-          builder: (_) => AMDialog(
-            content: Text(s.error_backward_compatibility_sharing_not_supported),
-            actions: [
-              TextButton(
-                child: Text(s.oK),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-        );
-      }
-      return _secureEncryptSharing(PreparedForShare(null, widget.file));
-    }
-    final preparedForShare = PreparedForShare(null, widget.file);
-    final pgpKeyUtil = PgpKeyUtil.instance;
-    final userPrivateKey = await pgpKeyUtil.userPrivateKey();
-    final userPublicKey = await pgpKeyUtil.userPublicKey();
-    await secureSharing.sharing(
-      context,
-      widget.filesState,
-      userPrivateKey,
-      userPublicKey,
-      pgpKeyUtil,
-      preparedForShare,
-      s,
-    );
 
-    await widget.filesState
-        .updateFile(getCompanionFromLocalFile(preparedForShare.localFile));
-    setState(() {});
-  }
-
-  _secureEncryptSharing(PreparedForShare preparedForShare) async {
-    final pgpKeyUtil = PgpKeyUtil.instance;
-    final userPrivateKey = await pgpKeyUtil.userPrivateKey();
-    final userPublicKey = await pgpKeyUtil.userPublicKey();
-    secureSharing.encryptSharing(
-      context,
-      widget.filesState,
-      userPrivateKey,
-      userPublicKey,
-      pgpKeyUtil,
-      preparedForShare,
-      () {
-        widget.filesPageState.onGetFiles(
-          showLoading: FilesLoadingType.filesVisible,
-        );
-      },
-      DI.get(),
-      s,
-    );
-    setState(() {});
-  }
-
-  Future<void> _shareWithTeammates(BuildContext context) async {
-    Navigator.pop(context);
-    if (widget.file.initVector != null &&
-        widget.file.encryptedDecryptionKey == null) {
-      return AMDialog.show(
-        context: context,
-        builder: (_) => AMDialog(
-          content: Text(s.error_backward_compatibility_sharing_not_supported),
-          actions: [
-            TextButton(
-              child: Text(s.oK),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      );
-    } else {
-      final file = await AMDialog.show<LocalFile>(
-        context: context,
-        builder: (_) => ShareTeammateDialog(
-          fileState: widget.filesState,
-          file: widget.file,
-        ),
-      );
-      if (file is LocalFile) {
-        widget.filesPageState
-            .onGetFiles(showLoading: FilesLoadingType.filesVisible);
-      }
-    }
-  }
-
-  Future<void> _leaveShare(BuildContext context) async {
-    final result = await _confirmLeaveShare();
-    if (result == true) {
-      try {
-        await widget.filesState.leaveFileShare(widget.file);
-      } catch (err) {
-        _onError(err);
-      }
-      Navigator.pop(context);
-    }
-  }
-
-  Future<bool> _confirmLeaveShare() async {
-    final result = await AMDialog.show<bool>(
-      context: context,
-      builder: (_) => LeaveShareDialog(
-        name: widget.file.name,
-        isFolder: widget.file.isFolder,
-      ),
-    );
-    return result == true;
-  }
-
-  void _onError(dynamic error) {
-    showSnack(context, msg: '$error');
-  }
 }

@@ -5,6 +5,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/files/dialogs/leave_share_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_history_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_teammate_dialog_item.dart';
 import 'package:aurorafiles/models/share_access_entry.dart';
@@ -111,10 +112,36 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     });
   }
 
+  bool _isShareForMe(ShareAccessEntry share) {
+    return share.recipient.email == _userEmail;
+  }
+
   void _removeShare(ShareAccessEntry share) {
     setState(() {
       _shares.remove(share);
     });
+  }
+
+  Future<void> _leaveShare(ShareAccessEntry share) async {
+    _setProgress(true);
+    try {
+      await widget.fileState.leaveFileShare(widget.file);
+      _removeShare(share);
+    } catch (err) {
+      _onError(err);
+    }
+    _setProgress(false);
+  }
+
+  Future<bool> _confirmLeaveShare() async {
+    final result = await AMDialog.show<bool>(
+      context: context,
+      builder: (_) => LeaveShareDialog(
+        name: widget.file.name,
+        isFolder: widget.file.isFolder,
+      ),
+    );
+    return result == true;
   }
 
   bool _recipientNotInShares(Recipient recipient) {
@@ -242,11 +269,18 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
                             itemCount: _shares.length,
                             itemBuilder: (context, index) {
                               final item = _shares[index];
+                              final enabled = !_isShareForMe(item);
                               return ShareTeammateDialogItem(
                                 share: item,
+                                enabled: enabled,
                                 onChange: (right) =>
                                     _changeShareRight(item, right),
-                                onDelete: () => _removeShare(item),
+                                onDelete: enabled
+                                    ? () => _removeShare(item)
+                                    : () => _leaveShare(item),
+                                confirmDelete: enabled
+                                    ? () => Future.value(true)
+                                    : _confirmLeaveShare,
                               );
                             },
                           ),

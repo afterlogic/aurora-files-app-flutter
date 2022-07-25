@@ -853,6 +853,17 @@ abstract class _FilesState with Store {
   Future<List<ShareAccessEntry>> getFileShares(LocalFile file) async {
     final props = await _filesApi.getFileExtendedProps(file);
     final result = <ShareAccessEntry>[];
+    // // add entry for current user
+    // if (props["SharedWithMeAccess"] != null) {
+    //   final recipient = Recipient(
+    //     email: AppStore.authState.userEmail,
+    //   );
+    //   final code = props["SharedWithMeAccess"] as int;
+    //   result.add(ShareAccessEntry(
+    //     recipient: recipient,
+    //     right: ShareAccessRightHelper.fromCode(code),
+    //   ));
+    // }
     if (props["Shares"] == null) {
       return result;
     }
@@ -898,5 +909,9 @@ abstract class _FilesState with Store {
 
   Future<bool> deleteFileShareHistory(LocalFile file) {
     return _mailApi.deleteFileShareHistory(file: file);
+  }
+
+  Future<bool> leaveFileShare(LocalFile file) {
+    return _mailApi.leaveFileShare(file: file);
   }
 }

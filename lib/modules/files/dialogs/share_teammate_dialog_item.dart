@@ -4,14 +4,18 @@ import 'package:flutter/material.dart';
 
 class ShareTeammateDialogItem extends StatelessWidget {
   final ShareAccessEntry share;
+  final bool enabled;
   final Function(ShareAccessRight) onChange;
   final VoidCallback onDelete;
+  final Future<bool> Function() confirmDelete;
 
   const ShareTeammateDialogItem({
     Key key,
     @required this.share,
+    @required this.enabled,
     @required this.onChange,
     @required this.onDelete,
+    @required this.confirmDelete,
   }) : super(key: key);
 
   @override
@@ -36,6 +40,7 @@ class ShareTeammateDialogItem extends StatelessWidget {
         ),
       ),
       onDismissed: (_) => onDelete(),
+      confirmDismiss: (_) => confirmDelete(),
       child: Container(
         width: double.infinity,
         height: 40,
@@ -55,6 +60,7 @@ class ShareTeammateDialogItem extends StatelessWidget {
             SizedBox(
               width: 50,
               child: PopupMenuButton<ShareAccessRight>(
+                enabled: enabled,
                 itemBuilder: (context) {
                   return ShareAccessRight.values
                       .map((value) => PopupMenuItem<ShareAccessRight>(
@@ -69,7 +75,7 @@ class ShareTeammateDialogItem extends StatelessWidget {
                   child: Text(
                     ShareAccessRightHelper.toShortName(share.right),
                     style: TextStyle(
-                      color: theme.primaryColor,
+                      color: enabled ? theme.primaryColor : theme.disabledColor,
                       decoration: TextDecoration.underline,
                       decorationStyle: TextDecorationStyle.dotted,
                     ),

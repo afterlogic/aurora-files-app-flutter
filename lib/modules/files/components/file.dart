@@ -5,7 +5,7 @@ import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
-import 'package:aurorafiles/models/share_access_entry.dart';
+import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/files_item_tile.dart';
@@ -49,18 +49,24 @@ class _FileWidgetState extends State<FileWidget> {
   S s;
   Map<String, dynamic> _extendedProps = {};
   bool _hasShares = false;
-  bool _sharedWithMe = false;
+  ShareAccessRight _sharedWithMeAccess;
+
+  bool get _sharedWithMe => _sharedWithMeAccess != null;
+
+  bool get _canShared =>
+      _sharedWithMeAccess == null ||
+      _sharedWithMeAccess == ShareAccessRight.readWriteReshare;
 
   @override
   void initState() {
     super.initState();
-    _initExtendedProps();
-    _initShareProps();
     try {
       final processingFile = AppStore.filesState.processedFiles
           .firstWhere((process) => process.guid == widget.file.guid);
       _subscribeToProgress(processingFile);
     } catch (err) {}
+    _initExtendedProps();
+    _initShareProps();
   }
 
   void _initExtendedProps() {
@@ -74,22 +80,13 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _initShareProps() {
-    if (!_extendedProps.containsKey("Shares")) return;
-    // init _hasShares
-    List<ShareAccessEntry> shares = [];
-    final list = _extendedProps["Shares"] as List;
-    for (final value in list) {
-      final share = ShareAccessEntry.fromShareJson(value);
-      if (share != null) {
-        shares.add(share);
-      }
+    if (_extendedProps.containsKey("Shares")) {
+      final list = _extendedProps["Shares"] as List;
+      _hasShares = list.isNotEmpty;
     }
-    _hasShares = shares.isNotEmpty;
-    // init _sharedWithMe
-    if (_hasShares) {
-      final _userEmail = AppStore.authState.userEmail;
-      final index = shares.indexWhere((e) => e.recipient.email == _userEmail);
-      _sharedWithMe = index != -1;
+    if (_extendedProps.containsKey("SharedWithMeAccess")) {
+      final code = _extendedProps["SharedWithMeAccess"] as int;
+      _sharedWithMeAccess = ShareAccessRightHelper.fromCode(code);
     }
   }
 
@@ -127,6 +124,8 @@ class _FileWidgetState extends State<FileWidget> {
       file: widget.file,
       filesState: _filesState,
       filesPageState: _filesPageState,
+      canShare: _canShared,
+      sharedWithMe: _sharedWithMe,
     );
 
     switch (result) {
@@ -338,7 +337,7 @@ class _FileWidgetState extends State<FileWidget> {
         if (_sharedWithMe)
           Positioned(
             top: -2,
-            right: -2,
+            right: -3,
             child: SvgPicture.asset(
               Asset.svg.iconSharedWithMe,
             ),

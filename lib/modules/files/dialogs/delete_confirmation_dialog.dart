@@ -40,11 +40,11 @@ class DeleteConfirmationDialog extends StatelessWidget {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.cancel),
           onPressed: () => Navigator.pop(context, false),
         ),
-        FlatButton(
+        TextButton(
           child: Text(s.delete),
           onPressed: () => Navigator.pop(context, true),
         ),

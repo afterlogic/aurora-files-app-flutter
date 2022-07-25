@@ -7,6 +7,7 @@ import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
+import 'package:aurorafiles/modules/files/dialogs/leave_share_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_teammate_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
@@ -20,6 +21,7 @@ import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:secure_sharing/secure_sharing.dart';
 
@@ -38,19 +40,25 @@ class FileOptionsBottomSheet extends StatefulWidget {
   final LocalFile file;
   final FilesState filesState;
   final FilesPageState filesPageState;
+  final bool canShare;
+  final bool sharedWithMe;
 
   const FileOptionsBottomSheet._({
     Key key,
     @required this.file,
     @required this.filesState,
     @required this.filesPageState,
+    @required this.canShare,
+    @required this.sharedWithMe,
   }) : super(key: key);
 
   static Future show({
-    BuildContext context,
-    LocalFile file,
-    FilesState filesState,
-    FilesPageState filesPageState,
+    @required BuildContext context,
+    @required LocalFile file,
+    @required FilesState filesState,
+    @required FilesPageState filesPageState,
+    @required bool canShare,
+    @required bool sharedWithMe,
   }) {
     final isTablet = LayoutConfig.of(context).isTablet;
     if (isTablet) {
@@ -64,6 +72,8 @@ class FileOptionsBottomSheet extends StatefulWidget {
               file: file,
               filesState: filesState,
               filesPageState: filesPageState,
+              canShare: canShare,
+              sharedWithMe: sharedWithMe,
             ),
           ),
         ),
@@ -76,6 +86,8 @@ class FileOptionsBottomSheet extends StatefulWidget {
             file: file,
             filesState: filesState,
             filesPageState: filesPageState,
+            canShare: canShare,
+            sharedWithMe: sharedWithMe,
           ),
         ),
       );
@@ -99,7 +111,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
 
   bool get _enableTeamShare =>
       storageType == StorageType.personal &&
-      AppStore.settingsState.isTeamSharingEnable;
+      AppStore.settingsState.isTeamSharingEnable &&
+      widget.canShare;
 
   @override
   void initState() {
@@ -227,6 +240,17 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               title: Text(s.label_share_with_teammates),
               onTap: () => _shareWithTeammates(context),
             ),
+          if (!offline && widget.sharedWithMe)
+            ListTile(
+              leading: SvgPicture.asset(
+                Asset.svg.iconShareLeave,
+                width: 24,
+                height: 24,
+                color: Theme.of(context).disabledColor,
+              ),
+              title: Text('Leave share'),
+              onTap: () => _leaveShare(context),
+            ),
           if (!isFolder)
             ListTile(
               leading: Icon(PlatformOverride.isIOS
@@ -275,7 +299,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     storage: widget.filesState.selectedStorage,
                     filesToDelete: [widget.file],
                     onSuccess: () => widget.filesPageState.onGetFiles(),
-                    onError: (String err) => showSnack(context, msg: err),
+                    onError: _onError,
                   );
                 }
               },
@@ -299,7 +323,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
           padding: const EdgeInsets.all(16.0),
           child: Text(
             widget.file.name,
-            style: Theme.of(context).textTheme.title,
+            style: Theme.of(context).textTheme.headline6,
           ),
         ),
         Divider(height: 0),
@@ -316,7 +340,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
           builder: (_) => AMDialog(
             content: Text(s.error_backward_compatibility_sharing_not_supported),
             actions: [
-              FlatButton(
+              TextButton(
                 child: Text(s.oK),
                 onPressed: () => Navigator.pop(context),
               ),
@@ -396,5 +420,32 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             .onGetFiles(showLoading: FilesLoadingType.filesVisible);
       }
     }
+  }
+
+  Future<void> _leaveShare(BuildContext context) async {
+    final result = await _confirmLeaveShare();
+    if (result == true) {
+      try {
+        await widget.filesState.leaveFileShare(widget.file);
+      } catch (err) {
+        _onError(err);
+      }
+      Navigator.pop(context);
+    }
+  }
+
+  Future<bool> _confirmLeaveShare() async {
+    final result = await AMDialog.show<bool>(
+      context: context,
+      builder: (_) => LeaveShareDialog(
+        name: widget.file.name,
+        isFolder: widget.file.isFolder,
+      ),
+    );
+    return result == true;
+  }
+
+  void _onError(dynamic error) {
+    showSnack(context, msg: '$error');
   }
 }

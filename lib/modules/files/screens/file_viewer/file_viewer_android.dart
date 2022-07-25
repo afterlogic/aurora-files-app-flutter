@@ -8,13 +8,14 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
-import 'package:aurorafiles/models/share_access_entry.dart';
+import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/leave_share_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_teammate_dialog.dart';
@@ -73,7 +74,13 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   bool isFolder;
   Map<String, dynamic> _extendedProps = {};
   bool _hasShares = false;
-  bool _sharedWithMe = false;
+  ShareAccessRight _sharedWithMeAccess;
+
+  bool get _sharedWithMe => _sharedWithMeAccess != null;
+
+  bool get _canShared =>
+      _sharedWithMeAccess == null ||
+      _sharedWithMeAccess == ShareAccessRight.readWriteReshare;
 
   bool get _enableSecureLink => isFolder
       ? [StorageType.corporate, StorageType.personal].contains(storageType)
@@ -81,7 +88,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   bool get _enableTeamShare =>
       storageType == StorageType.personal &&
-      AppStore.settingsState.isTeamSharingEnable;
+      AppStore.settingsState.isTeamSharingEnable &&
+      _canShared;
 
   @override
   void initState() {
@@ -121,22 +129,13 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _initShareProps() {
-    if (!_extendedProps.containsKey("Shares")) return;
-    // init _hasShares
-    List<ShareAccessEntry> shares = [];
-    final list = _extendedProps["Shares"] as List;
-    for (final value in list) {
-      final share = ShareAccessEntry.fromShareJson(value);
-      if (share != null) {
-        shares.add(share);
-      }
+    if (_extendedProps.containsKey("Shares")) {
+      final list = _extendedProps["Shares"] as List;
+      _hasShares = list.isNotEmpty;
     }
-    _hasShares = shares.isNotEmpty;
-    // init _sharedWithMe
-    if (_hasShares) {
-      final _userEmail = AppStore.authState.userEmail;
-      final index = shares.indexWhere((e) => e.recipient.email == _userEmail);
-      _sharedWithMe = index != -1;
+    if (_extendedProps.containsKey("SharedWithMeAccess")) {
+      final code = _extendedProps["SharedWithMeAccess"] as int;
+      _sharedWithMeAccess = ShareAccessRightHelper.fromCode(code);
     }
   }
 
@@ -173,7 +172,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         context,
         storedFile: _fileViewerState.fileWithContents,
         onSuccess: complete,
-        onError: (String err) => showSnack(context, msg: err),
+        onError: _onError,
       );
     } else if (_fileViewerState.downloadProgress != null) {
       showSnack(
@@ -227,7 +226,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         },
         onError: (String err) {
           widget.filesPageState.filesLoading = FilesLoadingType.none;
-          showSnack(context, msg: err);
+          _onError(err);
+          ;
         },
       );
       widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;
@@ -257,7 +257,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             label: s.oK,
             onPressed: () => hideSnack(context),
           )),
-      onError: (String err) => showSnack(context, msg: err),
+      onError: _onError,
     );
   }
 
@@ -313,7 +313,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           _isSyncingForOffline = false;
           _isFileOffline = !_isFileOffline;
         });
-        showSnack(context, msg: err.toString());
+        _onError(err);
       }
     }
   }
@@ -348,6 +348,29 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         setState(() {});
       }
     }
+  }
+
+  Future<void> _leaveShare(BuildContext context) async {
+    final result = await _confirmLeaveShare();
+    if (result == true) {
+      try {
+        await widget.filesState.leaveFileShare(_file);
+      } catch (err) {
+        _onError(err);
+      }
+      Navigator.pop(context);
+    }
+  }
+
+  Future<bool> _confirmLeaveShare() async {
+    final result = await AMDialog.show<bool>(
+      context: context,
+      builder: (_) => LeaveShareDialog(
+        name: _file.name,
+        isFolder: _file.isFolder,
+      ),
+    );
+    return result == true;
   }
 
   Future<void> _secureSharing() async {
@@ -474,6 +497,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     return result;
   }
 
+  void _onError(dynamic error) {
+    showSnack(context, msg: '$error');
+  }
+
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
@@ -559,6 +586,19 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                             child: ListTile(
                               leading: Icon(Icons.share),
                               title: Text(s.label_share_with_teammates),
+                            ),
+                          ),
+                        if (_sharedWithMe)
+                          PopupMenuItem(
+                            value: () => _leaveShare(context),
+                            child: ListTile(
+                              leading: SvgPicture.asset(
+                                Asset.svg.iconShareLeave,
+                                width: 24,
+                                height: 24,
+                                color: Theme.of(context).disabledColor,
+                              ),
+                              title: Text('Leave share'),
                             ),
                           ),
                         PopupMenuItem(

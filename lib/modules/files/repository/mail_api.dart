@@ -245,4 +245,29 @@ class MailApi {
       throw CustomException(getErrMsg(res));
     }
   }
+
+  Future<bool> leaveFileShare({
+    @required LocalFile file,
+  }) async {
+    final parameters = {
+      "Type": file.type,
+      "Path": file.path,
+      "Items": [
+        {"Path": file.path, "Name": file.name, "IsFolder": file.isFolder}
+      ],
+    };
+    final body = new ApiBody(
+      module: "Files",
+      method: "LeaveShare",
+      parameters: json.encode(parameters),
+    );
+
+    final res = (await sendRequest(body)) as Map;
+
+    if (res.containsKey("Result")) {
+      return true;
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
 }

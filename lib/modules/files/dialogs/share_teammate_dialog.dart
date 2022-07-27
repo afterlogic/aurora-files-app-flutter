@@ -214,7 +214,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
             itemAsString: (Recipient r) => r.email,
             maxHeight: screenHeight / 3,
             dropdownSearchDecoration: InputDecoration(
-              hintText: "Select teammate",
+              hintText: s.hint_select_teammate,
               contentPadding: EdgeInsets.only(left: 8),
               border: OutlineInputBorder(
                 borderSide: BorderSide(color: theme.disabledColor),
@@ -254,7 +254,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 16),
                               child: Text(
-                                'No shares yet',
+                                s.label_no_share,
                                 style: TextStyle(color: theme.disabledColor),
                               ),
                             ),
@@ -288,11 +288,11 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
           ),
           actions: [
             TextButton(
-              child: Text('Show history'),
+              child: Text(s.label_show_history),
               onPressed: _onShowHistory,
             ),
             TextButton(
-              child: Text('Save'),
+              child: Text(s.label_save),
               onPressed: _onSave,
             ),
             TextButton(

@@ -21,7 +21,7 @@ class LeaveShareDialog extends StatelessWidget {
         style: textStyle,
         children: [
           TextSpan(
-            text: 'Leave share of the ',
+            text: s.label_leave_share_of,
           ),
           TextSpan(
             text: name,
@@ -30,7 +30,7 @@ class LeaveShareDialog extends StatelessWidget {
             ),
           ),
           TextSpan(
-            text: isFolder ? ' folder?' : ' file?',
+            text: isFolder ? ' ${s.folder}?' : ' ${s.file}?',
           ),
         ],
       ),
@@ -41,7 +41,7 @@ class LeaveShareDialog extends StatelessWidget {
       content: text,
       actions: <Widget>[
         TextButton(
-          child: Text('Leave share'),
+          child: Text(s.label_leave_share),
           onPressed: () => Navigator.pop(context, true),
         ),
         TextButton(

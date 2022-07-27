@@ -384,7 +384,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 height: 24,
                 color: Theme.of(context).disabledColor,
               ),
-              title: Text('Leave share'),
+              title: Text(s.label_leave_share),
               onTap: () => _leaveShare(context),
             ),
           if (!isFolder)

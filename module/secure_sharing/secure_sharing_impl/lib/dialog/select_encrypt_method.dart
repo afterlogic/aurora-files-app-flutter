@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
@@ -120,13 +119,13 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
     );
 
     final actions = <Widget>[
-      FlatButton(
+      TextButton(
         child: Text(s.encrypt),
         onPressed: () {
           checkSign();
         },
       ),
-      FlatButton(
+      TextButton(
         child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);

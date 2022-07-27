@@ -86,7 +86,7 @@ class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
       alignment: Alignment.center,
       children: [
         AMDialog(
-          title: Text('Shared file activity history'),
+          title: Text(s.label_share_history_title),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -99,7 +99,7 @@ class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
           ),
           actions: [
             TextButton(
-              child: Text('Clear'),
+              child: Text(s.clear),
               onPressed: _onClear,
             ),
             TextButton(

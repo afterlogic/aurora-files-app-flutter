@@ -223,9 +223,8 @@ abstract class S {
   String get label_encryption_enable_paranoid_encryption;
   String get btn_encryption_enable;
   String get label_encryption_mode;
-  String get btn_encryption_save;
+  String get label_save;
   String get label_encryption_password_for_pgp_key;
-  String get btn_share_save;
   String get label_pgp_import_key;
   String get hint_pgp_already_have_keys;
   String get hint_pgp_your_keys;
@@ -279,4 +278,10 @@ abstract class S {
   String get btn_encryption_personal_storage;
   String get hint_pgp_no_keys_to_import;
   String get hint_pgp_external_private_keys;
+  String get label_leave_share;
+  String get label_leave_share_of;
+  String get label_share_history_title;
+  String get hint_select_teammate;
+  String get label_no_share;
+  String get label_show_history;
 }

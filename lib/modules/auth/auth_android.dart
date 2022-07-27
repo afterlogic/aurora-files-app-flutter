@@ -2,8 +2,6 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-
-// import 'package:aurorafiles/modules/auth/auth_data.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/screens/fido_auth/fido_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';

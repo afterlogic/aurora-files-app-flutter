@@ -80,7 +80,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
                   SizedBox(height: 48),
                   AMButton(
                     isLoading: progress,
-                    child: Text(s.btn_encryption_save),
+                    child: Text(s.label_save),
                     onPressed: progress ? null : save,
                   ),
                   SizedBox(height: 20),

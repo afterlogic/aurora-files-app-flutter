@@ -599,7 +599,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                                 height: 24,
                                 color: Theme.of(context).disabledColor,
                               ),
-                              title: Text('Leave share'),
+                              title: Text(s.label_leave_share),
                             ),
                           ),
                         PopupMenuItem(

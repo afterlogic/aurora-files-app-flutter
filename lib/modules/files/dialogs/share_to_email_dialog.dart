@@ -161,12 +161,12 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
         ),
       ),
       actions: [
-        FlatButton(
+        TextButton(
           focusNode: btnFocus,
-          child: Text(s.btn_share_save),
+          child: Text(s.label_save),
           onPressed: progress ? null : share,
         ),
-        FlatButton(
+        TextButton(
           child: Text(s.cancel),
           onPressed: () => Navigator.pop(context),
         )

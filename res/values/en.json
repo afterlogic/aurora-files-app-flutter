@@ -216,9 +216,8 @@
   "label_encryption_enable_paranoid_encryption": "Enable Paranoid Encryption",
   "btn_encryption_enable": "Enable Paranoid Encryption",
   "label_encryption_mode": "Encrypt uploaded files",
-  "btn_encryption_save": "Save",
+  "label_save": "Save",
   "label_encryption_password_for_pgp_key": "Required password for PGP key",
-  "btn_share_save": "Save",
   "label_pgp_import_key": "Import keys",
   "hint_pgp_already_have_keys": "Keys which are already in the system are greyed out.",
   "hint_pgp_your_keys": "Your keys",
@@ -271,5 +270,11 @@
   "clear_cache_during_logout": "Delete cached data and keys",
   "btn_encryption_personal_storage": "Allow encrypt files in Personal Storage",
   "hint_pgp_no_keys_to_import": "The text contains no keys that can be imported.",
-  "hint_pgp_external_private_keys": "External private keys are not supported and will not be imported"
+  "hint_pgp_external_private_keys": "External private keys are not supported and will not be imported",
+  "label_leave_share": "Leave share",
+  "label_leave_share_of": "Leave share of the ",
+  "label_share_history_title": "Shared file activity history",
+  "hint_select_teammate": "Select teammate",
+  "label_no_share": "No shares yet",
+  "label_show_history": "Show history"
 }

@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/override_platform.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SignCheckBox extends StatefulWidget {

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +37,8 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
             )
           : Text(s.download_confirm),
       actions: <Widget>[
-        FlatButton(child: Text(s.cancel), onPressed: Navigator.of(context).pop),
-        FlatButton(
+        TextButton(child: Text(s.cancel), onPressed: Navigator.of(context).pop),
+        TextButton(
           child: Text(s.download),
           onPressed: _isExporting
               ? null

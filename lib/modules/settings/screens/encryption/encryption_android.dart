@@ -1,5 +1,4 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_dialog.dart';

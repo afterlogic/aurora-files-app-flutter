@@ -13,7 +13,6 @@ import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:theme/app_color.dart';
 import 'package:theme/app_theme.dart';
 
 class BackupCodeAuthWidget extends StatefulWidget {
@@ -49,7 +48,7 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
             s.tfa_label,
             style: Theme.of(context)
                 .textTheme
-                .title
+                .headline6
                 .copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
@@ -127,9 +126,9 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
                     SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
-                      child: FlatButton(
+                      child: TextButton(
                         child: Text(
-                          "Other options",
+                          s.tfa_btn_other_options,
                           style: TextStyle(color: AppTheme.loginTextColor),
                         ),
                         onPressed: () {

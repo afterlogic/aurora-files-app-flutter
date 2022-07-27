@@ -55,16 +55,24 @@ class _UploadOptionsState extends State<UploadOptions> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              FlatButton(
-                child: Text(s.cancel),
-                textColor: Theme.of(context).iconTheme.color,
+              TextButton(
+                child: Text(
+                  s.cancel,
+                  style: TextStyle(
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                ),
                 onPressed: () {
                   widget.filesState.disableUploadShared();
                 },
               ),
-              FlatButton(
-                child: Text(s.upload),
-                textColor: Theme.of(context).iconTheme.color,
+              TextButton(
+                child: Text(
+                  s.upload,
+                  style: TextStyle(
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                ),
                 onPressed: _buttonsDisabled
                     ? null
                     : () => _uploadFiles(context, false),

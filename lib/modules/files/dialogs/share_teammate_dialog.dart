@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:aurora_ui_kit/components/dialogs/am_dialog.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/models/contact_group.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/share_principal.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -61,6 +62,10 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
       // remove current user from principal list
       if (principals.isNotEmpty) {
         principals.removeWhere((e) => e is Recipient && e.email == _userEmail);
+      }
+      // remove groups for encrypted files
+      if (widget.file.initVector != null) {
+        principals.removeWhere((e) => e is ContactGroup);
       }
       principals.sort((a, b) => a.getLabel().compareTo(b.getLabel()));
       _sharePrincipals.addAll(principals);

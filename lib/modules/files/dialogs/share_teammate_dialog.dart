@@ -73,9 +73,15 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     try {
       final shares = await widget.fileState.getFileShares(widget.file);
       _fileShares.addAll(shares);
+      _fileSharesSort();
     } catch (err) {
       _onError(err);
     }
+  }
+
+  void _fileSharesSort() {
+    _fileShares.sort(
+        (a, b) => a.principal.getLabel().compareTo(b.principal.getLabel()));
   }
 
   Future<List<SharePrincipal>> _searchContact(String pattern) {
@@ -91,6 +97,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     final share = ShareAccessEntry(principal: principal, access: actualRight);
     setState(() {
       _fileShares.add(share);
+      _fileSharesSort();
     });
     _rebuildDropdownWidget();
   }

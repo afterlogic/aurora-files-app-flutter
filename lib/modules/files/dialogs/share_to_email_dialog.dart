@@ -41,9 +41,11 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   String error;
 
   Future<List<Recipient>> searchContact(String pattern) async {
-    final contactSuggestion =
+    final principals =
         await widget.fileState.searchContact(pattern.replaceAll(" ", ""));
-    return contactSuggestion.recipients;
+    final List<Recipient> recipients =
+        principals.where((e) => e is Recipient).toList();
+    return recipients;
   }
 
   share() async {

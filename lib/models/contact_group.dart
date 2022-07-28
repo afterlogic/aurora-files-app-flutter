@@ -27,7 +27,7 @@ class ContactGroup extends SharePrincipal {
   }
 
   @override
-  int getId() => this.id;
+  String getId() => '${this.id}';
 
   @override
   String getLabel() => '\u25FE ${this.name}';

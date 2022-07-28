@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/models/contact_suggestion.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/folder.dart';
 import 'package:aurorafiles/models/processing_file.dart';
@@ -13,6 +12,7 @@ import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/secure_link.dart';
 import 'package:aurorafiles/models/share_access_history.dart';
 import 'package:aurorafiles/models/share_access_history_item.dart';
+import 'package:aurorafiles/models/share_principal.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
@@ -847,7 +847,7 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future<ContactSuggestion> searchContact(String pattern) async {
+  Future<List<SharePrincipal>> searchContact(String pattern) async {
     return _mailApi.searchContact(pattern);
   }
 

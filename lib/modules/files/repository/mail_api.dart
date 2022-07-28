@@ -4,10 +4,10 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/account.dart';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/contact_group.dart';
-import 'package:aurorafiles/models/contact_suggestion.dart';
 import 'package:aurorafiles/models/folder.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/share_access_history.dart';
+import 'package:aurorafiles/models/share_principal.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -106,7 +106,7 @@ class MailApi {
     }
   }
 
-  Future<ContactSuggestion> searchContact(String pattern) async {
+  Future<List<SharePrincipal>> searchContact(String pattern) async {
     final parameters = {
       "Search": pattern,
       "Storage": "team",
@@ -125,21 +125,20 @@ class MailApi {
     final res = (await sendRequest(body)) as Map;
 
     if (res.containsKey("Result")) {
-      final List<Recipient> recipients = [];
-      final List<ContactGroup> groups = [];
+      final List<SharePrincipal> principals = [];
       final list = res["Result"]["List"] as List;
       if (list?.isNotEmpty == true) {
         list.forEach((map) {
           if (map["IsGroup"] != null) {
             final group = ContactGroup.fromJson(map);
-            groups.add(group);
+            principals.add(group);
           } else if (map["IdUser"] != null) {
             final recipient = Recipient.fromJson(map);
-            recipients.add(recipient);
+            principals.add(recipient);
           }
         });
       }
-      return ContactSuggestion(recipients, groups);
+      return principals;
     } else {
       throw CustomException(getErrMsg(res));
     }

@@ -1,5 +1,5 @@
 abstract class SharePrincipal {
-  int getId();
+  String getId();
 
   String getLabel();
 

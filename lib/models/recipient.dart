@@ -4,7 +4,6 @@ class Recipient extends SharePrincipal {
   final String email;
   final int idUser;
   final String fullName;
-
   final String pgpPublicKey;
 
   Recipient({this.email, this.idUser, this.fullName, this.pgpPublicKey});
@@ -19,7 +18,7 @@ class Recipient extends SharePrincipal {
   }
 
   @override
-  int getId() => this.idUser;
+  String getId() => this.email;
 
   @override
   String getLabel() => this.email;

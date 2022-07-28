@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/account.dart';
 import 'package:aurorafiles/models/api_body.dart';
+import 'package:aurorafiles/models/contact_group.dart';
+import 'package:aurorafiles/models/contact_suggestion.dart';
 import 'package:aurorafiles/models/folder.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/share_access_history.dart';
-import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
@@ -105,13 +106,14 @@ class MailApi {
     }
   }
 
-  Future<List<Recipient>> searchContact(String pattern) async {
+  Future<ContactSuggestion> searchContact(String pattern) async {
     final parameters = {
       "Search": pattern,
       "Storage": "team",
       "SortField": 3,
       "SortOrder": 1,
       "WithGroups": false,
+      "WithUserGroups": true,
       "WithoutTeamContactsDuplicates": true,
     };
     final body = new ApiBody(
@@ -123,25 +125,31 @@ class MailApi {
     final res = (await sendRequest(body)) as Map;
 
     if (res.containsKey("Result")) {
-      return (res["Result"]["List"] as List)
-          .map((item) => Recipient.fromJson(item))
-          .toList();
+      final List<Recipient> recipients = [];
+      final List<ContactGroup> groups = [];
+      final list = res["Result"]["List"] as List;
+      if (list?.isNotEmpty == true) {
+        list.forEach((map) {
+          if (map["IsGroup"] != null) {
+            final group = ContactGroup.fromJson(map);
+            groups.add(group);
+          } else if (map["IdUser"] != null) {
+            final recipient = Recipient.fromJson(map);
+            recipients.add(recipient);
+          }
+        });
+      }
+      return ContactSuggestion(recipients, groups);
     } else {
       throw CustomException(getErrMsg(res));
     }
   }
 
-  Future<List<Map>> shareFileToTeammate(
+  Future<List<Map<String, dynamic>>> shareFileToTeammate(
     LocalFile localFile,
     List<ShareAccessEntry> shares,
   ) async {
-    final shareList = <Map>[];
-    for (var share in shares) {
-      shareList.add({
-        "PublicId": share.recipient.email,
-        "Access": ShareAccessRightHelper.toCode(share.right),
-      });
-    }
+    final shareList = shares.map((e) => e.toMap()).toList();
     final parameters = {
       "Storage": localFile.type,
       "Path": localFile.path,

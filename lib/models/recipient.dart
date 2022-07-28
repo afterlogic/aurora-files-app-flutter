@@ -1,4 +1,6 @@
-class Recipient {
+import 'package:aurorafiles/models/share_principal.dart';
+
+class Recipient extends SharePrincipal {
   final String email;
   final int idUser;
   final String fullName;
@@ -14,5 +16,18 @@ class Recipient {
       fullName: map["FullName"],
       pgpPublicKey: null,
     );
+  }
+
+  @override
+  int getId() => this.idUser;
+
+  @override
+  String getLabel() => this.email;
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      "PublicId": email,
+    };
   }
 }

@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/models/contact_suggestion.dart';
 import 'package:aurorafiles/models/processing_file.dart';
-import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
@@ -205,7 +205,7 @@ abstract class _FileViewerState with Store {
         onError: onError);
   }
 
-  Future<List<Recipient>> searchContact(String pattern) async {
+  Future<ContactSuggestion> searchContact(String pattern) async {
     return _mailApi.searchContact(pattern);
   }
 

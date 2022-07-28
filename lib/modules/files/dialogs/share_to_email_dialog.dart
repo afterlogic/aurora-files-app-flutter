@@ -40,8 +40,10 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   Set<String> pgpKeysEmail = {};
   String error;
 
-  Future<List<Recipient>> searchContact(String pattern) {
-    return widget.fileState.searchContact(pattern.replaceAll(" ", ""));
+  Future<List<Recipient>> searchContact(String pattern) async {
+    final contactSuggestion =
+        await widget.fileState.searchContact(pattern.replaceAll(" ", ""));
+    return contactSuggestion.recipients;
   }
 
   share() async {

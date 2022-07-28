@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:aurora_ui_kit/components/dialogs/am_dialog.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/models/contact_suggestion.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/models/share_principal.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/leave_share_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_history_dialog.dart';
@@ -31,7 +33,7 @@ class ShareTeammateDialog extends StatefulWidget {
 }
 
 class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
-  List<Recipient> _teammates = [];
+  List<SharePrincipal> _sharePrincipals = [];
   List<ShareAccessEntry> _shares = [];
   ShareAccessRight _lastSelectedRight = ShareAccessRight.read;
   bool _rebuildingDropdown = false;
@@ -47,20 +49,22 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
 
   Future<void> _init() async {
     await Future.wait([
-      _initTeammates(),
+      _initContactSuggestion(),
       _initShares(),
     ]);
     _progress = false;
     if (mounted) setState(() {});
   }
 
-  Future<void> _initTeammates() async {
+  Future<void> _initContactSuggestion() async {
     try {
-      final result = await _searchContact('');
-      if (result.isNotEmpty) {
-        result.removeWhere((e) => e.email == _userEmail);
-        _teammates.addAll(result);
+      final contactSuggestion = await _searchContact('');
+      // remove current user from share list
+      if (contactSuggestion.recipients.isNotEmpty) {
+        contactSuggestion.recipients.removeWhere((e) => e.email == _userEmail);
       }
+      _sharePrincipals.addAll(contactSuggestion.recipients);
+      _sharePrincipals.addAll(contactSuggestion.groups);
     } catch (err) {
       _onError(err);
     }
@@ -75,17 +79,17 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     }
   }
 
-  Future<List<Recipient>> _searchContact(String pattern) {
+  Future<ContactSuggestion> _searchContact(String pattern) {
     return widget.fileState.searchContact(pattern.replaceAll(" ", ""));
   }
 
   void _addShare(
-    Recipient recipient, [
-    ShareAccessRight right,
+    SharePrincipal principal, [
+    ShareAccessRight access,
   ]) {
-    if (recipient == null) return;
-    final actualRight = right ?? _lastSelectedRight;
-    final share = ShareAccessEntry(recipient: recipient, right: actualRight);
+    if (principal == null) return;
+    final actualRight = access ?? _lastSelectedRight;
+    final share = ShareAccessEntry(principal: principal, access: actualRight);
     setState(() {
       _shares.add(share);
     });
@@ -103,17 +107,18 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     });
   }
 
-  void _changeShareRight(ShareAccessEntry share, ShareAccessRight right) {
-    if (share == null || right == null) return;
-    _lastSelectedRight = right;
+  void _changeShareRight(ShareAccessEntry share, ShareAccessRight access) {
+    if (share == null || access == null) return;
+    _lastSelectedRight = access;
     final index = _shares.indexOf(share);
     setState(() {
-      _shares[index] = share.copyWith(right: right);
+      _shares[index] = share.copyWith(access: access);
     });
   }
 
   bool _isShareForMe(ShareAccessEntry share) {
-    return share.recipient.email == _userEmail;
+    final principal = share.principal;
+    return principal is Recipient && principal.email == _userEmail;
   }
 
   void _removeShare(ShareAccessEntry share) {
@@ -144,9 +149,10 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     return result == true;
   }
 
-  bool _recipientNotInShares(Recipient recipient) {
-    final index =
-        _shares.indexWhere((e) => e.recipient.email == recipient.email);
+  bool _itemNotInShares(SharePrincipal item) {
+    final index = _shares.indexWhere((e) =>
+        e.runtimeType == item.runtimeType &&
+        e.principal.getId() == item.getId());
     return index == -1;
   }
 
@@ -206,12 +212,12 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
               borderRadius: BorderRadius.circular(4),
             ),
           )
-        : DropdownSearch<Recipient>(
+        : DropdownSearch<SharePrincipal>(
             mode: Mode.MENU,
-            items: _teammates,
+            items: _sharePrincipals,
             onChanged: _addShare,
-            filterFn: (item, _) => _recipientNotInShares(item),
-            itemAsString: (Recipient r) => r.email,
+            filterFn: (item, _) => _itemNotInShares(item),
+            itemAsString: (item) => item.getLabel(),
             maxHeight: screenHeight / 3,
             dropdownSearchDecoration: InputDecoration(
               hintText: s.hint_select_teammate,

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/models/contact_suggestion.dart';
 import 'package:aurorafiles/models/file_to_move.dart';
 import 'package:aurorafiles/models/folder.dart';
 import 'package:aurorafiles/models/processing_file.dart';
@@ -846,24 +847,13 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future<List<Recipient>> searchContact(String pattern) async {
+  Future<ContactSuggestion> searchContact(String pattern) async {
     return _mailApi.searchContact(pattern);
   }
 
   Future<List<ShareAccessEntry>> getFileShares(LocalFile file) async {
     final props = await _filesApi.getFileExtendedProps(file);
     final result = <ShareAccessEntry>[];
-    // // add entry for current user
-    // if (props["SharedWithMeAccess"] != null) {
-    //   final recipient = Recipient(
-    //     email: AppStore.authState.userEmail,
-    //   );
-    //   final code = props["SharedWithMeAccess"] as int;
-    //   result.add(ShareAccessEntry(
-    //     recipient: recipient,
-    //     right: ShareAccessRightHelper.fromCode(code),
-    //   ));
-    // }
     if (props["Shares"] == null) {
       return result;
     }

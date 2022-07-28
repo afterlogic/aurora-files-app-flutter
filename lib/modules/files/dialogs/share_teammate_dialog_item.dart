@@ -49,7 +49,7 @@ class ShareTeammateDialogItem extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: Text(
-                  share.recipient.email,
+                  share.principal.getLabel(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -72,7 +72,7 @@ class ShareTeammateDialogItem extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
-                    ShareAccessRightHelper.toShortName(share.right),
+                    ShareAccessRightHelper.toShortName(share.access),
                     style: TextStyle(
                       color: enabled ? theme.primaryColor : theme.disabledColor,
                       decoration: TextDecoration.underline,

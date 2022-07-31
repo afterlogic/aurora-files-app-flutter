@@ -89,7 +89,7 @@ dependencies:
   crypto_stream:
     git:
       url: https://github.com/afterlogic/flutter_crypto_stream
-      ref: pgp_without_public_key
+      ref: flutter_2.10
   receive_sharing:
     git: https://github.com/afterlogic/receive_sharing
   # fido

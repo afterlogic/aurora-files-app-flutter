@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShareDialog extends StatefulWidget {
@@ -64,7 +60,7 @@ class _ShareDialogState extends State<ShareDialog> {
         Text(s.getting_file_progress),
       ]),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.cancel.toUpperCase()),
           onPressed: () {
             widget.filesState

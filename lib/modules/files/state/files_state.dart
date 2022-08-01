@@ -268,9 +268,10 @@ abstract class _FilesState with Store {
         toPath: toPath,
       );
       onSuccess();
+      final fileStorageType = StorageTypeHelper.toEnum(filesToMoveCopy[0].type);
       if (updateFilesCb != null &&
           !copy &&
-          selectedStorage.type == filesToMoveCopy[0].type) {
+          selectedStorage.type == fileStorageType) {
         updateFilesCb(path: filesToMoveCopy[0].path);
       }
     } catch (err) {

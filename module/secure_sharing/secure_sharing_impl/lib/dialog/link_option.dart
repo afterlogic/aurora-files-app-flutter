@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/import_key_dialog.dart';
@@ -46,13 +45,13 @@ class _LinkOptionWidgetState extends State<LinkOptionWidget> {
         ));
 
     final actions = <Widget>[
-      FlatButton(
+      TextButton(
         child: Text(encryptLink ? s.create_encrypt_link : s.create_link),
         onPressed: () {
           Navigator.pop(context, encryptLink);
         },
       ),
-      FlatButton(
+      TextButton(
         child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);

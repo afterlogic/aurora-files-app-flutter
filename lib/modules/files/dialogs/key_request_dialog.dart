@@ -92,7 +92,7 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
         ],
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: isProgress ? CircularProgressIndicator() : Text(s.oK),
           onPressed: isProgress
               ? null

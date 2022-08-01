@@ -158,7 +158,6 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
 
   _login() {
     if (formKey.currentState.validate()) {
-      final args = widget.args;
       bloc.add(
         Verify(
           pinCtrl.text,

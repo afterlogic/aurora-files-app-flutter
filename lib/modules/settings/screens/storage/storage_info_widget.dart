@@ -1,11 +1,9 @@
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 
 class StorageInfoWidget extends StatelessWidget {
@@ -36,7 +34,7 @@ class StorageInfoWidget extends StatelessWidget {
                           AppStore.filesState.isOfflineMode
                               ? s.offline_information_is_not_available
                               : s.information_is_not_available,
-                          style: theme.textTheme.subhead)),
+                          style: theme.textTheme.subtitle1)),
                 ],
               ),
             )
@@ -56,19 +54,19 @@ class StorageInfoWidget extends StatelessWidget {
                         animateFromLastPercent: true,
                         progressColor: theme.accentColor,
                         center: Text("${(quota.progress * 100).round()}%",
-                            style: theme.textTheme.title),
+                            style: theme.textTheme.headline6),
                         radius: 100.0,
                       ),
                       SizedBox(height: 32.0),
                       Text(
                         s.available_space(quota.availableFormatted),
-                        style: theme.textTheme.subhead,
+                        style: theme.textTheme.subtitle1,
                       ),
                       SizedBox(height: 22.0),
                       Text(
                           s.used_space(
                               quota.usedFormatted, quota.limitFormatted),
-                          style: theme.textTheme.subhead),
+                          style: theme.textTheme.subtitle1),
                       SizedBox(height: 46.0),
                       // if (BuildProperty.canUpgradePlan)
                       //   SizedBox(

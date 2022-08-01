@@ -1,13 +1,8 @@
-import 'dart:io';
-
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
-import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddKeyDialog extends StatefulWidget {
@@ -89,11 +84,11 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
               ),
             ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.cancel),
           onPressed: () => Navigator.pop(context),
         ),
-        FlatButton(
+        TextButton(
             child: Text(widget.isImport ? s.import : s.generate),
             onPressed: _isAdding
                 ? null

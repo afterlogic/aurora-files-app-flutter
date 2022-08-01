@@ -1,5 +1,4 @@
 import 'package:aurorafiles/build_property.dart';
-import 'package:theme/app_color.dart';
 import 'package:flutter/material.dart';
 
 class LoginGradient extends StatelessWidget {

@@ -81,7 +81,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
                             widget._pgpKey.isPrivate
                                 ? s.private_key
                                 : s.public_key,
-                            style: Theme.of(context).textTheme.title,
+                            style: Theme.of(context).textTheme.headline6,
                           ),
                         ),
                       ),
@@ -91,7 +91,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
                   ),
                   Text(
                     widget._pgpKey.email,
-                    style: theme.textTheme.title,
+                    style: theme.textTheme.headline6,
                   ),
                   SizedBox(
                     height: 20,

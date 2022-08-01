@@ -1,13 +1,10 @@
 import 'package:aurorafiles/example_widget/test_widget/category_widget.dart';
-import 'package:aurorafiles/example_widget/test_widget/group_label.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FlutterCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     return CategoryWidget(
       "Flutter widgets",
       [
@@ -21,11 +18,11 @@ class FlutterCategory extends StatelessWidget {
             height: 100,
           ),
         ),
-        FlatButton(
+        TextButton(
           child: Text("Button"),
           onPressed: null,
         ),
-        FlatButton(
+        TextButton(
           child: Text("Button"),
           onPressed: () {},
         ),

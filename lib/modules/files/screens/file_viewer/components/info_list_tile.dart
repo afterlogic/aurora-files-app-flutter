@@ -91,7 +91,7 @@ class _InfoListTileState extends State<InfoListTile> {
                 Flexible(
                   child: Text(
                     widget.content,
-                    style: Theme.of(context).textTheme.subhead,
+                    style: Theme.of(context).textTheme.subtitle1,
                     maxLines: 20,
                   ),
                 ),
@@ -105,7 +105,7 @@ class _InfoListTileState extends State<InfoListTile> {
                   padding: EdgeInsets.only(right: _rightPaddingForStatusIcons),
                   child: Text(
                     widget.content,
-                    style: Theme.of(context).textTheme.subhead,
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                   scrollDirection: _expanded ? Axis.vertical : Axis.horizontal,
                 ),

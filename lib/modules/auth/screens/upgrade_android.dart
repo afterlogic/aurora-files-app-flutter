@@ -27,7 +27,6 @@ class UpgradeAndroid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = Str.of(context);
-    final mq = MediaQuery.of(context);
     final theme = Theme.of(context);
     return themeWidget(
       Scaffold(

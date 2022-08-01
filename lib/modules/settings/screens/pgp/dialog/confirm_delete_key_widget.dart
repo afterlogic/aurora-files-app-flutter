@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/override_platform.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmDeleteKeyWidget extends StatefulWidget {
@@ -21,13 +17,13 @@ class _ConfirmDeleteKeyWidgetState extends State<ConfirmDeleteKeyWidget> {
     final s = Str.of(context);
     final content = Text(widget._message);
     final actions = <Widget>[
-      FlatButton(
+      TextButton(
         child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);
         },
       ),
-      FlatButton(
+      TextButton(
         child: Text(s.delete),
         onPressed: () {
           Navigator.pop(context, true);

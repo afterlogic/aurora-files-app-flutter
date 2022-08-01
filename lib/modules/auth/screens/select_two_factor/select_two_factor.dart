@@ -43,7 +43,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
             s.tfa_label,
             style: Theme.of(context)
                 .textTheme
-                .title
+                .headline6
                 .copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),

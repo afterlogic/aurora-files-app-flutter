@@ -1,14 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'app_color.dart';
 
 class AppTheme {
   static final light = ThemeData(
     primaryColor: AppColor.primary,
-    textSelectionColor: AppColor.accent,
-    textSelectionHandleColor: AppColor.accent,
-    cursorColor: AppColor.accent,
     accentColor: AppColor.accent,
     buttonColor: AppColor.accent,
     buttonTheme: _buttonTheme,
@@ -19,7 +14,7 @@ class AppTheme {
     scaffoldBackgroundColor: Colors.white,
     toggleableActiveColor:AppColor.accent,
     textTheme: TextTheme(
-      display1: TextStyle(
+      headline4: TextStyle(
         color: Colors.black,
         fontSize: 32.0,
         fontWeight: FontWeight.w500,
@@ -31,12 +26,12 @@ class AppTheme {
       iconTheme: IconThemeData(color: Colors.black),
       actionsIconTheme: IconThemeData(color: Colors.black),
       textTheme: TextTheme(
-        title: TextStyle(
+        headline6: TextStyle(
           color: Colors.black,
           fontSize: 18.0,
           fontWeight: FontWeight.w500,
         ),
-        subtitle: TextStyle(
+        subtitle2: TextStyle(
           color: Colors.black,
           fontSize: 12.0,
           fontWeight: FontWeight.w400,
@@ -44,12 +39,10 @@ class AppTheme {
       ),
     ),
     floatingActionButtonTheme: _floatTheme,
+    textSelectionTheme: _textSelectionTheme,
   );
 
   static final dark = ThemeData(
-    textSelectionColor: AppColor.accent,
-    textSelectionHandleColor: AppColor.accent,
-    cursorColor: AppColor.accent,
     primaryColor: AppColor.primary,
     accentColor: AppColor.accent,
     buttonColor: AppColor.accent,
@@ -61,7 +54,7 @@ class AppTheme {
     scaffoldBackgroundColor: Color(0xFF1A1A1A),
     toggleableActiveColor:AppColor.accent,
     textTheme: TextTheme(
-      display1: TextStyle(
+      headline4: TextStyle(
         color: Colors.white,
         fontSize: 32.0,
         fontWeight: FontWeight.w500,
@@ -73,12 +66,12 @@ class AppTheme {
       iconTheme: IconThemeData(color: Colors.white),
       actionsIconTheme: IconThemeData(color: Colors.white),
       textTheme: TextTheme(
-        title: TextStyle(
+        headline6: TextStyle(
           color: Colors.white,
           fontSize: 18.0,
           fontWeight: FontWeight.w500,
         ),
-        subtitle: TextStyle(
+        subtitle2: TextStyle(
           color: Colors.white,
           fontSize: 12.0,
           fontWeight: FontWeight.w400,
@@ -87,6 +80,7 @@ class AppTheme {
     ),
     floatingActionButtonTheme: _floatTheme,
     bottomAppBarColor: Colors.black,
+    textSelectionTheme: _textSelectionTheme,
   );
 
   static final ThemeData login = null;
@@ -104,7 +98,14 @@ class AppTheme {
     hoverColor: AppColor.accent.withOpacity(0.8),
     backgroundColor: AppColor.accent,
   );
+
   static final floatIconTheme= IconThemeData(
     color: Colors.white,
+  );
+
+  static final _textSelectionTheme = TextSelectionThemeData(
+    cursorColor: AppColor.accent,
+    selectionColor: AppColor.accent,
+    selectionHandleColor: AppColor.accent,
   );
 }

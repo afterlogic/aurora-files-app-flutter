@@ -407,7 +407,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               title: Text(s.rename),
               onTap: () async {
                 Navigator.pop(context);
-                final result = await AMDialog.show(
+                await AMDialog.show(
                   context: context,
                   builder: (_) => RenameDialog(
                     file: widget.file,

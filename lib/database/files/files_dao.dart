@@ -60,7 +60,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
         final name = trimmedPath.split("/")[0];
         if (name.isNotEmpty) folderNames.add(name);
       } catch (err) {
-        err;
+        print(err);
       }
     });
     Set<LocalFile> filesAtPath = new Set();

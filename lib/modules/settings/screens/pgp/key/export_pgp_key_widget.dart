@@ -54,7 +54,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
                         child: Center(
                           child: Text(
                             s.all_public_keys,
-                            style: Theme.of(context).textTheme.title,
+                            style: Theme.of(context).textTheme.headline6,
                           ),
                         ),
                       ),

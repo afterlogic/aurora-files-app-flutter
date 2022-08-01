@@ -135,7 +135,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
   }
 
   List<Widget> _buildTextFields() {
-    final isIOS = PlatformOverride.isIOS;
     return [
       if (_showHostField)
         AppInput(

@@ -156,7 +156,7 @@ abstract class _AuthState with Store {
             host: host, token: token, email: email, id: id);
         await successLogin();
         onSuccess();
-      } catch (err, s) {
+      } catch (err) {
         isLoggingIn = false;
         if (err is RequestTwoFactor) {
           onTwoFactorAuth(err);

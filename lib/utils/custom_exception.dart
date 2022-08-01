@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 class CustomException implements Exception {
   final String message;
 

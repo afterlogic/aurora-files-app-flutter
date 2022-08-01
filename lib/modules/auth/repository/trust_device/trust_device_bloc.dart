@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aurorafiles/modules/app_store.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'trust_device_event.dart';
 import 'trust_device_methods.dart';

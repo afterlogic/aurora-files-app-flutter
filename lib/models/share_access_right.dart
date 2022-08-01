@@ -17,6 +17,7 @@ class ShareAccessRightHelper {
       case ShareAccessRight.noAccess:
         return 'no access';
     }
+    return '';
   }
 
   static String toShortName(ShareAccessRight right) {
@@ -30,6 +31,7 @@ class ShareAccessRightHelper {
       case ShareAccessRight.noAccess:
         return 'no';
     }
+    return '';
   }
 
   static int toCode(ShareAccessRight right) {
@@ -43,6 +45,7 @@ class ShareAccessRightHelper {
       case ShareAccessRight.noAccess:
         return 0;
     }
+    return -1;
   }
 
   static ShareAccessRight fromCode(int code) {

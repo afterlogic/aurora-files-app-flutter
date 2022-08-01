@@ -210,13 +210,13 @@ class _ShareLinkState extends State<ShareLink> {
 
     final actions = <Widget>[
       widget.selectRecipientResult == null
-          ? FlatButton(
+          ? TextButton(
               child: Text(s.send_to),
               onPressed: () {
                 Navigator.pop(context, true);
               },
             )
-          : FlatButton(
+          : TextButton(
               child: Text(widget.selectRecipientResult?.pgpKey != null
                   ? s.send_encrypted
                   : s.send),
@@ -226,13 +226,13 @@ class _ShareLinkState extends State<ShareLink> {
                       _sendTo();
                     },
             ),
-      FlatButton(
+      TextButton(
         child: Text(s.remove_link),
         onPressed: () {
           _deleteLink();
         },
       ),
-      FlatButton(
+      TextButton(
         child: Text(widget.selectRecipientResult != null ? s.cancel : s.close),
         onPressed: () {
           Navigator.pop(context);

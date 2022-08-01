@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
-import 'package:aurorafiles/override_platform.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 enum DeleteKeyConfirmationDialogResult {
@@ -28,18 +24,18 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
       title: title,
       content: content,
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.cancel),
           onPressed: () =>
               Navigator.pop(context, DeleteKeyConfirmationDialogResult.cancel),
         ),
-        FlatButton(
+        TextButton(
           child: Text(s.download),
           onPressed: () {
             Navigator.pop(context, DeleteKeyConfirmationDialogResult.export);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text(
             s.delete,
             style: TextStyle(color: Theme.of(context).errorColor),

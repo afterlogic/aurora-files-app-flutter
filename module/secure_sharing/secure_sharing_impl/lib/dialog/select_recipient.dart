@@ -1,14 +1,11 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_api.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
-import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +87,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
       ),
     );
     final actions = <Widget>[
-      FlatButton(
+      TextButton(
         child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);
@@ -120,7 +117,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
       return [
         Text(
           s.select_recipient,
-          style: theme.textTheme.subtitle,
+          style: theme.textTheme.subtitle2,
         ),
         SizedBox(
           height: 2,
@@ -150,9 +147,9 @@ class _SelectRecipientState extends State<SelectRecipient> {
               children: <Widget>[
                 Text(
                   s.cant_load_recipients,
-                  style: theme.textTheme.title,
+                  style: theme.textTheme.headline6,
                 ),
-                FlatButton(
+                TextButton(
                   child: Text(s.try_again),
                   onPressed: loadRecipients,
                 ),
@@ -212,8 +209,8 @@ class RecipientWidget extends StatelessWidget {
                   name,
                   maxLines: 1,
                   style: hasName
-                      ? theme.textTheme.body2
-                      : theme.textTheme.body2.apply(color: Colors.grey),
+                      ? theme.textTheme.bodyText1
+                      : theme.textTheme.bodyText1.apply(color: Colors.grey),
                 ),
                 Text(
                   recipient.recipient?.email ?? recipient.pgpKey.email,

@@ -27,7 +27,7 @@ class TwoFactorBloc extends Bloc<TwoFactorEvent, TwoFactorState> {
       await AppStore.authState.successLogin();
       final daysCount = await AppStore.authState.getTrustDevicesForDays();
       yield CompleteState(daysCount);
-    } catch (err, s) {
+    } catch (err) {
       yield ErrorState(err.toString());
     }
   }

@@ -20,7 +20,7 @@ class PresentationHeader extends StatelessWidget {
           SizedBox(height: 26.0),
           Text(
             BuildProperty.appName,
-            style: Theme.of(context).textTheme.display1,
+            style: Theme.of(context).textTheme.headline4,
           ),
           SizedBox(height: 12.0),
           Text(

@@ -30,7 +30,7 @@ class KeyWidget extends StatelessWidget {
                 Text(
                   pgpKey.email,
                   maxLines: 1,
-                  style: theme.textTheme.subhead,
+                  style: theme.textTheme.subtitle1,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),

@@ -101,11 +101,11 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.close),
           onPressed: _pop,
         ),
-        FlatButton(
+        TextButton(
           child: Text(s.generate),
           onPressed: () {
             if (_formKey.currentState.validate()) {

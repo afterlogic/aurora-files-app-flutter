@@ -20,19 +20,19 @@ class _EncryptAskDialogState extends State<EncryptAskDialog> {
     return AlertDialog(
       content: Text(s.hint_upload_encrypt_ask(widget.fileName)),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.encrypt),
           onPressed: () {
             Navigator.pop(context, true);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text(s.btn_do_not_encrypt),
           onPressed: () {
             Navigator.pop(context, false);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text(s.cancel),
           onPressed: () {
             Navigator.pop(context);

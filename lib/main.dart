@@ -34,10 +34,14 @@ void main() async {
   PlatformOverride.setPlatform(Platform.isIOS);
   DI.init();
 
-  runZoned(
+  runZonedGuarded<void>(
     () {
-      runApp(LoggerControllerWidget.wrap((App())));
+      runApp(
+        LoggerControllerWidget.wrap(App()),
+      );
     },
-    onError: FirebaseCrashlytics.instance.recordError,
+    (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    },
   );
 }

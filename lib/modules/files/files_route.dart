@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class FilesRoute {
   static const name = "files";
 }

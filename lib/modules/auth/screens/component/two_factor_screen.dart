@@ -1,4 +1,3 @@
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/generated/string/s.dart';
@@ -115,7 +114,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                                     s.tfa_label,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .title
+                                        .headline6
                                         .copyWith(
                                             color: AppTheme.loginTextColor),
                                     textAlign: TextAlign.center,
@@ -138,7 +137,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                       child: widget.allowBack
                           ? SizedBox(
                               width: double.infinity,
-                              child: FlatButton(
+                              child: TextButton(
                                 child: Text(
                                   s.btn_login_back_to_login,
                                   style:

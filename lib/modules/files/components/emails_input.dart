@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/modules/files/components/compose_type_ahead.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
-
-import 'compose_type_ahead.dart';
 
 class EmailsInput extends StatefulWidget {
   final String label;
@@ -86,7 +84,7 @@ class EmailsInputState extends State<EmailsInput> {
   }
 
   TextSpan _searchMatch(String match) {
-    final color = theme.textTheme.body1.color;
+    final color = theme.textTheme.bodyText2.color;
     final posRes = TextStyle(fontWeight: FontWeight.w700, color: color);
     final negRes = TextStyle(fontWeight: FontWeight.w400, color: color);
 

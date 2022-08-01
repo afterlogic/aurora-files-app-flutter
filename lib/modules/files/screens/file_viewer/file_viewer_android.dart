@@ -227,7 +227,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         onError: (String err) {
           widget.filesPageState.filesLoading = FilesLoadingType.none;
           _onError(err);
-          ;
         },
       );
       widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;

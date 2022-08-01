@@ -65,7 +65,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   String link;
   S s;
   String error;
-  String password = null;
+  String password;
   final toastKey = GlobalKey<ToastWidgetState>();
 
   encrypt() async {
@@ -182,7 +182,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     final size = MediaQuery.of(context).size;
     final actions = <Widget>[
       if (link != null)
-        FlatButton(
+        TextButton(
           child: Text(widget.pgpKey != null ? s.send_encrypted : s.send),
           onPressed: sendProgress
               ? null
@@ -190,7 +190,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
                   sendEmail();
                 },
         ),
-      FlatButton(
+      TextButton(
         child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);

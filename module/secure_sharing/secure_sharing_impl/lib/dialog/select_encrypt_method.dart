@@ -69,7 +69,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
               ),
               Text(
                 s.encryption_type,
-                style: theme.textTheme.subtitle,
+                style: theme.textTheme.subtitle2,
               ),
               RadioEncryptMethod(widget.pgpKey != null, useKey, (v) {
                 useKey = v;
@@ -189,7 +189,7 @@ class RadioEncryptMethod extends StatelessWidget {
               RadioAnalog(value),
               Text(
                 s.key_based,
-                style: theme.textTheme.body1,
+                style: theme.textTheme.bodyText2,
               ),
             ]),
           ),
@@ -208,7 +208,7 @@ class RadioEncryptMethod extends StatelessWidget {
             RadioAnalog(!value),
             Text(
               s.password_based,
-              style: theme.textTheme.body1,
+              style: theme.textTheme.bodyText2,
             ),
           ]),
         ),

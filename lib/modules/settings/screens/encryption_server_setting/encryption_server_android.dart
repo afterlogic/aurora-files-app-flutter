@@ -215,7 +215,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
         spacer,
         Text(
           _settingsState.selectedKeyName,
-          style: Theme.of(context).textTheme.subhead,
+          style: Theme.of(context).textTheme.subtitle1,
         ),
         Divider(height: 32.0),
         Text(

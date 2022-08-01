@@ -86,8 +86,9 @@ dependencies:
     git:
       url: https://github.com/afterlogic/flutter_crypto_stream
       ref: flutter_2.10
-  receive_sharing:
-    git: https://github.com/afterlogic/receive_sharing
+
+  receive_sharing_intent: ^1.4.5
+
   # fido
   yubico_flutter:
     path: module/mocks/yubico_flutter

@@ -33,7 +33,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:receive_sharing/recive_sharing.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
@@ -204,9 +204,9 @@ abstract class _FilesState with Store {
     try {
       for (var item in filesToShareUpload) {
         File file;
-        String name = item.name;
+        String name = item.path.split(Platform.pathSeparator).last;
 
-        if (item.isText) {
+        if (item.path == 'text') {
           name += ".txt";
           final dir = await getTemporaryDirectory();
           file = File(dir.path + Platform.pathSeparator + name);
@@ -214,7 +214,7 @@ abstract class _FilesState with Store {
             await file.delete();
           }
           await file.create();
-          await file.writeAsString(item.text);
+          await file.writeAsString(item.thumbnail);
         } else {
           file = File(item.path);
         }

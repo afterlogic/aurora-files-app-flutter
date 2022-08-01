@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:receive_sharing/recive_sharing.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:theme/app_theme.dart';
 
 import 'components/files_app_bar.dart';
@@ -82,24 +82,49 @@ class _FilesAndroidState extends State<FilesAndroid>
     });
   }
 
-  listenShare() {
-    ReceiveSharing.getInitialMedia().then((List<SharedMediaFile> files) {
-      if (files == null) {
-        return;
-      }
-      ReceiveSharing.reset();
+  void listenShare() {
+    // For sharing files coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> files) {
+      if (files == null || files.isEmpty) return;
+      ReceiveSharingIntent.reset();
       if (files.isNotEmpty) {
         Navigator.popUntil(
             context, (item) => item.settings.name == FilesRoute.name);
         _filesState.onUploadShared(files);
       }
     });
-    ReceiveSharing.getMediaStream().listen((List<SharedMediaFile> files) {
+
+    // For sharing files coming from outside the app while the app is in the memory
+    ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> files) {
       if (files.isNotEmpty) {
         Navigator.popUntil(
             context, (item) => item.settings.name == FilesRoute.name);
         _filesState.onUploadShared(files);
       }
+    }, onError: (err) {
+      print("getMediaStream error: $err");
+    });
+
+    // For sharing or opening urls/text coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialText().then((String text) {
+      if (text == null) return;
+      ReceiveSharingIntent.reset();
+      Navigator.popUntil(
+          context, (item) => item.settings.name == FilesRoute.name);
+      final textFile =
+          SharedMediaFile('text', text, null, SharedMediaType.FILE);
+      _filesState.onUploadShared([textFile]);
+    });
+
+    // For sharing or opening urls/text coming from outside the app while the app is in the memory
+    ReceiveSharingIntent.getTextStream().listen((String text) {
+      Navigator.popUntil(
+          context, (item) => item.settings.name == FilesRoute.name);
+      final textFile =
+          SharedMediaFile('text', text, null, SharedMediaType.FILE);
+      _filesState.onUploadShared([textFile]);
+    }, onError: (err) {
+      print("getTextStream error: $err");
     });
   }
 

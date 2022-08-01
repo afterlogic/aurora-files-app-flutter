@@ -19,8 +19,6 @@ dependencies:
   secure_sharing_impl:
     path: module/secure_sharing/secure_sharing_impl
 
-  flutter_cupertino_localizations:
-
   meta:
   # state management
   mobx:

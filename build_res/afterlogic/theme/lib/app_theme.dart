@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'app_color.dart';
 
 class AppTheme {
   static final light = ThemeData(
     primaryColor: AppColor.primary,
-    accentColor: AppColor.accent,
-    buttonColor: AppColor.accent,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColor.primary,
+      secondary: AppColor.accent,
+    ),
     buttonTheme: _buttonTheme,
     dialogTheme: _dialogTheme,
     splashFactory: InkRipple.splashFactory,
@@ -21,21 +24,21 @@ class AppTheme {
       ),
     ),
     appBarTheme: AppBarTheme(
-      brightness: Brightness.light,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+      ),
       color: Colors.white,
       iconTheme: IconThemeData(color: Colors.black),
       actionsIconTheme: IconThemeData(color: Colors.black),
-      textTheme: TextTheme(
-        headline6: TextStyle(
-          color: Colors.black,
-          fontSize: 18.0,
-          fontWeight: FontWeight.w500,
-        ),
-        subtitle2: TextStyle(
-          color: Colors.black,
-          fontSize: 12.0,
-          fontWeight: FontWeight.w400,
-        ),
+      titleTextStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 18.0,
+        fontWeight: FontWeight.w500,
+      ),
+      toolbarTextStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 12.0,
+        fontWeight: FontWeight.w400,
       ),
     ),
     floatingActionButtonTheme: _floatTheme,
@@ -45,8 +48,10 @@ class AppTheme {
 
   static final dark = ThemeData(
     primaryColor: AppColor.primary,
-    accentColor: AppColor.accent,
-    buttonColor: AppColor.accent,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColor.primary,
+      secondary: AppColor.accent,
+    ),
     buttonTheme: _buttonTheme,
     dialogTheme: _dialogTheme,
     splashFactory: InkRipple.splashFactory,
@@ -62,21 +67,21 @@ class AppTheme {
       ),
     ),
     appBarTheme: AppBarTheme(
-      brightness: Brightness.dark,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+      ),
       color: Colors.black,
       iconTheme: IconThemeData(color: Colors.white),
       actionsIconTheme: IconThemeData(color: Colors.white),
-      textTheme: TextTheme(
-        headline6: TextStyle(
-          color: Colors.white,
-          fontSize: 18.0,
-          fontWeight: FontWeight.w500,
-        ),
-        subtitle2: TextStyle(
-          color: Colors.white,
-          fontSize: 12.0,
-          fontWeight: FontWeight.w400,
-        ),
+      titleTextStyle: TextStyle(
+        color: Colors.white,
+        fontSize: 18.0,
+        fontWeight: FontWeight.w500,
+      ),
+      toolbarTextStyle: TextStyle(
+        color: Colors.white,
+        fontSize: 12.0,
+        fontWeight: FontWeight.w400,
       ),
     ),
     floatingActionButtonTheme: _floatTheme,
@@ -85,9 +90,9 @@ class AppTheme {
     textSelectionTheme: _textSelectionTheme,
   );
 
-  static final ThemeData login = null;
+  static final ThemeData? login = null;
 
-  static Color loginTextColor;
+  static Color? loginTextColor;
 
   static final _dialogTheme = DialogTheme(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),

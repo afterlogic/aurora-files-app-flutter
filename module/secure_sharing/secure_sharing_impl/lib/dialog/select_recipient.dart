@@ -22,19 +22,28 @@ class SelectRecipient extends StatefulWidget {
 class _SelectRecipientState extends State<SelectRecipient> {
   final PgpKeyDao _pgpKeyDao = DI.get();
   final pgpApi = PgpKeyApi();
-  S s;
-  bool hasError = false;
-  List<RecipientWithKey> recipients = [];
-  Map<String, LocalPgpKey> keys;
+  final List<RecipientWithKey> recipients = [];
 
-  loadRecipients() {
-    if (mounted) setState(() {});
+  late S s;
+
+  Map<String, LocalPgpKey> keys = {};
+  bool hasError = false;
+  bool inProgress = false;
+
+  @override
+  void initState() {
+    super.initState();
+    s = Str.of(context);
+    _loadRecipients();
+  }
+
+  void _loadRecipients() {
     hasError = false;
-    recipients = null;
+    _setProgress(true);
+    recipients.clear();
     widget.filesState.getRecipient().then(
       (result) async {
-        recipients = [];
-        await loadKeys();
+        await _loadKeys();
         final filterRecipients =
             result.where((item) => item.email?.isNotEmpty == true);
         for (Recipient recipient in filterRecipients) {
@@ -44,17 +53,16 @@ class _SelectRecipientState extends State<SelectRecipient> {
         keys.forEach((key, value) {
           recipients.add(RecipientWithKey(null, value));
         });
-
-        setState(() {});
+        _setProgress(false);
       },
       onError: (e) {
         hasError = true;
-        setState(() {});
+        _setProgress(false);
       },
     );
   }
 
-  loadKeys() async {
+  Future<void> _loadKeys() async {
     final localKeys = await _pgpKeyDao.getPublicKeys();
     final userKey = await pgpApi.getKeyFromContacts();
     localKeys.addAll(userKey);
@@ -65,15 +73,14 @@ class _SelectRecipientState extends State<SelectRecipient> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    loadRecipients();
+  void _setProgress(bool value) {
+    inProgress = value;
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(widget.title);
@@ -103,39 +110,13 @@ class _SelectRecipientState extends State<SelectRecipient> {
   }
 
   List<Widget> body(ThemeData theme) {
-    if (recipients != null) {
-      if (recipients.isEmpty) {
-        return [
-          Expanded(
-            child: Center(
-              child: Text(s.not_have_recipiens),
-            ),
-          )
-        ];
-      }
-
+    if (inProgress) {
       return [
-        Text(
-          s.select_recipient,
-          style: theme.textTheme.subtitle2,
-        ),
-        SizedBox(
-          height: 2,
-        ),
         Expanded(
-          child: ListView.separated(
-
-            padding: EdgeInsets.all(0),
-            itemBuilder: (_, i) {
-              final recipient = recipients[i];
-              return RecipientWidget(recipient, (recipient) {
-                Navigator.pop(context, recipient);
-              });
-            },
-            separatorBuilder: (_, __) => Divider(color: Colors.grey),
-            itemCount: recipients.length,
+          child: Center(
+            child: CircularProgressIndicator(),
           ),
-        )
+        ),
       ];
     }
     if (hasError) {
@@ -151,7 +132,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
                 ),
                 TextButton(
                   child: Text(s.try_again),
-                  onPressed: loadRecipients,
+                  onPressed: _loadRecipients,
                 ),
               ],
             ),
@@ -159,26 +140,49 @@ class _SelectRecipientState extends State<SelectRecipient> {
         ),
       ];
     }
+    if (recipients.isNotEmpty) {
+      return [
+        Text(
+          s.select_recipient,
+          style: theme.textTheme.subtitle2,
+        ),
+        SizedBox(height: 2),
+        Expanded(
+          child: ListView.separated(
+            padding: EdgeInsets.all(0),
+            itemBuilder: (_, i) {
+              final recipient = recipients[i];
+              return RecipientWidget(recipient, (recipient) {
+                Navigator.pop(context, recipient);
+              });
+            },
+            separatorBuilder: (_, __) => Divider(color: Colors.grey),
+            itemCount: recipients.length,
+          ),
+        )
+      ];
+    }
+
     return [
       Expanded(
         child: Center(
-          child: CircularProgressIndicator(),
+          child: Text(s.not_have_recipiens),
         ),
-      ),
+      )
     ];
   }
 }
 
 class RecipientWithKey {
-  final Recipient recipient;
-  final LocalPgpKey pgpKey;
+  final Recipient? recipient;
+  final LocalPgpKey? pgpKey;
 
   RecipientWithKey(this.recipient, this.pgpKey);
 }
 
 class RecipientWidget extends StatelessWidget {
   final RecipientWithKey recipient;
-  final Function(RecipientWithKey) onTap;
+  final Function(RecipientWithKey)? onTap;
 
   RecipientWidget(this.recipient, [this.onTap]);
 
@@ -194,7 +198,7 @@ class RecipientWidget extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        if (onTap != null) onTap(recipient);
+        if (onTap != null) onTap!(recipient);
       },
       child: Flex(
         direction: Axis.horizontal,
@@ -206,14 +210,14 @@ class RecipientWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  name,
+                  name ?? '',
                   maxLines: 1,
                   style: hasName
                       ? theme.textTheme.bodyText1
-                      : theme.textTheme.bodyText1.apply(color: Colors.grey),
+                      : theme.textTheme.bodyText1?.apply(color: Colors.grey),
                 ),
                 Text(
-                  recipient.recipient?.email ?? recipient.pgpKey.email,
+                  recipient.recipient?.email ?? recipient.pgpKey?.email ?? '',
                   maxLines: 1,
                   style: theme.textTheme.caption,
                 ),

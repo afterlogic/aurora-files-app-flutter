@@ -14,9 +14,9 @@ import 'package:flutter/material.dart';
 import 'select_recipient.dart';
 
 class SelectEncryptMethod extends StatefulWidget {
-  final LocalPgpKey userPgpKey;
-  final Recipient recipient;
-  final LocalPgpKey pgpKey;
+  final LocalPgpKey? userPgpKey;
+  final Recipient? recipient;
+  final LocalPgpKey? pgpKey;
   final PgpKeyUtil pgpUtil;
 
   const SelectEncryptMethod(
@@ -28,20 +28,20 @@ class SelectEncryptMethod extends StatefulWidget {
 
 class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   final toastKey = GlobalKey<ToastWidgetState>();
-  bool useKey;
-  bool useSign;
-  S s;
+  late bool useKey;
+  late bool useSign;
+  late S s;
 
   @override
   void initState() {
+    super.initState();
     useKey = widget.pgpKey != null;
     useSign = useKey && widget.userPgpKey != null && widget.pgpKey != null;
-    super.initState();
+    s = Str.of(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(s.btn_encrypted_shareable_link);
@@ -140,12 +140,12 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   }
 
   checkSign() async {
-    String password;
+    String password = '';
     if (useSign && widget.userPgpKey != null) {
       try {
         password = await KeyRequestDialog.request(context);
       } catch (e) {
-        toastKey.currentState.show(s.invalid_password);
+        toastKey.currentState?.show(s.invalid_password);
         return;
       }
     }

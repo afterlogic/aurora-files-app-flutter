@@ -327,13 +327,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
-  flutter_cupertino_localizations:
-    dependency: transitive
-    description:
-      name: flutter_cupertino_localizations
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   flutter_custom_tabs:
     dependency: transitive
     description:
@@ -678,15 +671,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.3.3"
-  receive_sharing:
+  receive_sharing_intent:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "11c3c9ceb24937006538fbcef51d89fea19a6b1d"
-      url: "https://github.com/afterlogic/receive_sharing"
-    source: git
-    version: "0.0.1"
+      name: receive_sharing_intent
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.5"
   rxdart:
     dependency: transitive
     description:
@@ -700,7 +691,7 @@ packages:
       path: "../secure_sharing"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   share:
     dependency: transitive
     description:

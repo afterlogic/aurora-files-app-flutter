@@ -24,7 +24,7 @@ class SecureSharingImpl extends SecureSharing {
     PreparedForShare preparedForShare,
     S s,
   ) async {
-    bool usePassword = true;
+    bool? usePassword = true;
 
     if (!preparedForShare.localFile.published) {
       usePassword = await AMDialog.show(
@@ -33,7 +33,7 @@ class SecureSharingImpl extends SecureSharing {
       );
     }
 
-    RecipientWithKey selectRecipientResult;
+    RecipientWithKey? selectRecipientResult;
     if (usePassword != null) {
       while (true) {
         final needRecipient = await AMDialog.show(
@@ -41,7 +41,7 @@ class SecureSharingImpl extends SecureSharing {
           builder: (context) => ShareLink(
             userPrivateKey,
             userPublicKey,
-            usePassword,
+            usePassword ?? false,
             preparedForShare,
             selectRecipientResult,
             filesState,
@@ -76,10 +76,10 @@ class SecureSharingImpl extends SecureSharing {
     Pgp pgp,
     S s,
   ) async {
-
     final selectRecipientResult = await AMDialog.show(
       context: context,
-      builder: (context) => SelectRecipient(filesState, s.btn_encrypted_shareable_link),
+      builder: (context) =>
+          SelectRecipient(filesState, s.btn_encrypted_shareable_link),
     );
 
     if (selectRecipientResult is RecipientWithKey) {

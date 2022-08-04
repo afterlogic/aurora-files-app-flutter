@@ -78,13 +78,13 @@ mixin _$SettingsState on _SettingsState, Store {
       Atom(name: '_SettingsState.selectedKeyName', context: context);
 
   @override
-  String get selectedKeyName {
+  String? get selectedKeyName {
     _$selectedKeyNameAtom.reportRead();
     return super.selectedKeyName;
   }
 
   @override
-  set selectedKeyName(String value) {
+  set selectedKeyName(String? value) {
     _$selectedKeyNameAtom.reportWrite(value, super.selectedKeyName, () {
       super.selectedKeyName = value;
     });

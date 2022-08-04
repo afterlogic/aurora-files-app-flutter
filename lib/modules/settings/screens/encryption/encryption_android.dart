@@ -8,7 +8,6 @@ import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +20,7 @@ class EncryptionAndroid extends StatefulWidget {
 class _EncryptionAndroidState extends State<EncryptionAndroid> {
   final _settingsState = AppStore.settingsState;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
-  S s;
+  late S s;
 
   void _shareKey() async {
     _settingsState.onShareEncryptionKey(
@@ -39,7 +38,6 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       context: context,
       builder: (_) => ExportKeyDialog(
         settingsState: _settingsState,
-        scaffoldState: _scaffoldKey.currentState,
       ),
     );
     if (exportedDir is String) {
@@ -113,7 +111,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         Text(s.encryption_keys),
         spacer,
         Text(
-          _settingsState.selectedKeyName,
+          _settingsState.selectedKeyName ?? '',
           style: Theme.of(context).textTheme.subtitle1,
         ),
         Divider(height: 32.0),

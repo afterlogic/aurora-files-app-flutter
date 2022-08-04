@@ -13,7 +13,7 @@ mixin _$FilesPageState on _FilesPageState, Store {
       Atom(name: '_FilesPageState.selectedFilesIds', context: context);
 
   @override
-  Map<String, LocalFile> get selectedFilesIds {
+  Map<String, dynamic> get selectedFilesIds {
     _$selectedFilesIdsAtom.reportRead();
     return super.selectedFilesIds;
   }

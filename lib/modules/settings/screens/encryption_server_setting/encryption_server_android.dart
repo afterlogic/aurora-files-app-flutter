@@ -9,7 +9,6 @@ import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,11 +21,11 @@ class _EncryptionServerState extends State<EncryptionServer> {
   final _settingsState = AppStore.settingsState;
   final _filesState = AppStore.filesState;
   bool showBackwardCompatibility = false;
-  S s;
+  late S s;
   bool progress = false;
-  bool encryptionEnable;
-  bool encryptionInPersonalStorage;
-  EncryptionSetting encryptionSetting;
+  bool? encryptionEnable;
+  bool? encryptionInPersonalStorage;
+  EncryptionSetting? encryptionSetting;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -62,7 +61,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
                   CheckboxListTile(
                     value: encryptionEnable,
                     title: Text(s.btn_encryption_enable),
-                    onChanged: (bool value) {
+                    onChanged: (bool? value) {
                       setState(() {
                         encryptionEnable = value;
                       });
@@ -71,7 +70,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
                   CheckboxListTile(
                     value: encryptionInPersonalStorage,
                     title: Text(s.btn_encryption_personal_storage),
-                    onChanged: (bool value) {
+                    onChanged: (bool? value) {
                       setState(() {
                         encryptionInPersonalStorage = value;
                       });
@@ -108,8 +107,8 @@ class _EncryptionServerState extends State<EncryptionServer> {
     _settingsState
         .setEncryptionSetting(
       EncryptionSetting(
-        encryptionEnable,
-        encryptionInPersonalStorage,
+        encryptionEnable ?? false,
+        encryptionInPersonalStorage ?? false,
       ),
     )
         .then((_) {
@@ -149,7 +148,6 @@ class _EncryptionServerState extends State<EncryptionServer> {
       context: context,
       builder: (_) => ExportKeyDialog(
         settingsState: _settingsState,
-        scaffoldState: scaffoldKey.currentState,
       ),
     );
     if (exportedDir is String) {
@@ -214,7 +212,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
         Text(s.encryption_keys),
         spacer,
         Text(
-          _settingsState.selectedKeyName,
+          _settingsState.selectedKeyName ?? '',
           style: Theme.of(context).textTheme.subtitle1,
         ),
         Divider(height: 32.0),

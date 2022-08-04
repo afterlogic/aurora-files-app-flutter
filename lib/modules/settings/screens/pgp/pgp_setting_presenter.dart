@@ -15,16 +15,18 @@ class PgpSettingPresenter {
   final PgpKeyUtil pgpKeyUtil;
   final PgpKeyApi _pgpKeyApi = PgpKeyApi();
   final encryptionStorage = EncryptionLocalStorage.instance;
-  bool storePassword;
-  List<LocalPgpKey> externalKeys;
+  bool? storePassword;
+  late List<LocalPgpKey> externalKeys;
 
   PgpSettingPresenter(this._view, this._pgpKeyDao)
       : pgpKeyUtil = PgpKeyUtil.instance {
-    initContactKeys();
+    _initContactKeys();
   }
 
-  Future<void> refreshKeys(
-      [List<LocalPgpKey> addedPublic, List<LocalPgpKey> addedPrivate]) async {
+  Future<void> refreshKeys([
+    List<LocalPgpKey>? addedPublic,
+    List<LocalPgpKey>? addedPrivate,
+  ]) async {
     storePassword = await encryptionStorage.getStorePasswordStorage();
     return _pgpKeyDao.getKeys().then(
       (keys) async {
@@ -46,23 +48,26 @@ class PgpSettingPresenter {
     );
   }
 
-  Future<void> initContactKeys() async {
+  Future<void> _initContactKeys() async {
     externalKeys = await _pgpKeyApi.getKeyFromContacts();
     if (_view.keysState.value is KeysState) {
-      _view.keysState.add(KeysState(
-        _view.keysState.value.public,
-        _view.keysState.value.private,
-        externalKeys,
-        storePassword,
-        _view.keysState.value.isProgress,
-      ));
+      storePassword = await encryptionStorage.getStorePasswordStorage();
+      _view.keysState.add(
+        KeysState(
+          _view.keysState.value.public,
+          _view.keysState.value.private,
+          externalKeys,
+          storePassword,
+          _view.keysState.value.isProgress,
+        ),
+      );
     }
   }
 
   Future<void> getKeysFromFile() async {
     final keys = await pgpKeyUtil.importKeyFromFile();
     if (keys?.isNotEmpty == true) {
-      _view.showImportDialog(await _sortKeys(keys));
+      _view.showImportDialog(await _sortKeys(keys ?? []));
     } else {
       _view.keysNotFound();
     }
@@ -88,7 +93,7 @@ class PgpSettingPresenter {
     List<LocalPgpKey> keys,
   ) async {
     final Set<String> userEmail =
-        (await AppStore.authState.getIdentity() ?? []).toSet();
+        (await AppStore.authState.getIdentity()).toSet();
     userEmail.add(AppStore.authState.userEmail);
     final userKeys = <LocalPgpKey>[];
     final contactKeys = <LocalPgpKey>[];
@@ -117,9 +122,9 @@ class PgpSettingPresenter {
     return PgpKeyMap(existUserKeys, existContactKeys, existAlienPrivateKeys);
   }
 
-  Future<Map<LocalPgpKey, bool>> _userKeyMarkIfNotExist(
+  Future<Map<LocalPgpKey, bool?>> _userKeyMarkIfNotExist(
       List<LocalPgpKey> keys) async {
-    final map = <LocalPgpKey, bool>{};
+    final map = <LocalPgpKey, bool?>{};
     for (var key in keys) {
       final existKey = await pgpKeyUtil.checkHasKey(key.email, key.isPrivate);
       map[key] = existKey == false ? true : null;
@@ -127,36 +132,36 @@ class PgpSettingPresenter {
     return map;
   }
 
-  Map<LocalPgpKey, bool> _contactKeyMarkIfNotExist(List<LocalPgpKey> keys) {
-    final map = <LocalPgpKey, bool>{};
+  Map<LocalPgpKey, bool?> _contactKeyMarkIfNotExist(List<LocalPgpKey> keys) {
+    final map = <LocalPgpKey, bool?>{};
     for (var key in keys) {
-      final index = externalKeys?.indexWhere((e) => e.key == key.key);
+      final index = externalKeys.indexWhere((e) => e.key == key.key);
       map[key] = index == -1 ? true : null;
     }
     return map;
   }
 
   Future<void> saveKeys(
-      List<LocalPgpKey> userKey, List<LocalPgpKey> contactKey) async {
+      List<LocalPgpKey> userKey, List<LocalPgpKey> contactKeys) async {
     await pgpKeyUtil.saveKeys(userKey);
-    if (contactKey.isNotEmpty) {
-      await _pgpKeyApi.addKeyToContacts(contactKey);
-      initContactKeys();
+    if (contactKeys.isNotEmpty) {
+      await _pgpKeyApi.addKeyToContacts(contactKeys);
+      _initContactKeys();
     }
     refreshKeys();
   }
 
   Future<void> addPrivateKey(CreateKeyResult result) async {
     var privateKey = LocalPgpKey(
-        id: null,
-        key: null,
+        id: -1,
+        key: '',
         email: result.email,
         isPrivate: true,
         length: result.length,
         name: result.name);
     var publicKey = LocalPgpKey(
-        id: null,
-        key: null,
+        id: -1,
+        key: '',
         email: result.email,
         isPrivate: false,
         length: result.length,

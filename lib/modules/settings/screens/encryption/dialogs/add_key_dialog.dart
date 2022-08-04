@@ -60,7 +60,7 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                       border: UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
-                      value,
+                      value ?? '',
                       [ValidationTypes.empty, ValidationTypes.uniqueName],
                       widget.settingsState.encryptionKeys.keys.toList(),
                     ),
@@ -76,7 +76,7 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                         border: UnderlineInputBorder(),
                       ),
                       validator: (value) => validateInput(
-                        value,
+                        value ?? '',
                         [ValidationTypes.empty],
                       ),
                     ),
@@ -93,7 +93,8 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
             onPressed: _isAdding
                 ? null
                 : () async {
-                    if (!_addKeyFormKey.currentState.validate()) return;
+                    if (_addKeyFormKey.currentState?.validate() == false)
+                      return;
                     errMsg = "";
                     setState(() => _isAdding = true);
                     await widget.settingsState.onAddKey(

@@ -20,7 +20,7 @@ class ExportPgpKeyWidget extends StatefulWidget {
 
 class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  S s;
+  late S s;
 
   @override
   Widget build(BuildContext context) {

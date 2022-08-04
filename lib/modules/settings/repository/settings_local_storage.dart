@@ -19,7 +19,7 @@ class SettingsLocalStorage {
 
   Key generateKey() => Key.fromSecureRandom(32);
 
-  Future<String> exportKey(String keyName, String encryptionKey) async {
+  Future<String?> exportKey(String keyName, String encryptionKey) async {
     if (Platform.isIOS) {
       return null;
     }
@@ -48,17 +48,18 @@ class SettingsLocalStorage {
     return secureStorage.write(key: nameWithOwner, value: key);
   }
 
-  Future<Map<String, String>> importKeyFromFile() async {
+  Future<Map<String, String>?> importKeyFromFile() async {
     final result = await FilePicker.platform.pickFiles();
     if (result == null) return null;
-    final File fileWithKey = File(result.files.first.path);
-    if (fileWithKey == null) return null;
+    final path = result.files.first.path;
+    if (path == null) return null;
+    final fileWithKey = File(path);
     final String contents = await fileWithKey.readAsString();
     final fileName = FileUtils.getFileNameFromPath(fileWithKey.path);
     return {fileName: contents};
   }
 
-  Future<String> getKey(String keyName) {
+  Future<String?> getKey(String keyName) {
     final nameWithOwner = _getNameWithOwner(keyName);
     return secureStorage.read(key: nameWithOwner);
   }
@@ -74,7 +75,7 @@ class SettingsLocalStorage {
           !nameWithOwner.endsWith("true")) {
         // remove owner's email
         final keyName = nameWithOwner.substring(_getNameWithOwner().length);
-        userKeys[keyName] = encryptionKeys[nameWithOwner];
+        userKeys[keyName] = encryptionKeys[nameWithOwner] ?? '';
       }
     });
 
@@ -103,7 +104,7 @@ class SettingsLocalStorage {
 
   Future<void> setEncryptEnable(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setBool("EncryptEnable", value);
+    await prefs.setBool("EncryptEnable", value);
   }
 
   Future<bool> getEncryptInPersonalStorage() async {
@@ -113,6 +114,6 @@ class SettingsLocalStorage {
 
   Future<void> setEncryptInPersonalStorage(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setBool("EncryptPersonalStorage", value);
+    await prefs.setBool("EncryptPersonalStorage", value);
   }
 }

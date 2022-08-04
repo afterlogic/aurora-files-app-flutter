@@ -6,10 +6,8 @@ import 'package:flutter/material.dart';
 
 class ExportKeyDialog extends StatefulWidget {
   final SettingsState settingsState;
-  final ScaffoldState scaffoldState;
 
-  const ExportKeyDialog(
-      {Key? key, required this.settingsState, required this.scaffoldState})
+  const ExportKeyDialog({Key? key, required this.settingsState})
       : super(key: key);
 
   @override
@@ -23,7 +21,7 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
   Widget build(BuildContext context) {
     final s = Str.of(context);
     return AMDialog(
-      title: Text(widget.settingsState.selectedKeyName),
+      title: Text(widget.settingsState.selectedKeyName ?? ''),
       content: _isExporting
           ? Row(
               children: <Widget>[
@@ -42,7 +40,7 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
               : () {
                   setState(() => _isExporting = true);
                   widget.settingsState.onExportEncryptionKey(
-                    onSuccess: (String exportedDir) =>
+                    onSuccess: (String? exportedDir) =>
                         Navigator.pop(context, exportedDir),
                     onError: (String err) {
                       Navigator.pop(context);

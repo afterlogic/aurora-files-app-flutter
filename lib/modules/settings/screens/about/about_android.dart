@@ -17,8 +17,8 @@ class AboutAndroid extends StatefulWidget {
 
 class _AboutAndroidState extends State<AboutAndroid> {
   bool loading = false;
-  String _appName;
-  String _version;
+  String _appName = '';
+  String _version = '';
 
   @override
   void initState() {
@@ -84,7 +84,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                   style: Theme.of(context)
                       .textTheme
                       .caption
-                      .copyWith(fontSize: 14.0),
+                      ?.copyWith(fontSize: 14.0),
                 ),
                 SizedBox(height: 22.0),
                 Center(
@@ -100,7 +100,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                     child: Text(
                       s.terms,
                       style: TextStyle(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         decoration: TextDecoration.underline,
                         fontSize: 18.0,
                       ),
@@ -113,12 +113,14 @@ class _AboutAndroidState extends State<AboutAndroid> {
                     child: Text(
                       s.privacy_policy,
                       style: TextStyle(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         decoration: TextDecoration.underline,
                         fontSize: 18.0,
                       ),
                     ),
-                    onTap: () => launch(BuildProperty.privacyPolicy),
+                    onTap: () => launchUrl(
+                      Uri.parse(BuildProperty.privacyPolicy),
+                    ),
                   ),
                 SizedBox(height: 42.0),
               ],

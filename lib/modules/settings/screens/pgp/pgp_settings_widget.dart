@@ -26,8 +26,8 @@ class PgpSettingWidget extends StatefulWidget {
 
 class _PgpSettingWidgetState extends State<PgpSettingWidget>
     with PgpSettingView {
-  PgpSettingPresenter _presenter;
-  S s;
+  late PgpSettingPresenter _presenter;
+  late S s;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -58,9 +58,8 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
             final publicKeys =
                 state.public.map((item) => KeyWidget(item, openKey)).toList();
-            final externalKeys = state.external
-                ?.map((item) => KeyWidget(item, openKey))
-                ?.toList();
+            final externalKeys =
+                state.external.map((item) => KeyWidget(item, openKey)).toList();
             final privateKeys =
                 state.private.map((item) => KeyWidget(item, openKey)).toList();
 
@@ -74,8 +73,8 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                       CheckboxListTile(
                         value: state.storePassword,
                         title: Text(s.label_store_password_in_session),
-                        onChanged: (bool value) {
-                          _presenter.setStorePassword(value);
+                        onChanged: (bool? value) {
+                          if (value != null) _presenter.setStorePassword(value);
                         },
                       ),
                       if (publicKeys.isNotEmpty)
@@ -96,7 +95,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                           ),
                         ),
                       if (privateKeys.isNotEmpty) Column(children: privateKeys),
-                      if (externalKeys?.isNotEmpty == true)
+                      if (externalKeys.isNotEmpty == true)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -139,14 +138,14 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
             width: 10,
           );
     final children = <Widget>[
-      if (externalKeys?.isNotEmpty == true)
+      if (externalKeys.isNotEmpty == true)
         AMButton(
           child: Text(s.export_all_public_keys),
           onPressed: () {
             exportAll(state.external);
           },
         ),
-      if (externalKeys?.isNotEmpty == true) space,
+      if (externalKeys.isNotEmpty == true) space,
       AMButton(
         child: Text(s.import_keys_from_text),
         onPressed: importKeyDialog,

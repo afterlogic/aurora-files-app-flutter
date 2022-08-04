@@ -48,8 +48,8 @@ class AppNavigation {
   static String currentRoute = "/";
 
   static Route onGenerateRoute(RouteSettings settings) {
-    if (settings.name.startsWith(FilesRoute.name)) {
-      final FilesScreenArguments args = settings.arguments;
+    if (settings.name?.startsWith(FilesRoute.name) == true) {
+      final args = settings.arguments as FilesScreenArguments?;
       if (PlatformOverride.isIOS && false) {
         return CupertinoPageRoute(
             settings: RouteSettings(
@@ -85,7 +85,7 @@ class AppNavigation {
             builder: (context) => AuthAndroid());
 
       case FileViewerRoute.name:
-        final FileViewerScreenArguments args = settings.arguments;
+        final args = settings.arguments as FileViewerScreenArguments;
         if (PlatformOverride.isIOS && false) {
           return CupertinoPageRoute(
               settings: RouteSettings(
@@ -112,12 +112,12 @@ class AppNavigation {
         break;
 
       case UpgradeRoute.name:
-        final args = settings.arguments as UpgradeArg;
+        final args = settings.arguments as UpgradeArg?;
         return FadeRoute(
           settings: RouteSettings(
             name: settings.name,
           ),
-          page: UpgradeAndroid(args?.message),
+          page: UpgradeAndroid(args?.message ?? ''),
         );
         break;
       case LoggerRoute.name:
@@ -331,7 +331,7 @@ class AppNavigation {
             builder: (context) {
               final s = Str.of(context);
               return Scaffold(
-                body: Center(child: Text(s.no_route(settings.name))),
+                body: Center(child: Text(s.no_route(settings.name ?? ''))),
               );
             });
     }

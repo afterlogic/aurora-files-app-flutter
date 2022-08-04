@@ -9,9 +9,9 @@ import 'package:aurorafiles/shared_ui/sized_dialog_content.dart';
 import 'package:flutter/material.dart';
 
 class ImportKeyDialog extends StatefulWidget {
-  final Map<LocalPgpKey, bool> userKeys;
-  final Map<LocalPgpKey, bool> contactKeys;
-  final Map<LocalPgpKey, bool> alienKeys;
+  final Map<LocalPgpKey, bool?> userKeys;
+  final Map<LocalPgpKey, bool?> contactKeys;
+  final Map<LocalPgpKey, bool?> alienKeys;
   final PgpSettingPresenter presenter;
 
   const ImportKeyDialog(
@@ -181,7 +181,7 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
 
 class CheckAnalog extends StatelessWidget {
   final bool isCheck;
-  final Function(bool) onChange;
+  final Function(bool)? onChange;
 
   const CheckAnalog(this.isCheck, this.onChange);
 
@@ -189,7 +189,11 @@ class CheckAnalog extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlatformOverride.isIOS
         ? GestureDetector(
-            onTap: () => onChange(!isCheck),
+            onTap: () {
+              if (onChange != null) {
+                onChange!(!isCheck);
+              }
+            },
             child: Padding(
               padding: EdgeInsets.all(10),
               child: Icon(
@@ -200,7 +204,11 @@ class CheckAnalog extends StatelessWidget {
           )
         : Checkbox(
             value: isCheck,
-            onChanged: onChange,
+            onChanged: (value) {
+              if (onChange != null && value != null) {
+                onChange!(value);
+              }
+            },
           );
   }
 }

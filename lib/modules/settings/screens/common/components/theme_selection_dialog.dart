@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 class ThemeSelectionDialog extends StatelessWidget {
   final bool theme;
-  final Function(bool) onItemSelected;
+  final Function(bool?) onItemSelected;
 
   const ThemeSelectionDialog(this.onItemSelected, this.theme);
 
   static void show(
     BuildContext context,
     bool selected,
-    Function(bool) onItemSelected,
+    Function(bool?) onItemSelected,
   ) {
     AMDialog.show(
       context: context,
@@ -29,8 +29,8 @@ class ThemeSelectionDialog extends StatelessWidget {
       title: Text(s.app_theme),
       content: AMDialogList(
         children: [
-          RadioListTile<bool>(
-            activeColor: Theme.of(context).accentColor,
+          RadioListTile<bool?>(
+            activeColor: Theme.of(context).colorScheme.secondary,
             title: Text(s.system_theme),
             value: null,
             groupValue: theme,
@@ -40,7 +40,7 @@ class ThemeSelectionDialog extends StatelessWidget {
             },
           ),
           RadioListTile<bool>(
-            activeColor: Theme.of(context).accentColor,
+            activeColor: Theme.of(context).colorScheme.secondary,
             title: Text(s.dark_theme),
             value: true,
             groupValue: theme,
@@ -50,7 +50,7 @@ class ThemeSelectionDialog extends StatelessWidget {
             },
           ),
           RadioListTile<bool>(
-            activeColor: Theme.of(context).accentColor,
+            activeColor: Theme.of(context).colorScheme.secondary,
             title: Text(s.light_theme),
             value: false,
             groupValue: theme,

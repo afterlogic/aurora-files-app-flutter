@@ -17,7 +17,7 @@ class CommonSettingsAndroid extends StatefulWidget {
 class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
   final _settingsState = AppStore.settingsState;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  S s;
+  late S s;
 
   Future _clearCache() async {
     final result = await AMConfirmationDialog.show(
@@ -69,9 +69,12 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
                 style: Theme.of(context).textTheme.caption,
               ),
               onTap: () => ThemeSelectionDialog.show(
-                  context,
-                  _settingsState.isDarkTheme,
-                  (val) => _settingsState.toggleDarkTheme(val)),
+                context,
+                _settingsState.isDarkTheme,
+                (val) {
+                  if (val != null) _settingsState.toggleDarkTheme(val);
+                },
+              ),
             ),
           ),
           ListTile(

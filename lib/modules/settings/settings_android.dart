@@ -31,21 +31,17 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
   @override
   void initState() {
     super.initState();
-    loggerStorage
-        .getDebugEnable()
-        .then((value) {
+    loggerStorage.getDebugEnable().then((value) {
       setState(() => showDebug = value);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = LayoutConfig
-        .of(context)
-        .isTablet;
+    final isTablet = LayoutConfig.of(context).isTablet;
     final current = isTablet
         ? (navigatorKey?.currentState?.current?.name ??
-        CommonSettingsRoute.name)
+            CommonSettingsRoute.name)
         : null;
     final s = Str.of(context);
     Widget body = ListView(
@@ -82,9 +78,9 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           onTap: () => navigator().setRoot(AboutRoute.name),
           onLongPress: BuildProperty.logger
               ? () {
-            loggerStorage.setDebugEnable(true);
-            setState(() => showDebug = true);
-          }
+                  loggerStorage.setDebugEnable(true);
+                  setState(() => showDebug = true);
+                }
               : null,
         ),
         if (showDebug)
@@ -120,9 +116,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
                     child: Drawer(
                       child: ListTileTheme(
                         style: ListTileStyle.drawer,
-                        selectedColor: Theme
-                            .of(context)
-                            .accentColor,
+                        selectedColor: Theme.of(context).accentColor,
                         child: SafeArea(child: body),
                       ),
                     ),
@@ -155,18 +149,15 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           appBar: isTablet
               ? null
               : AMAppBar(
-            title: Text(s.settings),
-          ),
+                  title: Text(s.settings),
+                ),
           body: body,
         ));
   }
 
   SettingsNavigator navigator() {
-    if (navigatorKey.currentState != null) {
-      return navigatorKey.currentState;
-    } else {
-      return SettingsNavigatorMock(Navigator.of(context));
-    }
+    final navigator = navigatorKey.currentState;
+    return navigator ?? SettingsNavigatorMock(Navigator.of(context));
   }
 
   _exit() async {
@@ -182,7 +173,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
       cancelText: s.cancel,
     );
     if (result is OptionalResult && result.generalResult == true) {
-      final clearCache = result.options[clearCacheText];
+      final clearCache = result.options?[clearCacheText] ?? false;
       authState.onLogout(clearCache);
       Navigator.pushReplacementNamed(context, AuthRoute.name);
     }

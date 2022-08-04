@@ -11,13 +11,13 @@ class KeyFromTextWidget extends StatefulWidget {
 }
 
 class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
-  TextEditingController _textController;
+  final _textController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    _textController = TextEditingController();
-    super.initState();
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
   }
 
   @override
@@ -40,9 +40,8 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
               child: Form(
                 key: formKey,
                 child: TextFormField(
-                  validator: (v) => validateInput(v, [
-                    ValidationTypes.empty,
-                  ]),
+                  validator: (v) =>
+                      validateInput(v ?? '', [ValidationTypes.empty]),
                   controller: _textController,
                   expands: true,
                   keyboardType: TextInputType.multiline,
@@ -61,7 +60,7 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
         TextButton(
             child: Text(s.check_keys),
             onPressed: () {
-              if (formKey.currentState.validate()) {
+              if (formKey.currentState?.validate() == true) {
                 Navigator.pop(context, _textController.text);
               }
             }),

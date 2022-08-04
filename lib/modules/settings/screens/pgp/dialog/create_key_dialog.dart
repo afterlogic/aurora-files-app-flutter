@@ -25,8 +25,8 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   final _lengthController = TextEditingController(text: lengths[1].toString());
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  S s;
-  String _error;
+  late S s;
+  String? _error;
   bool _obscure = true;
   static const lengths = [1024, 2048, 3072, 4096, 8192];
   var length = lengths[1];
@@ -52,7 +52,8 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                       labelText: s.email,
                       alignLabelWithHint: true,
                     ),
-                    validator: (v) => validateInput(v, [ValidationTypes.email]),
+                    validator: (v) =>
+                        validateInput(v ?? '', [ValidationTypes.email]),
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                   ),
@@ -70,11 +71,12 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                         },
                       ),
                     ),
-                    validator: (v) => validateInput(v, [ValidationTypes.empty]),
+                    validator: (v) =>
+                        validateInput(v ?? '', [ValidationTypes.empty]),
                     controller: _passwordController,
                     obscureText: _obscure,
                   ),
-                  DropdownButtonFormField(
+                  DropdownButtonFormField<int>(
                     hint: Text(length.toString()),
                     decoration: InputDecoration(
                       labelText: s.length,
@@ -90,8 +92,10 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                       );
                     }).toList(),
                     onChanged: (v) {
-                      length = v;
-                      setState(() {});
+                      if (v != null) {
+                        length = v;
+                        setState(() {});
+                      }
                     },
                   ),
                 ],
@@ -108,7 +112,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
         TextButton(
           child: Text(s.generate),
           onPressed: () {
-            if (_formKey.currentState.validate()) {
+            if (_formKey.currentState?.validate() == true) {
               _generate();
             }
           },
@@ -117,7 +121,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     );
   }
 
-  String _validateInput() {
+  String? _validateInput() {
     _error = null;
     _error = validateInput(_emailController.text, [ValidationTypes.email]);
     if (_error != null) return _error;
@@ -125,7 +129,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     return _error;
   }
 
-  String _validatePassword(String text) {
+  String? _validatePassword(String text) {
     if (text.length < 1) {
       return s.password_is_empty;
     }

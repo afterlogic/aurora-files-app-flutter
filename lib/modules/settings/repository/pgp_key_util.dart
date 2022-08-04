@@ -15,7 +15,7 @@ import 'package:share/share.dart';
 import 'encryption_local_storage.dart';
 
 class PgpKeyUtil {
-  static PgpKeyUtil _instance;
+  static PgpKeyUtil? _instance;
 
   static PgpKeyUtil get instance =>
       _instance ??= PgpKeyUtil._(DI.get(), DI.get());
@@ -34,7 +34,8 @@ class PgpKeyUtil {
         .toList();
     final localKeys = <LocalPgpKey>[];
 
-    for (String key in keys) {
+    for (String? key in keys) {
+      if (key == null) continue;
       final description = await pgp.getKeyDescription(key);
 
       for (String email in description.emails) {
@@ -42,13 +43,13 @@ class PgpKeyUtil {
         String validEmail;
         String name = "";
         if (groups?.groupCount == 2) {
-          name = groups.group(1);
-          validEmail = groups.group(2);
+          name = groups?.group(1) ?? '';
+          validEmail = groups?.group(2) ?? '';
         } else {
           validEmail = email;
         }
         final localPgpKey = LocalPgpKey(
-          id: null,
+          id: -1,
           email: validEmail,
           key: description.armoredKey,
           isPrivate: description.isPrivate,
@@ -72,8 +73,8 @@ class PgpKeyUtil {
   }
 
   saveKeys(List<LocalPgpKey> keys) async {
-    if (keys.firstWhere((element) => element.isPrivate, orElse: () => null) !=
-        null) {
+    final privateIndex = keys.indexWhere((element) => element.isPrivate);
+    if (privateIndex != -1) {
       EncryptionLocalStorage.memoryPassword = null;
     }
     await pgpKeyDao.addKeys(keys);
@@ -83,7 +84,7 @@ class PgpKeyUtil {
     return pgpKeyDao.checkHasKeys(keys);
   }
 
-  Future<bool> checkHasKey(String email, [bool isPrivate]) {
+  Future<bool> checkHasKey(String email, [bool? isPrivate]) {
     return pgpKeyDao.checkHasKey(email, isPrivate);
   }
 
@@ -91,21 +92,18 @@ class PgpKeyUtil {
     return pgpKeyDao.deleteByEmails(emails);
   }
 
-  Future<List<LocalPgpKey>> importKeyFromFile() async {
+  Future<List<LocalPgpKey>?> importKeyFromFile() async {
     final result = await FilePicker.platform.pickFiles();
     if (result == null) return null;
-    final File fileWithKey = File(result.files.first.path);
-    if (fileWithKey == null) return null;
+    final path = result.files.first.path;
+    if (path == null) return null;
+    final fileWithKey = File(path);
     final String contents = await fileWithKey.readAsString();
     return validateText(contents);
   }
 
-  Future<void> shareKeys(String text,String title,Rect rect) async {
-    await Share.share(
-        text,
-        subject: title,
-        sharePositionOrigin: rect
-    );
+  Future<void> shareKeys(String text, String title, Rect rect) async {
+    await Share.share(text, subject: title, sharePositionOrigin: rect);
   }
 
   Future<String> keysFolder() async {
@@ -157,21 +155,21 @@ class PgpKeyUtil {
     return pgp.checkKeyPassword(pgpKey, password);
   }
 
-  Future<String> userEncrypt(String string, String password) async {
+  Future<String> userEncrypt(String string, String? password) async {
     final publicKey = (await userPublicKey())?.key;
     final privateKey = (await userPrivateKey())?.key;
     return pgp.bufferPlatformSink(
       string,
       pgp.encrypt(
         password != null ? privateKey : null,
-        publicKey != null ? [publicKey] : null,
+        publicKey != null ? [publicKey] : [],
         password,
       ),
     );
   }
 
   Future<String> encrypt(
-      String string, List<String> keys, String password) async {
+      String string, List<String> keys, String? password) async {
     final privateKey = (await userPrivateKey())?.key;
     return pgp.bufferPlatformSink(
       string,
@@ -180,10 +178,10 @@ class PgpKeyUtil {
   }
 
   Future<String> userDecrypt(String string, String password) async {
-    final publicKey = (await userPrivateKey()).key;
+    final privateKey = (await userPrivateKey())?.key ?? '';
     return pgp.bufferPlatformSink(
       string,
-      pgp.decrypt(publicKey, [], password),
+      pgp.decrypt(privateKey, [], password),
     );
   }
 

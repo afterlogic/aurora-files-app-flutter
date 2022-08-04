@@ -39,9 +39,9 @@ class SettingsNavigatorWidget extends StatefulWidget {
 
   const SettingsNavigatorWidget({
     Key? key,
-    this.initialRoute,
-    this.routeFactory,
-    this.onUpdate,
+    required this.initialRoute,
+    required this.routeFactory,
+    required this.onUpdate,
   }) : super(key: key);
 
   @override
@@ -97,11 +97,11 @@ class SettingsNavigatorState extends State<SettingsNavigatorWidget>
       _stack.add(settingsRoute);
       return settingsRoute.completer;
     }
-    return null;
+    return Completer()..complete();
   }
 
-  Future pushNamed(String name, {dynamic arguments}) {
-    final future = _add(name, arguments)?.future;
+  Future<dynamic> pushNamed(String name, {dynamic arguments}) {
+    final future = _add(name, arguments).future;
     setState(() {});
     widget.onUpdate();
     return future;

@@ -106,7 +106,8 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     } catch (err) {}
     Set<LocalFile> filesAtPath = new Set();
     folders.forEach((folder) {
-      filesAtPath.add(getFolderFromName(folder["name"], folder["path"]));
+      filesAtPath
+          .add(getFolderFromName(folder["name"] ?? '', folder["path"] ?? ''));
     });
     filesAtPath = [
       ...filesAtPath,

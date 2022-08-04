@@ -7,10 +7,10 @@ class FileToMove {
   final bool isFolder;
 
   FileToMove({
-    @required this.type,
-    @required this.path,
-    @required this.name,
-    @required this.isFolder,
+    required this.type,
+    required this.path,
+    required this.name,
+    required this.isFolder,
   });
 
   Map<String, dynamic> toMap() {

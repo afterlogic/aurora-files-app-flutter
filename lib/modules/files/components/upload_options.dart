@@ -10,9 +10,9 @@ class UploadOptions extends StatefulWidget {
   final FilesPageState filesPageState;
 
   const UploadOptions({
-    Key key,
-    @required this.filesState,
-    @required this.filesPageState,
+    Key? key,
+    required this.filesState,
+    required this.filesPageState,
   }) : super(key: key);
 
   @override

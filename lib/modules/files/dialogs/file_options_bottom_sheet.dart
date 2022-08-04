@@ -44,21 +44,21 @@ class FileOptionsBottomSheet extends StatefulWidget {
   final bool sharedWithMe;
 
   const FileOptionsBottomSheet._({
-    Key key,
-    @required this.file,
-    @required this.filesState,
-    @required this.filesPageState,
-    @required this.canShare,
-    @required this.sharedWithMe,
+    Key? key,
+    required this.file,
+    required this.filesState,
+    required this.filesPageState,
+    required this.canShare,
+    required this.sharedWithMe,
   }) : super(key: key);
 
   static Future show({
-    @required BuildContext context,
-    @required LocalFile file,
-    @required FilesState filesState,
-    @required FilesPageState filesPageState,
-    @required bool canShare,
-    @required bool sharedWithMe,
+    required BuildContext context,
+    required LocalFile file,
+    required FilesState filesState,
+    required FilesPageState filesPageState,
+    required bool canShare,
+    required bool sharedWithMe,
   }) {
     final isTablet = LayoutConfig.of(context).isTablet;
     if (isTablet) {

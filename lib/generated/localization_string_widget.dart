@@ -10,7 +10,7 @@ class LocalizationStringWidget implements WidgetsLocalizations {
 
   const LocalizationStringWidget(this.s);
 
-  static LocalizationStringWidget current;
+  static late LocalizationStringWidget current;
 
   static const GeneratedLocalizationsDelegate delegate =
       GeneratedLocalizationsDelegate();
@@ -34,8 +34,8 @@ class GeneratedLocalizationsDelegate
   }
 
   LocaleListResolutionCallback listResolution(
-      {Locale fallback, bool withCountry = true}) {
-    return (List<Locale> locales, Iterable<Locale> supported) {
+      {Locale? fallback, bool withCountry = true}) {
+    return (List<Locale>? locales, Iterable<Locale> supported) {
       if (locales == null || locales.isEmpty) {
         return fallback ?? supported.first;
       } else {
@@ -45,15 +45,15 @@ class GeneratedLocalizationsDelegate
   }
 
   LocaleResolutionCallback resolution(
-      {Locale fallback, bool withCountry = true}) {
-    return (Locale locale, Iterable<Locale> supported) {
+      {Locale? fallback, bool withCountry = true}) {
+    return (Locale? locale, Iterable<Locale> supported) {
       return _resolve(locale, fallback, supported, withCountry);
     };
   }
 
   @override
   Future<LocalizationStringWidget> load(Locale locale) {
-    final String lang = getLang(locale);
+    final lang = getLang(locale);
     if (lang != null) {
       switch (lang) {
         case "en":
@@ -78,7 +78,7 @@ class GeneratedLocalizationsDelegate
   ///
   /// Internal method to resolve a locale from a list of locales.
   ///
-  Locale _resolve(Locale locale, Locale fallback, Iterable<Locale> supported,
+  Locale _resolve(Locale? locale, Locale? fallback, Iterable<Locale> supported,
       bool withCountry) {
     if (locale == null || !_isSupported(locale, withCountry)) {
       return fallback ?? supported.first;
@@ -103,8 +103,8 @@ class GeneratedLocalizationsDelegate
   }
 }
 
-String getLang(Locale l) => l == null
+String? getLang(Locale? l) => l == null
     ? null
-    : l.countryCode != null && l.countryCode.isEmpty
+    : l.countryCode != null && l.countryCode!.isEmpty
         ? l.languageCode
         : l.toString();

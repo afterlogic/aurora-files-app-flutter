@@ -186,13 +186,13 @@ abstract class _FileViewerState with Store {
   }
 
   Future<void> uploadSecureFile(BuildContext context,
-      {@required File file,
-      @required Function(ProcessingFile) onUploadStart,
-      @required Function() onSuccess,
-      @required Function(String) onError,
-      @required bool passwordEncryption,
-      @required String encryptionRecipientEmail,
-      @required String extend}) {
+      {required File file,
+      required Function(ProcessingFile) onUploadStart,
+      required Function() onSuccess,
+      required Function(String) onError,
+      required bool passwordEncryption,
+      required String encryptionRecipientEmail,
+      required String extend}) {
     return fileState.uploadFile(context,
         passwordEncryption: passwordEncryption,
         encryptionRecipientEmail: encryptionRecipientEmail,

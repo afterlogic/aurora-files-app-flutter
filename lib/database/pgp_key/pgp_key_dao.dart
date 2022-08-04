@@ -11,7 +11,7 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
 
   PgpKeyDao(AppDatabase db) : super(db);
 
-  Future<LocalPgpKey> getKey(String email, bool isPrivate) async {
+  Future<LocalPgpKey?> getKey(String email, bool isPrivate) async {
     return prepareToLoad(await (select(pgpKey)
           ..where((item) => item.isPrivate.equals(isPrivate))
           ..where((item) => item.email.equals(email)))
@@ -49,7 +49,7 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
     return (delete(pgpKey)..where((item) => item.id.equals(key.id))).go();
   }
 
-  Future<bool> checkHasKey(String email, [bool isPrivate]) {
+  Future<bool> checkHasKey(String email, [bool? isPrivate]) {
     final query = select(pgpKey);
     query..where((item) => item.email.equals(email));
     if (isPrivate != null) {
@@ -73,7 +73,8 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
   Future<List<LocalPgpKey>> prepareListToLoad(List<LocalPgpKey> keys) async {
     final out = <LocalPgpKey>[];
     for (var value in keys) {
-      out.add(await prepareToLoad(value));
+      final key = await prepareToLoad(value);
+      if (key != null) out.add(key);
     }
     return out;
   }
@@ -83,8 +84,8 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
     return key.copyWith(key: "");
   }
 
-  Future<LocalPgpKey> prepareToLoad(LocalPgpKey key) async {
-    if (key?.key?.isNotEmpty == true) {
+  Future<LocalPgpKey?> prepareToLoad(LocalPgpKey? key) async {
+    if (key?.key.isNotEmpty == true) {
       return key;
     }
     return key?.copyWith(

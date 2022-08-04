@@ -9,7 +9,7 @@ class ExportKeyDialog extends StatefulWidget {
   final ScaffoldState scaffoldState;
 
   const ExportKeyDialog(
-      {Key key, @required this.settingsState, @required this.scaffoldState})
+      {Key? key, required this.settingsState, required this.scaffoldState})
       : super(key: key);
 
   @override

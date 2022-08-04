@@ -12,8 +12,8 @@ class SelectableFilesItemTile extends StatelessWidget {
   final Function onTap;
 
   const SelectableFilesItemTile(
-      {Key key,
-      @required this.child,
+      {Key? key,
+      required this.child,
       this.isSelected = false,
       this.file,
       this.onTap})

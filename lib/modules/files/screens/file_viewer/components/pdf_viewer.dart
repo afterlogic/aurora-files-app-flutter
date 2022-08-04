@@ -11,7 +11,7 @@ class PdfViewer extends StatefulWidget {
   final LocalFile file;
   final ScaffoldState scaffoldState;
 
-  const PdfViewer({Key key, @required this.file, @required this.scaffoldState})
+  const PdfViewer({Key? key, required this.file, required this.scaffoldState})
       : super(key: key);
 
   @override

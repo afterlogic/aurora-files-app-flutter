@@ -242,10 +242,10 @@ abstract class _FilesState with Store {
 
   // supports both extracting files from selected ids and passing file(s) directly
   Future onCopyMoveFiles({
-    @required bool copy,
-    @required String toPath,
-    @required Function onSuccess,
-    @required Function(String) onError,
+    required bool copy,
+    required String toPath,
+    required Function onSuccess,
+    required Function(String) onError,
   }) async {
     final List<Map<String, dynamic>> mappedFiles = [];
 
@@ -317,12 +317,12 @@ abstract class _FilesState with Store {
   }
 
   Future onGetPublicLink({
-    @required String name,
-    @required int size,
-    @required bool isFolder,
-    @required String path,
-    @required Function(String) onSuccess,
-    @required Function(String) onError,
+    required String name,
+    required int size,
+    required bool isFolder,
+    required String path,
+    required Function(String) onSuccess,
+    required Function(String) onError,
   }) async {
     try {
       final String link = await _filesApi.createPublicLink(
@@ -339,15 +339,15 @@ abstract class _FilesState with Store {
   }
 
   Future onGetSecureLink({
-    @required String name,
-    @required int size,
-    @required bool isFolder,
-    @required String path,
-    @required Function(SecureLink) onSuccess,
-    @required Function(String) onError,
-    @required String password,
-    @required bool isKey,
-    @required String email,
+    required String name,
+    required int size,
+    required bool isFolder,
+    required String path,
+    required Function(SecureLink) onSuccess,
+    required Function(String) onError,
+    required String password,
+    required bool isKey,
+    required String email,
   }) async {
     try {
       final SecureLink result = await _filesApi.createSecureLink(
@@ -367,10 +367,10 @@ abstract class _FilesState with Store {
   }
 
   Future onDeletePublicLink({
-    @required String name,
-    @required String path,
-    @required Function onSuccess,
-    @required Function(String) onError,
+    required String name,
+    required String path,
+    required Function onSuccess,
+    required Function(String) onError,
   }) async {
     try {
       await _filesApi.deletePublicLink(
@@ -385,10 +385,10 @@ abstract class _FilesState with Store {
   }
 
   Future onRename({
-    @required LocalFile file,
-    @required String newName,
-    @required Function onSuccess,
-    @required Function onError,
+    required LocalFile file,
+    required String newName,
+    required Function onSuccess,
+    required Function onError,
   }) async {
     try {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
@@ -413,10 +413,10 @@ abstract class _FilesState with Store {
   Future<void> onUploadFile(
     BuildContext context,
     Future<bool> Function(File) onSelect, {
-    @required String path,
-    @required Function(ProcessingFile) onUploadStart,
-    @required Function() onSuccess,
-    @required Function(String) onError,
+    required String path,
+    required Function(ProcessingFile) onUploadStart,
+    required Function() onSuccess,
+    required Function(String) onError,
   }) async {
     File file = await _filesLocal.pickFiles();
     if (file == null) return;
@@ -435,13 +435,13 @@ abstract class _FilesState with Store {
 
   Future<void> uploadFile(
     BuildContext context, {
-    @required bool shouldEncrypt,
-    @required File file,
+    required bool shouldEncrypt,
+    required File file,
     String name,
-    @required String path,
-    @required Function(ProcessingFile) onUploadStart,
-    @required Function() onSuccess,
-    @required Function(String) onError,
+    required String path,
+    required Function(ProcessingFile) onUploadStart,
+    required Function() onSuccess,
+    required Function(String) onError,
     String encryptionRecipientEmail,
     bool passwordEncryption,
     List<LocalPgpKey> addedPgpKey,
@@ -699,9 +699,9 @@ abstract class _FilesState with Store {
   }
 
   Future<void> onSetFileOffline(LocalFile file, BuildContext context,
-      {@required Function() onSuccess,
-      @required Function(ProcessingFile) onStart,
-      @required Function(String) onError}) async {
+      {required Function() onSuccess,
+      required Function(ProcessingFile) onStart,
+      required Function(String) onError}) async {
     if (_isFileIsBeingProcessed(file.guid)) {
       throw CustomException("This file is occupied with another operation.");
     }
@@ -761,7 +761,7 @@ abstract class _FilesState with Store {
 
     // else
     processingFile = new ProcessingFile(
-      guid: file.guid,
+      guid: file.guid ?? '',
       name: file.name,
       size: file.size,
       fileOnDevice: deviceLocation,
@@ -791,9 +791,9 @@ abstract class _FilesState with Store {
   }
 
   Future<void> createPublicLink({
-    @required LocalFile file,
-    @required Function(String) onSuccess,
-    @required Function(String) onError,
+    required LocalFile file,
+    required Function(String) onSuccess,
+    required Function(String) onError,
   }) async {
     return onGetPublicLink(
         name: file.name,
@@ -805,12 +805,12 @@ abstract class _FilesState with Store {
   }
 
   Future<void> createSecureLink({
-    @required LocalFile file,
-    @required Function(SecureLink) onSuccess,
-    @required Function(String) onError,
-    @required String password,
-    @required String email,
-    @required bool isKey,
+    required LocalFile file,
+    required Function(SecureLink) onSuccess,
+    required Function(String) onError,
+    required String password,
+    required String email,
+    required bool isKey,
   }) async {
     return onGetSecureLink(
       password: password,

@@ -32,8 +32,8 @@ class FileWidget extends StatefulWidget {
   final Function onOpen;
 
   const FileWidget({
-    Key key,
-    @required this.file,
+    Key? key,
+    required this.file,
     this.onOpen,
   }) : super(key: key);
 

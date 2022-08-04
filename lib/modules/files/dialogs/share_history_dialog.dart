@@ -12,9 +12,9 @@ class ShareHistoryDialog extends StatefulWidget {
   final LocalFile file;
 
   const ShareHistoryDialog({
-    Key key,
-    @required this.fileState,
-    @required this.file,
+    Key? key,
+    required this.fileState,
+    required this.file,
   }) : super(key: key);
 
   @override
@@ -22,7 +22,7 @@ class ShareHistoryDialog extends StatefulWidget {
 }
 
 class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
-  ShareAccessHistory _history;
+  late ShareAccessHistory _history;
   // int _currentPage = 0;
   bool _progress = true;
 
@@ -115,11 +115,11 @@ class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
 }
 
 class _HistoryPaginatedDataTable extends StatefulWidget {
-  final ShareAccessHistory history;
+  final ShareAccessHistory? history;
 
   const _HistoryPaginatedDataTable({
-    Key key,
-    @required this.history,
+    Key? key,
+    required this.history,
   }) : super(key: key);
 
   @override
@@ -133,9 +133,9 @@ class _HistoryPaginatedDataTableState
 
   int _rowPerPage = 5;
 
-  void _onRowsPerPageChanged(int value) {
+  void _onRowsPerPageChanged(int? value) {
     setState(() {
-      _rowPerPage = value;
+      _rowPerPage = value ?? 0;
     });
   }
 
@@ -147,7 +147,7 @@ class _HistoryPaginatedDataTableState
 
     final theme = Theme.of(context);
     final bodyTextStyle = theme.textTheme.bodyText2;
-    final headTextStyle = bodyTextStyle.copyWith(
+    final headTextStyle = bodyTextStyle?.copyWith(
       fontWeight: FontWeight.bold,
     );
     final columns = headline
@@ -160,7 +160,7 @@ class _HistoryPaginatedDataTableState
       child: PaginatedDataTable(
         columns: columns,
         source: _HistoryDTS(
-          history: widget.history,
+          history: widget.history!,
           textStyle: bodyTextStyle,
         ),
         rowsPerPage: _rowPerPage,
@@ -175,11 +175,11 @@ class _HistoryPaginatedDataTableState
 
 class _HistoryDTS extends DataTableSource {
   final ShareAccessHistory history;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   _HistoryDTS({
-    @required this.history,
-    @required this.textStyle,
+    required this.history,
+    required this.textStyle,
   });
 
   @override
@@ -217,8 +217,8 @@ class _HistoryDTS extends DataTableSource {
 //   final ShareAccessHistory history;
 //
 //   const _HistoryDataTable({
-//     Key key,
-//     @required this.history,
+//     Key? key,
+//     required this.history,
 //   }) : super(key: key);
 //
 //   @override
@@ -273,8 +273,8 @@ class _HistoryDTS extends DataTableSource {
 //   final ShareAccessHistory history;
 //
 //   const _HistoryTable({
-//     Key key,
-//     @required this.history,
+//     Key? key,
+//     required this.history,
 //   }) : super(key: key);
 //
 //   @override

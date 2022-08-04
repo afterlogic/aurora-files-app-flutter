@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 
 class AppInput extends StatelessWidget {
-  final bool withBorder;
-  final TextStyle style;
-  final TextEditingController controller;
+  final TextStyle? style;
+  final TextEditingController? controller;
   final bool obscureText;
-  final String labelText;
-  final Widget suffix;
-  final TextInputType keyboardType;
-  final Widget prefix;
-  final bool enabled;
-  final String Function(String) validator;
+  final String? labelText;
+  final Widget? suffix;
+  final TextInputType? keyboardType;
+  final Widget? prefix;
+  final bool? enabled;
+  final String? Function(String?)? validator;
   final InputCase inputCase;
 
   const AppInput({
-    Key key,
-    this.withBorder,
+    Key? key,
     this.style,
     this.controller,
     this.obscureText = false,
@@ -36,7 +34,7 @@ class AppInput extends StatelessWidget {
       style: style,
       validator: validator,
       keyboardType: keyboardType,
-      cursorColor: theme.accentColor,
+      cursorColor: theme.colorScheme.secondary,
       controller: controller,
       obscureText: obscureText,
       autocorrect: keyboardType != null ? false : true,

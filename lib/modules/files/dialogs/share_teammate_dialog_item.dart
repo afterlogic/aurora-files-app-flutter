@@ -10,12 +10,12 @@ class ShareTeammateDialogItem extends StatelessWidget {
   final Future<bool> Function() confirmDelete;
 
   const ShareTeammateDialogItem({
-    Key key,
-    @required this.share,
-    @required this.enabled,
-    @required this.onChange,
-    @required this.onDelete,
-    @required this.confirmDelete,
+    Key? key,
+    required this.share,
+    required this.enabled,
+    required this.onChange,
+    required this.onDelete,
+    required this.confirmDelete,
   }) : super(key: key);
 
   @override

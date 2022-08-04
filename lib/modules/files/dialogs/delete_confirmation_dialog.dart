@@ -7,7 +7,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
   final int itemsNumber;
   final bool isFolder;
 
-  const DeleteConfirmationDialog({Key key, this.itemsNumber, this.isFolder})
+  const DeleteConfirmationDialog({Key? key, this.itemsNumber, this.isFolder})
       : super(key: key);
 
   @override

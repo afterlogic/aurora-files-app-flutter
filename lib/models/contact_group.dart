@@ -1,16 +1,15 @@
 import 'package:aurorafiles/models/share_principal.dart';
-import 'package:flutter/foundation.dart';
 
 class ContactGroup extends SharePrincipal {
   final int id;
   final String name;
-  final String emails;
-  final bool isGroup;
-  final bool isAll;
+  final String? emails;
+  final bool? isGroup;
+  final bool? isAll;
 
   ContactGroup({
-    @required this.id,
-    @required this.name,
+    required this.id,
+    required this.name,
     this.emails,
     this.isGroup,
     this.isAll,

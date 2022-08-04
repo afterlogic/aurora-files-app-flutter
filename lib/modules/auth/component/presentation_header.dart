@@ -7,7 +7,7 @@ import 'mail_logo.dart';
 class PresentationHeader extends StatelessWidget {
   final String message;
 
-  const PresentationHeader({Key key, this.message}) : super(key: key);
+  const PresentationHeader({Key? key, this.message}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

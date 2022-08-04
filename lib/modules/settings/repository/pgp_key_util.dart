@@ -63,11 +63,11 @@ class PgpKeyUtil {
     return localKeys;
   }
 
-  Future<LocalPgpKey> userPrivateKey() {
+  Future<LocalPgpKey?> userPrivateKey() {
     return pgpKeyDao.getKey(AppStore.authState.userEmail, true);
   }
 
-  Future<LocalPgpKey> userPublicKey() {
+  Future<LocalPgpKey?> userPublicKey() {
     return pgpKeyDao.getKey(AppStore.authState.userEmail, false);
   }
 

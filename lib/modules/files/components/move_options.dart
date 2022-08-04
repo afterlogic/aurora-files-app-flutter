@@ -9,9 +9,9 @@ class MoveOptions extends StatefulWidget {
   final FilesPageState filesPageState;
 
   const MoveOptions({
-    Key key,
-    @required this.filesState,
-    @required this.filesPageState,
+    Key? key,
+    required this.filesState,
+    required this.filesPageState,
   }) : super(key: key);
 
   @override

@@ -200,7 +200,7 @@ class MainDrawer extends StatelessWidget {
     );
   }
 
-  Widget _getStorageIcon(StorageType type, Color color) {
+  Widget _getStorageIcon(StorageType type, Color? color) {
     switch (type) {
       case StorageType.encrypted:
         return SvgPicture.asset(Asset.svg.iconStorageEncrypted,

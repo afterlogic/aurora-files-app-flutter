@@ -14,8 +14,7 @@ Map<String, String> getHeader() {
   return {'Authorization': 'Bearer ${AppStore.authState.authToken}'};
 }
 
-
-Future sendRequest(ApiBody body, [Map<String, dynamic> addedBody]) async {
+Future sendRequest(ApiBody body, [Map<String, dynamic>? addedBody]) async {
   final authState = AppStore.authState;
   final map = body.toMap();
   addedBody?.forEach((key, value) {
@@ -34,10 +33,10 @@ LocalFile getFakeLocalFileForUploadProgress(
   final fileName =
       FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path);
   return new LocalFile(
-    localId: null,
+    localId: -1,
     id: fileName,
     guid: processingFile.guid,
-    type: null,
+    type: '',
     path: path,
     fullPath: path + fileName,
     localPath: processingFile.fileOnDevice.path,
@@ -46,18 +45,18 @@ LocalFile getFakeLocalFileForUploadProgress(
     isFolder: false,
     isOpenable: false,
     isLink: false,
-    linkType: null,
-    linkUrl: null,
+    linkType: '',
+    linkUrl: '',
     lastModified: DateTime.now().millisecondsSinceEpoch ~/ 1000,
     contentType: "",
-    oEmbedHtml: null,
+    oEmbedHtml: '',
     published: false,
     owner: AppStore.authState.userEmail,
-    content: null,
-    viewUrl: null,
-    downloadUrl: null,
+    content: '',
+    viewUrl: '',
+    downloadUrl: '',
     thumbnailUrl: null,
-    hash: null,
+    hash: '',
     extendedProps: "fake",
     isExternal: false,
     initVector: null,
@@ -192,11 +191,11 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
   }
   final linkPassword = props != null ? props["PasswordForSharing"] : null;
   return LocalFile(
-    localId: null,
+    localId: -1,
     id: rawFile["Id"],
     guid: props != null ? (props["GUID"] ?? Uuid().v4()) : Uuid().v4(),
     type: rawFile["Type"],
-    localPath: null,
+    localPath: '',
     path: rawFile["Path"],
     fullPath: rawFile["FullPath"],
     name: rawFile["Name"],
@@ -225,7 +224,7 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
     hash: rawFile["Hash"],
     extendedProps: rawFile["ExtendedProps"] != null
         ? jsonEncode(rawFile["ExtendedProps"])
-        : null,
+        : "[]",
     initVector: props != null ? props["InitializationVector"] : null,
     encryptedDecryptionKey: props != null ? props["ParanoidKey"] : null,
   );

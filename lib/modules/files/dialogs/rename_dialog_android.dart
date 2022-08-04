@@ -12,10 +12,10 @@ class RenameDialog extends StatefulWidget {
   final FilesPageState filesPageState;
 
   const RenameDialog({
-    Key key,
-    @required this.file,
-    @required this.filesPageState,
-    @required this.filesState,
+    Key? key,
+    required this.file,
+    required this.filesPageState,
+    required this.filesState,
   }) : super(key: key);
 
   @override

@@ -182,9 +182,9 @@ abstract class _FilesPageState with Store {
   // supports both extracting files from selected ids and passing file(s) directly
   Future<void> onDeleteFiles({
     List<LocalFile> filesToDelete,
-    @required Storage storage,
-    @required Function onSuccess,
-    @required Function(String) onError,
+    required Storage storage,
+    required Function onSuccess,
+    required Function(String) onError,
   }) async {
     final List<Map<String, dynamic>> mappedFilesToDelete = [];
     // files, that are deleted from direct mode are automatically deleted from offline
@@ -229,8 +229,8 @@ abstract class _FilesPageState with Store {
   }
 
   void onCreateNewFolder({
-    @required String folderName,
-    @required Storage storage,
+    required String folderName,
+    required Storage storage,
     Function(String) onSuccess,
     Function(String) onError,
   }) async {

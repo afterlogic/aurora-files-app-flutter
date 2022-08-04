@@ -16,8 +16,8 @@ class PublicLinkSwitch extends StatefulWidget {
   final Function(String) updateFile;
 
   const PublicLinkSwitch({
-    Key key,
-    @required this.file,
+    Key? key,
+    required this.file,
     this.filesState,
     this.filesPageState,
     // default snacks are shown on files screen, in order to show it on other screens, pass scaffoldState

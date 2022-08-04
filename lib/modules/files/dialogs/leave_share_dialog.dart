@@ -7,9 +7,9 @@ class LeaveShareDialog extends StatelessWidget {
   final bool isFolder;
 
   const LeaveShareDialog({
-    Key key,
-    @required this.name,
-    @required this.isFolder,
+    Key? key,
+    required this.name,
+    required this.isFolder,
   }) : super(key: key);
 
   @override

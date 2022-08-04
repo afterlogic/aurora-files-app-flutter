@@ -52,10 +52,10 @@ abstract class _AuthState with Store {
   }
 
   Future<void> _setAuthSharedPrefs({
-    @required String host,
-    @required String token,
-    @required String email,
-    @required int id,
+    required String host,
+    required String token,
+    required String email,
+    required int id,
   }) async {
     await Future.wait([
       _authLocal.setHostToStorage(host),

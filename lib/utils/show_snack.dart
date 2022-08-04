@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 void showSnack(
   BuildContext context, {
-  @required String msg,
+  required String msg,
   Duration duration = const Duration(seconds: 5),
-  SnackBarAction action,
+  SnackBarAction? action,
   isError = true,
 }) {
   final scaffoldMessenger = ScaffoldMessenger.of(context);

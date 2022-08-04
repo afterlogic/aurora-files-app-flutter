@@ -38,7 +38,7 @@ class SettingsNavigatorWidget extends StatefulWidget {
   final Function onUpdate;
 
   const SettingsNavigatorWidget({
-    Key key,
+    Key? key,
     this.initialRoute,
     this.routeFactory,
     this.onUpdate,

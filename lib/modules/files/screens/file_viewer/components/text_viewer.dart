@@ -7,9 +7,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 class TextViewer extends StatefulWidget {
   const TextViewer({
-    Key key,
-    @required this.scaffoldState,
-    @required this.fileViewerState,
+    Key? key,
+    required this.scaffoldState,
+    required this.fileViewerState,
     this.password,
   }) : super(key: key);
 

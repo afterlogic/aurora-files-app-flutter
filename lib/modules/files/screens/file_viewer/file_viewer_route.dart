@@ -16,9 +16,9 @@ class FileViewerScreenArguments {
   final FilesPageState filesPageState;
 
   FileViewerScreenArguments({
-    @required this.filesState,
-    @required this.filesPageState,
-    @required this.file,
+    required this.filesState,
+    required this.filesPageState,
+    required this.file,
     this.offlineFile,
   });
 }

@@ -23,9 +23,9 @@ class ShareTeammateDialog extends StatefulWidget {
   final LocalFile file;
 
   const ShareTeammateDialog({
-    Key key,
-    @required this.fileState,
-    @required this.file,
+    Key? key,
+    required this.fileState,
+    required this.file,
   }) : super(key: key);
 
   @override

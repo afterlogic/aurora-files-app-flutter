@@ -81,7 +81,7 @@ abstract class _SettingsState with Store {
 
   // for both generating and importing from text
   Future<void> onAddKey({
-    @required String name,
+    required String name,
     String encryptionKey,
     Function(String) onError,
   }) async {

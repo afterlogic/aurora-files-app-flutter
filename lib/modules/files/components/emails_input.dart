@@ -16,7 +16,7 @@ class EmailsInput extends StatefulWidget {
     this.searchContact,
     this.emails,
     this.enable,
-    Key key,
+    Key? key,
     this.pgpKeys,
     this.label,
   ) : super(key: key);
@@ -284,7 +284,7 @@ class EmailItem extends StatefulWidget {
   final String email;
   final Function(String) onDelete;
 
-  const EmailItem({Key key, this.email, this.onDelete}) : super(key: key);
+  const EmailItem({Key? key, this.email, this.onDelete}) : super(key: key);
 
   @override
   _EmailItemState createState() => _EmailItemState();

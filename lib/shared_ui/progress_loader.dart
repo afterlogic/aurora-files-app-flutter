@@ -4,7 +4,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 class ProgressLoader extends StatelessWidget {
   final double progress;
 
-  const ProgressLoader(this.progress, {Key key}) : super(key: key);
+  const ProgressLoader(this.progress, {Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ClipRRect(

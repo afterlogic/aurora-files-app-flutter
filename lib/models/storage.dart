@@ -8,11 +8,11 @@ class Storage {
   final bool isDroppable;
 
   Storage({
-    @required this.type,
-    @required this.displayName,
-    @required this.isExternal,
-    @required this.order,
-    @required this.isDroppable,
+    required this.type,
+    required this.displayName,
+    required this.isExternal,
+    required this.order,
+    required this.isDroppable,
   });
 
   static Storage fromMap(Map<String, dynamic> rawStorage) {

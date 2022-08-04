@@ -48,11 +48,11 @@ class FileViewerAndroid extends StatefulWidget {
   final FilesPageState filesPageState;
 
   FileViewerAndroid({
-    Key key,
-    @required this.immutableFile,
-    @required this.offlineFile,
-    @required this.filesState,
-    @required this.filesPageState,
+    Key? key,
+    required this.immutableFile,
+    required this.offlineFile,
+    required this.filesState,
+    required this.filesPageState,
   }) : super(key: key);
 
   @override

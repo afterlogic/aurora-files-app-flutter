@@ -88,11 +88,11 @@ class FilesApi {
     bool passwordEncryption,
     String encryptionRecipientEmail,
     List<LocalPgpKey> addedPgpKey,
-    @required String storageType,
-    @required String path,
+    required String storageType,
+    required String path,
     Function(int) updateProgress,
-    @required Function() onSuccess,
-    @required Function(String) onError,
+    required Function() onSuccess,
+    required Function(String) onError,
     String password,
   }) async {
     final bool fileExists = await processingFile.fileOnDevice.exists();
@@ -250,7 +250,7 @@ class FilesApi {
     String keyPassword, {
     Function(String) onError,
     Function(double) updateViewerProgress,
-    @required Function(File) onSuccess,
+    required Function(File) onSuccess,
     bool isRedirect = false,
   }) async {
     // getFileContentsFromServer function assumes that fileToWriteInto exists
@@ -405,12 +405,12 @@ class FilesApi {
   }
 
   Future<String> renameFile({
-    @required String type,
-    @required String path,
-    @required String name,
-    @required String newName,
-    @required bool isLink,
-    @required bool isFolder,
+    required String type,
+    required String path,
+    required String name,
+    required String newName,
+    required bool isLink,
+    required bool isFolder,
   }) async {
     final parameters = json.encode({
       "Type": type,
@@ -547,12 +547,12 @@ class FilesApi {
   }
 
   Future copyMoveFiles({
-    @required bool copy,
-    @required String fromType,
-    @required String toType,
-    @required String fromPath,
-    @required String toPath,
-    @required List<Map<String, dynamic>> files,
+    required bool copy,
+    required String fromType,
+    required String toType,
+    required String fromPath,
+    required String toPath,
+    required List<Map<String, dynamic>> files,
   }) async {
     final parameters = json.encode({
       "FromType": fromType,

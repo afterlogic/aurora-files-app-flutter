@@ -2,23 +2,22 @@ import 'package:aurorafiles/models/contact_group.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/models/share_principal.dart';
-import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 class ShareAccessEntry {
   final SharePrincipal principal;
   final ShareAccessRight access;
-  final String id;
+  final String _id;
 
   ShareAccessEntry({
-    @required this.principal,
-    @required this.access,
-    String id,
-  }) : id = id ?? Uuid().v4();
+    required this.principal,
+    required this.access,
+    String? id,
+  }) : _id = id ?? Uuid().v4();
 
-  static ShareAccessEntry fromShareJson(Map<String, dynamic> map) {
-    Recipient recipient;
-    ContactGroup group;
+  static ShareAccessEntry? fromShareJson(Map<String, dynamic> map) {
+    Recipient? recipient;
+    ContactGroup? group;
     if (map["IsGroup"] != null) {
       group = ContactGroup(
         id: map["GroupId"],
@@ -32,14 +31,13 @@ class ShareAccessEntry {
       );
     }
     final access = ShareAccessRightHelper.fromCode(map["Access"]);
-    if ((recipient == null && group == null) || access == null) {
-      return null;
-    } else {
-      return ShareAccessEntry(
-        principal: recipient ?? group,
-        access: access,
-      );
-    }
+    final principal = recipient ?? group;
+    return (principal == null || access == null)
+        ? null
+        : ShareAccessEntry(
+            principal: principal,
+            access: access,
+          );
   }
 
   Map<String, dynamic> toMap() {
@@ -48,11 +46,11 @@ class ShareAccessEntry {
     return map;
   }
 
-  ShareAccessEntry copyWith({ShareAccessRight access}) {
+  ShareAccessEntry copyWith({ShareAccessRight? access}) {
     return ShareAccessEntry(
       principal: this.principal,
       access: access ?? this.access,
-      id: this.id,
+      id: this._id,
     );
   }
 }

@@ -35,8 +35,8 @@ class FlutterCategory extends StatelessWidget {
         Switch(value: true, onChanged: (_) {}),
         CupertinoSwitch(onChanged: (bool value) {}, value: false,),
         CupertinoSwitch(onChanged: (bool value) {}, value: true,),
-        Checkbox(onChanged: (bool value) {}, value: false,),
-        Checkbox(onChanged: (bool value) {}, value: true,),
+        Checkbox(onChanged: (bool? value) {}, value: false,),
+        Checkbox(onChanged: (bool? value) {}, value: true,),
       ],
     );
   }

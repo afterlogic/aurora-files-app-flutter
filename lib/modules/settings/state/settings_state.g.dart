@@ -9,8 +9,8 @@ part of 'settings_state.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$SettingsState on _SettingsState, Store {
-   final _$internetConnectionAtom =
-      Atom(name: '_SettingsState.internetConnection');
+  late final _$internetConnectionAtom =
+      Atom(name: '_SettingsState.internetConnection', context: context);
 
   @override
   ConnectivityResult get internetConnection {
@@ -25,8 +25,8 @@ mixin _$SettingsState on _SettingsState, Store {
     });
   }
 
-   final _$isDarkThemeAtom =
-      Atom(name: '_SettingsState.isDarkTheme');
+  late final _$isDarkThemeAtom =
+      Atom(name: '_SettingsState.isDarkTheme', context: context);
 
   @override
   bool get isDarkTheme {
@@ -41,8 +41,8 @@ mixin _$SettingsState on _SettingsState, Store {
     });
   }
 
-   final _$isParanoidEncryptionEnabledAtom = Atom(
-      name: '_SettingsState.isParanoidEncryptionEnabled');
+  late final _$isParanoidEncryptionEnabledAtom = Atom(
+      name: '_SettingsState.isParanoidEncryptionEnabled', context: context);
 
   @override
   bool get isParanoidEncryptionEnabled {
@@ -58,8 +58,8 @@ mixin _$SettingsState on _SettingsState, Store {
     });
   }
 
-   final _$encryptionKeysAtom =
-      Atom(name: '_SettingsState.encryptionKeys');
+  late final _$encryptionKeysAtom =
+      Atom(name: '_SettingsState.encryptionKeys', context: context);
 
   @override
   Map<String, String> get encryptionKeys {
@@ -74,8 +74,8 @@ mixin _$SettingsState on _SettingsState, Store {
     });
   }
 
-   final _$selectedKeyNameAtom =
-      Atom(name: '_SettingsState.selectedKeyName');
+  late final _$selectedKeyNameAtom =
+      Atom(name: '_SettingsState.selectedKeyName', context: context);
 
   @override
   String get selectedKeyName {

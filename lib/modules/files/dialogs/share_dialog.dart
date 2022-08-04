@@ -9,7 +9,7 @@ class ShareDialog extends StatefulWidget {
   final FilesState filesState;
   final LocalFile file;
 
-  const ShareDialog({Key key, @required this.filesState, @required this.file})
+  const ShareDialog({Key? key, required this.filesState, required this.file})
       : super(key: key);
 
   @override

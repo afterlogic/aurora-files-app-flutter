@@ -13,7 +13,7 @@ Storage getStorageFromName(String name) {
   );
 }
 
-FilesCompanion getCompanionFromLocalFile(LocalFile file, [String pathToFile]) {
+FilesCompanion getCompanionFromLocalFile(LocalFile file, [String? pathToFile]) {
   return new FilesCompanion(
     id: Value(file.id),
     guid: Value(file.guid),
@@ -51,13 +51,13 @@ LocalFile getFolderFromName(String name, String path) {
   );
   String userEmail = AppStore.authState.userEmail;
   return new LocalFile(
-    localId: null,
+    localId: -1,
     id: name,
     guid: null,
     type: storageType,
     path: path,
     fullPath: path.isEmpty ? "/" + name : "$path/$name",
-    localPath: null,
+    localPath: '',
     name: name,
     size: 0,
     isFolder: true,
@@ -71,9 +71,9 @@ LocalFile getFolderFromName(String name, String path) {
     published: false,
     owner: userEmail,
     content: "",
-    viewUrl: null,
-    downloadUrl: null,
-    hash: null,
+    viewUrl: '',
+    downloadUrl: '',
+    hash: '',
     extendedProps: "[]",
     isExternal: false,
   );

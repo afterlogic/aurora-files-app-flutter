@@ -23,7 +23,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final _authState = AppStore.authState;
   final _settingsState = AppStore.settingsState;
-  Future<List<bool>> _localStorageInitialization;
+  late Future<List<bool>> _localStorageInitialization;
   final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -43,7 +43,7 @@ class _AppState extends State<App> {
 
   onLogout() {
     _authState.onLogout();
-    navigatorKey.currentState.pushReplacementNamed(AuthRoute.name);
+    navigatorKey.currentState?.pushReplacementNamed(AuthRoute.name);
   }
 
   Future _initLocalStorage() async {
@@ -58,7 +58,7 @@ class _AppState extends State<App> {
     _settingsState.updateAppData();
   }
 
-  ThemeData _getTheme(bool isDarkTheme) {
+  ThemeData? _getTheme(bool isDarkTheme) {
     if (isDarkTheme == false)
       return AppTheme.light;
     else if (isDarkTheme == true)
@@ -67,7 +67,7 @@ class _AppState extends State<App> {
       return null;
   }
 
-  bool _canEnterMainApp(List<bool> localStorageInitializationResults) {
+  bool _canEnterMainApp(List<bool?>? localStorageInitializationResults) {
     if (localStorageInitializationResults == null) return false;
     bool canEnterMailApp = true;
     localStorageInitializationResults.forEach((result) {

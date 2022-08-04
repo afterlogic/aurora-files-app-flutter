@@ -76,5 +76,5 @@ class EncryptionSetting {
 class AppData {
   final List<String> availableClientModules;
 
-  AppData({@required this.availableClientModules});
+  AppData({required this.availableClientModules});
 }

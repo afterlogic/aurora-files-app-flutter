@@ -2,9 +2,9 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:flutter/material.dart';
 
 class LoginGradient extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
-  const LoginGradient({Key key, this.child}) : super(key: key);
+  const LoginGradient({Key? key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

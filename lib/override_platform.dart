@@ -1,5 +1,5 @@
 class PlatformOverride {
-  static String _operatingSystem;
+  static late String _operatingSystem;
 
   static setPlatform(bool isIOS) {
     if (isIOS) {

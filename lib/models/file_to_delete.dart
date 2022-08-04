@@ -6,9 +6,9 @@ class FileToDelete {
   final bool isFolder;
 
   FileToDelete({
-    @required this.path,
-    @required this.name,
-    @required this.isFolder,
+    required this.path,
+    required this.name,
+    required this.isFolder,
   });
 
   Map<String, dynamic> toMap() {

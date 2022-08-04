@@ -11,9 +11,9 @@ class InfoListTile extends StatefulWidget {
   final bool isEncrypted;
 
   const InfoListTile({
-    Key key,
-    @required this.label,
-    @required this.content,
+    Key? key,
+    required this.label,
+    required this.content,
     this.isOffline = false,
     this.isPublic = false,
     this.isEncrypted = false,

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class IosPressOnKeyDialog extends _IosDialog {
   final Function breaker;
 
-  IosPressOnKeyDialog(Key key, this.breaker) : super(key);
+  IosPressOnKeyDialog(Key? key, this.breaker) : super(key);
 
   @override
   _IosDialogState createState() => IosPressOnKeyDialogState();
@@ -129,7 +129,7 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
 }
 
 abstract class _IosDialog extends StatefulWidget {
-  _IosDialog(Key key) : super(key: key);
+  _IosDialog(Key? key) : super(key: key);
 
   Future show(BuildContext context) {
     return showCupertinoDialog(

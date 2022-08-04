@@ -206,7 +206,7 @@ class MailApi {
   }
 
   Future<ShareAccessHistory> getFileShareHistory({
-    @required LocalFile file,
+    required LocalFile file,
     int offset = 0,
     int limit = 5,
   }) async {
@@ -232,7 +232,7 @@ class MailApi {
   }
 
   Future<bool> deleteFileShareHistory({
-    @required LocalFile file,
+    required LocalFile file,
   }) async {
     final parameters = {
       "ResourceType": "file",
@@ -254,7 +254,7 @@ class MailApi {
   }
 
   Future<bool> leaveFileShare({
-    @required LocalFile file,
+    required LocalFile file,
   }) async {
     final parameters = {
       "Type": file.type,

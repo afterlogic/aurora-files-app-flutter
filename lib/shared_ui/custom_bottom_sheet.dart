@@ -5,7 +5,7 @@ import 'package:aurorafiles/shared_ui/layout_config.dart';
 class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
   final Widget child;
 
-  CustomBottomSheet({@required this.child});
+  CustomBottomSheet({required this.child});
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 200);
@@ -20,7 +20,7 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
   Color get barrierColor => Colors.black.withOpacity(0.4);
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   bool get maintainState => true;
@@ -87,7 +87,7 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
       position:
           Tween<Offset>(begin: Offset(0.0, 0.5), end: Offset.zero).animate(
         CurvedAnimation(
-          parent: controller,
+          parent: animation,
           curve: Curves.easeOutCubic,
           reverseCurve: Curves.easeOut,
         ),

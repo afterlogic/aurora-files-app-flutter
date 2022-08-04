@@ -29,9 +29,9 @@ class ExampleWidgetScreen extends StatefulWidget {
 class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
   final categoryStateHolder = CategoryStateHolder();
   var scrollController = ScrollController();
-  bool isDarkTheme;
+  bool isDarkTheme = false;
   bool isIOS = PlatformOverride.isIOS;
-  ThemeData theme;
+  late ThemeData theme;
 
   TextTheme get textTheme => theme.textTheme;
 

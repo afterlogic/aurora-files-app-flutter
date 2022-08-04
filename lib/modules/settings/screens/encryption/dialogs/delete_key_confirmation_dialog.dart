@@ -12,7 +12,7 @@ enum DeleteKeyConfirmationDialogResult {
 class DeleteKeyConfirmationDialog extends StatelessWidget {
   final SettingsState settingsState;
 
-  const DeleteKeyConfirmationDialog({Key key, @required this.settingsState})
+  const DeleteKeyConfirmationDialog({Key? key, required this.settingsState})
       : super(key: key);
 
   @override

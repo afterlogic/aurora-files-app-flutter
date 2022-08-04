@@ -10,9 +10,9 @@ class AddKeyDialog extends StatefulWidget {
   final bool isImport;
 
   const AddKeyDialog({
-    Key key,
+    Key? key,
     this.isImport = false,
-    @required this.settingsState,
+    required this.settingsState,
   }) : super(key: key);
 
   @override

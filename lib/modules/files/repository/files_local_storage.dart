@@ -340,9 +340,9 @@ class PreparedForShare {
 
 // updateDecryptionProgress returns decrypted chunk index and total # of chunks
 //  Future<void> decryptFile({
-//    @required LocalFile file,
-//    @required List<int> fileBytes,
-//    @required Function(List<int>) getChunk,
+//    required LocalFile file,
+//    required List<int> fileBytes,
+//    required Function(List<int>) getChunk,
 //    Function(double) updateDecryptionProgress,
 //  }) async {
 //    final key = prefixEncrypt.Key.fromBase16(AppStore.settingsState.currentKey);

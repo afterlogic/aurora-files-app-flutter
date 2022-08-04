@@ -256,7 +256,7 @@ class TypeAheadFormField<T> extends FormField<String> {
 
   /// Creates a [TypeAheadFormField]
   TypeAheadFormField(
-      {Key key,
+      {Key? key,
       String initialValue,
       bool getImmediateSuggestions: false,
       bool autovalidate: false,
@@ -269,9 +269,9 @@ class TypeAheadFormField<T> extends FormField<String> {
       SuggestionsBoxDecoration suggestionsBoxDecoration:
           const SuggestionsBoxDecoration(),
       SuggestionsBoxController suggestionsBoxController,
-      @required SuggestionSelectionCallback<T> onSuggestionSelected,
-      @required ItemBuilder<T> itemBuilder,
-      @required SuggestionsCallback<T> suggestionsCallback,
+      required SuggestionSelectionCallback<T> onSuggestionSelected,
+      required ItemBuilder<T> itemBuilder,
+      required SuggestionsCallback<T> suggestionsCallback,
       double suggestionsBoxVerticalOffset: 5.0,
       this.textFieldConfiguration: const TextFieldConfiguration(),
       AnimationTransitionBuilder transitionBuilder,
@@ -666,11 +666,11 @@ class ComposeTypeAheadField<T> extends StatefulWidget {
 
   /// Creates a [ComposeTypeAheadField]
   ComposeTypeAheadField(
-      {Key key,
-      @required this.suggestionsCallback,
-      @required this.itemBuilder,
-      @required this.onSuggestionSelected,
-      @required this.child,
+      {Key? key,
+      required this.suggestionsCallback,
+      required this.itemBuilder,
+      required this.onSuggestionSelected,
+      required this.child,
       this.textFieldConfiguration: const TextFieldConfiguration(),
       this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
       this.debounceDuration: const Duration(milliseconds: 300),
@@ -984,7 +984,7 @@ class _SuggestionsList<T> extends StatefulWidget {
   final bool keepSuggestionsOnLoading;
 
   _SuggestionsList({
-    @required this.suggestionsBox,
+    required this.suggestionsBox,
     this.controller,
     this.getImmediateSuggestions: false,
     this.onSuggestionSelected,

@@ -14,9 +14,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 class ImageViewer extends StatefulWidget {
   const ImageViewer({
-    Key key,
-    @required this.fileViewerState,
-    @required this.scaffoldState,
+    Key? key,
+    required this.fileViewerState,
+    required this.scaffoldState,
     this.password,
   }) : super(key: key);
   final String password;

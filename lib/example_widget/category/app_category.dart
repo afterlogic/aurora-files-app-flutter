@@ -88,11 +88,9 @@ class AppCategory extends StatelessWidget {
                     CustomSpeedDial(tag: "FloatingActionButton", children: [
                       MiniFab(
                         icon: Icon(Icons.create_new_folder),
-                        onPressed: null,
                       ),
                       MiniFab(
                         icon: Icon(MdiIcons.filePlus),
-                        onPressed: null,
                       ),
                     ]));
               },

@@ -41,7 +41,7 @@ class FilesAndroid extends StatefulWidget {
   final bool isZip;
 
   FilesAndroid({
-    Key key,
+    Key? key,
     this.path = "",
     this.isZip = false,
   }) : super(key: key);

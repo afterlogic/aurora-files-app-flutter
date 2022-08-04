@@ -14,7 +14,7 @@ import 'package:theme/app_theme.dart';
 class TrustDeviceWidget extends StatefulWidget {
   final TrustDeviceRouteArgs args;
 
-  const TrustDeviceWidget({Key key, this.args}) : super(key: key);
+  const TrustDeviceWidget({Key? key, this.args}) : super(key: key);
 
   @override
   _TrustDeviceWidgetState createState() => _TrustDeviceWidgetState();

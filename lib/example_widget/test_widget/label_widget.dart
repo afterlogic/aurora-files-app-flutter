@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class LabelWidget extends StatelessWidget {
   final Widget widget;
-  final String name;
-  final String description;
+  final String? name;
+  final String? description;
 
   const LabelWidget(this.widget, {this.name, this.description});
 

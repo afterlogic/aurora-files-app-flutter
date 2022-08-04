@@ -20,8 +20,8 @@ class FilesAppBar extends StatefulWidget {
   final bool isAppBar;
 
   FilesAppBar({
-    Key key,
-    @required this.onDeleteFiles,
+    Key? key,
+    required this.onDeleteFiles,
     this.isAppBar = true,
   }) : super(key: key);
 

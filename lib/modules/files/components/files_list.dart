@@ -6,8 +6,8 @@ import 'folder.dart';
 
 class FilesList extends StatefulWidget {
   const FilesList({
-    Key key,
-    @required FilesPageState filesPageState,
+    Key? key,
+    required FilesPageState filesPageState,
   })  : _filesPageState = filesPageState,
         super(key: key);
 

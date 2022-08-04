@@ -18,7 +18,7 @@ class TwoFactorScene extends StatefulWidget {
   final bool allowBack;
 
   const TwoFactorScene({
-    Key key,
+    Key? key,
     this.isDialog,
     this.logoHint,
     this.title,

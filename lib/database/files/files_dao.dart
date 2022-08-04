@@ -133,7 +133,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
   }
 
   Future<int> updateFile(FilesCompanion file) {
-    return into(files).insert(file, orReplace: true);
+    return into(files).insert(file, mode: InsertMode.insertOrReplace);
   }
 
   Future<List<LocalFile>> getFilesForStorage(String displayName) async {

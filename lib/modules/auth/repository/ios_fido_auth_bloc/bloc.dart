@@ -23,7 +23,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
   FidoAuthRequest fidoRequest;
   StreamSubscription sub;
 
-  FidoAuthBloc(this.host, this.login, this.password) {
+  FidoAuthBloc(this.host, this.login, this.password) : super(InitState()) {
     sub = getLinksStream().listen((event) {
       final uri = Uri.parse(event);
       if (uri.host == "u2f") {
@@ -43,9 +43,6 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
     sub.cancel();
     return super.close();
   }
-
-  @override
-  FidoAuthState get initialState => InitState();
 
   @override
   Stream<FidoAuthState> mapEventToState(FidoAuthEvent event) async* {

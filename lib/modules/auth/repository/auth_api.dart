@@ -26,7 +26,7 @@ class AuthApi {
           .replaceFirst("{domain}", domain)
           .replaceFirst("{email}", email);
 
-      final res = await http.get(url);
+      final res = await http.get(Uri.parse(url));
       final resBody = json.decode(res.body);
       return resBody["url"];
     } catch (err) {

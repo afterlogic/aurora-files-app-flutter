@@ -5,13 +5,10 @@ import 'two_factor_event.dart';
 import 'two_factor_state.dart';
 
 class TwoFactorBloc extends Bloc<TwoFactorEvent, TwoFactorState> {
-  @override
-  TwoFactorState get initialState => InitialState();
+  TwoFactorBloc() : super(InitialState());
 
   @override
-  Stream<TwoFactorState> mapEventToState(
-    TwoFactorEvent event,
-  ) async* {
+  Stream<TwoFactorState> mapEventToState(TwoFactorEvent event,) async* {
     if (event is Verify) yield* _logIn(event);
   }
 

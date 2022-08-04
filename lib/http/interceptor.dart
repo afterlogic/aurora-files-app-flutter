@@ -16,7 +16,8 @@ class WebMailApi {
     headers?.forEach((key, value) {
       _headers[key] = value;
     });
-    final rawResponse = await http.post(url, body: body, headers: _headers);
+    final rawResponse =
+        await http.post(Uri.parse(url), body: body, headers: _headers);
     final res = json.decode(rawResponse.body);
     // invalidEmailPassword || accessDenied
     if (res["ErrorCode"] == 102 || res["ErrorCode"] == 108) {

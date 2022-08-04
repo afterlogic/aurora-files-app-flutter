@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
@@ -22,7 +23,6 @@ import 'package:file/memory.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:mobx/mobx.dart';
-import 'package:moor_flutter/moor_flutter.dart';
 
 part 'file_viewer_state.g.dart';
 

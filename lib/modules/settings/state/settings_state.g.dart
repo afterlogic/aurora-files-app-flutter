@@ -6,96 +6,98 @@ part of 'settings_state.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$SettingsState on _SettingsState, Store {
-  final _$internetConnectionAtom =
+   final _$internetConnectionAtom =
       Atom(name: '_SettingsState.internetConnection');
 
   @override
   ConnectivityResult get internetConnection {
-    _$internetConnectionAtom.context
-        .enforceReadPolicy(_$internetConnectionAtom);
-    _$internetConnectionAtom.reportObserved();
+    _$internetConnectionAtom.reportRead();
     return super.internetConnection;
   }
 
   @override
   set internetConnection(ConnectivityResult value) {
-    _$internetConnectionAtom.context.conditionallyRunInAction(() {
+    _$internetConnectionAtom.reportWrite(value, super.internetConnection, () {
       super.internetConnection = value;
-      _$internetConnectionAtom.reportChanged();
-    }, _$internetConnectionAtom, name: '${_$internetConnectionAtom.name}_set');
+    });
   }
 
-  final _$isDarkThemeAtom = Atom(name: '_SettingsState.isDarkTheme');
+   final _$isDarkThemeAtom =
+      Atom(name: '_SettingsState.isDarkTheme');
 
   @override
   bool get isDarkTheme {
-    _$isDarkThemeAtom.context.enforceReadPolicy(_$isDarkThemeAtom);
-    _$isDarkThemeAtom.reportObserved();
+    _$isDarkThemeAtom.reportRead();
     return super.isDarkTheme;
   }
 
   @override
   set isDarkTheme(bool value) {
-    _$isDarkThemeAtom.context.conditionallyRunInAction(() {
+    _$isDarkThemeAtom.reportWrite(value, super.isDarkTheme, () {
       super.isDarkTheme = value;
-      _$isDarkThemeAtom.reportChanged();
-    }, _$isDarkThemeAtom, name: '${_$isDarkThemeAtom.name}_set');
+    });
   }
 
-  final _$isParanoidEncryptionEnabledAtom =
-      Atom(name: '_SettingsState.isParanoidEncryptionEnabled');
+   final _$isParanoidEncryptionEnabledAtom = Atom(
+      name: '_SettingsState.isParanoidEncryptionEnabled');
 
   @override
   bool get isParanoidEncryptionEnabled {
-    _$isParanoidEncryptionEnabledAtom.context
-        .enforceReadPolicy(_$isParanoidEncryptionEnabledAtom);
-    _$isParanoidEncryptionEnabledAtom.reportObserved();
+    _$isParanoidEncryptionEnabledAtom.reportRead();
     return super.isParanoidEncryptionEnabled;
   }
 
   @override
   set isParanoidEncryptionEnabled(bool value) {
-    _$isParanoidEncryptionEnabledAtom.context.conditionallyRunInAction(() {
+    _$isParanoidEncryptionEnabledAtom
+        .reportWrite(value, super.isParanoidEncryptionEnabled, () {
       super.isParanoidEncryptionEnabled = value;
-      _$isParanoidEncryptionEnabledAtom.reportChanged();
-    }, _$isParanoidEncryptionEnabledAtom,
-        name: '${_$isParanoidEncryptionEnabledAtom.name}_set');
+    });
   }
 
-  final _$encryptionKeysAtom = Atom(name: '_SettingsState.encryptionKeys');
+   final _$encryptionKeysAtom =
+      Atom(name: '_SettingsState.encryptionKeys');
 
   @override
   Map<String, String> get encryptionKeys {
-    _$encryptionKeysAtom.context.enforceReadPolicy(_$encryptionKeysAtom);
-    _$encryptionKeysAtom.reportObserved();
+    _$encryptionKeysAtom.reportRead();
     return super.encryptionKeys;
   }
 
   @override
   set encryptionKeys(Map<String, String> value) {
-    _$encryptionKeysAtom.context.conditionallyRunInAction(() {
+    _$encryptionKeysAtom.reportWrite(value, super.encryptionKeys, () {
       super.encryptionKeys = value;
-      _$encryptionKeysAtom.reportChanged();
-    }, _$encryptionKeysAtom, name: '${_$encryptionKeysAtom.name}_set');
+    });
   }
 
-  final _$selectedKeyNameAtom = Atom(name: '_SettingsState.selectedKeyName');
+   final _$selectedKeyNameAtom =
+      Atom(name: '_SettingsState.selectedKeyName');
 
   @override
   String get selectedKeyName {
-    _$selectedKeyNameAtom.context.enforceReadPolicy(_$selectedKeyNameAtom);
-    _$selectedKeyNameAtom.reportObserved();
+    _$selectedKeyNameAtom.reportRead();
     return super.selectedKeyName;
   }
 
   @override
   set selectedKeyName(String value) {
-    _$selectedKeyNameAtom.context.conditionallyRunInAction(() {
+    _$selectedKeyNameAtom.reportWrite(value, super.selectedKeyName, () {
       super.selectedKeyName = value;
-      _$selectedKeyNameAtom.reportChanged();
-    }, _$selectedKeyNameAtom, name: '${_$selectedKeyNameAtom.name}_set');
+    });
+  }
+
+  @override
+  String toString() {
+    return '''
+internetConnection: ${internetConnection},
+isDarkTheme: ${isDarkTheme},
+isParanoidEncryptionEnabled: ${isParanoidEncryptionEnabled},
+encryptionKeys: ${encryptionKeys},
+selectedKeyName: ${selectedKeyName}
+    ''';
   }
 }

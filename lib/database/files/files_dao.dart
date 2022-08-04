@@ -129,7 +129,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
       final fileToDelete = new File(file.localPath);
       if (fileToDelete.existsSync()) fileToDelete.delete();
     });
-    return (delete(files)..where((file) => isIn(file.localId, ids))).go();
+    return (delete(files)..where((file) => file.localId.isIn(ids))).go();
   }
 
   Future<int> updateFile(FilesCompanion file) {

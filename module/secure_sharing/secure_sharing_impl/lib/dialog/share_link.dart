@@ -145,7 +145,7 @@ class _ShareLinkState extends State<ShareLink> {
     sendProgress = true;
     toastKey.currentState?.show(s.sending);
     setState(() {});
-    final password = useSign ? await KeyRequestDialog.request(context) : null;
+    final password = useSign ? await KeyRequestDialog.request(context) : '';
     if (!await checkSign(password)) {
       sendProgress = false;
       setState(() {});

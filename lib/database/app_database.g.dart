@@ -6,7 +6,7 @@ part of 'app_database.dart';
 // MoorGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
 class LocalFile extends DataClass implements Insertable<LocalFile> {
   final int localId;
   final String id;
@@ -70,137 +70,162 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   factory LocalFile.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
     return LocalFile(
-      localId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
-      id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      guid: stringType.mapFromDatabaseResponse(data['${effectivePrefix}guid']),
-      type: stringType.mapFromDatabaseResponse(data['${effectivePrefix}type']),
-      path: stringType.mapFromDatabaseResponse(data['${effectivePrefix}path']),
-      fullPath: stringType
+      localId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
+      id: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      guid: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}guid']),
+      type: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}type']),
+      path: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}path']),
+      fullPath: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}full_path']),
-      localPath: stringType
+      localPath: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}local_path']),
-      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
-      size: intType.mapFromDatabaseResponse(data['${effectivePrefix}size']),
-      isFolder:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_folder']),
-      isOpenable: boolType
+      name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      size: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}size']),
+      isFolder: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_folder']),
+      isOpenable: const BoolType()
           .mapFromDatabaseResponse(data['${effectivePrefix}is_openable']),
-      isLink:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_link']),
-      linkType: stringType
+      isLink: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_link']),
+      linkType: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}link_type']),
-      linkUrl: stringType
+      linkUrl: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}link_url']),
-      lastModified: intType
+      lastModified: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}last_modified']),
-      contentType: stringType
+      contentType: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}content_type']),
-      oEmbedHtml: stringType
+      oEmbedHtml: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}o_embed_html']),
-      published:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}published']),
-      owner:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}owner']),
-      content:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}content']),
-      viewUrl: stringType
+      published: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}published']),
+      owner: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}owner']),
+      content: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}content']),
+      viewUrl: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}view_url']),
-      downloadUrl: stringType
+      downloadUrl: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}download_url']),
-      thumbnailUrl: stringType
+      thumbnailUrl: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}thumbnail_url']),
-      hash: stringType.mapFromDatabaseResponse(data['${effectivePrefix}hash']),
-      extendedProps: stringType
+      hash: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}hash']),
+      extendedProps: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}extended_props']),
-      isExternal: boolType
+      isExternal: const BoolType()
           .mapFromDatabaseResponse(data['${effectivePrefix}is_external']),
-      initVector: stringType
+      initVector: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}init_vector']),
-      linkPassword: stringType
+      linkPassword: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}link_password']),
-      encryptedDecryptionKey: stringType.mapFromDatabaseResponse(
+      encryptedDecryptionKey: const StringType().mapFromDatabaseResponse(
           data['${effectivePrefix}encrypted_decryption_key']),
     );
   }
-  factory LocalFile.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return LocalFile(
-      localId: serializer.fromJson<int>(json['localId']),
-      id: serializer.fromJson<String>(json['id']),
-      guid: serializer.fromJson<String>(json['guid']),
-      type: serializer.fromJson<String>(json['type']),
-      path: serializer.fromJson<String>(json['path']),
-      fullPath: serializer.fromJson<String>(json['fullPath']),
-      localPath: serializer.fromJson<String>(json['localPath']),
-      name: serializer.fromJson<String>(json['name']),
-      size: serializer.fromJson<int>(json['size']),
-      isFolder: serializer.fromJson<bool>(json['isFolder']),
-      isOpenable: serializer.fromJson<bool>(json['isOpenable']),
-      isLink: serializer.fromJson<bool>(json['isLink']),
-      linkType: serializer.fromJson<String>(json['linkType']),
-      linkUrl: serializer.fromJson<String>(json['linkUrl']),
-      lastModified: serializer.fromJson<int>(json['lastModified']),
-      contentType: serializer.fromJson<String>(json['contentType']),
-      oEmbedHtml: serializer.fromJson<String>(json['oEmbedHtml']),
-      published: serializer.fromJson<bool>(json['published']),
-      owner: serializer.fromJson<String>(json['owner']),
-      content: serializer.fromJson<String>(json['content']),
-      viewUrl: serializer.fromJson<String>(json['viewUrl']),
-      downloadUrl: serializer.fromJson<String>(json['downloadUrl']),
-      thumbnailUrl: serializer.fromJson<String>(json['thumbnailUrl']),
-      hash: serializer.fromJson<String>(json['hash']),
-      extendedProps: serializer.fromJson<String>(json['extendedProps']),
-      isExternal: serializer.fromJson<bool>(json['isExternal']),
-      initVector: serializer.fromJson<String>(json['initVector']),
-      linkPassword: serializer.fromJson<String>(json['linkPassword']),
-      encryptedDecryptionKey:
-          serializer.fromJson<String>(json['encryptedDecryptionKey']),
-    );
-  }
   @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return {
-      'localId': serializer.toJson<int>(localId),
-      'id': serializer.toJson<String>(id),
-      'guid': serializer.toJson<String>(guid),
-      'type': serializer.toJson<String>(type),
-      'path': serializer.toJson<String>(path),
-      'fullPath': serializer.toJson<String>(fullPath),
-      'localPath': serializer.toJson<String>(localPath),
-      'name': serializer.toJson<String>(name),
-      'size': serializer.toJson<int>(size),
-      'isFolder': serializer.toJson<bool>(isFolder),
-      'isOpenable': serializer.toJson<bool>(isOpenable),
-      'isLink': serializer.toJson<bool>(isLink),
-      'linkType': serializer.toJson<String>(linkType),
-      'linkUrl': serializer.toJson<String>(linkUrl),
-      'lastModified': serializer.toJson<int>(lastModified),
-      'contentType': serializer.toJson<String>(contentType),
-      'oEmbedHtml': serializer.toJson<String>(oEmbedHtml),
-      'published': serializer.toJson<bool>(published),
-      'owner': serializer.toJson<String>(owner),
-      'content': serializer.toJson<String>(content),
-      'viewUrl': serializer.toJson<String>(viewUrl),
-      'downloadUrl': serializer.toJson<String>(downloadUrl),
-      'thumbnailUrl': serializer.toJson<String>(thumbnailUrl),
-      'hash': serializer.toJson<String>(hash),
-      'extendedProps': serializer.toJson<String>(extendedProps),
-      'isExternal': serializer.toJson<bool>(isExternal),
-      'initVector': serializer.toJson<String>(initVector),
-      'linkPassword': serializer.toJson<String>(linkPassword),
-      'encryptedDecryptionKey':
-          serializer.toJson<String>(encryptedDecryptionKey),
-    };
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || localId != null) {
+      map['local_id'] = Variable<int>(localId);
+    }
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<String>(id);
+    }
+    if (!nullToAbsent || guid != null) {
+      map['guid'] = Variable<String>(guid);
+    }
+    if (!nullToAbsent || type != null) {
+      map['type'] = Variable<String>(type);
+    }
+    if (!nullToAbsent || path != null) {
+      map['path'] = Variable<String>(path);
+    }
+    if (!nullToAbsent || fullPath != null) {
+      map['full_path'] = Variable<String>(fullPath);
+    }
+    if (!nullToAbsent || localPath != null) {
+      map['local_path'] = Variable<String>(localPath);
+    }
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || size != null) {
+      map['size'] = Variable<int>(size);
+    }
+    if (!nullToAbsent || isFolder != null) {
+      map['is_folder'] = Variable<bool>(isFolder);
+    }
+    if (!nullToAbsent || isOpenable != null) {
+      map['is_openable'] = Variable<bool>(isOpenable);
+    }
+    if (!nullToAbsent || isLink != null) {
+      map['is_link'] = Variable<bool>(isLink);
+    }
+    if (!nullToAbsent || linkType != null) {
+      map['link_type'] = Variable<String>(linkType);
+    }
+    if (!nullToAbsent || linkUrl != null) {
+      map['link_url'] = Variable<String>(linkUrl);
+    }
+    if (!nullToAbsent || lastModified != null) {
+      map['last_modified'] = Variable<int>(lastModified);
+    }
+    if (!nullToAbsent || contentType != null) {
+      map['content_type'] = Variable<String>(contentType);
+    }
+    if (!nullToAbsent || oEmbedHtml != null) {
+      map['o_embed_html'] = Variable<String>(oEmbedHtml);
+    }
+    if (!nullToAbsent || published != null) {
+      map['published'] = Variable<bool>(published);
+    }
+    if (!nullToAbsent || owner != null) {
+      map['owner'] = Variable<String>(owner);
+    }
+    if (!nullToAbsent || content != null) {
+      map['content'] = Variable<String>(content);
+    }
+    if (!nullToAbsent || viewUrl != null) {
+      map['view_url'] = Variable<String>(viewUrl);
+    }
+    if (!nullToAbsent || downloadUrl != null) {
+      map['download_url'] = Variable<String>(downloadUrl);
+    }
+    if (!nullToAbsent || thumbnailUrl != null) {
+      map['thumbnail_url'] = Variable<String>(thumbnailUrl);
+    }
+    if (!nullToAbsent || hash != null) {
+      map['hash'] = Variable<String>(hash);
+    }
+    if (!nullToAbsent || extendedProps != null) {
+      map['extended_props'] = Variable<String>(extendedProps);
+    }
+    if (!nullToAbsent || isExternal != null) {
+      map['is_external'] = Variable<bool>(isExternal);
+    }
+    if (!nullToAbsent || initVector != null) {
+      map['init_vector'] = Variable<String>(initVector);
+    }
+    if (!nullToAbsent || linkPassword != null) {
+      map['link_password'] = Variable<String>(linkPassword);
+    }
+    if (!nullToAbsent || encryptedDecryptionKey != null) {
+      map['encrypted_decryption_key'] =
+          Variable<String>(encryptedDecryptionKey);
+    }
+    return map;
   }
 
-  @override
-  T createCompanion<T extends UpdateCompanion<LocalFile>>(bool nullToAbsent) {
+  FilesCompanion toCompanion(bool nullToAbsent) {
     return FilesCompanion(
       localId: localId == null && nullToAbsent
           ? const Value.absent()
@@ -273,7 +298,80 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       encryptedDecryptionKey: encryptedDecryptionKey == null && nullToAbsent
           ? const Value.absent()
           : Value(encryptedDecryptionKey),
-    ) as T;
+    );
+  }
+
+  factory LocalFile.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return LocalFile(
+      localId: serializer.fromJson<int>(json['localId']),
+      id: serializer.fromJson<String>(json['id']),
+      guid: serializer.fromJson<String>(json['guid']),
+      type: serializer.fromJson<String>(json['type']),
+      path: serializer.fromJson<String>(json['path']),
+      fullPath: serializer.fromJson<String>(json['fullPath']),
+      localPath: serializer.fromJson<String>(json['localPath']),
+      name: serializer.fromJson<String>(json['name']),
+      size: serializer.fromJson<int>(json['size']),
+      isFolder: serializer.fromJson<bool>(json['isFolder']),
+      isOpenable: serializer.fromJson<bool>(json['isOpenable']),
+      isLink: serializer.fromJson<bool>(json['isLink']),
+      linkType: serializer.fromJson<String>(json['linkType']),
+      linkUrl: serializer.fromJson<String>(json['linkUrl']),
+      lastModified: serializer.fromJson<int>(json['lastModified']),
+      contentType: serializer.fromJson<String>(json['contentType']),
+      oEmbedHtml: serializer.fromJson<String>(json['oEmbedHtml']),
+      published: serializer.fromJson<bool>(json['published']),
+      owner: serializer.fromJson<String>(json['owner']),
+      content: serializer.fromJson<String>(json['content']),
+      viewUrl: serializer.fromJson<String>(json['viewUrl']),
+      downloadUrl: serializer.fromJson<String>(json['downloadUrl']),
+      thumbnailUrl: serializer.fromJson<String>(json['thumbnailUrl']),
+      hash: serializer.fromJson<String>(json['hash']),
+      extendedProps: serializer.fromJson<String>(json['extendedProps']),
+      isExternal: serializer.fromJson<bool>(json['isExternal']),
+      initVector: serializer.fromJson<String>(json['initVector']),
+      linkPassword: serializer.fromJson<String>(json['linkPassword']),
+      encryptedDecryptionKey:
+          serializer.fromJson<String>(json['encryptedDecryptionKey']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'localId': serializer.toJson<int>(localId),
+      'id': serializer.toJson<String>(id),
+      'guid': serializer.toJson<String>(guid),
+      'type': serializer.toJson<String>(type),
+      'path': serializer.toJson<String>(path),
+      'fullPath': serializer.toJson<String>(fullPath),
+      'localPath': serializer.toJson<String>(localPath),
+      'name': serializer.toJson<String>(name),
+      'size': serializer.toJson<int>(size),
+      'isFolder': serializer.toJson<bool>(isFolder),
+      'isOpenable': serializer.toJson<bool>(isOpenable),
+      'isLink': serializer.toJson<bool>(isLink),
+      'linkType': serializer.toJson<String>(linkType),
+      'linkUrl': serializer.toJson<String>(linkUrl),
+      'lastModified': serializer.toJson<int>(lastModified),
+      'contentType': serializer.toJson<String>(contentType),
+      'oEmbedHtml': serializer.toJson<String>(oEmbedHtml),
+      'published': serializer.toJson<bool>(published),
+      'owner': serializer.toJson<String>(owner),
+      'content': serializer.toJson<String>(content),
+      'viewUrl': serializer.toJson<String>(viewUrl),
+      'downloadUrl': serializer.toJson<String>(downloadUrl),
+      'thumbnailUrl': serializer.toJson<String>(thumbnailUrl),
+      'hash': serializer.toJson<String>(hash),
+      'extendedProps': serializer.toJson<String>(extendedProps),
+      'isExternal': serializer.toJson<bool>(isExternal),
+      'initVector': serializer.toJson<String>(initVector),
+      'linkPassword': serializer.toJson<String>(linkPassword),
+      'encryptedDecryptionKey':
+          serializer.toJson<String>(encryptedDecryptionKey),
+    };
   }
 
   LocalFile copyWith(
@@ -375,82 +473,70 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      localId.hashCode,
-      $mrjc(
-          id.hashCode,
-          $mrjc(
-              guid.hashCode,
-              $mrjc(
-                  type.hashCode,
-                  $mrjc(
-                      path.hashCode,
-                      $mrjc(
-                          fullPath.hashCode,
-                          $mrjc(
-                              localPath.hashCode,
-                              $mrjc(
-                                  name.hashCode,
-                                  $mrjc(
-                                      size.hashCode,
-                                      $mrjc(
-                                          isFolder.hashCode,
-                                          $mrjc(
-                                              isOpenable.hashCode,
-                                              $mrjc(
-                                                  isLink.hashCode,
-                                                  $mrjc(
-                                                      linkType.hashCode,
-                                                      $mrjc(
-                                                          linkUrl.hashCode,
-                                                          $mrjc(
-                                                              lastModified
-                                                                  .hashCode,
-                                                              $mrjc(
-                                                                  contentType
-                                                                      .hashCode,
-                                                                  $mrjc(
-                                                                      oEmbedHtml
-                                                                          .hashCode,
-                                                                      $mrjc(
-                                                                          published
-                                                                              .hashCode,
-                                                                          $mrjc(
-                                                                              owner.hashCode,
-                                                                              $mrjc(content.hashCode, $mrjc(viewUrl.hashCode, $mrjc(downloadUrl.hashCode, $mrjc(thumbnailUrl.hashCode, $mrjc(hash.hashCode, $mrjc(extendedProps.hashCode, $mrjc(isExternal.hashCode, $mrjc(initVector.hashCode, $mrjc(linkPassword.hashCode, encryptedDecryptionKey.hashCode)))))))))))))))))))))))))))));
+  int get hashCode => Object.hashAll([
+        localId,
+        id,
+        guid,
+        type,
+        path,
+        fullPath,
+        localPath,
+        name,
+        size,
+        isFolder,
+        isOpenable,
+        isLink,
+        linkType,
+        linkUrl,
+        lastModified,
+        contentType,
+        oEmbedHtml,
+        published,
+        owner,
+        content,
+        viewUrl,
+        downloadUrl,
+        thumbnailUrl,
+        hash,
+        extendedProps,
+        isExternal,
+        initVector,
+        linkPassword,
+        encryptedDecryptionKey
+      ]);
   @override
-  bool operator ==(other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is LocalFile &&
-          other.localId == localId &&
-          other.id == id &&
-          other.guid == guid &&
-          other.type == type &&
-          other.path == path &&
-          other.fullPath == fullPath &&
-          other.localPath == localPath &&
-          other.name == name &&
-          other.size == size &&
-          other.isFolder == isFolder &&
-          other.isOpenable == isOpenable &&
-          other.isLink == isLink &&
-          other.linkType == linkType &&
-          other.linkUrl == linkUrl &&
-          other.lastModified == lastModified &&
-          other.contentType == contentType &&
-          other.oEmbedHtml == oEmbedHtml &&
-          other.published == published &&
-          other.owner == owner &&
-          other.content == content &&
-          other.viewUrl == viewUrl &&
-          other.downloadUrl == downloadUrl &&
-          other.thumbnailUrl == thumbnailUrl &&
-          other.hash == hash &&
-          other.extendedProps == extendedProps &&
-          other.isExternal == isExternal &&
-          other.initVector == initVector &&
-          other.linkPassword == linkPassword &&
-          other.encryptedDecryptionKey == encryptedDecryptionKey);
+          other.localId == this.localId &&
+          other.id == this.id &&
+          other.guid == this.guid &&
+          other.type == this.type &&
+          other.path == this.path &&
+          other.fullPath == this.fullPath &&
+          other.localPath == this.localPath &&
+          other.name == this.name &&
+          other.size == this.size &&
+          other.isFolder == this.isFolder &&
+          other.isOpenable == this.isOpenable &&
+          other.isLink == this.isLink &&
+          other.linkType == this.linkType &&
+          other.linkUrl == this.linkUrl &&
+          other.lastModified == this.lastModified &&
+          other.contentType == this.contentType &&
+          other.oEmbedHtml == this.oEmbedHtml &&
+          other.published == this.published &&
+          other.owner == this.owner &&
+          other.content == this.content &&
+          other.viewUrl == this.viewUrl &&
+          other.downloadUrl == this.downloadUrl &&
+          other.thumbnailUrl == this.thumbnailUrl &&
+          other.hash == this.hash &&
+          other.extendedProps == this.extendedProps &&
+          other.isExternal == this.isExternal &&
+          other.initVector == this.initVector &&
+          other.linkPassword == this.linkPassword &&
+          other.encryptedDecryptionKey == this.encryptedDecryptionKey);
 }
 
 class FilesCompanion extends UpdateCompanion<LocalFile> {
@@ -514,6 +600,124 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
     this.linkPassword = const Value.absent(),
     this.encryptedDecryptionKey = const Value.absent(),
   });
+  FilesCompanion.insert({
+    this.localId = const Value.absent(),
+    @required String id,
+    this.guid = const Value.absent(),
+    @required String type,
+    @required String path,
+    @required String fullPath,
+    @required String localPath,
+    @required String name,
+    @required int size,
+    @required bool isFolder,
+    @required bool isOpenable,
+    @required bool isLink,
+    @required String linkType,
+    @required String linkUrl,
+    @required int lastModified,
+    @required String contentType,
+    @required String oEmbedHtml,
+    @required bool published,
+    @required String owner,
+    @required String content,
+    @required String viewUrl,
+    @required String downloadUrl,
+    this.thumbnailUrl = const Value.absent(),
+    @required String hash,
+    @required String extendedProps,
+    @required bool isExternal,
+    this.initVector = const Value.absent(),
+    this.linkPassword = const Value.absent(),
+    this.encryptedDecryptionKey = const Value.absent(),
+  })  : id = Value(id),
+        type = Value(type),
+        path = Value(path),
+        fullPath = Value(fullPath),
+        localPath = Value(localPath),
+        name = Value(name),
+        size = Value(size),
+        isFolder = Value(isFolder),
+        isOpenable = Value(isOpenable),
+        isLink = Value(isLink),
+        linkType = Value(linkType),
+        linkUrl = Value(linkUrl),
+        lastModified = Value(lastModified),
+        contentType = Value(contentType),
+        oEmbedHtml = Value(oEmbedHtml),
+        published = Value(published),
+        owner = Value(owner),
+        content = Value(content),
+        viewUrl = Value(viewUrl),
+        downloadUrl = Value(downloadUrl),
+        hash = Value(hash),
+        extendedProps = Value(extendedProps),
+        isExternal = Value(isExternal);
+  static Insertable<LocalFile> custom({
+    Expression<int> localId,
+    Expression<String> id,
+    Expression<String> guid,
+    Expression<String> type,
+    Expression<String> path,
+    Expression<String> fullPath,
+    Expression<String> localPath,
+    Expression<String> name,
+    Expression<int> size,
+    Expression<bool> isFolder,
+    Expression<bool> isOpenable,
+    Expression<bool> isLink,
+    Expression<String> linkType,
+    Expression<String> linkUrl,
+    Expression<int> lastModified,
+    Expression<String> contentType,
+    Expression<String> oEmbedHtml,
+    Expression<bool> published,
+    Expression<String> owner,
+    Expression<String> content,
+    Expression<String> viewUrl,
+    Expression<String> downloadUrl,
+    Expression<String> thumbnailUrl,
+    Expression<String> hash,
+    Expression<String> extendedProps,
+    Expression<bool> isExternal,
+    Expression<String> initVector,
+    Expression<String> linkPassword,
+    Expression<String> encryptedDecryptionKey,
+  }) {
+    return RawValuesInsertable({
+      if (localId != null) 'local_id': localId,
+      if (id != null) 'id': id,
+      if (guid != null) 'guid': guid,
+      if (type != null) 'type': type,
+      if (path != null) 'path': path,
+      if (fullPath != null) 'full_path': fullPath,
+      if (localPath != null) 'local_path': localPath,
+      if (name != null) 'name': name,
+      if (size != null) 'size': size,
+      if (isFolder != null) 'is_folder': isFolder,
+      if (isOpenable != null) 'is_openable': isOpenable,
+      if (isLink != null) 'is_link': isLink,
+      if (linkType != null) 'link_type': linkType,
+      if (linkUrl != null) 'link_url': linkUrl,
+      if (lastModified != null) 'last_modified': lastModified,
+      if (contentType != null) 'content_type': contentType,
+      if (oEmbedHtml != null) 'o_embed_html': oEmbedHtml,
+      if (published != null) 'published': published,
+      if (owner != null) 'owner': owner,
+      if (content != null) 'content': content,
+      if (viewUrl != null) 'view_url': viewUrl,
+      if (downloadUrl != null) 'download_url': downloadUrl,
+      if (thumbnailUrl != null) 'thumbnail_url': thumbnailUrl,
+      if (hash != null) 'hash': hash,
+      if (extendedProps != null) 'extended_props': extendedProps,
+      if (isExternal != null) 'is_external': isExternal,
+      if (initVector != null) 'init_vector': initVector,
+      if (linkPassword != null) 'link_password': linkPassword,
+      if (encryptedDecryptionKey != null)
+        'encrypted_decryption_key': encryptedDecryptionKey,
+    });
+  }
+
   FilesCompanion copyWith(
       {Value<int> localId,
       Value<String> id,
@@ -577,371 +781,337 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
           encryptedDecryptionKey ?? this.encryptedDecryptionKey,
     );
   }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (localId.present) {
+      map['local_id'] = Variable<int>(localId.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (guid.present) {
+      map['guid'] = Variable<String>(guid.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    if (fullPath.present) {
+      map['full_path'] = Variable<String>(fullPath.value);
+    }
+    if (localPath.present) {
+      map['local_path'] = Variable<String>(localPath.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (size.present) {
+      map['size'] = Variable<int>(size.value);
+    }
+    if (isFolder.present) {
+      map['is_folder'] = Variable<bool>(isFolder.value);
+    }
+    if (isOpenable.present) {
+      map['is_openable'] = Variable<bool>(isOpenable.value);
+    }
+    if (isLink.present) {
+      map['is_link'] = Variable<bool>(isLink.value);
+    }
+    if (linkType.present) {
+      map['link_type'] = Variable<String>(linkType.value);
+    }
+    if (linkUrl.present) {
+      map['link_url'] = Variable<String>(linkUrl.value);
+    }
+    if (lastModified.present) {
+      map['last_modified'] = Variable<int>(lastModified.value);
+    }
+    if (contentType.present) {
+      map['content_type'] = Variable<String>(contentType.value);
+    }
+    if (oEmbedHtml.present) {
+      map['o_embed_html'] = Variable<String>(oEmbedHtml.value);
+    }
+    if (published.present) {
+      map['published'] = Variable<bool>(published.value);
+    }
+    if (owner.present) {
+      map['owner'] = Variable<String>(owner.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (viewUrl.present) {
+      map['view_url'] = Variable<String>(viewUrl.value);
+    }
+    if (downloadUrl.present) {
+      map['download_url'] = Variable<String>(downloadUrl.value);
+    }
+    if (thumbnailUrl.present) {
+      map['thumbnail_url'] = Variable<String>(thumbnailUrl.value);
+    }
+    if (hash.present) {
+      map['hash'] = Variable<String>(hash.value);
+    }
+    if (extendedProps.present) {
+      map['extended_props'] = Variable<String>(extendedProps.value);
+    }
+    if (isExternal.present) {
+      map['is_external'] = Variable<bool>(isExternal.value);
+    }
+    if (initVector.present) {
+      map['init_vector'] = Variable<String>(initVector.value);
+    }
+    if (linkPassword.present) {
+      map['link_password'] = Variable<String>(linkPassword.value);
+    }
+    if (encryptedDecryptionKey.present) {
+      map['encrypted_decryption_key'] =
+          Variable<String>(encryptedDecryptionKey.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FilesCompanion(')
+          ..write('localId: $localId, ')
+          ..write('id: $id, ')
+          ..write('guid: $guid, ')
+          ..write('type: $type, ')
+          ..write('path: $path, ')
+          ..write('fullPath: $fullPath, ')
+          ..write('localPath: $localPath, ')
+          ..write('name: $name, ')
+          ..write('size: $size, ')
+          ..write('isFolder: $isFolder, ')
+          ..write('isOpenable: $isOpenable, ')
+          ..write('isLink: $isLink, ')
+          ..write('linkType: $linkType, ')
+          ..write('linkUrl: $linkUrl, ')
+          ..write('lastModified: $lastModified, ')
+          ..write('contentType: $contentType, ')
+          ..write('oEmbedHtml: $oEmbedHtml, ')
+          ..write('published: $published, ')
+          ..write('owner: $owner, ')
+          ..write('content: $content, ')
+          ..write('viewUrl: $viewUrl, ')
+          ..write('downloadUrl: $downloadUrl, ')
+          ..write('thumbnailUrl: $thumbnailUrl, ')
+          ..write('hash: $hash, ')
+          ..write('extendedProps: $extendedProps, ')
+          ..write('isExternal: $isExternal, ')
+          ..write('initVector: $initVector, ')
+          ..write('linkPassword: $linkPassword, ')
+          ..write('encryptedDecryptionKey: $encryptedDecryptionKey')
+          ..write(')'))
+        .toString();
+  }
 }
 
 class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String _alias;
-  $FilesTable(this._db, [this._alias]);
+  $FilesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _localIdMeta = const VerificationMeta('localId');
-  GeneratedIntColumn _localId;
+  GeneratedColumn<int> _localId;
   @override
-  GeneratedIntColumn get localId => _localId ??= _constructLocalId();
-  GeneratedIntColumn _constructLocalId() {
-    return GeneratedIntColumn('local_id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
+  GeneratedColumn<int> get localId =>
+      _localId ??= GeneratedColumn<int>('local_id', aliasedName, false,
+          type: const IntType(),
+          requiredDuringInsert: false,
+          defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedTextColumn _id;
+  GeneratedColumn<String> _id;
   @override
-  GeneratedTextColumn get id => _id ??= _constructId();
-  GeneratedTextColumn _constructId() {
-    return GeneratedTextColumn(
-      'id',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get id =>
+      _id ??= GeneratedColumn<String>('id', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _guidMeta = const VerificationMeta('guid');
-  GeneratedTextColumn _guid;
+  GeneratedColumn<String> _guid;
   @override
-  GeneratedTextColumn get guid => _guid ??= _constructGuid();
-  GeneratedTextColumn _constructGuid() {
-    return GeneratedTextColumn(
-      'guid',
-      $tableName,
-      true,
-    );
-  }
-
+  GeneratedColumn<String> get guid =>
+      _guid ??= GeneratedColumn<String>('guid', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _typeMeta = const VerificationMeta('type');
-  GeneratedTextColumn _type;
+  GeneratedColumn<String> _type;
   @override
-  GeneratedTextColumn get type => _type ??= _constructType();
-  GeneratedTextColumn _constructType() {
-    return GeneratedTextColumn(
-      'type',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get type =>
+      _type ??= GeneratedColumn<String>('type', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _pathMeta = const VerificationMeta('path');
-  GeneratedTextColumn _path;
+  GeneratedColumn<String> _path;
   @override
-  GeneratedTextColumn get path => _path ??= _constructPath();
-  GeneratedTextColumn _constructPath() {
-    return GeneratedTextColumn(
-      'path',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get path =>
+      _path ??= GeneratedColumn<String>('path', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _fullPathMeta = const VerificationMeta('fullPath');
-  GeneratedTextColumn _fullPath;
+  GeneratedColumn<String> _fullPath;
   @override
-  GeneratedTextColumn get fullPath => _fullPath ??= _constructFullPath();
-  GeneratedTextColumn _constructFullPath() {
-    return GeneratedTextColumn(
-      'full_path',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get fullPath =>
+      _fullPath ??= GeneratedColumn<String>('full_path', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _localPathMeta = const VerificationMeta('localPath');
-  GeneratedTextColumn _localPath;
+  GeneratedColumn<String> _localPath;
   @override
-  GeneratedTextColumn get localPath => _localPath ??= _constructLocalPath();
-  GeneratedTextColumn _constructLocalPath() {
-    return GeneratedTextColumn(
-      'local_path',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get localPath =>
+      _localPath ??= GeneratedColumn<String>('local_path', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
-  GeneratedTextColumn _name;
+  GeneratedColumn<String> _name;
   @override
-  GeneratedTextColumn get name => _name ??= _constructName();
-  GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn(
-      'name',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get name =>
+      _name ??= GeneratedColumn<String>('name', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _sizeMeta = const VerificationMeta('size');
-  GeneratedIntColumn _size;
+  GeneratedColumn<int> _size;
   @override
-  GeneratedIntColumn get size => _size ??= _constructSize();
-  GeneratedIntColumn _constructSize() {
-    return GeneratedIntColumn(
-      'size',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<int> get size =>
+      _size ??= GeneratedColumn<int>('size', aliasedName, false,
+          type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _isFolderMeta = const VerificationMeta('isFolder');
-  GeneratedBoolColumn _isFolder;
+  GeneratedColumn<bool> _isFolder;
   @override
-  GeneratedBoolColumn get isFolder => _isFolder ??= _constructIsFolder();
-  GeneratedBoolColumn _constructIsFolder() {
-    return GeneratedBoolColumn(
-      'is_folder',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<bool> get isFolder =>
+      _isFolder ??= GeneratedColumn<bool>('is_folder', aliasedName, false,
+          type: const BoolType(),
+          requiredDuringInsert: true,
+          defaultConstraints: 'CHECK (is_folder IN (0, 1))');
   final VerificationMeta _isOpenableMeta = const VerificationMeta('isOpenable');
-  GeneratedBoolColumn _isOpenable;
+  GeneratedColumn<bool> _isOpenable;
   @override
-  GeneratedBoolColumn get isOpenable => _isOpenable ??= _constructIsOpenable();
-  GeneratedBoolColumn _constructIsOpenable() {
-    return GeneratedBoolColumn(
-      'is_openable',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<bool> get isOpenable =>
+      _isOpenable ??= GeneratedColumn<bool>('is_openable', aliasedName, false,
+          type: const BoolType(),
+          requiredDuringInsert: true,
+          defaultConstraints: 'CHECK (is_openable IN (0, 1))');
   final VerificationMeta _isLinkMeta = const VerificationMeta('isLink');
-  GeneratedBoolColumn _isLink;
+  GeneratedColumn<bool> _isLink;
   @override
-  GeneratedBoolColumn get isLink => _isLink ??= _constructIsLink();
-  GeneratedBoolColumn _constructIsLink() {
-    return GeneratedBoolColumn(
-      'is_link',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<bool> get isLink =>
+      _isLink ??= GeneratedColumn<bool>('is_link', aliasedName, false,
+          type: const BoolType(),
+          requiredDuringInsert: true,
+          defaultConstraints: 'CHECK (is_link IN (0, 1))');
   final VerificationMeta _linkTypeMeta = const VerificationMeta('linkType');
-  GeneratedTextColumn _linkType;
+  GeneratedColumn<String> _linkType;
   @override
-  GeneratedTextColumn get linkType => _linkType ??= _constructLinkType();
-  GeneratedTextColumn _constructLinkType() {
-    return GeneratedTextColumn(
-      'link_type',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get linkType =>
+      _linkType ??= GeneratedColumn<String>('link_type', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _linkUrlMeta = const VerificationMeta('linkUrl');
-  GeneratedTextColumn _linkUrl;
+  GeneratedColumn<String> _linkUrl;
   @override
-  GeneratedTextColumn get linkUrl => _linkUrl ??= _constructLinkUrl();
-  GeneratedTextColumn _constructLinkUrl() {
-    return GeneratedTextColumn(
-      'link_url',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get linkUrl =>
+      _linkUrl ??= GeneratedColumn<String>('link_url', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _lastModifiedMeta =
       const VerificationMeta('lastModified');
-  GeneratedIntColumn _lastModified;
+  GeneratedColumn<int> _lastModified;
   @override
-  GeneratedIntColumn get lastModified =>
-      _lastModified ??= _constructLastModified();
-  GeneratedIntColumn _constructLastModified() {
-    return GeneratedIntColumn(
-      'last_modified',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<int> get lastModified => _lastModified ??=
+      GeneratedColumn<int>('last_modified', aliasedName, false,
+          type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _contentTypeMeta =
       const VerificationMeta('contentType');
-  GeneratedTextColumn _contentType;
+  GeneratedColumn<String> _contentType;
   @override
-  GeneratedTextColumn get contentType =>
-      _contentType ??= _constructContentType();
-  GeneratedTextColumn _constructContentType() {
-    return GeneratedTextColumn(
-      'content_type',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get contentType => _contentType ??=
+      GeneratedColumn<String>('content_type', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _oEmbedHtmlMeta = const VerificationMeta('oEmbedHtml');
-  GeneratedTextColumn _oEmbedHtml;
+  GeneratedColumn<String> _oEmbedHtml;
   @override
-  GeneratedTextColumn get oEmbedHtml => _oEmbedHtml ??= _constructOEmbedHtml();
-  GeneratedTextColumn _constructOEmbedHtml() {
-    return GeneratedTextColumn(
-      'o_embed_html',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get oEmbedHtml => _oEmbedHtml ??=
+      GeneratedColumn<String>('o_embed_html', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _publishedMeta = const VerificationMeta('published');
-  GeneratedBoolColumn _published;
+  GeneratedColumn<bool> _published;
   @override
-  GeneratedBoolColumn get published => _published ??= _constructPublished();
-  GeneratedBoolColumn _constructPublished() {
-    return GeneratedBoolColumn(
-      'published',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<bool> get published =>
+      _published ??= GeneratedColumn<bool>('published', aliasedName, false,
+          type: const BoolType(),
+          requiredDuringInsert: true,
+          defaultConstraints: 'CHECK (published IN (0, 1))');
   final VerificationMeta _ownerMeta = const VerificationMeta('owner');
-  GeneratedTextColumn _owner;
+  GeneratedColumn<String> _owner;
   @override
-  GeneratedTextColumn get owner => _owner ??= _constructOwner();
-  GeneratedTextColumn _constructOwner() {
-    return GeneratedTextColumn(
-      'owner',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get owner =>
+      _owner ??= GeneratedColumn<String>('owner', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _contentMeta = const VerificationMeta('content');
-  GeneratedTextColumn _content;
+  GeneratedColumn<String> _content;
   @override
-  GeneratedTextColumn get content => _content ??= _constructContent();
-  GeneratedTextColumn _constructContent() {
-    return GeneratedTextColumn(
-      'content',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get content =>
+      _content ??= GeneratedColumn<String>('content', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _viewUrlMeta = const VerificationMeta('viewUrl');
-  GeneratedTextColumn _viewUrl;
+  GeneratedColumn<String> _viewUrl;
   @override
-  GeneratedTextColumn get viewUrl => _viewUrl ??= _constructViewUrl();
-  GeneratedTextColumn _constructViewUrl() {
-    return GeneratedTextColumn(
-      'view_url',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get viewUrl =>
+      _viewUrl ??= GeneratedColumn<String>('view_url', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _downloadUrlMeta =
       const VerificationMeta('downloadUrl');
-  GeneratedTextColumn _downloadUrl;
+  GeneratedColumn<String> _downloadUrl;
   @override
-  GeneratedTextColumn get downloadUrl =>
-      _downloadUrl ??= _constructDownloadUrl();
-  GeneratedTextColumn _constructDownloadUrl() {
-    return GeneratedTextColumn(
-      'download_url',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get downloadUrl => _downloadUrl ??=
+      GeneratedColumn<String>('download_url', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _thumbnailUrlMeta =
       const VerificationMeta('thumbnailUrl');
-  GeneratedTextColumn _thumbnailUrl;
+  GeneratedColumn<String> _thumbnailUrl;
   @override
-  GeneratedTextColumn get thumbnailUrl =>
-      _thumbnailUrl ??= _constructThumbnailUrl();
-  GeneratedTextColumn _constructThumbnailUrl() {
-    return GeneratedTextColumn(
-      'thumbnail_url',
-      $tableName,
-      true,
-    );
-  }
-
+  GeneratedColumn<String> get thumbnailUrl => _thumbnailUrl ??=
+      GeneratedColumn<String>('thumbnail_url', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _hashMeta = const VerificationMeta('hash');
-  GeneratedTextColumn _hash;
+  GeneratedColumn<String> _hash;
   @override
-  GeneratedTextColumn get hash => _hash ??= _constructHash();
-  GeneratedTextColumn _constructHash() {
-    return GeneratedTextColumn(
-      'hash',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get hash =>
+      _hash ??= GeneratedColumn<String>('hash', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _extendedPropsMeta =
       const VerificationMeta('extendedProps');
-  GeneratedTextColumn _extendedProps;
+  GeneratedColumn<String> _extendedProps;
   @override
-  GeneratedTextColumn get extendedProps =>
-      _extendedProps ??= _constructExtendedProps();
-  GeneratedTextColumn _constructExtendedProps() {
-    return GeneratedTextColumn(
-      'extended_props',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get extendedProps => _extendedProps ??=
+      GeneratedColumn<String>('extended_props', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _isExternalMeta = const VerificationMeta('isExternal');
-  GeneratedBoolColumn _isExternal;
+  GeneratedColumn<bool> _isExternal;
   @override
-  GeneratedBoolColumn get isExternal => _isExternal ??= _constructIsExternal();
-  GeneratedBoolColumn _constructIsExternal() {
-    return GeneratedBoolColumn(
-      'is_external',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<bool> get isExternal =>
+      _isExternal ??= GeneratedColumn<bool>('is_external', aliasedName, false,
+          type: const BoolType(),
+          requiredDuringInsert: true,
+          defaultConstraints: 'CHECK (is_external IN (0, 1))');
   final VerificationMeta _initVectorMeta = const VerificationMeta('initVector');
-  GeneratedTextColumn _initVector;
+  GeneratedColumn<String> _initVector;
   @override
-  GeneratedTextColumn get initVector => _initVector ??= _constructInitVector();
-  GeneratedTextColumn _constructInitVector() {
-    return GeneratedTextColumn(
-      'init_vector',
-      $tableName,
-      true,
-    );
-  }
-
+  GeneratedColumn<String> get initVector =>
+      _initVector ??= GeneratedColumn<String>('init_vector', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _linkPasswordMeta =
       const VerificationMeta('linkPassword');
-  GeneratedTextColumn _linkPassword;
+  GeneratedColumn<String> _linkPassword;
   @override
-  GeneratedTextColumn get linkPassword =>
-      _linkPassword ??= _constructLinkPassword();
-  GeneratedTextColumn _constructLinkPassword() {
-    return GeneratedTextColumn(
-      'link_password',
-      $tableName,
-      true,
-    );
-  }
-
+  GeneratedColumn<String> get linkPassword => _linkPassword ??=
+      GeneratedColumn<String>('link_password', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _encryptedDecryptionKeyMeta =
       const VerificationMeta('encryptedDecryptionKey');
-  GeneratedTextColumn _encryptedDecryptionKey;
+  GeneratedColumn<String> _encryptedDecryptionKey;
   @override
-  GeneratedTextColumn get encryptedDecryptionKey =>
-      _encryptedDecryptionKey ??= _constructEncryptedDecryptionKey();
-  GeneratedTextColumn _constructEncryptedDecryptionKey() {
-    return GeneratedTextColumn(
-      'encrypted_decryption_key',
-      $tableName,
-      true,
-    );
-  }
-
+  GeneratedColumn<String> get encryptedDecryptionKey =>
+      _encryptedDecryptionKey ??= GeneratedColumn<String>(
+          'encrypted_decryption_key', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         localId,
@@ -975,197 +1145,196 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
         encryptedDecryptionKey
       ];
   @override
-  $FilesTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'files';
   @override
-  String get $tableName => _alias ?? 'files';
+  String get actualTableName => 'files';
   @override
-  final String actualTableName = 'files';
-  @override
-  VerificationContext validateIntegrity(FilesCompanion d,
+  VerificationContext validateIntegrity(Insertable<LocalFile> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
-    if (d.localId.present) {
+    final data = instance.toColumns(true);
+    if (data.containsKey('local_id')) {
       context.handle(_localIdMeta,
-          localId.isAcceptableValue(d.localId.value, _localIdMeta));
-    } else if (localId.isRequired && isInserting) {
-      context.missing(_localIdMeta);
+          localId.isAcceptableOrUnknown(data['local_id'], _localIdMeta));
     }
-    if (d.id.present) {
-      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
-    } else if (id.isRequired && isInserting) {
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (d.guid.present) {
+    if (data.containsKey('guid')) {
       context.handle(
-          _guidMeta, guid.isAcceptableValue(d.guid.value, _guidMeta));
-    } else if (guid.isRequired && isInserting) {
-      context.missing(_guidMeta);
+          _guidMeta, guid.isAcceptableOrUnknown(data['guid'], _guidMeta));
     }
-    if (d.type.present) {
+    if (data.containsKey('type')) {
       context.handle(
-          _typeMeta, type.isAcceptableValue(d.type.value, _typeMeta));
-    } else if (type.isRequired && isInserting) {
+          _typeMeta, type.isAcceptableOrUnknown(data['type'], _typeMeta));
+    } else if (isInserting) {
       context.missing(_typeMeta);
     }
-    if (d.path.present) {
+    if (data.containsKey('path')) {
       context.handle(
-          _pathMeta, path.isAcceptableValue(d.path.value, _pathMeta));
-    } else if (path.isRequired && isInserting) {
+          _pathMeta, path.isAcceptableOrUnknown(data['path'], _pathMeta));
+    } else if (isInserting) {
       context.missing(_pathMeta);
     }
-    if (d.fullPath.present) {
+    if (data.containsKey('full_path')) {
       context.handle(_fullPathMeta,
-          fullPath.isAcceptableValue(d.fullPath.value, _fullPathMeta));
-    } else if (fullPath.isRequired && isInserting) {
+          fullPath.isAcceptableOrUnknown(data['full_path'], _fullPathMeta));
+    } else if (isInserting) {
       context.missing(_fullPathMeta);
     }
-    if (d.localPath.present) {
+    if (data.containsKey('local_path')) {
       context.handle(_localPathMeta,
-          localPath.isAcceptableValue(d.localPath.value, _localPathMeta));
-    } else if (localPath.isRequired && isInserting) {
+          localPath.isAcceptableOrUnknown(data['local_path'], _localPathMeta));
+    } else if (isInserting) {
       context.missing(_localPathMeta);
     }
-    if (d.name.present) {
+    if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
-    } else if (name.isRequired && isInserting) {
+          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+    } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (d.size.present) {
+    if (data.containsKey('size')) {
       context.handle(
-          _sizeMeta, size.isAcceptableValue(d.size.value, _sizeMeta));
-    } else if (size.isRequired && isInserting) {
+          _sizeMeta, size.isAcceptableOrUnknown(data['size'], _sizeMeta));
+    } else if (isInserting) {
       context.missing(_sizeMeta);
     }
-    if (d.isFolder.present) {
+    if (data.containsKey('is_folder')) {
       context.handle(_isFolderMeta,
-          isFolder.isAcceptableValue(d.isFolder.value, _isFolderMeta));
-    } else if (isFolder.isRequired && isInserting) {
+          isFolder.isAcceptableOrUnknown(data['is_folder'], _isFolderMeta));
+    } else if (isInserting) {
       context.missing(_isFolderMeta);
     }
-    if (d.isOpenable.present) {
-      context.handle(_isOpenableMeta,
-          isOpenable.isAcceptableValue(d.isOpenable.value, _isOpenableMeta));
-    } else if (isOpenable.isRequired && isInserting) {
+    if (data.containsKey('is_openable')) {
+      context.handle(
+          _isOpenableMeta,
+          isOpenable.isAcceptableOrUnknown(
+              data['is_openable'], _isOpenableMeta));
+    } else if (isInserting) {
       context.missing(_isOpenableMeta);
     }
-    if (d.isLink.present) {
-      context.handle(
-          _isLinkMeta, isLink.isAcceptableValue(d.isLink.value, _isLinkMeta));
-    } else if (isLink.isRequired && isInserting) {
+    if (data.containsKey('is_link')) {
+      context.handle(_isLinkMeta,
+          isLink.isAcceptableOrUnknown(data['is_link'], _isLinkMeta));
+    } else if (isInserting) {
       context.missing(_isLinkMeta);
     }
-    if (d.linkType.present) {
+    if (data.containsKey('link_type')) {
       context.handle(_linkTypeMeta,
-          linkType.isAcceptableValue(d.linkType.value, _linkTypeMeta));
-    } else if (linkType.isRequired && isInserting) {
+          linkType.isAcceptableOrUnknown(data['link_type'], _linkTypeMeta));
+    } else if (isInserting) {
       context.missing(_linkTypeMeta);
     }
-    if (d.linkUrl.present) {
+    if (data.containsKey('link_url')) {
       context.handle(_linkUrlMeta,
-          linkUrl.isAcceptableValue(d.linkUrl.value, _linkUrlMeta));
-    } else if (linkUrl.isRequired && isInserting) {
+          linkUrl.isAcceptableOrUnknown(data['link_url'], _linkUrlMeta));
+    } else if (isInserting) {
       context.missing(_linkUrlMeta);
     }
-    if (d.lastModified.present) {
+    if (data.containsKey('last_modified')) {
       context.handle(
           _lastModifiedMeta,
-          lastModified.isAcceptableValue(
-              d.lastModified.value, _lastModifiedMeta));
-    } else if (lastModified.isRequired && isInserting) {
+          lastModified.isAcceptableOrUnknown(
+              data['last_modified'], _lastModifiedMeta));
+    } else if (isInserting) {
       context.missing(_lastModifiedMeta);
     }
-    if (d.contentType.present) {
-      context.handle(_contentTypeMeta,
-          contentType.isAcceptableValue(d.contentType.value, _contentTypeMeta));
-    } else if (contentType.isRequired && isInserting) {
+    if (data.containsKey('content_type')) {
+      context.handle(
+          _contentTypeMeta,
+          contentType.isAcceptableOrUnknown(
+              data['content_type'], _contentTypeMeta));
+    } else if (isInserting) {
       context.missing(_contentTypeMeta);
     }
-    if (d.oEmbedHtml.present) {
-      context.handle(_oEmbedHtmlMeta,
-          oEmbedHtml.isAcceptableValue(d.oEmbedHtml.value, _oEmbedHtmlMeta));
-    } else if (oEmbedHtml.isRequired && isInserting) {
+    if (data.containsKey('o_embed_html')) {
+      context.handle(
+          _oEmbedHtmlMeta,
+          oEmbedHtml.isAcceptableOrUnknown(
+              data['o_embed_html'], _oEmbedHtmlMeta));
+    } else if (isInserting) {
       context.missing(_oEmbedHtmlMeta);
     }
-    if (d.published.present) {
+    if (data.containsKey('published')) {
       context.handle(_publishedMeta,
-          published.isAcceptableValue(d.published.value, _publishedMeta));
-    } else if (published.isRequired && isInserting) {
+          published.isAcceptableOrUnknown(data['published'], _publishedMeta));
+    } else if (isInserting) {
       context.missing(_publishedMeta);
     }
-    if (d.owner.present) {
+    if (data.containsKey('owner')) {
       context.handle(
-          _ownerMeta, owner.isAcceptableValue(d.owner.value, _ownerMeta));
-    } else if (owner.isRequired && isInserting) {
+          _ownerMeta, owner.isAcceptableOrUnknown(data['owner'], _ownerMeta));
+    } else if (isInserting) {
       context.missing(_ownerMeta);
     }
-    if (d.content.present) {
+    if (data.containsKey('content')) {
       context.handle(_contentMeta,
-          content.isAcceptableValue(d.content.value, _contentMeta));
-    } else if (content.isRequired && isInserting) {
+          content.isAcceptableOrUnknown(data['content'], _contentMeta));
+    } else if (isInserting) {
       context.missing(_contentMeta);
     }
-    if (d.viewUrl.present) {
+    if (data.containsKey('view_url')) {
       context.handle(_viewUrlMeta,
-          viewUrl.isAcceptableValue(d.viewUrl.value, _viewUrlMeta));
-    } else if (viewUrl.isRequired && isInserting) {
+          viewUrl.isAcceptableOrUnknown(data['view_url'], _viewUrlMeta));
+    } else if (isInserting) {
       context.missing(_viewUrlMeta);
     }
-    if (d.downloadUrl.present) {
-      context.handle(_downloadUrlMeta,
-          downloadUrl.isAcceptableValue(d.downloadUrl.value, _downloadUrlMeta));
-    } else if (downloadUrl.isRequired && isInserting) {
+    if (data.containsKey('download_url')) {
+      context.handle(
+          _downloadUrlMeta,
+          downloadUrl.isAcceptableOrUnknown(
+              data['download_url'], _downloadUrlMeta));
+    } else if (isInserting) {
       context.missing(_downloadUrlMeta);
     }
-    if (d.thumbnailUrl.present) {
+    if (data.containsKey('thumbnail_url')) {
       context.handle(
           _thumbnailUrlMeta,
-          thumbnailUrl.isAcceptableValue(
-              d.thumbnailUrl.value, _thumbnailUrlMeta));
-    } else if (thumbnailUrl.isRequired && isInserting) {
-      context.missing(_thumbnailUrlMeta);
+          thumbnailUrl.isAcceptableOrUnknown(
+              data['thumbnail_url'], _thumbnailUrlMeta));
     }
-    if (d.hash.present) {
+    if (data.containsKey('hash')) {
       context.handle(
-          _hashMeta, hash.isAcceptableValue(d.hash.value, _hashMeta));
-    } else if (hash.isRequired && isInserting) {
+          _hashMeta, hash.isAcceptableOrUnknown(data['hash'], _hashMeta));
+    } else if (isInserting) {
       context.missing(_hashMeta);
     }
-    if (d.extendedProps.present) {
+    if (data.containsKey('extended_props')) {
       context.handle(
           _extendedPropsMeta,
-          extendedProps.isAcceptableValue(
-              d.extendedProps.value, _extendedPropsMeta));
-    } else if (extendedProps.isRequired && isInserting) {
+          extendedProps.isAcceptableOrUnknown(
+              data['extended_props'], _extendedPropsMeta));
+    } else if (isInserting) {
       context.missing(_extendedPropsMeta);
     }
-    if (d.isExternal.present) {
-      context.handle(_isExternalMeta,
-          isExternal.isAcceptableValue(d.isExternal.value, _isExternalMeta));
-    } else if (isExternal.isRequired && isInserting) {
+    if (data.containsKey('is_external')) {
+      context.handle(
+          _isExternalMeta,
+          isExternal.isAcceptableOrUnknown(
+              data['is_external'], _isExternalMeta));
+    } else if (isInserting) {
       context.missing(_isExternalMeta);
     }
-    if (d.initVector.present) {
-      context.handle(_initVectorMeta,
-          initVector.isAcceptableValue(d.initVector.value, _initVectorMeta));
-    } else if (initVector.isRequired && isInserting) {
-      context.missing(_initVectorMeta);
+    if (data.containsKey('init_vector')) {
+      context.handle(
+          _initVectorMeta,
+          initVector.isAcceptableOrUnknown(
+              data['init_vector'], _initVectorMeta));
     }
-    if (d.linkPassword.present) {
+    if (data.containsKey('link_password')) {
       context.handle(
           _linkPasswordMeta,
-          linkPassword.isAcceptableValue(
-              d.linkPassword.value, _linkPasswordMeta));
-    } else if (linkPassword.isRequired && isInserting) {
-      context.missing(_linkPasswordMeta);
+          linkPassword.isAcceptableOrUnknown(
+              data['link_password'], _linkPasswordMeta));
     }
-    if (d.encryptedDecryptionKey.present) {
+    if (data.containsKey('encrypted_decryption_key')) {
       context.handle(
           _encryptedDecryptionKeyMeta,
-          encryptedDecryptionKey.isAcceptableValue(
-              d.encryptedDecryptionKey.value, _encryptedDecryptionKeyMeta));
-    } else if (encryptedDecryptionKey.isRequired && isInserting) {
-      context.missing(_encryptedDecryptionKeyMeta);
+          encryptedDecryptionKey.isAcceptableOrUnknown(
+              data['encrypted_decryption_key'], _encryptedDecryptionKeyMeta));
     }
     return context;
   }
@@ -1174,108 +1343,13 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   Set<GeneratedColumn> get $primaryKey => {localId};
   @override
   LocalFile map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return LocalFile.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  Map<String, Variable> entityToSql(FilesCompanion d) {
-    final map = <String, Variable>{};
-    if (d.localId.present) {
-      map['local_id'] = Variable<int, IntType>(d.localId.value);
-    }
-    if (d.id.present) {
-      map['id'] = Variable<String, StringType>(d.id.value);
-    }
-    if (d.guid.present) {
-      map['guid'] = Variable<String, StringType>(d.guid.value);
-    }
-    if (d.type.present) {
-      map['type'] = Variable<String, StringType>(d.type.value);
-    }
-    if (d.path.present) {
-      map['path'] = Variable<String, StringType>(d.path.value);
-    }
-    if (d.fullPath.present) {
-      map['full_path'] = Variable<String, StringType>(d.fullPath.value);
-    }
-    if (d.localPath.present) {
-      map['local_path'] = Variable<String, StringType>(d.localPath.value);
-    }
-    if (d.name.present) {
-      map['name'] = Variable<String, StringType>(d.name.value);
-    }
-    if (d.size.present) {
-      map['size'] = Variable<int, IntType>(d.size.value);
-    }
-    if (d.isFolder.present) {
-      map['is_folder'] = Variable<bool, BoolType>(d.isFolder.value);
-    }
-    if (d.isOpenable.present) {
-      map['is_openable'] = Variable<bool, BoolType>(d.isOpenable.value);
-    }
-    if (d.isLink.present) {
-      map['is_link'] = Variable<bool, BoolType>(d.isLink.value);
-    }
-    if (d.linkType.present) {
-      map['link_type'] = Variable<String, StringType>(d.linkType.value);
-    }
-    if (d.linkUrl.present) {
-      map['link_url'] = Variable<String, StringType>(d.linkUrl.value);
-    }
-    if (d.lastModified.present) {
-      map['last_modified'] = Variable<int, IntType>(d.lastModified.value);
-    }
-    if (d.contentType.present) {
-      map['content_type'] = Variable<String, StringType>(d.contentType.value);
-    }
-    if (d.oEmbedHtml.present) {
-      map['o_embed_html'] = Variable<String, StringType>(d.oEmbedHtml.value);
-    }
-    if (d.published.present) {
-      map['published'] = Variable<bool, BoolType>(d.published.value);
-    }
-    if (d.owner.present) {
-      map['owner'] = Variable<String, StringType>(d.owner.value);
-    }
-    if (d.content.present) {
-      map['content'] = Variable<String, StringType>(d.content.value);
-    }
-    if (d.viewUrl.present) {
-      map['view_url'] = Variable<String, StringType>(d.viewUrl.value);
-    }
-    if (d.downloadUrl.present) {
-      map['download_url'] = Variable<String, StringType>(d.downloadUrl.value);
-    }
-    if (d.thumbnailUrl.present) {
-      map['thumbnail_url'] = Variable<String, StringType>(d.thumbnailUrl.value);
-    }
-    if (d.hash.present) {
-      map['hash'] = Variable<String, StringType>(d.hash.value);
-    }
-    if (d.extendedProps.present) {
-      map['extended_props'] =
-          Variable<String, StringType>(d.extendedProps.value);
-    }
-    if (d.isExternal.present) {
-      map['is_external'] = Variable<bool, BoolType>(d.isExternal.value);
-    }
-    if (d.initVector.present) {
-      map['init_vector'] = Variable<String, StringType>(d.initVector.value);
-    }
-    if (d.linkPassword.present) {
-      map['link_password'] = Variable<String, StringType>(d.linkPassword.value);
-    }
-    if (d.encryptedDecryptionKey.present) {
-      map['encrypted_decryption_key'] =
-          Variable<String, StringType>(d.encryptedDecryptionKey.value);
-    }
-    return map;
+    return LocalFile.fromData(data, attachedDatabase,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $FilesTable createAlias(String alias) {
-    return $FilesTable(_db, alias);
+    return $FilesTable(attachedDatabase, alias);
   }
 }
 
@@ -1296,46 +1370,45 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   factory LocalPgpKey.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
     return LocalPgpKey(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      email:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
-      key: stringType.mapFromDatabaseResponse(data['${effectivePrefix}key']),
-      isPrivate: boolType
+      id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      email: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}email']),
+      key: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}key']),
+      isPrivate: const BoolType()
           .mapFromDatabaseResponse(data['${effectivePrefix}is_private']),
-      length: intType.mapFromDatabaseResponse(data['${effectivePrefix}length']),
-      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
-    );
-  }
-  factory LocalPgpKey.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return LocalPgpKey(
-      id: serializer.fromJson<int>(json['id']),
-      email: serializer.fromJson<String>(json['email']),
-      key: serializer.fromJson<String>(json['key']),
-      isPrivate: serializer.fromJson<bool>(json['isPrivate']),
-      length: serializer.fromJson<int>(json['length']),
-      name: serializer.fromJson<String>(json['name']),
+      length: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}length']),
+      name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}name']),
     );
   }
   @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return {
-      'id': serializer.toJson<int>(id),
-      'email': serializer.toJson<String>(email),
-      'key': serializer.toJson<String>(key),
-      'isPrivate': serializer.toJson<bool>(isPrivate),
-      'length': serializer.toJson<int>(length),
-      'name': serializer.toJson<String>(name),
-    };
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || key != null) {
+      map['key'] = Variable<String>(key);
+    }
+    if (!nullToAbsent || isPrivate != null) {
+      map['is_private'] = Variable<bool>(isPrivate);
+    }
+    if (!nullToAbsent || length != null) {
+      map['length'] = Variable<int>(length);
+    }
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    return map;
   }
 
-  @override
-  T createCompanion<T extends UpdateCompanion<LocalPgpKey>>(bool nullToAbsent) {
+  PgpKeyCompanion toCompanion(bool nullToAbsent) {
     return PgpKeyCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       email:
@@ -1347,7 +1420,32 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
       length:
           length == null && nullToAbsent ? const Value.absent() : Value(length),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-    ) as T;
+    );
+  }
+
+  factory LocalPgpKey.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return LocalPgpKey(
+      id: serializer.fromJson<int>(json['id']),
+      email: serializer.fromJson<String>(json['email']),
+      key: serializer.fromJson<String>(json['key']),
+      isPrivate: serializer.fromJson<bool>(json['isPrivate']),
+      length: serializer.fromJson<int>(json['length']),
+      name: serializer.fromJson<String>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'email': serializer.toJson<String>(email),
+      'key': serializer.toJson<String>(key),
+      'isPrivate': serializer.toJson<bool>(isPrivate),
+      'length': serializer.toJson<int>(length),
+      'name': serializer.toJson<String>(name),
+    };
   }
 
   LocalPgpKey copyWith(
@@ -1379,24 +1477,17 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(
-          email.hashCode,
-          $mrjc(
-              key.hashCode,
-              $mrjc(isPrivate.hashCode,
-                  $mrjc(length.hashCode, name.hashCode))))));
+  int get hashCode => Object.hash(id, email, key, isPrivate, length, name);
   @override
-  bool operator ==(other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is LocalPgpKey &&
-          other.id == id &&
-          other.email == email &&
-          other.key == key &&
-          other.isPrivate == isPrivate &&
-          other.length == length &&
-          other.name == name);
+          other.id == this.id &&
+          other.email == this.email &&
+          other.key == this.key &&
+          other.isPrivate == this.isPrivate &&
+          other.length == this.length &&
+          other.name == this.name);
 }
 
 class PgpKeyCompanion extends UpdateCompanion<LocalPgpKey> {
@@ -1414,6 +1505,35 @@ class PgpKeyCompanion extends UpdateCompanion<LocalPgpKey> {
     this.length = const Value.absent(),
     this.name = const Value.absent(),
   });
+  PgpKeyCompanion.insert({
+    this.id = const Value.absent(),
+    @required String email,
+    @required String key,
+    @required bool isPrivate,
+    this.length = const Value.absent(),
+    @required String name,
+  })  : email = Value(email),
+        key = Value(key),
+        isPrivate = Value(isPrivate),
+        name = Value(name);
+  static Insertable<LocalPgpKey> custom({
+    Expression<int> id,
+    Expression<String> email,
+    Expression<String> key,
+    Expression<bool> isPrivate,
+    Expression<int> length,
+    Expression<String> name,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (email != null) 'email': email,
+      if (key != null) 'key': key,
+      if (isPrivate != null) 'is_private': isPrivate,
+      if (length != null) 'length': length,
+      if (name != null) 'name': name,
+    });
+  }
+
   PgpKeyCompanion copyWith(
       {Value<int> id,
       Value<String> email,
@@ -1430,126 +1550,131 @@ class PgpKeyCompanion extends UpdateCompanion<LocalPgpKey> {
       name: name ?? this.name,
     );
   }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (isPrivate.present) {
+      map['is_private'] = Variable<bool>(isPrivate.value);
+    }
+    if (length.present) {
+      map['length'] = Variable<int>(length.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PgpKeyCompanion(')
+          ..write('id: $id, ')
+          ..write('email: $email, ')
+          ..write('key: $key, ')
+          ..write('isPrivate: $isPrivate, ')
+          ..write('length: $length, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
 }
 
 class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String _alias;
-  $PgpKeyTable(this._db, [this._alias]);
+  $PgpKeyTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
+  GeneratedColumn<int> _id;
   @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
+  GeneratedColumn<int> get id =>
+      _id ??= GeneratedColumn<int>('id', aliasedName, false,
+          type: const IntType(),
+          requiredDuringInsert: false,
+          defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _emailMeta = const VerificationMeta('email');
-  GeneratedTextColumn _email;
+  GeneratedColumn<String> _email;
   @override
-  GeneratedTextColumn get email => _email ??= _constructEmail();
-  GeneratedTextColumn _constructEmail() {
-    return GeneratedTextColumn(
-      'email',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get email =>
+      _email ??= GeneratedColumn<String>('email', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _keyMeta = const VerificationMeta('key');
-  GeneratedTextColumn _key;
+  GeneratedColumn<String> _key;
   @override
-  GeneratedTextColumn get key => _key ??= _constructKey();
-  GeneratedTextColumn _constructKey() {
-    return GeneratedTextColumn(
-      'key',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get key =>
+      _key ??= GeneratedColumn<String>('key', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _isPrivateMeta = const VerificationMeta('isPrivate');
-  GeneratedBoolColumn _isPrivate;
+  GeneratedColumn<bool> _isPrivate;
   @override
-  GeneratedBoolColumn get isPrivate => _isPrivate ??= _constructIsPrivate();
-  GeneratedBoolColumn _constructIsPrivate() {
-    return GeneratedBoolColumn(
-      'is_private',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<bool> get isPrivate =>
+      _isPrivate ??= GeneratedColumn<bool>('is_private', aliasedName, false,
+          type: const BoolType(),
+          requiredDuringInsert: true,
+          defaultConstraints: 'CHECK (is_private IN (0, 1))');
   final VerificationMeta _lengthMeta = const VerificationMeta('length');
-  GeneratedIntColumn _length;
+  GeneratedColumn<int> _length;
   @override
-  GeneratedIntColumn get length => _length ??= _constructLength();
-  GeneratedIntColumn _constructLength() {
-    return GeneratedIntColumn(
-      'length',
-      $tableName,
-      true,
-    );
-  }
-
+  GeneratedColumn<int> get length =>
+      _length ??= GeneratedColumn<int>('length', aliasedName, true,
+          type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
-  GeneratedTextColumn _name;
+  GeneratedColumn<String> _name;
   @override
-  GeneratedTextColumn get name => _name ??= _constructName();
-  GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn(
-      'name',
-      $tableName,
-      false,
-    );
-  }
-
+  GeneratedColumn<String> get name =>
+      _name ??= GeneratedColumn<String>('name', aliasedName, false,
+          type: const StringType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
       [id, email, key, isPrivate, length, name];
   @override
-  $PgpKeyTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'pgp_key';
   @override
-  String get $tableName => _alias ?? 'pgp_key';
+  String get actualTableName => 'pgp_key';
   @override
-  final String actualTableName = 'pgp_key';
-  @override
-  VerificationContext validateIntegrity(PgpKeyCompanion d,
+  VerificationContext validateIntegrity(Insertable<LocalPgpKey> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
-    if (d.id.present) {
-      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
-    } else if (id.isRequired && isInserting) {
-      context.missing(_idMeta);
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     }
-    if (d.email.present) {
+    if (data.containsKey('email')) {
       context.handle(
-          _emailMeta, email.isAcceptableValue(d.email.value, _emailMeta));
-    } else if (email.isRequired && isInserting) {
+          _emailMeta, email.isAcceptableOrUnknown(data['email'], _emailMeta));
+    } else if (isInserting) {
       context.missing(_emailMeta);
     }
-    if (d.key.present) {
-      context.handle(_keyMeta, key.isAcceptableValue(d.key.value, _keyMeta));
-    } else if (key.isRequired && isInserting) {
+    if (data.containsKey('key')) {
+      context.handle(
+          _keyMeta, key.isAcceptableOrUnknown(data['key'], _keyMeta));
+    } else if (isInserting) {
       context.missing(_keyMeta);
     }
-    if (d.isPrivate.present) {
+    if (data.containsKey('is_private')) {
       context.handle(_isPrivateMeta,
-          isPrivate.isAcceptableValue(d.isPrivate.value, _isPrivateMeta));
-    } else if (isPrivate.isRequired && isInserting) {
+          isPrivate.isAcceptableOrUnknown(data['is_private'], _isPrivateMeta));
+    } else if (isInserting) {
       context.missing(_isPrivateMeta);
     }
-    if (d.length.present) {
-      context.handle(
-          _lengthMeta, length.isAcceptableValue(d.length.value, _lengthMeta));
-    } else if (length.isRequired && isInserting) {
-      context.missing(_lengthMeta);
+    if (data.containsKey('length')) {
+      context.handle(_lengthMeta,
+          length.isAcceptableOrUnknown(data['length'], _lengthMeta));
     }
-    if (d.name.present) {
+    if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
-    } else if (name.isRequired && isInserting) {
+          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+    } else if (isInserting) {
       context.missing(_nameMeta);
     }
     return context;
@@ -1559,46 +1684,24 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   LocalPgpKey map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return LocalPgpKey.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  Map<String, Variable> entityToSql(PgpKeyCompanion d) {
-    final map = <String, Variable>{};
-    if (d.id.present) {
-      map['id'] = Variable<int, IntType>(d.id.value);
-    }
-    if (d.email.present) {
-      map['email'] = Variable<String, StringType>(d.email.value);
-    }
-    if (d.key.present) {
-      map['key'] = Variable<String, StringType>(d.key.value);
-    }
-    if (d.isPrivate.present) {
-      map['is_private'] = Variable<bool, BoolType>(d.isPrivate.value);
-    }
-    if (d.length.present) {
-      map['length'] = Variable<int, IntType>(d.length.value);
-    }
-    if (d.name.present) {
-      map['name'] = Variable<String, StringType>(d.name.value);
-    }
-    return map;
+    return LocalPgpKey.fromData(data, attachedDatabase,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $PgpKeyTable createAlias(String alias) {
-    return $PgpKeyTable(_db, alias);
+    return $PgpKeyTable(attachedDatabase, alias);
   }
 }
 
 abstract class _$AppDatabase extends GeneratedDatabase {
-  _$AppDatabase(QueryExecutor e) : super(const SqlTypeSystem.withDefaults(), e);
+  _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $FilesTable _files;
   $FilesTable get files => _files ??= $FilesTable(this);
   $PgpKeyTable _pgpKey;
   $PgpKeyTable get pgpKey => _pgpKey ??= $PgpKeyTable(this);
   @override
-  List<TableInfo> get allTables => [files, pgpKey];
+  Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities => [files, pgpKey];
 }

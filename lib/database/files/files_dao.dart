@@ -20,9 +20,9 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
   // of this object.
   FilesDao(AppDatabase db) : super(db);
 
-  String get userEmail => AppStore.authState.userEmail;
+  String get userEmail => AppStore.authState.userEmail ?? '';
 
-  String get hostName => AppStore.authState.hostName;
+  String get hostName => AppStore.authState.hostName ?? '';
 
   String get storageType => StorageTypeHelper.toName(
         AppStore.filesState.selectedStorage.type,

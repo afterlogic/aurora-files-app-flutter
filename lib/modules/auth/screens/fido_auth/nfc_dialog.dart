@@ -15,7 +15,7 @@ class IosPressOnKeyDialog extends _IosDialog {
 }
 
 class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
-  S s;
+  late S s;
 
   @override
   void didChangeDependencies() {
@@ -147,8 +147,8 @@ abstract class _IosDialog extends StatefulWidget {
 
 abstract class _IosDialogState<W extends _IosDialog> extends State<W>
     with TickerProviderStateMixin {
-  AnimationController _animationController;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _animationController;
+  late Animation<Offset> _offsetAnimation;
   bool isSuccess = false;
   bool isClosed = false;
 
@@ -164,6 +164,12 @@ abstract class _IosDialogState<W extends _IosDialog> extends State<W>
       parent: _animationController,
       curve: Curves.ease,
     ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future close() async {

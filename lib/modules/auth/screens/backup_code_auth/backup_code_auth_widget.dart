@@ -28,7 +28,7 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
   final pinCtrl = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final bloc = BackupCodeBloc();
-  S s;
+  late S s;
 
   @override
   void didChangeDependencies() {
@@ -49,7 +49,7 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
             style: Theme.of(context)
                 .textTheme
                 .headline6
-                .copyWith(color: AppTheme.loginTextColor),
+                ?.copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 10),
@@ -60,7 +60,7 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
           ),
         ],
       ),
-      button: [
+      buttons: [
         BlocListener<BackupCodeBloc, BackupCodeState>(
           bloc: bloc,
           listener: (BuildContext context, state) {
@@ -108,7 +108,7 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
                       labelText: s.tfa_input_backup_code,
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) =>
-                          validateInput(value, [ValidationTypes.empty]),
+                          validateInput(value ?? '', [ValidationTypes.empty]),
                       enabled: !loading,
                     ),
                     SizedBox(height: 20),
@@ -157,7 +157,7 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
   }
 
   _login() {
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState?.validate() == true) {
       bloc.add(
         Verify(
           pinCtrl.text,

@@ -28,9 +28,9 @@ class FidoAuthWidget extends StatefulWidget {
 }
 
 class _FidoAuthWidgetState extends State<FidoAuthWidget> {
-  FidoAuthBloc bloc;
-  S s;
-  ThemeData theme;
+  late FidoAuthBloc bloc;
+  late S s;
+  late ThemeData theme;
   final touchDialogKey = GlobalKey<IosPressOnKeyDialogState>();
 
   @override
@@ -42,7 +42,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
       AppStore.authState.emailCtrl.text,
       AppStore.authState.passwordCtrl.text,
     );
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       s = Str.of(context);
       bloc.add(
           StartAuth(true, s.fido_label_connect_your_key, s.fido_label_success));
@@ -58,7 +58,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
 
   @override
   dispose() {
-    bloc?.close();
+    bloc.close();
     super.dispose();
   }
 
@@ -75,7 +75,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
             style: Theme.of(context)
                 .textTheme
                 .headline6
-                .copyWith(color: AppTheme.loginTextColor),
+                ?.copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 10),
@@ -86,7 +86,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
           ),
         ],
       ),
-      button: [
+      buttons: [
         BlocListener<FidoAuthBloc, FidoAuthState>(
           bloc: bloc,
           listener: (BuildContext context, state) {
@@ -111,26 +111,26 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
             }
             if (state is ErrorState) {
               if (state.errorToShow != null) {
-                _showError(context, state.errorToShow);
+                _showError(context, state.errorToShow ?? '');
               }
             }
             if (state is TouchKeyState) {
               if (touchDialogKey.currentState != null) {
-                touchDialogKey.currentState.close();
+                touchDialogKey.currentState?.close();
               }
               IosPressOnKeyDialog(touchDialogKey, () => bloc.add(Cancel()))
                   .show(context);
             } else if (state is SendingFinishAuthRequestState) {
               if (touchDialogKey.currentState != null) {
                 touchDialogKey.currentState
-                    .success()
-                    .then((value) => state.waitSheet?.complete());
+                    ?.success()
+                    .then((value) => state.waitSheet.complete());
               } else {
-                state.waitSheet?.complete();
+                state.waitSheet.complete();
               }
             } else {
               if (touchDialogKey.currentState != null) {
-                touchDialogKey.currentState.close();
+                touchDialogKey.currentState?.close();
               }
             }
           },
@@ -144,7 +144,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                             s.fido_error_title,
                             textAlign: TextAlign.center,
                             style: theme.textTheme.headline6
-                                .copyWith(color: AppTheme.loginTextColor),
+                                ?.copyWith(color: AppTheme.loginTextColor),
                           ),
                           SizedBox(height: 10),
                           Text(

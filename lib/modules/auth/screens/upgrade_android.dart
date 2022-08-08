@@ -17,7 +17,7 @@ class UpgradeAndroid extends StatelessWidget {
   Widget themeWidget(Widget widget) {
     if (AppTheme.login != null) {
       return Theme(
-        data: AppTheme.login,
+        data: AppTheme.login!,
         child: widget,
       );
     }

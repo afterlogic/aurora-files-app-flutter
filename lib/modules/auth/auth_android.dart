@@ -32,7 +32,7 @@ class AuthAndroid extends StatefulWidget {
 
 class _AuthAndroidState extends State<AuthAndroid> {
   final _authFormKey = GlobalKey<FormState>();
-  S s;
+  late S s;
   AuthState _authState = AppStore.authState;
   bool _showHostField = false;
   bool _obscureText = true;
@@ -41,7 +41,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
   void initState() {
     super.initState();
     _authState.isLoggingIn = false;
-    _authState.emailCtrl.text = _authState.userEmail;
+    _authState.emailCtrl.text = _authState.userEmail ?? '';
     _authState.passwordCtrl.text = "";
 
     _authState.lastEmail.then((value) {
@@ -87,7 +87,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     }
     if (errMsg.isEmpty) {
       final showHost = await _authState.onLogin(
-        isFormValid: _authFormKey.currentState.validate(),
+        isFormValid: _authFormKey.currentState?.validate() ?? false,
         onTwoFactorAuth: (request) {
           if (request.hasSecurityKey == true && BuildProperty.useYubiKit) {
             Navigator.pushNamed(
@@ -148,7 +148,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         controller: _authState.emailCtrl,
         keyboardType: TextInputType.emailAddress,
         validator: (value) => validateInput(
-            value, [ValidationTypes.empty, ValidationTypes.email]),
+            value ?? '', [ValidationTypes.empty, ValidationTypes.email]),
         labelText: s.email,
         inputCase: InputCase.Underline,
       ),
@@ -156,7 +156,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
       AppInput(
         inputCase: InputCase.Underline,
         controller: _authState.passwordCtrl,
-        validator: (value) => validateInput(value, [ValidationTypes.empty]),
+        validator: (value) =>
+            validateInput(value ?? '', [ValidationTypes.empty]),
         obscureText: _obscureText,
         labelText: s.password,
         suffix: GestureDetector(
@@ -175,7 +176,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
   Widget theme(Widget widget) {
     if (AppTheme.login != null) {
       return Theme(
-        data: AppTheme.login,
+        data: AppTheme.login!,
         child: widget,
       );
     }

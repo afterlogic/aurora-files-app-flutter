@@ -28,12 +28,18 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
   final pinCtrl = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final bloc = TwoFactorBloc();
-  S s;
+  late S s;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     s = Str.of(context);
+  }
+
+  @override
+  void dispose() {
+    pinCtrl.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,7 +55,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
             style: Theme.of(context)
                 .textTheme
                 .headline6
-                .copyWith(color: AppTheme.loginTextColor),
+                ?.copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 10),
@@ -60,7 +66,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
           ),
         ],
       ),
-      button: [
+      buttons: [
         BlocListener<TwoFactorBloc, TwoFactorState>(
           bloc: bloc,
           listener: (BuildContext context, state) {
@@ -109,7 +115,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
                         labelText: s.input_2fa_pin,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) =>
-                            validateInput(value, [ValidationTypes.empty]),
+                            validateInput(value ?? '', [ValidationTypes.empty]),
                         enabled: !loading,
                       ),
                       SizedBox(height: 20),
@@ -157,7 +163,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
   }
 
   _login() {
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState?.validate() == true) {
       bloc.add(
         Verify(
           pinCtrl.text,

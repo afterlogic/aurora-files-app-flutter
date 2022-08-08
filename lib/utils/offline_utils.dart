@@ -49,7 +49,7 @@ LocalFile getFolderFromName(String name, String path) {
   String storageType = StorageTypeHelper.toName(
     AppStore.filesState.selectedStorage.type,
   );
-  String userEmail = AppStore.authState.userEmail;
+  String userEmail = AppStore.authState.userEmail ?? '';
   return new LocalFile(
     localId: -1,
     id: name,

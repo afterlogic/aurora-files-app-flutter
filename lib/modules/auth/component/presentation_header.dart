@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'mail_logo.dart';
 
 class PresentationHeader extends StatelessWidget {
-  final String message;
+  final String? message;
 
   const PresentationHeader({Key? key, this.message}) : super(key: key);
 

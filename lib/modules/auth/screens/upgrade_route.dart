@@ -3,7 +3,7 @@ class UpgradeRoute {
 }
 
 class UpgradeArg {
-  final String message;
+  final String? message;
 
   UpgradeArg(this.message);
 }

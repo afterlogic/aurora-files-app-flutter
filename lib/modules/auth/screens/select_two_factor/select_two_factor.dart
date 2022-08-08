@@ -23,7 +23,7 @@ class SelectTwoFactorWidget extends StatefulWidget {
 }
 
 class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
-  S s;
+  late S s;
 
   @override
   void didChangeDependencies() {
@@ -44,7 +44,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
             style: Theme.of(context)
                 .textTheme
                 .headline6
-                .copyWith(color: AppTheme.loginTextColor),
+                ?.copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 10),
@@ -55,7 +55,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
           ),
         ],
       ),
-      button: [
+      buttons: [
         Text(
           s.tfa_label_hint_security_options,
           style: TextStyle(color: AppTheme.loginTextColor),

@@ -29,7 +29,7 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
   @override
   void initState() {
     super.initState();
-    _nameCtrl.text = AppStore.authState.userEmail;
+    _nameCtrl.text = AppStore.authState.userEmail ?? '';
   }
 
   @override

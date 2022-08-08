@@ -13,16 +13,16 @@ import 'package:theme/app_theme.dart';
 class TwoFactorScene extends StatefulWidget {
   final bool isDialog;
   final String logoHint;
-  final Widget title;
-  final List<Widget> button;
+  final List<Widget> buttons;
+  final Widget? title;
   final bool allowBack;
 
   const TwoFactorScene({
     Key? key,
-    this.isDialog,
-    this.logoHint,
+    required this.isDialog,
+    required this.logoHint,
+    required this.buttons,
     this.title,
-    this.button,
     this.allowBack = true,
   }) : super(key: key);
 
@@ -31,7 +31,7 @@ class TwoFactorScene extends StatefulWidget {
 }
 
 class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
-  S s;
+  late S s;
 
   @override
   void didChangeDependencies() {
@@ -54,7 +54,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
   Widget themeWrap(Widget widget) {
     if (AppTheme.login != null) {
       return Theme(
-        data: AppTheme.login,
+        data: AppTheme.login!,
         child: widget,
       );
     }
@@ -115,7 +115,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline6
-                                        .copyWith(
+                                        ?.copyWith(
                                             color: AppTheme.loginTextColor),
                                     textAlign: TextAlign.center,
                                   ),
@@ -129,7 +129,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                                 ],
                               ),
                           SizedBox(height: 20),
-                          ...widget.button
+                          ...widget.buttons
                         ],
                       ),
                     ),

@@ -14,16 +14,16 @@ import 'package:theme/app_theme.dart';
 class TrustDeviceWidget extends StatefulWidget {
   final TrustDeviceRouteArgs args;
 
-  const TrustDeviceWidget({Key? key, this.args}) : super(key: key);
+  const TrustDeviceWidget({Key? key, required this.args}) : super(key: key);
 
   @override
   _TrustDeviceWidgetState createState() => _TrustDeviceWidgetState();
 }
 
 class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
-  TrustDeviceBloc bloc;
+  late TrustDeviceBloc bloc;
   bool check = false;
-  S s;
+  late S s;
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
     return TwoFactorScene(
       logoHint: "",
       isDialog: widget.args.isDialog,
-      button: [
+      buttons: [
         BlocListener<TrustDeviceBloc, TrustDeviceState>(
           bloc: bloc,
           listener: (BuildContext context, state) {
@@ -82,8 +82,10 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
                         controlAffinity: ListTileControlAffinity.leading,
                         value: check,
                         onChanged: (value) {
-                          check = value;
-                          setState(() {});
+                          if (value != null) {
+                            check = value;
+                            setState(() {});
+                          }
                         },
                         title: Text(
                           s.tfa_check_box_trust_device(

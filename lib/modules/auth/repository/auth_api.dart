@@ -16,7 +16,7 @@ class AuthApi {
     return {"X-DeviceId": await DeviceIdStorage.getDeviceId()};
   }
 
-  Future<String> autoDiscoverHostname(String email) async {
+  Future<String?> autoDiscoverHostname(String email) async {
     try {
       final dogIndex = email.indexOf("@") + 1;
 
@@ -248,7 +248,7 @@ class AuthApi {
   Future saveDevice(
     String deviceId,
     String deviceName,
-    String token,
+    String? token,
   ) async {
     final parameters = json.encode({
       "DeviceId": deviceId,
@@ -277,7 +277,7 @@ class AuthApi {
     String deviceName,
     String login,
     String password,
-    String token,
+    String? token,
   ) async {
     final parameters = json.encode({
       "DeviceId": deviceId,

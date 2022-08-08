@@ -20,18 +20,19 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
   final String password;
   final authApi = AuthApi();
   final authState = AppStore.authState;
-  FidoAuthRequest fidoRequest;
-  StreamSubscription sub;
+  FidoAuthRequest? fidoRequest;
+  StreamSubscription? sub;
 
   FidoAuthBloc(this.host, this.login, this.password) : super(InitState()) {
-    sub = getLinksStream().listen((event) {
+    sub = linkStream.listen((event) {
+      if (event == null || event.isEmpty) return;
       final uri = Uri.parse(event);
       if (uri.host == "u2f") {
         final query = Uri.parse(event).queryParameters;
         if (query.containsKey("error")) {
           add(Cancel());
         } else if (query.containsKey("attestation")) {
-          final json = jsonDecode(query["attestation"]) as Map;
+          final json = jsonDecode(query["attestation"] ?? '') as Map;
           add(KeyResult(json));
         }
       }
@@ -40,7 +41,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
 
   @override
   Future<void> close() {
-    sub.cancel();
+    sub?.cancel();
     return super.close();
   }
 
@@ -118,13 +119,13 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
         request.allowCredentials,
       );
       final isNFC =
-          await fidoRequest.waitConnection(event.message, event.success);
+          await fidoRequest?.waitConnection(event.message, event.success);
 
       if (isNFC == false) {
         yield TouchKeyState();
       }
       fidoRequest
-          .start()
+          ?.start()
           .then((value) => add(KeyResult(value)))
           .catchError((e) => add(Cancel(e)));
     } catch (e) {
@@ -139,7 +140,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
     if (e is FidoError) {
       if (e.errorCase == FidoErrorCase.Canceled) {
         return ErrorState(null);
-      } else if (e.message?.isNotEmpty == true) {
+      } else if (e.message.isNotEmpty == true) {
         return ErrorState(e.message);
       } else {
         return ErrorState("The system misconfigured");

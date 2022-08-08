@@ -51,7 +51,7 @@ LocalFile getFakeLocalFileForUploadProgress(
     contentType: "",
     oEmbedHtml: '',
     published: false,
-    owner: AppStore.authState.userEmail,
+    owner: AppStore.authState.userEmail ?? '',
     content: '',
     viewUrl: '',
     downloadUrl: '',
@@ -187,7 +187,7 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
       rawFile["ExtendedProps"] is Map ? rawFile["ExtendedProps"] as Map : null;
   var publicLink = props != null ? props["PublicLink"] : null;
   if (publicLink != null) {
-    publicLink = AppStore.authState.hostName + "/" + publicLink;
+    publicLink = (AppStore.authState.hostName ?? '') + "/" + publicLink;
   }
   final linkPassword = props != null ? props["PasswordForSharing"] : null;
   return LocalFile(

@@ -53,7 +53,7 @@ class MainDrawer extends StatelessWidget {
                       SizedBox(height: 8.0),
                       Row(
                         children: <Widget>[
-                          Text(authState.userEmail),
+                          Text(authState.userEmail ?? ''),
                         ],
                       ),
                     ],

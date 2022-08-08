@@ -15,7 +15,7 @@ class DeviceIdStorage {
       final info = await _deviceInfo.iosInfo;
       device = "${info.name} ${info.systemName} ${info.systemVersion}";
     } else {
-      device = (await _deviceInfo.androidInfo).model;
+      device = (await _deviceInfo.androidInfo).model ?? '';
     }
     return BuildProperty.appName + " " + device;
   }
@@ -23,12 +23,12 @@ class DeviceIdStorage {
   static Future<String> getDeviceId() async {
     if (Platform.isIOS) {
       final iosInfo = await _deviceInfo.iosInfo;
-      return (kDebugMode ? "DEBUG" : "") + iosInfo.identifierForVendor;
+      return (kDebugMode ? "DEBUG" : "") + (iosInfo.identifierForVendor ?? '');
     } else if (Platform.isAndroid) {
       final androidInfo = await _deviceInfo.androidInfo;
-      return (kDebugMode ? "DEBUG" : "") + androidInfo.androidId;
+      return (kDebugMode ? "DEBUG" : "") + (androidInfo.androidId ?? '');
     } else {
-      return null;
+      return '';
     }
   }
 }

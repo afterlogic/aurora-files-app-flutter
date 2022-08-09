@@ -31,10 +31,10 @@ class FilesAppBar extends StatefulWidget {
 
 class _FilesAppBarState extends State<FilesAppBar>
     with TickerProviderStateMixin {
-  FilesState _filesState;
-  S s;
-  FilesPageState _filesPageState;
-  AnimationController _appBarIconAnimCtrl;
+  late FilesState _filesState;
+  late S s;
+  late FilesPageState _filesPageState;
+  late AnimationController _appBarIconAnimCtrl;
   final _searchInputCtrl = TextEditingController();
 
   @override
@@ -104,48 +104,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   ModalRoute.withName(FilesRoute.name + folder),
                 );
               },
-              itemBuilder: (BuildContext context) {
-                return <PopupMenuEntry<String>>[
-                  ..._filesState.folderNavStack.map((String path) {
-                    if (_filesState.folderNavStack.indexOf(path) ==
-                        _filesState.folderNavStack.length - 1) {
-                      return null;
-                    } else if (path.isNotEmpty && (path.endsWith(".zip"))) {
-                      return PopupMenuItem<String>(
-                        value: path,
-                        child: ListTile(
-                          leading: Icon(MdiIcons.zipBoxOutline),
-                          title: Text(
-                            path.split("/").last,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      );
-                    } else if (path.isNotEmpty) {
-                      return PopupMenuItem<String>(
-                        value: path,
-                        child: ListTile(
-                          leading: Icon(Icons.folder),
-                          title: Text(
-                            path.split("/").last,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      );
-                    } else {
-                      return PopupMenuItem<String>(
-                        value: "",
-                        child: ListTile(
-                          leading: Icon(Icons.storage),
-                          title: Text(_filesState.selectedStorage.displayName),
-                        ),
-                      );
-                    }
-                  }),
-                ];
-              },
+              itemBuilder: _getFolderPopupMenu,
             ),
             if (_filesState.selectedStorage.displayName.length > 0)
               SizedBox(height: 2),
@@ -201,7 +160,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       if (!widget.isAppBar) {
         return AMAppBar(
           key: Key("move"),
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           leading: IconButton(
             icon: Icon(Icons.close),
             onPressed: _filesState.isMoveModeEnabled
@@ -231,7 +190,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       }
       return AMAppBar(
         key: Key("move"),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         leading: _filesPageState.pagePath.length > 0
             ? IconButton(
                 icon: Icon(Icons.arrow_back_ios),
@@ -292,43 +251,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   ),
                 );
               },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<Storage>>[
-                ..._filesState.currentStorages.map((Storage storage) {
-                  bool enable = true;
-                  if (_filesState.isMoveModeEnabled ||
-                      _filesState.isShareUpload) {
-                    if (storage.type == StorageType.shared) {
-                      enable = false;
-                    }
-                  }
-                  if (_filesState.isMoveModeEnabled) {
-                    final copyFromEncrypted = StorageTypeHelper.toEnum(
-                            _filesState.filesToMoveCopy.first.type) ==
-                        StorageType.encrypted;
-                    if (copyFromEncrypted) {
-                      if (storage.type != StorageType.encrypted) {
-                        enable = false;
-                      }
-                    } else {
-                      if (storage.type == StorageType.encrypted) {
-                        enable = false;
-                      }
-                    }
-                  }
-                  if (enable) {
-                    return PopupMenuItem<Storage>(
-                      enabled: storage.type != _filesState.selectedStorage.type,
-                      value: storage,
-                      child: ListTile(
-                        leading: Icon(Icons.storage),
-                        title: Text(storage.displayName),
-                      ),
-                    );
-                  } else {
-                    return null;
-                  }
-                }),
-              ],
+              itemBuilder: _getStoragePopupMenu,
             )
         ],
       );
@@ -501,50 +424,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                         ModalRoute.withName(FilesRoute.name + folder),
                       );
                     },
-                    itemBuilder: (BuildContext context) {
-                      return <PopupMenuEntry<String>>[
-                        ..._filesState.folderNavStack.map((String path) {
-                          if (_filesState.folderNavStack.indexOf(path) ==
-                              _filesState.folderNavStack.length - 1) {
-                            return null;
-                          } else if (path.isNotEmpty &&
-                              (path.endsWith(".zip"))) {
-                            return PopupMenuItem<String>(
-                              value: path,
-                              child: ListTile(
-                                leading: Icon(MdiIcons.zipBoxOutline),
-                                title: Text(
-                                  path.split("/").last,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            );
-                          } else if (path.isNotEmpty) {
-                            return PopupMenuItem<String>(
-                              value: path,
-                              child: ListTile(
-                                leading: Icon(Icons.folder),
-                                title: Text(
-                                  path.split("/").last,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            );
-                          } else {
-                            return PopupMenuItem<String>(
-                              value: "",
-                              child: ListTile(
-                                leading: Icon(Icons.storage),
-                                title: Text(
-                                    _filesState.selectedStorage.displayName),
-                              ),
-                            );
-                          }
-                        }),
-                      ];
-                    },
+                    itemBuilder: _getFolderPopupMenu,
                   ),
                   if (_filesState.selectedStorage.displayName.length > 0)
                     SizedBox(height: 2),
@@ -571,6 +451,90 @@ class _FilesAppBarState extends State<FilesAppBar>
     }
   }
 
+  List<PopupMenuEntry<String>> _getFolderPopupMenu(BuildContext context) {
+    final result = <PopupMenuEntry<String>>[];
+    for (int i = 0; i < _filesState.folderNavStack.length; i++) {
+      if (i == _filesState.folderNavStack.length - 1) {
+        continue;
+      }
+      final path = _filesState.folderNavStack[i];
+      PopupMenuEntry<String> menuItem;
+      if (path.isNotEmpty && (path.endsWith(".zip"))) {
+        menuItem = PopupMenuItem<String>(
+          value: path,
+          child: ListTile(
+            leading: Icon(MdiIcons.zipBoxOutline),
+            title: Text(
+              path.split("/").last,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
+      } else if (path.isNotEmpty) {
+        menuItem = PopupMenuItem<String>(
+          value: path,
+          child: ListTile(
+            leading: Icon(Icons.folder),
+            title: Text(
+              path.split("/").last,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
+      } else {
+        menuItem = PopupMenuItem<String>(
+          value: "",
+          child: ListTile(
+            leading: Icon(Icons.storage),
+            title: Text(_filesState.selectedStorage.displayName),
+          ),
+        );
+      }
+      result.add(menuItem);
+    }
+    return result;
+  }
+
+  List<PopupMenuEntry<Storage>> _getStoragePopupMenu(BuildContext context) {
+    final result = <PopupMenuEntry<Storage>>[];
+    for (int i = 0; i < _filesState.currentStorages.length; i++) {
+      final storage = _filesState.currentStorages[i];
+      bool enable = true;
+      if (_filesState.isMoveModeEnabled || _filesState.isShareUpload) {
+        if (storage.type == StorageType.shared) {
+          enable = false;
+        }
+      }
+      if (_filesState.isMoveModeEnabled) {
+        final copyFromEncrypted =
+            StorageTypeHelper.toEnum(_filesState.filesToMoveCopy.first.type) ==
+                StorageType.encrypted;
+        if (copyFromEncrypted) {
+          if (storage.type != StorageType.encrypted) {
+            enable = false;
+          }
+        } else {
+          if (storage.type == StorageType.encrypted) {
+            enable = false;
+          }
+        }
+      }
+      if (enable) {
+        result.add(PopupMenuItem<Storage>(
+          enabled: storage.type != _filesState.selectedStorage.type,
+          value: storage,
+          child: ListTile(
+            leading: Icon(Icons.storage),
+            title: Text(storage.displayName),
+          ),
+        ));
+      }
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     _filesState = Provider.of<FilesState>(context);
@@ -585,12 +549,12 @@ class _FilesAppBarState extends State<FilesAppBar>
           return ListTile(
             leading: appBar.leading,
             title: appBar.title,
-            trailing: appBar.actions == null
-                ? null
-                : Row(
+            trailing: appBar.actions?.isNotEmpty == true
+                ? Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: appBar.actions,
-                  ),
+                    children: appBar.actions ?? [],
+                  )
+                : null,
           );
         }
       },

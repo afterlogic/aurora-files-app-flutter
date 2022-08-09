@@ -22,7 +22,7 @@ class AddFolderDialogAndroid extends StatefulWidget {
 class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
   final _folderNameCtrl = TextEditingController();
   final _addFolderFormKey = GlobalKey<FormState>();
-  S s;
+  late S s;
   bool isAdding = false;
   String errMsg = "";
 
@@ -50,7 +50,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (errMsg is String && errMsg.length > 0)
+                  if (errMsg.isNotEmpty)
                     Text(errMsg,
                         style: TextStyle(color: Theme.of(context).errorColor)),
                   TextFormField(
@@ -61,7 +61,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                       border: UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
-                      value,
+                      value ?? '',
                       [
                         ValidationTypes.empty,
                         ValidationTypes.fileName,
@@ -83,7 +83,8 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
             onPressed: isAdding
                 ? null
                 : () {
-                    if (!_addFolderFormKey.currentState.validate()) return;
+                    if (_addFolderFormKey.currentState?.validate() == false)
+                      return;
                     errMsg = "";
                     setState(() => isAdding = true);
                     widget.filesPageState.onCreateNewFolder(

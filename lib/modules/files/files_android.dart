@@ -53,10 +53,10 @@ class FilesAndroid extends StatefulWidget {
 class _FilesAndroidState extends State<FilesAndroid>
     with TickerProviderStateMixin {
   FilesState _filesState = AppStore.filesState;
-  FilesPageState _filesPageState;
-  SettingsState _settingsState;
-  StreamSubscription sub;
-  S s;
+  late FilesPageState _filesPageState;
+  late SettingsState _settingsState;
+  late StreamSubscription sub;
+  late S s;
 
   @override
   void initState() {
@@ -85,13 +85,11 @@ class _FilesAndroidState extends State<FilesAndroid>
   void listenShare() {
     // For sharing files coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> files) {
-      if (files == null || files.isEmpty) return;
+      if (files.isEmpty) return;
       ReceiveSharingIntent.reset();
-      if (files.isNotEmpty) {
-        Navigator.popUntil(
-            context, (item) => item.settings.name == FilesRoute.name);
-        _filesState.onUploadShared(files);
-      }
+      Navigator.popUntil(
+          context, (item) => item.settings.name == FilesRoute.name);
+      _filesState.onUploadShared(files);
     });
 
     // For sharing files coming from outside the app while the app is in the memory
@@ -106,7 +104,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     });
 
     // For sharing or opening urls/text coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialText().then((String text) {
+    ReceiveSharingIntent.getInitialText().then((String? text) {
       if (text == null) return;
       ReceiveSharingIntent.reset();
       Navigator.popUntil(
@@ -208,15 +206,18 @@ class _FilesAndroidState extends State<FilesAndroid>
         }
         if (encryptionSettings.enableInPersonalStorage &&
             _filesState.selectedStorage.type == StorageType.personal) {
-          shouldEncrypt = await AMDialog.show<bool>(
-              builder: (_) => EncryptAskDialog(
-                  file.path.split(Platform.pathSeparator).last),
-              context: context);
+          shouldEncrypt = await AMDialog.show<bool?>(
+                context: context,
+                builder: (_) => EncryptAskDialog(
+                    file.path.split(Platform.pathSeparator).last),
+              ) ??
+              false;
         }
         if (shouldEncrypt == true &&
             !(await PgpKeyUtil.instance.hasUserKey())) {
           showSnack(context,
-              msg: s.error_pgp_required_key(AppStore.authState.userEmail));
+              msg:
+                  s.error_pgp_required_key(AppStore.authState.userEmail ?? ''));
           return null;
         }
         return shouldEncrypt;

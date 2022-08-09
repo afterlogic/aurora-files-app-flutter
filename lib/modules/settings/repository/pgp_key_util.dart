@@ -169,19 +169,19 @@ class PgpKeyUtil {
   }
 
   Future<String> encrypt(
-      String string, List<String> keys, String? password) async {
+      String? string, List<String> keys, String? password) async {
     final privateKey = (await userPrivateKey())?.key;
     return pgp.bufferPlatformSink(
-      string,
+      string ?? '',
       pgp.encrypt(password != null ? privateKey : null, keys, password),
     );
   }
 
-  Future<String> userDecrypt(String string, String password) async {
+  Future<String> userDecrypt(String? string, String? password) async {
     final privateKey = (await userPrivateKey())?.key ?? '';
     return pgp.bufferPlatformSink(
-      string,
-      pgp.decrypt(privateKey, [], password),
+      string ?? '',
+      pgp.decrypt(privateKey, [], password ?? ''),
     );
   }
 

@@ -26,7 +26,7 @@ class InfoListTile extends StatefulWidget {
 
 class _InfoListTileState extends State<InfoListTile> {
   bool _expanded = false;
-  S s;
+  late S s;
   double _rightPaddingForStatusIcons = 0.0;
 
   Widget _buildStatusIcons() {

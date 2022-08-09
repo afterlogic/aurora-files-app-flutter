@@ -21,7 +21,6 @@ import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as prefixEncrypt;
 import 'package:file/memory.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:meta/meta.dart';
 import 'package:mobx/mobx.dart';
 
 part 'file_viewer_state.g.dart';
@@ -32,20 +31,21 @@ abstract class _FileViewerState with Store {
   final _filesApi = new FilesApi();
   final _mailApi = new MailApi();
   final _filesLocal = new FilesLocalStorage();
-  FilesState fileState;
+  FilesState? fileState;
   Aes aes = DI.get();
-  Storage storage;
-  LocalFile file;
+  Storage? storage;
+  late LocalFile file;
 
   @observable
-  double downloadProgress;
+  double? downloadProgress;
+
   @observable
-  File fileWithContents;
+  File? fileWithContents;
 
-  ProcessingFile processingFile;
+  ProcessingFile? processingFile;
 
-  Future<Uint8List> decryptOfflineFile(String password) async {
-    IV iv = IV.fromBase16(file.initVector);
+  Future<Uint8List> decryptOfflineFile(String? password) async {
+    IV iv = IV.fromBase16(file.initVector ?? '');
     String decryptKey;
     if (file.encryptedDecryptionKey != null) {
       decryptKey = await PgpKeyUtil.instance.userDecrypt(
@@ -54,22 +54,26 @@ abstract class _FileViewerState with Store {
               : file.encryptedDecryptionKey,
           password);
     } else {
-      decryptKey = AppStore.settingsState.currentKey;
+      decryptKey = AppStore.settingsState.currentKey ?? '';
     }
     final key = prefixEncrypt.Key.fromBase16(decryptKey);
     final decrypted = await aes.decrypt(
-      await fileWithContents.readAsBytes(),
+      (await fileWithContents?.readAsBytes()) ?? [],
       key.base64,
       iv.base64,
       true,
-    );
+    ) as List<int>;
     return Uint8List.fromList(decrypted);
   }
 
   Future<void> _getPreviewFile(
-      String _password, File fileToView, BuildContext context,
-      {Function(File) onDownloadEnd, Function(String) onError}) async {
-    String password = _password;
+    String? _password,
+    File fileToView,
+    BuildContext context, {
+    Function(File)? onDownloadEnd,
+    Function(String)? onError,
+  }) async {
+    String? password = _password;
     if (file.encryptedDecryptionKey != null) {
       if (password == null) {
         password = await KeyRequestDialog.request(context);
@@ -84,7 +88,7 @@ abstract class _FileViewerState with Store {
     if (AppStore.filesState.isOfflineMode) {
       fileWithContents = new File(file.localPath);
       downloadProgress = null;
-      if (onDownloadEnd != null) onDownloadEnd(fileWithContents);
+      if (onDownloadEnd != null) onDownloadEnd(fileWithContents!);
     } else {
       if (await fileToView.length() > 0) {
         fileWithContents = fileToView;
@@ -93,8 +97,8 @@ abstract class _FileViewerState with Store {
         if (onDownloadEnd != null) onDownloadEnd(fileToView);
       } else {
         // view file are not added to the processingFiles list as of now
-        processingFile = new ProcessingFile(
-          guid: file.guid,
+        final newProcessingFile = ProcessingFile(
+          guid: file.guid ?? '',
           name: file.name,
           size: file.size,
           fileOnDevice: fileToView,
@@ -102,13 +106,14 @@ abstract class _FileViewerState with Store {
               ? ProcessingType.cacheImage
               : ProcessingType.cacheToDelete,
         );
+        processingFile = newProcessingFile;
         // ignore: cancel_subscriptions
         final sub = await _filesApi.getFileContentsFromServer(
           file.viewUrl,
           file,
-          processingFile,
+          newProcessingFile,
           file.initVector != null,
-          password,
+          password ?? '',
           onSuccess: (_) {
             fileWithContents = fileToView;
             downloadProgress = null;
@@ -118,10 +123,10 @@ abstract class _FileViewerState with Store {
           updateViewerProgress: (progress) => downloadProgress = progress,
           onError: (err) {
             processingFile = null;
-            onError(err);
+            if (onError != null) onError(err);
           },
         );
-        processingFile.subscription = sub;
+        processingFile?.subscription = sub;
       }
     }
     // if encrypted - decrypt
@@ -139,7 +144,7 @@ abstract class _FileViewerState with Store {
   }
 
   Future<void> getPreviewImage(
-    String password,
+    String? password,
     Function(String) onError,
     BuildContext context,
   ) async {
@@ -170,7 +175,7 @@ abstract class _FileViewerState with Store {
     final File textToView = await _filesLocal.createTempFile(file);
     await _getPreviewFile(password, textToView, context,
         onDownloadEnd: (File storedFile) async {
-      String previewText = await fileWithContents.readAsString();
+      String previewText = (await fileWithContents?.readAsString()) ?? '';
       getText(previewText);
     });
   }
@@ -193,7 +198,9 @@ abstract class _FileViewerState with Store {
       required bool passwordEncryption,
       required String encryptionRecipientEmail,
       required String extend}) {
-    return fileState.uploadFile(context,
+    if (fileState == null)
+      return Future.error('FileViewerState: fileState is not defined');
+    return fileState!.uploadFile(context,
         passwordEncryption: passwordEncryption,
         encryptionRecipientEmail: encryptionRecipientEmail,
         name: this.file.name + extend,

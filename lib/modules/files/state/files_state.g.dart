@@ -28,13 +28,13 @@ mixin _$FilesState on _FilesState, Store {
   late final _$quotaAtom = Atom(name: '_FilesState.quota', context: context);
 
   @override
-  Quota get quota {
+  Quota? get quota {
     _$quotaAtom.reportRead();
     return super.quota;
   }
 
   @override
-  set quota(Quota value) {
+  set quota(Quota? value) {
     _$quotaAtom.reportWrite(value, super.quota, () {
       super.quota = value;
     });

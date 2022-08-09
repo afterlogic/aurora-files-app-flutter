@@ -24,7 +24,7 @@ import 'select_recipient.dart';
 
 class ShareLink extends StatefulWidget {
   final LocalPgpKey? userPrivateKey;
-  final LocalPgpKey userPublicKey;
+  final LocalPgpKey? userPublicKey;
   final bool usePassword;
   final PreparedForShare file;
   final RecipientWithKey? selectRecipientResult;
@@ -173,8 +173,8 @@ class _ShareLinkState extends State<ShareLink> {
       if (widget.selectRecipientResult?.pgpKey?.key != null) {
         publicKeys.add(widget.selectRecipientResult?.pgpKey?.key ?? '');
       }
-      if (widget.userPublicKey.key != null) {
-        publicKeys.add(widget.userPublicKey.key ?? '');
+      if (widget.userPublicKey?.key != null) {
+        publicKeys.add(widget.userPublicKey?.key ?? '');
       }
       final encrypt = await pgp.bufferPlatformSink(
         template.body,

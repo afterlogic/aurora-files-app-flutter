@@ -18,8 +18,8 @@ class SecureSharingImpl extends SecureSharing {
   Future sharing(
     BuildContext context,
     FilesState filesState,
-    LocalPgpKey userPrivateKey,
-    LocalPgpKey userPublicKey,
+    LocalPgpKey? userPrivateKey,
+    LocalPgpKey? userPublicKey,
     PgpKeyUtil pgpKeyUtil,
     PreparedForShare preparedForShare,
     S s,
@@ -68,8 +68,8 @@ class SecureSharingImpl extends SecureSharing {
   Future encryptSharing(
     BuildContext context,
     FilesState filesState,
-    LocalPgpKey userPrivateKey,
-    LocalPgpKey userPublicKey,
+    LocalPgpKey? userPrivateKey,
+    LocalPgpKey? userPublicKey,
     PgpKeyUtil pgpKeyUtil,
     PreparedForShare preparedForShare,
     Function onUpdate,

@@ -62,7 +62,7 @@ class MainDrawer extends StatelessWidget {
               ),
             ),
             Observer(builder: (_) {
-              final quota = filesState.quota;
+              final quota = filesState.quota ?? Quota(null, null);
               if (filesState.quota != null) {
                 return GestureDetector(
                   onTap: () => _showAvailableSpaceInfo(context, quota),

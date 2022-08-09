@@ -21,17 +21,17 @@ import 'package:share/share.dart';
 class FilesLocalStorage {
   Aes aes = DI.get();
 
-  Future<File> pickFiles({FileType type, String extension}) async {
+  Future<File?> pickFiles({FileType? type, String? extension}) async {
     final result = await FilePicker.platform.pickFiles(
       type: type ?? FileType.any,
       allowedExtensions: extension != null ? [extension] : null,
     );
-    if (result == null) return null;
-    return File(result.files.first.path);
+    if (result?.files.isNotEmpty != true) return null;
+    return File(result?.files.first.path ?? '');
   }
 
   // is used to download files on iOS
-  Future<void> shareFile(File storedFile, LocalFile file, Rect rect) async {
+  Future<void> shareFile(File? storedFile, LocalFile file, Rect rect) async {
     String fileType;
     if (file.contentType.startsWith("image"))
       fileType = "image";
@@ -41,15 +41,15 @@ class FilesLocalStorage {
       fileType = "file";
 
     await Share.shareFiles(
-      [storedFile.path],
+      [storedFile?.path ?? file.path],
       mimeTypes: [fileType],
       sharePositionOrigin: rect,
     );
   }
 
-  Future<void> openFileWith(File file) async {
+  Future<void> openFileWith(File? file) async {
 //    final tempFileForShare = await cacheFile(fileBytes, file);
-    return OpenFile.open(file.path);
+    await OpenFile.open(file?.path);
   }
 
 //  Future<String> saveFileInDownloads(
@@ -90,8 +90,8 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getTemporaryDirectory();
-    final File dartFile =
-        new File("${dir.path}/files_to_delete/${useName == true ? file.name : file.guid}");
+    final File dartFile = new File(
+        "${dir.path}/files_to_delete/${useName == true ? file.name : file.guid}");
     if (await dartFile.exists()) {
       return dartFile;
     } else {
@@ -107,7 +107,8 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getTemporaryDirectory();
-    final File dartFile = new File("${dir.path}/images/${file.guid}_${file.name}");
+    final File dartFile =
+        new File("${dir.path}/images/${file.guid}_${file.name}");
     final bool exist = await dartFile.exists();
     if (exist) {
       return dartFile;
@@ -132,7 +133,7 @@ class FilesLocalStorage {
   }
 
   // if file not found returns null
-  Future<File> copyFromCache(LocalFile file, String pathToCopyTo) async {
+  Future<File?> copyFromCache(LocalFile file, String pathToCopyTo) async {
     final Directory tempDir = await getTemporaryDirectory();
     final splitDir = pathToCopyTo.split("/");
     splitDir.removeLast();
@@ -160,7 +161,7 @@ class FilesLocalStorage {
   }
 
   Future<void> deleteFilesFromCache(
-      {List<LocalFile> files, bool deleteCachedImages = false}) async {
+      {List<LocalFile>? files, bool deleteCachedImages = false}) async {
     final Directory dir = await getTemporaryDirectory();
     if (files != null) {
       for (final file in files) {
@@ -187,7 +188,7 @@ class FilesLocalStorage {
   Future<File> downloadOffline(
     LocalFile file,
     ProcessingFile processingFile,
-    String keyPassword,
+    String? keyPassword,
   ) async {
     final offlineFile = new File(file.localPath);
     if (!await offlineFile.exists()) {
@@ -203,8 +204,8 @@ class FilesLocalStorage {
       final decryptedFile = await _decryptFile(
         processingFile,
         offlineFile,
-        file.encryptedDecryptionKey,
-        keyPassword,
+        file.encryptedDecryptionKey ?? '',
+        keyPassword ?? '',
       );
       return decryptedFile;
     }
@@ -213,7 +214,7 @@ class FilesLocalStorage {
   Future<PreparedForShare> shareOffline(
     LocalFile file,
     ProcessingFile processingFile,
-    String keyPassword,
+    String? keyPassword,
   ) async {
     File offlineFile = new File(file.localPath);
     if (!await offlineFile.exists()) {
@@ -224,8 +225,8 @@ class FilesLocalStorage {
       offlineFile = await _decryptFile(
         processingFile,
         offlineFile,
-        file.encryptedDecryptionKey,
-        keyPassword,
+        file.encryptedDecryptionKey ?? '',
+        keyPassword ?? '',
       );
     }
 
@@ -242,8 +243,8 @@ class FilesLocalStorage {
 
     await processingFile.fileOnDevice.create(recursive: true);
 
-    final key = prefixEncrypt.Key.fromBase16(
-        await PgpKeyUtil.instance.userDecrypt(encryptedDecryptionKey, password));
+    final key = prefixEncrypt.Key.fromBase16(await PgpKeyUtil.instance
+        .userDecrypt(encryptedDecryptionKey, password));
 
     List<int> fileBytesBuffer = [];
     int progress = 0;
@@ -256,19 +257,21 @@ class FilesLocalStorage {
 
       // if this is the final part that forms a chunk
       if (Aes.chunkMaxSize <= fileBytesBuffer.length + contents.length) {
-        contentsForCurrent = contents.sublist(0, Aes.chunkMaxSize - fileBytesBuffer.length);
+        contentsForCurrent =
+            contents.sublist(0, Aes.chunkMaxSize - fileBytesBuffer.length);
 
-        contentsForNext =
-            contents.sublist(Aes.chunkMaxSize - fileBytesBuffer.length, contents.length);
+        contentsForNext = contents.sublist(
+            Aes.chunkMaxSize - fileBytesBuffer.length, contents.length);
 
         fileBytesBuffer.addAll(contentsForCurrent);
 
-        final decrypted =
-            await aes.decrypt(fileBytesBuffer, key.base64, processingFile.ivBase64, false);
-        await processingFile.fileOnDevice.writeAsBytes(decrypted, mode: FileMode.append);
+        final decrypted = await aes.decrypt(fileBytesBuffer, key.base64,
+            processingFile.ivBase64 ?? '', false) as List<int>;
+        await processingFile.fileOnDevice
+            .writeAsBytes(decrypted, mode: FileMode.append);
         // update vector with the last 16 bytes of the chunk
-        final newVector =
-            fileBytesBuffer.sublist(fileBytesBuffer.length - 16, fileBytesBuffer.length);
+        final newVector = fileBytesBuffer.sublist(
+            fileBytesBuffer.length - 16, fileBytesBuffer.length);
         processingFile.ivBase64 = IV(Uint8List.fromList(newVector)).base64;
 
         // flush the buffer
@@ -282,9 +285,11 @@ class FilesLocalStorage {
       processingFile.updateProgress(num);
     }
     if (fileBytesBuffer.isNotEmpty) {
-      final decrypted =
-          await aes.decrypt(fileBytesBuffer, key.base64, processingFile.ivBase64, true);
-      await processingFile.fileOnDevice.writeAsBytes(decrypted, mode: FileMode.append);
+      final decrypted = await aes.decrypt(
+              fileBytesBuffer, key.base64, processingFile.ivBase64 ?? '', true)
+          as List<int>;
+      await processingFile.fileOnDevice
+          .writeAsBytes(decrypted, mode: FileMode.append);
     }
 
     return processingFile.fileOnDevice;
@@ -292,7 +297,7 @@ class FilesLocalStorage {
 }
 
 class PreparedForShare {
-  File file;
+  File? file;
   LocalFile localFile;
 
   PreparedForShare(this.file, this.localFile);

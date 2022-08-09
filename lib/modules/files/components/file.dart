@@ -29,12 +29,10 @@ import 'package:provider/provider.dart';
 
 class FileWidget extends StatefulWidget {
   final LocalFile file;
-  final Function onOpen;
 
   const FileWidget({
     Key? key,
     required this.file,
-    this.onOpen,
   }) : super(key: key);
 
   @override
@@ -42,14 +40,14 @@ class FileWidget extends StatefulWidget {
 }
 
 class _FileWidgetState extends State<FileWidget> {
-  FilesState _filesState;
-  FilesPageState _filesPageState;
-  double _progress;
-  ProcessingFile _processingFile;
-  S s;
+  late FilesState _filesState;
+  late FilesPageState _filesPageState;
+  double? _progress;
+  ProcessingFile? _processingFile;
+  late S s;
   Map<String, dynamic> _extendedProps = {};
   bool _hasShares = false;
-  ShareAccessRight _sharedWithMeAccess;
+  ShareAccessRight? _sharedWithMeAccess;
 
   bool get _sharedWithMe => _sharedWithMeAccess != null;
 
@@ -96,17 +94,21 @@ class _FileWidgetState extends State<FileWidget> {
       _updateProcess,
       onDone: () {
         _updateProcess(null);
-        final type = _processingFile.processingType;
+        final type = _processingFile?.processingType;
         if (type == ProcessingType.upload || type == ProcessingType.offline) {
           _filesPageState.onGetFiles();
         }
-        _filesState.deleteFromProcessing(_processingFile.guid,
-            deleteLocally: true);
+        _filesState.deleteFromProcessing(
+          _processingFile?.guid,
+          deleteLocally: true,
+        );
         _processingFile = null;
       },
       onError: (err, s) {
-        _filesState.deleteFromProcessing(_processingFile.guid,
-            deleteLocally: true);
+        _filesState.deleteFromProcessing(
+          _processingFile?.guid,
+          deleteLocally: true,
+        );
         _processingFile = null;
       },
       cancelOnError: true,
@@ -114,7 +116,7 @@ class _FileWidgetState extends State<FileWidget> {
     _updateProcess(processingFile.currentProgress);
   }
 
-  void _updateProcess(double num) {
+  void _updateProcess(double? num) {
     if (mounted) setState(() => _progress = num);
   }
 
@@ -241,7 +243,7 @@ class _FileWidgetState extends State<FileWidget> {
         FileViewerRoute.name,
         arguments: FileViewerScreenArguments(
           file: widget.file,
-          offlineFile: widget.file.localPath?.isNotEmpty == true
+          offlineFile: widget.file.localPath.isNotEmpty == true
               ? new File(widget.file.localPath)
               : null,
           filesState: _filesState,
@@ -348,7 +350,7 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   IconData _getProcessIcon() {
-    switch (_processingFile.processingType) {
+    switch (_processingFile?.processingType) {
       case ProcessingType.upload:
         return Icons.file_upload;
       case ProcessingType.download:
@@ -486,7 +488,7 @@ class _FileWidgetState extends State<FileWidget> {
                             iconSize: 22.0,
                             onPressed: () {
                               _filesState.deleteFromProcessing(
-                                  _processingFile.guid,
+                                  _processingFile?.guid,
                                   deleteLocally: true);
                             },
                           )

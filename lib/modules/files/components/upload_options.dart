@@ -25,20 +25,24 @@ class _UploadOptionsState extends State<UploadOptions> {
   void _uploadFiles(BuildContext context, bool copy) {
     widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;
     setState(() => _buttonsDisabled = true);
-    widget.filesState.uploadShared(context,
-        toPath: widget.filesPageState.pagePath, onSuccess: () async {
-      await widget.filesPageState.onGetFiles(
-        onError: (String err) => showSnack(context, msg: err),
-      );
-      setState(() => _buttonsDisabled = false);
-      widget.filesState.disableUploadShared();
-      //todo
-      SystemNavigator.pop();
-    }, onError: (err) {
-      setState(() => _buttonsDisabled = false);
-      widget.filesPageState.filesLoading = FilesLoadingType.none;
-      showSnack(context, msg: err);
-    });
+    widget.filesState.uploadShared(
+      context,
+      toPath: widget.filesPageState.pagePath,
+      onSuccess: () async {
+        await widget.filesPageState.onGetFiles(
+          onError: (String err) => showSnack(context, msg: err),
+        );
+        setState(() => _buttonsDisabled = false);
+        widget.filesState.disableUploadShared();
+        //todo
+        SystemNavigator.pop();
+      },
+      onError: (err) {
+        setState(() => _buttonsDisabled = false);
+        widget.filesPageState.filesLoading = FilesLoadingType.none;
+        showSnack(context, msg: err);
+      },
+    );
   }
 
   @override

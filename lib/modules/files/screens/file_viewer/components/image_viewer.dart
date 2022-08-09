@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:aurorafiles/assets/asset.dart';
@@ -13,26 +14,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class ImageViewer extends StatefulWidget {
+  final FileViewerState fileViewerState;
+  final String? password;
+  final ScaffoldState? scaffoldState;
+
   const ImageViewer({
     Key? key,
     required this.fileViewerState,
-    required this.scaffoldState,
     this.password,
+    this.scaffoldState,
   }) : super(key: key);
-  final String password;
-  final FileViewerState fileViewerState;
-  final ScaffoldState scaffoldState;
 
   @override
   _ImageViewerState createState() => _ImageViewerState();
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  S s;
-  FileViewerState _fileViewerState;
+  late S s;
+  late FileViewerState _fileViewerState;
   bool _isError = false;
-  Widget builtImage;
-  Future decryptFuture;
+  late Widget builtImage;
+  Future<Uint8List>? decryptFuture;
   BoxFit fit = BoxFit.cover;
 
   @override
@@ -64,6 +66,8 @@ class _ImageViewerState extends State<ImageViewer> {
   }
 
   Widget _buildImage() {
+    final downloadProgress = _fileViewerState.downloadProgress;
+    final fileWithContents = _fileViewerState.fileWithContents;
     // if the image is encrypted
     if (_fileViewerState.file.initVector != null) {
       if (_isError) {
@@ -76,28 +80,20 @@ class _ImageViewerState extends State<ImageViewer> {
             ),
           ],
         );
-      } else if (_fileViewerState.downloadProgress != null) {
+      } else if (downloadProgress != null) {
         return Positioned.fill(
           child: Center(
-            child: ProgressLoader(min(
-              1.0,
-              _fileViewerState.downloadProgress ?? 0,
-            )),
+            child: ProgressLoader(
+              min(1.0, downloadProgress),
+            ),
           ),
         );
       } else {
-        if (_fileViewerState.fileWithContents == null) {
-          return SizedBox.shrink();
-        }
-        final image = Image.file(
-          _fileViewerState.fileWithContents,
-          fit: fit,
-        );
-//        precacheImage(image.image, context, onError: (e, stackTrace) {
-//          Future.delayed(Duration(milliseconds: 100),
-//              () => setState(() => _isError = true));
-//        });
-        return Positioned.fill(child: image);
+        return fileWithContents == null
+            ? const SizedBox.shrink()
+            : Positioned.fill(
+                child: Image.file(fileWithContents, fit: fit),
+              );
       }
     } else {
       if (_isError) {
@@ -110,27 +106,30 @@ class _ImageViewerState extends State<ImageViewer> {
             ),
           ],
         );
-      } else if (_fileViewerState.fileWithContents == null) {
+      } else if (fileWithContents == null) {
         return Positioned.fill(
           child: Center(
-            child: ProgressLoader(min(
-              1.0,
-              _fileViewerState.downloadProgress ?? 0,
-            )),
+            child: ProgressLoader(
+              min(1.0, downloadProgress ?? 0),
+            ),
           ),
         );
       } else {
         final image = Image.file(
-          _fileViewerState.fileWithContents,
+          fileWithContents,
           fit: fit,
         );
-        precacheImage(image.image, context, onError: (e, stack) {
-          Future.delayed(
-              Duration(milliseconds: 100),
-              () => setState(
-                    () => _isError = true,
-                  ));
-        });
+        precacheImage(
+          image.image,
+          context,
+          onError: (e, stack) {
+            Future.delayed(
+                Duration(milliseconds: 100),
+                () => setState(
+                      () => _isError = true,
+                    ));
+          },
+        );
         return Positioned.fill(child: image);
       }
     }
@@ -138,7 +137,7 @@ class _ImageViewerState extends State<ImageViewer> {
 
   Widget _buildOfflineImage() {
     if (_fileViewerState.file.initVector != null) {
-      return FutureBuilder(
+      return FutureBuilder<Uint8List>(
         future: decryptFuture,
         builder: (context, snap) {
           if (snap.error != null) {
@@ -151,20 +150,24 @@ class _ImageViewerState extends State<ImageViewer> {
                 ),
               ],
             );
-          } else if (snap.data == null) {
+          } else if (snap.hasData) {
+            return Image.memory(
+              snap.data!,
+              fit: fit,
+            );
+          } else {
             return SizedBox.shrink();
           }
-          return Image.memory(
-            snap.data,
-            fit: fit,
-          );
         },
       );
     } else {
-      return Image.file(
-        _fileViewerState.fileWithContents,
-        fit: fit,
-      );
+      final fileWithContents = _fileViewerState.fileWithContents;
+      return fileWithContents != null
+          ? Image.file(
+              fileWithContents,
+              fit: fit,
+            )
+          : const SizedBox.shrink();
     }
   }
 
@@ -172,13 +175,14 @@ class _ImageViewerState extends State<ImageViewer> {
   Widget build(BuildContext context) {
     s = Str.of(context);
     double prevProgress = 999;
-    Widget placeholder;
+    Widget? placeholder;
     if (_fileViewerState.file.initVector != null) {
       placeholder = null;
     } else if (AppStore.filesState.isOfflineMode) {
-      if (_fileViewerState.fileWithContents != null) {
+      final fileWithContents = _fileViewerState.fileWithContents;
+      if (fileWithContents != null) {
         placeholder = Image.file(
-          _fileViewerState.fileWithContents,
+          fileWithContents,
           fit: BoxFit.cover,
         );
       }
@@ -233,7 +237,8 @@ class _ImageViewerState extends State<ImageViewer> {
                             if (prevProgress !=
                                 _fileViewerState.downloadProgress) {
                               builtImage = _buildImage();
-                              prevProgress = _fileViewerState.downloadProgress;
+                              prevProgress =
+                                  _fileViewerState.downloadProgress ?? 0;
                             }
                             return builtImage;
                           },

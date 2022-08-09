@@ -15,6 +15,8 @@ class ShareAccessEntry {
     String? id,
   }) : _id = id ?? Uuid().v4();
 
+  String get id => _id;
+
   static ShareAccessEntry? fromShareJson(Map<String, dynamic> map) {
     Recipient? recipient;
     ContactGroup? group;

@@ -7,32 +7,30 @@ import 'package:provider/provider.dart';
 // wrapper for file items
 class SelectableFilesItemTile extends StatelessWidget {
   final Widget child;
-  final LocalFile file;
+  final LocalFile? file;
   final bool isSelected;
-  final Function onTap;
+  final void Function()? onTap;
 
-  const SelectableFilesItemTile(
-      {Key? key,
-      required this.child,
-      this.isSelected = false,
-      this.file,
-      this.onTap})
-      : super(key: key);
+  const SelectableFilesItemTile({
+    Key? key,
+    required this.child,
+    this.file,
+    this.isSelected = false,
+    this.onTap,
+  }) : super(key: key);
 
-  Function _getOnTapCb(FilesState filesState, FilesPageState filesPageState) {
-    if ((file != null &&
-            file.isFolder &&
-            filesState.filesToMoveCopy.contains(file)) ||
+  void Function()? _getOnTapCb(FilesState filesState, FilesPageState filesPageState) {
+    if ((file?.isFolder == true && filesState.filesToMoveCopy.contains(file)) ||
         file?.extendedProps == "fake") {
       return null;
     }
     if (filesPageState.filesLoading == FilesLoadingType.filesHidden ||
-        filesState.isMoveModeEnabled && file != null && !file.isFolder) {
+        filesState.isMoveModeEnabled && file?.isFolder == false) {
       return null;
     } else if (filesPageState.selectedFilesIds.length > 0) {
       return () => filesPageState.selectFile(file);
     } else {
-      return () => onTap();
+      return onTap;
     }
   }
 
@@ -66,7 +64,7 @@ class SelectableFilesItemTile extends StatelessWidget {
       onLongPress: filesState.isOfflineMode ||
               filesState.isMoveModeEnabled ||
               file == null ||
-              file.extendedProps == "fake" ||
+              file?.extendedProps == "fake" ||
               filesPageState.selectedFilesIds.length > 0
           ? null
           : () => filesPageState.selectFile(file),

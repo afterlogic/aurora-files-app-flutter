@@ -34,7 +34,6 @@ import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -43,16 +42,16 @@ import 'package:secure_sharing/secure_sharing.dart';
 
 class FileViewerAndroid extends StatefulWidget {
   final LocalFile immutableFile;
-  final File offlineFile;
   final FilesState filesState;
   final FilesPageState filesPageState;
+  final File? offlineFile;
 
   FileViewerAndroid({
     Key? key,
     required this.immutableFile,
-    required this.offlineFile,
     required this.filesState,
     required this.filesPageState,
+    this.offlineFile,
   }) : super(key: key);
 
   @override
@@ -63,18 +62,18 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   final _fileViewerScaffoldKey = GlobalKey<ScaffoldState>();
   SecureSharing secureSharing = DI.get();
   final _fileViewerState = FileViewerState();
-  S s;
-  LocalFile _file;
-  FileType _fileType;
+  late S s;
+  late LocalFile _file;
+  late FileType _fileType;
   bool _showEncrypt = false;
   bool _isFileOffline = false;
   bool _isSyncingForOffline = false;
-  String password;
-  StorageType storageType;
-  bool isFolder;
+  String? password;
+  late StorageType storageType;
+  late bool isFolder;
   Map<String, dynamic> _extendedProps = {};
   bool _hasShares = false;
-  ShareAccessRight _sharedWithMeAccess;
+  ShareAccessRight? _sharedWithMeAccess;
 
   bool get _sharedWithMe => _sharedWithMeAccess != null;
 
@@ -113,8 +112,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     super.dispose();
     // delete files that did not finish their caching
     if (_fileViewerState.processingFile != null) {
-      _fileViewerState.processingFile.subscription?.cancel();
-      _fileViewerState.processingFile.fileOnDevice?.delete();
+      _fileViewerState.processingFile?.subscription?.cancel();
+      _fileViewerState.processingFile?.fileOnDevice.delete();
     }
   }
 
@@ -171,6 +170,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         _file,
         context,
         storedFile: _fileViewerState.fileWithContents,
+        onStart: (_) {},
         onSuccess: complete,
         onError: _onError,
       );
@@ -211,12 +211,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   void _deleteFile() async {
     final shouldDelete = await AMDialog.show<bool>(
-            context: context,
-            builder: (_) => DeleteConfirmationDialog(
-              itemsNumber: 1,
-              isFolder: _file.isFolder,
-            ),
-          );
+      context: context,
+      builder: (_) => DeleteConfirmationDialog(
+        itemsNumber: 1,
+        isFolder: _file.isFolder,
+      ),
+    );
     if (shouldDelete == true) {
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [_file],

@@ -9,11 +9,11 @@ import 'package:provider/provider.dart';
 
 class PublicLinkSwitch extends StatefulWidget {
   final LocalFile file;
-  final FilesState filesState;
-  final FilesPageState filesPageState;
+  final FilesState? filesState;
+  final FilesPageState? filesPageState;
   final bool isFileViewer;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final Function(String) updateFile;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final Function(String)? updateFile;
 
   const PublicLinkSwitch({
     Key? key,
@@ -31,9 +31,9 @@ class PublicLinkSwitch extends StatefulWidget {
 }
 
 class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
-  FilesState filesState;
-  FilesPageState filesPageState;
-  S s;
+  late FilesState filesState;
+  late FilesPageState filesPageState;
+  late S s;
   bool _isGettingPublicLink = false;
   bool _hasPublicLink = false;
 
@@ -61,7 +61,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
           Navigator.pop(context);
         }
         await filesPageState.onGetFiles();
-        if (widget.updateFile != null) widget.updateFile(widget.file.id);
+        if (widget.updateFile != null) widget.updateFile!(widget.file.id);
       },
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
@@ -78,7 +78,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       onSuccess: () async {
         setState(() => _isGettingPublicLink = false);
         await filesPageState.onGetFiles();
-        if (widget.updateFile != null) widget.updateFile(widget.file.id);
+        if (widget.updateFile != null) widget.updateFile!(widget.file.id);
       },
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;

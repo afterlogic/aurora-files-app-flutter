@@ -27,7 +27,7 @@ class ShareToEmailDialog extends StatefulWidget {
 }
 
 class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
-  S s;
+  late S s;
   Set<String> canSee = {};
   Set<String> canEdit = {};
   bool progress = false;
@@ -38,26 +38,28 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   final _pgpKeyApi = PgpKeyApi();
   final Set<LocalPgpKey> pgpKeys = {};
   Set<String> pgpKeysEmail = {};
-  String error;
+  String? error;
 
   Future<List<Recipient>> searchContact(String pattern) async {
     final principals =
         await widget.fileState.searchContact(pattern.replaceAll(" ", ""));
     final List<Recipient> recipients =
-        principals.where((e) => e is Recipient).toList();
+        principals.where((e) => e is Recipient).toList() as List<Recipient>;
     return recipients;
   }
 
   share() async {
     error = null;
-    canSeeKey.currentState.addEmail();
-    canEditKey.currentState.addEmail();
+    canSeeKey.currentState?.addEmail();
+    canEditKey.currentState?.addEmail();
     canEdit.forEach((element) => canSee.remove(element));
     final addedPgpKey = <String>[];
     if (widget.file.encryptedDecryptionKey != null) {
       for (var email in [...canSee, ...canEdit]) {
-        final key = pgpKeys.firstWhere((element) => element.email == email,
-            orElse: () => null);
+        LocalPgpKey? key;
+        try {
+          key = pgpKeys.firstWhere((element) => element.email == email);
+        } catch (_) {}
         if (key != null) {
           addedPgpKey.add(key.key);
         } else {
@@ -157,7 +159,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
               if (error != null) SizedBox(height: 20),
               if (error != null)
                 Text(
-                  error,
+                  error ?? '',
                   style: TextStyle(color: Colors.red),
                 ),
             ],

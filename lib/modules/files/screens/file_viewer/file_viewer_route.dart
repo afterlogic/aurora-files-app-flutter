@@ -11,14 +11,14 @@ class FileViewerRoute {
 
 class FileViewerScreenArguments {
   final LocalFile file;
-  final File offlineFile;
   final FilesState filesState;
   final FilesPageState filesPageState;
+  final File? offlineFile;
 
   FileViewerScreenArguments({
+    required this.file,
     required this.filesState,
     required this.filesPageState,
-    required this.file,
     this.offlineFile,
   });
 }

@@ -13,13 +13,13 @@ mixin _$FileViewerState on _FileViewerState, Store {
       Atom(name: '_FileViewerState.downloadProgress', context: context);
 
   @override
-  double get downloadProgress {
+  double? get downloadProgress {
     _$downloadProgressAtom.reportRead();
     return super.downloadProgress;
   }
 
   @override
-  set downloadProgress(double value) {
+  set downloadProgress(double? value) {
     _$downloadProgressAtom.reportWrite(value, super.downloadProgress, () {
       super.downloadProgress = value;
     });
@@ -29,13 +29,13 @@ mixin _$FileViewerState on _FileViewerState, Store {
       Atom(name: '_FileViewerState.fileWithContents', context: context);
 
   @override
-  File get fileWithContents {
+  File? get fileWithContents {
     _$fileWithContentsAtom.reportRead();
     return super.fileWithContents;
   }
 
   @override
-  set fileWithContents(File value) {
+  set fileWithContents(File? value) {
     _$fileWithContentsAtom.reportWrite(value, super.fileWithContents, () {
       super.fileWithContents = value;
     });

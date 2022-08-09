@@ -24,11 +24,11 @@ class FolderWidget extends StatefulWidget {
 }
 
 class _FolderWidgetState extends State<FolderWidget> {
-  FilesState _filesState;
-  FilesPageState _filesPageState;
+  late FilesState _filesState;
+  late FilesPageState _filesPageState;
   Map<String, dynamic> _extendedProps = {};
   bool _hasShares = false;
-  ShareAccessRight _sharedWithMeAccess;
+  ShareAccessRight? _sharedWithMeAccess;
 
   bool get _sharedWithMe => _sharedWithMeAccess != null;
 

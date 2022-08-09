@@ -26,7 +26,7 @@ class EncryptedShareLink extends StatefulWidget {
   final FilesState filesState;
   final Recipient? recipient;
   final LocalPgpKey? pgpKey;
-  final LocalPgpKey userPrivateKey;
+  final LocalPgpKey? userPrivateKey;
   final LocalPgpKey? userPublicKey;
   final bool useKey;
   final bool useSign;
@@ -165,7 +165,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     }
     String? privateKey;
     if (widget.useSign == true) {
-      privateKey = widget.userPrivateKey.key;
+      privateKey = widget.userPrivateKey?.key;
     }
     legacyPgpApi = LegacyPgpApi(
       pgp: widget.pgp,

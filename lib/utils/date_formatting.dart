@@ -8,7 +8,7 @@ class DateFormatting {
         .format(DateTime.fromMillisecondsSinceEpoch((timestamp * 1000)));
   }
 
-  static String shortDateTime(DateTime date) {
+  static String shortDateTime(DateTime? date) {
     if (date == null) return '';
     String format = "yy.MM.dd HH:mm:ss";
     return DateFormat(format).format(date);

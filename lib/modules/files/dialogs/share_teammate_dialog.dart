@@ -39,7 +39,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
   bool _rebuildingDropdown = false;
   bool _progress = true;
 
-  String get _userEmail => AppStore.authState.userEmail;
+  String get _userEmail => AppStore.authState.userEmail ?? '';
 
   @override
   void initState() {
@@ -94,8 +94,8 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
   }
 
   void _addShare(
-    SharePrincipal principal, [
-    ShareAccessRight access,
+    SharePrincipal? principal, [
+    ShareAccessRight? access,
   ]) {
     if (principal == null) return;
     final actualRight = access ?? _lastSelectedRight;
@@ -111,7 +111,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     setState(() {
       _rebuildingDropdown = true;
     });
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance?.addPostFrameCallback((_) {
       setState(() {
         _rebuildingDropdown = false;
       });
@@ -160,7 +160,8 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     return result == true;
   }
 
-  bool _itemNotInShares(SharePrincipal item) {
+  bool _itemNotInShares(SharePrincipal? item) {
+    if (item == null) return false;
     final index = _fileShares.indexWhere((e) {
       return e.principal.runtimeType == item.runtimeType &&
           e.principal.getId() == item.getId();
@@ -229,7 +230,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
             items: _sharePrincipals,
             onChanged: _addShare,
             filterFn: (item, _) => _itemNotInShares(item),
-            itemAsString: (item) => item.getLabel(),
+            itemAsString: (item) => item?.getLabel() ?? '',
             maxHeight: screenHeight / 3,
             dropdownSearchDecoration: InputDecoration(
               hintText: s.hint_select_teammate,

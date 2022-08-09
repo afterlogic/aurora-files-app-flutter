@@ -1,4 +1,5 @@
 import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class StorageInfoWidget extends StatelessWidget {
               onRefresh: AppStore.filesState.refreshQuota,
               child: Observer(
                 builder: (_) {
-                  final quota = AppStore.filesState.quota;
+                  final quota = AppStore.filesState.quota ?? Quota(null, null);
 
                   return ListView(
                     padding: EdgeInsets.all(16.0),
@@ -52,7 +53,7 @@ class StorageInfoWidget extends StatelessWidget {
                         backgroundColor: theme.disabledColor.withOpacity(0.25),
                         circularStrokeCap: CircularStrokeCap.round,
                         animateFromLastPercent: true,
-                        progressColor: theme.accentColor,
+                        progressColor: theme.colorScheme.secondary,
                         center: Text("${(quota.progress * 100).round()}%",
                             style: theme.textTheme.headline6),
                         radius: 100.0,

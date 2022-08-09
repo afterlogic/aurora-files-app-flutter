@@ -191,13 +191,13 @@ class _HistoryDTS extends DataTableSource {
           Text(DateFormatting.shortDateTime(item.createdAt), style: textStyle),
         ),
         DataCell(
-          Text(item.action, style: textStyle),
+          Text(item.action ?? '', style: textStyle),
         ),
         DataCell(
-          Text(item.ipAddress, style: textStyle),
+          Text(item.ipAddress ?? '', style: textStyle),
         ),
         DataCell(
-          Text(item.guestPublicId, style: textStyle),
+          Text(item.guestPublicId ?? '', style: textStyle),
         ),
       ],
     );

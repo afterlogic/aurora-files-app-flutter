@@ -46,7 +46,8 @@ abstract class _FilesPageState with Store {
   @observable
   FilesLoadingType filesLoading = FilesLoadingType.none;
 
-  void selectFile(LocalFile file) {
+  void selectFile(LocalFile? file) {
+    if (file == null) return;
     // reassigning to update the observable
     final selectedIds = selectedFilesIds;
     if (selectedFilesIds[file.id] != null) {
@@ -62,10 +63,10 @@ abstract class _FilesPageState with Store {
   }
 
   Future<void> onGetFiles({
-    String path,
+    String? path,
     FilesLoadingType showLoading = FilesLoadingType.filesVisible,
     String searchPattern = "",
-    Function(String) onError,
+    Function(String)? onError,
   }) async {
     if (AppStore.filesState.isOfflineMode) {
       return _getOfflineFiles(showLoading, path, searchPattern, onError);
@@ -76,9 +77,9 @@ abstract class _FilesPageState with Store {
 
   Future _getOnlineFiles(
     FilesLoadingType showLoading,
-    String path,
+    String? path,
     String searchPattern,
-    Function(String) onError,
+    Function(String)? onError,
   ) async {
     try {
       filesLoading = showLoading;
@@ -119,7 +120,8 @@ abstract class _FilesPageState with Store {
     } catch (err) {
       if (!AppStore.filesState.isOfflineMode &&
           AppStore.settingsState.internetConnection !=
-              ConnectivityResult.none) {
+              ConnectivityResult.none &&
+          onError != null) {
         onError(err.toString());
       }
     } finally {
@@ -129,14 +131,14 @@ abstract class _FilesPageState with Store {
 
   Future<void> _getOfflineFiles(
     FilesLoadingType showLoading,
-    String path,
+    String? path,
     String searchPattern,
-    Function(String) onError,
+    Function(String)? onError,
   ) async {
     AppStore.filesState.quota = null;
     try {
       filesLoading = showLoading;
-      if (searchPattern != null && searchPattern.isNotEmpty) {
+      if (searchPattern.isNotEmpty) {
         currentFiles = await _filesDao.searchFiles(pagePath, searchPattern);
       } else {
         currentFiles = await _filesDao.getFilesAtPath(pagePath);
@@ -181,7 +183,7 @@ abstract class _FilesPageState with Store {
 
   // supports both extracting files from selected ids and passing file(s) directly
   Future<void> onDeleteFiles({
-    List<LocalFile> filesToDelete,
+    List<LocalFile>? filesToDelete,
     required Storage storage,
     required Function onSuccess,
     required Function(String) onError,
@@ -191,8 +193,8 @@ abstract class _FilesPageState with Store {
     final List<LocalFile> filesToDeleteLocally = [];
     final List<LocalFile> filesToDeleteFromCache = [];
 
-    if (filesToDelete is List) {
-      filesToDelete.forEach((file) {
+    if (filesToDelete?.isNotEmpty == true) {
+      filesToDelete?.forEach((file) {
         if (file.localPath != null) filesToDeleteLocally.add(file);
         filesToDeleteFromCache.add(file);
         mappedFilesToDelete.add(FileToDelete(
@@ -231,8 +233,8 @@ abstract class _FilesPageState with Store {
   void onCreateNewFolder({
     required String folderName,
     required Storage storage,
-    Function(String) onSuccess,
-    Function(String) onError,
+    required Function(String) onSuccess,
+    required Function(String) onError,
   }) async {
     try {
       final String newFolderNameFromServer = await _filesApi.createFolder(

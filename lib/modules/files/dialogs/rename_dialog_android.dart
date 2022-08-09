@@ -25,7 +25,7 @@ class RenameDialog extends StatefulWidget {
 class _RenameDialogState extends State<RenameDialog> {
   final _fileNameCtrl = TextEditingController();
   final _renameFormKey = GlobalKey<FormState>();
-  S s;
+  late S s;
   bool isRenaming = false;
   String errMsg = "";
 
@@ -78,12 +78,12 @@ class _RenameDialogState extends State<RenameDialog> {
                   controller: _fileNameCtrl,
                   autofocus: true,
                   decoration: InputDecoration(
-                    errorText: errMsg?.isEmpty == true ? null : errMsg,
+                    errorText: errMsg.isEmpty == true ? null : errMsg,
                     hintText: s.enter_new_name,
                     border: UnderlineInputBorder(),
                   ),
                   validator: (value) => validateInput(
-                    value,
+                    value ?? '',
                     [
                       ValidationTypes.empty,
                       ValidationTypes.uniqueName,
@@ -104,7 +104,7 @@ class _RenameDialogState extends State<RenameDialog> {
             onPressed: isRenaming
                 ? null
                 : () {
-                    if (!_renameFormKey.currentState.validate()) return;
+                    if (_renameFormKey.currentState?.validate() != true) return;
                     errMsg = "";
                     setState(() => isRenaming = true);
                     widget.filesState.onRename(

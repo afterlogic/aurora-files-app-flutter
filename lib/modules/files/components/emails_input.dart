@@ -30,11 +30,11 @@ class EmailsInputState extends State<EmailsInput> {
   final composeTypeAheadFieldKey = GlobalKey<ComposeTypeAheadFieldState>();
   final focusNode = FocusNode();
 
-  Timer debounce;
-  List<Recipient> lastSuggestions;
-  ThemeData theme;
-  String _search;
-  Completer<List<Recipient>> completer;
+  Timer? debounce;
+  List<Recipient> lastSuggestions = [];
+  late ThemeData theme;
+  String? _search;
+  late Completer<List<Recipient>> completer;
 
   addEmail() {
     _addEmail(textCtrl.text);
@@ -58,7 +58,7 @@ class EmailsInputState extends State<EmailsInput> {
           return _completer.complete(lastSuggestions);
         }
       }
-      return _completer.complete();
+      return _completer.complete([]);
     });
     return completer.future;
   }
@@ -84,14 +84,14 @@ class EmailsInputState extends State<EmailsInput> {
   }
 
   TextSpan _searchMatch(String match) {
-    final color = theme.textTheme.bodyText2.color;
+    final color = theme.textTheme.bodyText2?.color;
     final posRes = TextStyle(fontWeight: FontWeight.w700, color: color);
     final negRes = TextStyle(fontWeight: FontWeight.w400, color: color);
 
     if (_search == null || _search == "")
       return TextSpan(text: match, style: negRes);
     var refinedMatch = match.toLowerCase();
-    var refinedSearch = _search.toLowerCase();
+    var refinedSearch = _search?.toLowerCase() ?? '';
     if (refinedMatch.contains(refinedSearch)) {
       if (refinedMatch.substring(0, refinedSearch.length) == refinedSearch) {
         return TextSpan(
@@ -143,9 +143,9 @@ class EmailsInputState extends State<EmailsInput> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (contact.fullName.isNotEmpty)
+              if (contact.fullName?.isNotEmpty == true)
                 RichText(
-                  text: _searchMatch(contact.fullName),
+                  text: _searchMatch(contact.fullName ?? ''),
                   maxLines: 1,
                 ),
               if (contact.email.isNotEmpty)
@@ -166,10 +166,10 @@ class EmailsInputState extends State<EmailsInput> {
 
   void _deleteEmail(String email) {
     setState(() => widget.emails.remove(email));
-    composeTypeAheadFieldKey.currentState.resize();
+    composeTypeAheadFieldKey.currentState?.resize();
   }
 
-  Future _addEmail(String _email) async {
+  void _addEmail(String _email) {
     final email = _email.replaceAll(" ", "");
     textCtrl.text = " ";
     textCtrl.selection = TextSelection.collapsed(offset: 1);
@@ -179,7 +179,7 @@ class EmailsInputState extends State<EmailsInput> {
     if (error == null) {
       setState(() => widget.emails.add(email));
     }
-    composeTypeAheadFieldKey.currentState.resize();
+    composeTypeAheadFieldKey.currentState?.resize();
   }
 
   @override
@@ -224,8 +224,8 @@ class EmailsInputState extends State<EmailsInput> {
                   ),
                 ),
                 suggestionsBoxVerticalOffset: 0.0,
-                suggestionsBoxHorizontalOffset:
-                    screenWidth - dropDownWidth - 16 * 2,
+                // suggestionsBoxHorizontalOffset:
+                //     screenWidth - dropDownWidth - 16 * 2,
                 autoFlipDirection: true,
                 hideOnLoading: true,
                 keepSuggestionsOnLoading: true,
@@ -271,11 +271,11 @@ class EmailsInputState extends State<EmailsInput> {
     if (lastSuggestions.isEmpty) {
       if (isEmailValid(textCtrl.text.replaceAll(" ", ""))) {
         _addEmail(textCtrl.text.replaceAll(" ", ""));
-        composeTypeAheadFieldKey.currentState.clear();
+        composeTypeAheadFieldKey.currentState?.clear();
       }
     } else {
       _addEmail(lastSuggestions.first.email);
-      composeTypeAheadFieldKey.currentState.clear();
+      composeTypeAheadFieldKey.currentState?.clear();
     }
   }
 }
@@ -284,7 +284,11 @@ class EmailItem extends StatefulWidget {
   final String email;
   final Function(String) onDelete;
 
-  const EmailItem({Key? key, this.email, this.onDelete}) : super(key: key);
+  const EmailItem({
+    Key? key,
+    required this.email,
+    required this.onDelete,
+  }) : super(key: key);
 
   @override
   _EmailItemState createState() => _EmailItemState();

@@ -100,10 +100,10 @@ class FileOptionsBottomSheet extends StatefulWidget {
 
 class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
-  S s;
+  late S s;
   SecureSharing secureSharing = DI.get();
-  StorageType storageType;
-  bool isFolder;
+  late StorageType storageType;
+  late bool isFolder;
 
   bool get _enableSecureLink => isFolder
       ? [StorageType.corporate, StorageType.personal].contains(storageType)
@@ -193,7 +193,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     }
   }
 
-  _secureSharing() async {
+  Future<void> _secureSharing() async {
     if (widget.file.published == false && widget.file.initVector != null) {
       if (widget.file.encryptedDecryptionKey == null) {
         return AMDialog.show(
@@ -340,7 +340,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               title: Text(s.offline),
               trailing: Switch.adaptive(
                 value: widget.file.localId != null,
-                activeColor: Theme.of(context).accentColor,
+                activeColor: Theme.of(context).colorScheme.secondary,
                 onChanged: (bool val) =>
                     onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
               ),

@@ -18,12 +18,12 @@ class ShareDialog extends StatefulWidget {
 
 class _ShareDialogState extends State<ShareDialog> {
   double _downloadProgress = 0.0;
-  S s;
+  late S s;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       _shareFile();
     });
   }
@@ -63,8 +63,10 @@ class _ShareDialogState extends State<ShareDialog> {
         TextButton(
           child: Text(s.cancel.toUpperCase()),
           onPressed: () {
-            widget.filesState
-                .deleteFromProcessing(widget.file.guid, deleteLocally: true);
+            widget.filesState.deleteFromProcessing(
+              widget.file.guid,
+              deleteLocally: true,
+            );
             Navigator.pop(context);
           },
         )

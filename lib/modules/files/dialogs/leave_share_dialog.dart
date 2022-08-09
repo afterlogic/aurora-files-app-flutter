@@ -25,7 +25,7 @@ class LeaveShareDialog extends StatelessWidget {
           ),
           TextSpan(
             text: name,
-            style: textStyle.copyWith(
+            style: textStyle?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),

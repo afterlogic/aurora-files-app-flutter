@@ -14,7 +14,6 @@ import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -112,7 +111,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
 
     widget.filesState.createSecureLink(
       file: widget.file.localFile,
-      email: widget.recipient?.email,
+      email: widget.recipient?.email ?? '',
       isKey: widget.useKey,
       password: widget.useEncrypt ? "" : password,
       onError: (e) {
@@ -247,10 +246,10 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       widget.useEncrypt,
       widget.useKey,
       widget.file.localFile.name,
-      link,
+      link ?? '',
       widget.pgpKey != null ? password : null,
-      recipient,
-      AppStore.authState.userEmail,
+      recipient ?? '',
+      AppStore.authState.userEmail ?? '',
     );
 
     if (widget.pgpKey != null) {
@@ -263,7 +262,8 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     }
 
     widget.filesState
-        .sendViaEmail(template, widget.recipient?.email ?? widget.pgpKey?.email)
+        .sendViaEmail(
+            template, widget.recipient?.email ?? widget.pgpKey?.email ?? '')
         .then(
       (_) {
         toastKey.currentState?.show(s.sending_complete);
@@ -327,8 +327,8 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       Text(
         widget.useKey
             ? widget.useSign
-                ? s.encrypted_sign_using_key(recipient)
-                : s.encrypted_using_key(recipient)
+                ? s.encrypted_sign_using_key(recipient ?? '')
+                : s.encrypted_using_key(recipient ?? '')
             : widget.pgpKey != null
                 ? s.encrypted_using_password
                 : s.copy_encrypted_password,

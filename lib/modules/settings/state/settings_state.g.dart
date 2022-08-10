@@ -13,13 +13,13 @@ mixin _$SettingsState on _SettingsState, Store {
       Atom(name: '_SettingsState.internetConnection', context: context);
 
   @override
-  ConnectivityResult get internetConnection {
+  ConnectivityResult? get internetConnection {
     _$internetConnectionAtom.reportRead();
     return super.internetConnection;
   }
 
   @override
-  set internetConnection(ConnectivityResult value) {
+  set internetConnection(ConnectivityResult? value) {
     _$internetConnectionAtom.reportWrite(value, super.internetConnection, () {
       super.internetConnection = value;
     });
@@ -29,13 +29,13 @@ mixin _$SettingsState on _SettingsState, Store {
       Atom(name: '_SettingsState.isDarkTheme', context: context);
 
   @override
-  bool get isDarkTheme {
+  bool? get isDarkTheme {
     _$isDarkThemeAtom.reportRead();
     return super.isDarkTheme;
   }
 
   @override
-  set isDarkTheme(bool value) {
+  set isDarkTheme(bool? value) {
     _$isDarkThemeAtom.reportWrite(value, super.isDarkTheme, () {
       super.isDarkTheme = value;
     });

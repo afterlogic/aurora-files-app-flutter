@@ -40,8 +40,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
   Widget build(BuildContext context) {
     final isTablet = LayoutConfig.of(context).isTablet;
     final current = isTablet
-        ? (navigatorKey?.currentState?.current?.name ??
-            CommonSettingsRoute.name)
+        ? (navigatorKey.currentState?.current.name ?? CommonSettingsRoute.name)
         : null;
     final s = Str.of(context);
     Widget body = ListView(

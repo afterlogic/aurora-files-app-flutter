@@ -8,7 +8,6 @@ import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'select_recipient.dart';
@@ -143,7 +142,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
     String password = '';
     if (useSign && widget.userPgpKey != null) {
       try {
-        password = await KeyRequestDialog.request(context);
+        password = await KeyRequestDialog.request(context) ?? '';
       } catch (e) {
         toastKey.currentState?.show(s.invalid_password);
         return;

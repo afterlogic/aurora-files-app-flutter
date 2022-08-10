@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/progress_loader.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -200,11 +201,9 @@ class _ImageViewerState extends State<ImageViewer> {
             );
     }
 
-    if (_fileViewerState.file.viewUrl != null) {
+    if (_fileViewerState.file.viewUrl.isNotEmpty) {
       return Hero(
-          tag: _fileViewerState.file.localId ??
-              _fileViewerState.file.guid ??
-              _fileViewerState.file.hash,
+          tag: FileUtils.getHeroTag(_fileViewerState.file),
           child: ConstrainedBox(
             constraints: BoxConstraints(
               minHeight: 60.0,

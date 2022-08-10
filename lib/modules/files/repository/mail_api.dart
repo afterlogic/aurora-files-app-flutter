@@ -127,7 +127,7 @@ class MailApi {
     if (res.containsKey("Result")) {
       final List<SharePrincipal> principals = [];
       final list = res["Result"]["List"] as List;
-      if (list?.isNotEmpty == true) {
+      if (list.isNotEmpty) {
         list.forEach((map) {
           if (map["IsGroup"] != null) {
             final group = ContactGroup.fromJson(map);

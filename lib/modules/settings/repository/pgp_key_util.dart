@@ -54,7 +54,7 @@ class PgpKeyUtil {
           key: description.armoredKey,
           isPrivate: description.isPrivate,
           length: description.length,
-          name: name ?? "",
+          name: name,
         );
 
         localKeys.add(localPgpKey);
@@ -116,7 +116,7 @@ class PgpKeyUtil {
 
     final file = File(await keysFolder() +
         Platform.pathSeparator +
-        "${key.name ?? ""} ${key.email} PGP ${key.isPrivate ? "private" : "public"} key" +
+        "${key.name} ${key.email} PGP ${key.isPrivate ? "private" : "public"} key" +
         ".asc");
     if (await file.exists()) {
       await file.delete();

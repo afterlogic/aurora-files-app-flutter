@@ -37,7 +37,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
     }
   }
 
-  String _getThemeName(bool isDarkTheme) {
+  String _getThemeName(bool? isDarkTheme) {
     s = Str.of(context);
     if (isDarkTheme == false)
       return s.light_theme;
@@ -70,7 +70,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
               ),
               onTap: () => ThemeSelectionDialog.show(
                 context,
-                _settingsState.isDarkTheme,
+                _settingsState.isDarkTheme ?? false,
                 (val) {
                   if (val != null) _settingsState.toggleDarkTheme(val);
                 },

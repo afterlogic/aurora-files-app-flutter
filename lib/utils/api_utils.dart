@@ -192,36 +192,36 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
   final linkPassword = props != null ? props["PasswordForSharing"] : null;
   return LocalFile(
     localId: -1,
-    id: rawFile["Id"],
+    id: rawFile["Id"] ?? '',
     guid: props != null ? (props["GUID"] ?? Uuid().v4()) : Uuid().v4(),
-    type: rawFile["Type"],
+    type: rawFile["Type"] ?? '',
     localPath: '',
-    path: rawFile["Path"],
-    fullPath: rawFile["FullPath"],
-    name: rawFile["Name"],
-    size: rawFile["Size"],
-    isFolder: rawFile["IsFolder"],
+    path: rawFile["Path"] ?? '',
+    fullPath: rawFile["FullPath"] ?? '',
+    name: rawFile["Name"] ?? '',
+    size: rawFile["Size"] ?? 0,
+    isFolder: rawFile["IsFolder"] ?? false,
     isOpenable:
         rawFile["Actions"] != null && rawFile["Actions"]["list"] != null,
-    isLink: rawFile["IsLink"],
-    linkType: rawFile["LinkType"],
-    linkUrl: publicLink ?? rawFile["LinkUrl"],
+    isLink: rawFile["IsLink"] ?? false,
+    linkType: rawFile["LinkType"] ?? '',
+    linkUrl: publicLink ?? rawFile["LinkUrl"] ?? '',
     linkPassword: linkPassword,
-    lastModified: rawFile["LastModified"],
-    contentType: rawFile["ContentType"],
-    oEmbedHtml: rawFile["OembedHtml"],
+    lastModified: rawFile["LastModified"] ?? 0,
+    contentType: rawFile["ContentType"] ?? '',
+    oEmbedHtml: rawFile["OembedHtml"] ?? '',
     published: publicLink != null || rawFile["Published"] == true,
-    owner: rawFile["Owner"],
-    content: rawFile["Content"],
-    isExternal: rawFile["IsExternal"],
+    owner: rawFile["Owner"] ?? '',
+    content: rawFile["Content"] ?? '',
+    isExternal: rawFile["IsExternal"] ?? false,
     thumbnailUrl: rawFile["ThumbnailUrl"],
     downloadUrl: rawFile["Actions"]["download"] != null
-        ? rawFile["Actions"]["download"]["url"]
-        : null,
+        ? rawFile["Actions"]["download"]["url"]  ?? ''
+        : '',
     viewUrl: rawFile["Actions"]["view"] != null
-        ? rawFile["Actions"]["view"]["url"]
-        : null,
-    hash: rawFile["Hash"],
+        ? rawFile["Actions"]["view"]["url"] ?? ''
+        : '',
+    hash: rawFile["Hash"] ?? '',
     extendedProps: rawFile["ExtendedProps"] != null
         ? jsonEncode(rawFile["ExtendedProps"])
         : "[]",

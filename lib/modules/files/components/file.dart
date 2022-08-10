@@ -18,6 +18,7 @@ import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filesize/filesize.dart';
@@ -284,7 +285,7 @@ class _FileWidgetState extends State<FileWidget> {
                     fit: BoxFit.cover,
                     image: AssetImage(Asset.images.imagePlaceholder))),
             child: Hero(
-              tag: widget.file.localId ?? widget.file.guid ?? widget.file.hash,
+              tag: FileUtils.getHeroTag(widget.file),
               child: filesState.isOfflineMode && widget.file.localPath != null
                   ? Image.file(new File(widget.file.localPath),
                       fit: BoxFit.cover)

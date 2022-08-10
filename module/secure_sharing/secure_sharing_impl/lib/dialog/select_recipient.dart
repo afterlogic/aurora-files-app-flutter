@@ -45,7 +45,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
       (result) async {
         await _loadKeys();
         final filterRecipients =
-            result.where((item) => item.email?.isNotEmpty == true);
+            result.where((item) => item.email.isNotEmpty == true);
         for (Recipient recipient in filterRecipients) {
           final key = keys.remove(recipient.email);
           recipients.add(RecipientWithKey(recipient, key));

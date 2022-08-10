@@ -20,7 +20,7 @@ FilesCompanion getCompanionFromLocalFile(LocalFile file, [String? pathToFile]) {
     type: Value(file.type),
     path: Value(file.path),
     fullPath: Value(file.fullPath),
-    localPath: Value(pathToFile ?? file.localPath ?? ""),
+    localPath: Value(pathToFile ?? file.localPath),
     name: Value(file.name),
     size: Value(file.size),
     isFolder: Value(file.isFolder),

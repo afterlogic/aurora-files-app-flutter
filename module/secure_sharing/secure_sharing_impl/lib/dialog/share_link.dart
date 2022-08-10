@@ -88,7 +88,7 @@ class _ShareLinkState extends State<ShareLink> {
           setState(() {});
         },
         onError: onError,
-        password: widget.file.localFile.linkPassword,
+        password: widget.file.localFile.linkPassword ?? '',
       );
     } else {
       widget.filesState.createPublicLink(
@@ -132,7 +132,7 @@ class _ShareLinkState extends State<ShareLink> {
         return false;
       }
       final isValidPassword = await widget.pgpKeyUtil
-          .checkPrivateKey(password, widget.userPrivateKey?.key);
+          .checkPrivateKey(password, widget.userPrivateKey?.key ?? '');
       if (!isValidPassword) {
         toastKey.currentState?.show(s.invalid_password);
         return false;
@@ -145,7 +145,8 @@ class _ShareLinkState extends State<ShareLink> {
     sendProgress = true;
     toastKey.currentState?.show(s.sending);
     setState(() {});
-    final password = useSign ? await KeyRequestDialog.request(context) : '';
+    final password =
+        useSign ? await KeyRequestDialog.request(context) ?? '' : '';
     if (!await checkSign(password)) {
       sendProgress = false;
       setState(() {});
@@ -164,8 +165,8 @@ class _ShareLinkState extends State<ShareLink> {
       widget.selectRecipientResult?.pgpKey != null
           ? widget.file.localFile.linkPassword
           : null,
-      recipient,
-      AppStore.authState.userEmail,
+      recipient ?? '',
+      AppStore.authState.userEmail ?? '',
     );
 
     if (widget.selectRecipientResult?.pgpKey != null) {
@@ -192,7 +193,8 @@ class _ShareLinkState extends State<ShareLink> {
         .sendViaEmail(
             template,
             widget.selectRecipientResult?.recipient?.email ??
-                widget.selectRecipientResult?.pgpKey?.email)
+                widget.selectRecipientResult?.pgpKey?.email ??
+                '')
         .then(
       (_) {
         toastKey.currentState?.show(s.sending_complete);
@@ -283,7 +285,7 @@ class _ShareLinkState extends State<ShareLink> {
                                         ?.isNotEmpty ==
                                     true)
                                   ClipboardLabel(
-                                      widget.file.localFile.linkPassword,
+                                      widget.file.localFile.linkPassword ?? '',
                                       s.password, () {
                                     toastKey.currentState
                                         ?.show(s.link_coppied_to_clipboard);

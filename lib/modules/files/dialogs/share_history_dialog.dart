@@ -22,7 +22,7 @@ class ShareHistoryDialog extends StatefulWidget {
 }
 
 class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
-  late ShareAccessHistory _history;
+  ShareAccessHistory? _history;
   // int _currentPage = 0;
   bool _progress = true;
 

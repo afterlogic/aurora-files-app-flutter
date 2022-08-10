@@ -58,7 +58,7 @@ class _AppState extends State<App> {
     _settingsState.updateAppData();
   }
 
-  ThemeData? _getTheme(bool isDarkTheme) {
+  ThemeData? _getTheme(bool? isDarkTheme) {
     if (isDarkTheme == false)
       return AppTheme.light;
     else if (isDarkTheme == true)

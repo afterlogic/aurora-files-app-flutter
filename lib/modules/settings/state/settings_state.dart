@@ -19,10 +19,10 @@ abstract class _SettingsState with Store {
   final settingApi = SettingApi();
 
   @observable
-  late ConnectivityResult internetConnection;
+  ConnectivityResult? internetConnection;
 
   @observable
-  late bool isDarkTheme;
+  bool? isDarkTheme;
 
   @observable
   bool isParanoidEncryptionEnabled = true;

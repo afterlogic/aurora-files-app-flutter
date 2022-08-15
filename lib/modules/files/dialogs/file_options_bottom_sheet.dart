@@ -339,7 +339,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               leading: Icon(Icons.airplanemode_active),
               title: Text(s.offline),
               trailing: Switch.adaptive(
-                value: widget.file.localId != null,
+                value: widget.file.localId != -1,
                 activeColor: Theme.of(context).colorScheme.secondary,
                 onChanged: (bool val) =>
                     onItemSelected(FileOptionsBottomSheetResult.toggleOffline),

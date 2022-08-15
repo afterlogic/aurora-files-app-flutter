@@ -37,6 +37,7 @@ class _ImageViewerState extends State<ImageViewer> {
   late Widget builtImage;
   Future<Uint8List>? decryptFuture;
   BoxFit fit = BoxFit.cover;
+  Future? imagePrecached;
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _ImageViewerState extends State<ImageViewer> {
       Future.delayed(
         Duration(milliseconds: 250),
         () => _fileViewerState.getPreviewImage(
-            widget.password, (err) => showError(err), context),
+            widget.password, (err) => _showError(err), context),
       );
     } else if (_fileViewerState.file.initVector != null) {
       decryptFuture = _fileViewerState.decryptOfflineFile(widget.password);
@@ -59,11 +60,29 @@ class _ImageViewerState extends State<ImageViewer> {
     AppStore.filesState.clearCache();
   }
 
-  void showError(String err) {
+  void _showError(String err) {
     if (err == "Invalid password" || err == "Instance of 'CryptoException'") {
       _isError = true;
       setState(() {});
     } else if (err.isNotEmpty) showSnack(context, msg: err);
+  }
+
+  void _precacheImage(BuildContext context, Image image) {
+    if (imagePrecached == null) {
+      imagePrecached = precacheImage(
+        image.image,
+        context,
+        onError: (e, stack) {
+          imagePrecached = null;
+          Future.delayed(
+              Duration(milliseconds: 100),
+                  () => setState(
+                    () => _isError = true,
+              ));
+        },
+      );
+      imagePrecached?.whenComplete(() => imagePrecached = null);
+    }
   }
 
   Widget _buildImage() {
@@ -120,17 +139,7 @@ class _ImageViewerState extends State<ImageViewer> {
           fileWithContents,
           fit: fit,
         );
-        precacheImage(
-          image.image,
-          context,
-          onError: (e, stack) {
-            Future.delayed(
-                Duration(milliseconds: 100),
-                () => setState(
-                      () => _isError = true,
-                    ));
-          },
-        );
+        _precacheImage(context, image);
         return Positioned.fill(child: image);
       }
     }

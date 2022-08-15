@@ -69,7 +69,7 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _initExtendedProps() {
-    if (widget.file.extendedProps != null) {
+    if (widget.file.extendedProps.isNotEmpty) {
       try {
         _extendedProps = jsonDecode(widget.file.extendedProps);
       } catch (err) {
@@ -200,7 +200,7 @@ class _FileWidgetState extends State<FileWidget> {
     final filesState = _filesState;
     final filesPageState = _filesPageState;
     try {
-      if (widget.file.localId == null) {
+      if (widget.file.localId == -1) {
         showSnack(
           context,
           msg: s.synch_file_progress,
@@ -212,7 +212,7 @@ class _FileWidgetState extends State<FileWidget> {
         context,
         onStart: _subscribeToProgress,
         onSuccess: () {
-          if (widget.file.localId == null) {
+          if (widget.file.localId == -1) {
             showSnack(
               context,
               msg: s.synched_successfully,
@@ -435,25 +435,30 @@ class _FileWidgetState extends State<FileWidget> {
                           : Row(
                               children: <Widget>[
                                 if (_hasShares)
-                                  Icon(
-                                    Icons.share,
-                                    semanticLabel: s.label_share_with_teammates,
-                                  ),
-                                if (_hasShares) SizedBox(width: margin),
-                                if (widget.file.published)
-                                  Icon(
-                                    Icons.link,
-                                    semanticLabel: s.has_public_link,
+                                  Padding(
+                                    padding: EdgeInsets.only(right: margin),
+                                    child: Icon(
+                                      Icons.share,
+                                      semanticLabel:
+                                          s.label_share_with_teammates,
+                                    ),
                                   ),
                                 if (widget.file.published)
-                                  SizedBox(width: margin),
-                                if (widget.file.localId != null)
-                                  Icon(
-                                    Icons.airplanemode_active,
-                                    semanticLabel: s.available_offline,
+                                  Padding(
+                                    padding: EdgeInsets.only(right: margin),
+                                    child: Icon(
+                                      Icons.link,
+                                      semanticLabel: s.has_public_link,
+                                    ),
                                   ),
-                                if (widget.file.localId != null)
-                                  SizedBox(width: margin),
+                                if (widget.file.localId != -1)
+                                  Padding(
+                                    padding: EdgeInsets.only(right: margin),
+                                    child: Icon(
+                                      Icons.airplanemode_active,
+                                      semanticLabel: s.available_offline,
+                                    ),
+                                  ),
                                 Text(filesize(widget.file.size),
                                     style: Theme.of(context).textTheme.caption),
                                 SizedBox(width: margin),

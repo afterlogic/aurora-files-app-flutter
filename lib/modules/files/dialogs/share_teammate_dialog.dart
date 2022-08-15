@@ -240,6 +240,9 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
                 borderRadius: const BorderRadius.all(Radius.circular(4.0)),
               ),
             ),
+            dropdownSearchBaseStyle: TextStyle(
+              color: theme.colorScheme.onSurface,
+            ),
           );
 
     return Stack(

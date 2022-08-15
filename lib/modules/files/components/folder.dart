@@ -46,7 +46,7 @@ class _FolderWidgetState extends State<FolderWidget> {
   }
 
   void _initExtendedProps() {
-    if (widget.folder.extendedProps != null) {
+    if (widget.folder.extendedProps.isNotEmpty) {
       try {
         _extendedProps = jsonDecode(widget.folder.extendedProps);
       } catch (err) {
@@ -115,7 +115,7 @@ class _FolderWidgetState extends State<FolderWidget> {
                     scrollDirection: Axis.horizontal,
                     child: Text(widget.folder.name),
                   ),
-                  if (widget.folder.published || widget.folder.localId != null)
+                  if (widget.folder.published || widget.folder.localId != -1)
                     SizedBox(height: 7.0),
                   Theme(
                     data: Theme.of(context).copyWith(
@@ -126,12 +126,14 @@ class _FolderWidgetState extends State<FolderWidget> {
                     ),
                     child: Row(children: <Widget>[
                       if (widget.folder.published)
-                        Icon(
-                          Icons.link,
-                          semanticLabel: s.has_public_link,
+                        Padding(
+                          padding: EdgeInsets.only(right: margin),
+                          child: Icon(
+                            Icons.link,
+                            semanticLabel: s.has_public_link,
+                          ),
                         ),
-                      if (widget.folder.published) SizedBox(width: margin),
-                      if (widget.folder.localId != null)
+                      if (widget.folder.localId != -1)
                         Icon(
                           Icons.airplanemode_active,
                           semanticLabel: s.available_offline,

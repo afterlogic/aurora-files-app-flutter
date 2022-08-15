@@ -707,7 +707,7 @@ abstract class _FilesState with Store {
       throw CustomException("This file is occupied with another operation.");
     }
 
-    if (file.localId == null) {
+    if (file.localId == -1) {
       // if file exists in cache, just copy it to downloads folder
       final Directory dir = await getApplicationDocumentsDirectory();
       final offlineDir =

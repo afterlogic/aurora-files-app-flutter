@@ -95,7 +95,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     super.initState();
     _fileViewerState.fileState = widget.filesState;
     _file = widget.immutableFile;
-    _isFileOffline = _file.localId != null;
+    _isFileOffline = _file.localId != -1;
     _fileViewerState.file = widget.immutableFile;
     if (widget.offlineFile != null) {
       _fileViewerState.fileWithContents = widget.offlineFile;
@@ -280,7 +280,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           _isSyncingForOffline = true;
           _isFileOffline = !_isFileOffline;
         });
-        if (_file.localId == null) {
+        if (_file.localId == -1) {
           showSnack(
             context,
             msg: s.synch_file_progress,
@@ -295,7 +295,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             },
             onSuccess: () async {
               _fileViewerState.processingFile = null;
-              if (_file.localId == null) {
+              if (_file.localId == -1) {
                 showSnack(
                   context,
                   msg: s.synched_successfully,
@@ -634,7 +634,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     content: _file.name,
                     isPublic: _file.published,
                     isShared: _hasShares,
-                    isOffline: _file.localId != null,
+                    isOffline: _file.localId != -1,
                     isEncrypted: _file.initVector != null,
                   ),
                   Row(
@@ -674,7 +674,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     title: Text(s.offline),
                     trailing: Switch.adaptive(
                       value: _isFileOffline,
-                      activeColor: Theme.of(context).accentColor,
+                      activeColor: Theme.of(context).colorScheme.secondary,
                       onChanged: _isSyncingForOffline
                           ? null
                           : (bool val) => _setFileForOffline(),

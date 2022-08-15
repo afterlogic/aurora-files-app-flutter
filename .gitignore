@@ -80,7 +80,7 @@ crypto_plugin/ios/Classes/
 /ios/Flutter/flutter_export_environment.sh
 /lib/modules/auth/auth_data.dart
 /ios/BuildVariable.xcconfig
-/android/build_variable.properties
+/android/_build_variable.properties
 /lib/di/di.dart
 /android/key.properties
 /android/app/src/main/res/values/build_res.xml

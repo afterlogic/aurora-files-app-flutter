@@ -18,13 +18,11 @@ import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-import 'package:theme/app_theme.dart';
 
 import 'components/files_app_bar.dart';
 import 'components/files_list.dart';
@@ -270,8 +268,7 @@ class _FilesAndroidState extends State<FilesAndroid>
           ),
         ],
       );
-    } else if (_filesPageState.currentFiles == null ||
-        _filesPageState.currentFiles.length <= 0) {
+    } else if (_filesPageState.currentFiles.isEmpty) {
       return ListView(
         physics: AlwaysScrollableScrollPhysics(),
         children: [
@@ -433,14 +430,9 @@ class _FilesAndroidState extends State<FilesAndroid>
                       _filesPageState.isInsideZip
                   ? SizedBox()
                   : FloatingActionButton(
-                      backgroundColor: theme.accentColor,
+                      backgroundColor: theme.colorScheme.secondary,
                       heroTag: widget.path,
-                      child: IconTheme(
-                        data: AppTheme.floatIconTheme,
-                        child: Icon(
-                          Icons.add,
-                        ),
-                      ),
+                      child: Icon(Icons.add),
                       onPressed: () {
                         hideSnack(context);
                         Navigator.push(

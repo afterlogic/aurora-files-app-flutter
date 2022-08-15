@@ -52,6 +52,7 @@ class ShareTeammateDialogItem extends StatelessWidget {
                   share.principal.getLabel(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: theme.colorScheme.onSurface),
                 ),
               ),
             ),

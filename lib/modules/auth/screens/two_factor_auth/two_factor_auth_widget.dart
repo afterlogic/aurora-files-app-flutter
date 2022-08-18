@@ -13,7 +13,6 @@ import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:theme/app_color.dart';
 import 'package:theme/app_theme.dart';
 
 class TwoFactorAuthWidget extends StatefulWidget {
@@ -49,7 +48,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
             s.tfa_label,
             style: Theme.of(context)
                 .textTheme
-                .title
+                .headline6
                 .copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
@@ -128,9 +127,9 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
                       SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
-                        child: FlatButton(
+                        child: TextButton(
                           child: Text(
-                            "Other options",
+                            s.tfa_btn_other_options,
                             style: TextStyle(color: AppTheme.loginTextColor),
                           ),
                           onPressed: () {
@@ -154,11 +153,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
   }
 
   void _showError(BuildContext context, String error) {
-    showSnack(
-      context: context,
-      scaffoldState: Scaffold.of(context),
-      msg: error,
-    );
+    showSnack(context, msg: error);
   }
 
   _login() {

@@ -1,5 +1,4 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_dialog.dart';
@@ -45,21 +44,22 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
     );
     if (exportedDir is String) {
       showSnack(
-          context: context,
-          scaffoldState: _scaffoldKey.currentState,
-          msg: s.key_downloaded_into(exportedDir),
-          isError: false,
-          duration: Duration(minutes: 10),
-          action: SnackBarAction(
-            label: s.oK,
-            onPressed: _scaffoldKey.currentState.hideCurrentSnackBar,
-          ));
+        context,
+        msg: s.key_downloaded_into(exportedDir),
+        isError: false,
+        duration: Duration(minutes: 10),
+        action: SnackBarAction(
+          label: s.oK,
+          onPressed: () => hideSnack(context),
+        ),
+      );
     }
   }
 
   List<Widget> _buildAddingKey() {
     final spacer = const SizedBox(height: 10.0);
-    if (_settingsState.isParanoidEncryptionEnabled && _settingsState.selectedKeyName == null) {
+    if (_settingsState.isParanoidEncryptionEnabled &&
+        _settingsState.selectedKeyName == null) {
       return [
         Text(s.encryption_keys),
         SizedBox(height: 32.0),
@@ -82,16 +82,13 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         AMButton(
           child: Text(s.import_key_from_file),
           onPressed: () => _settingsState.onImportKeyFromFile(
-              onSuccess: () => showSnack(
-                  context: context,
-                  scaffoldState: _scaffoldKey.currentState,
-                  isError: false,
-                  msg: s.import_encryption_key_success),
-              onError: (err) => showSnack(
-                    context: context,
-                    scaffoldState: _scaffoldKey.currentState,
-                    msg: s.key_not_found_in_file,
-                  )),
+            onSuccess: () => showSnack(
+              context,
+              msg: s.import_encryption_key_success,
+              isError: false,
+            ),
+            onError: (err) => showSnack(context, msg: s.key_not_found_in_file),
+          ),
         ),
         spacer,
         AMButton(
@@ -127,7 +124,8 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         SizedBox(height: 32.0),
         AMButton(child: Text(s.share_key), onPressed: _shareKey),
         if (!PlatformOverride.isIOS) spacer,
-        if (!PlatformOverride.isIOS) AMButton(child: Text(s.download_key), onPressed: _downloadKey),
+        if (!PlatformOverride.isIOS)
+          AMButton(child: Text(s.download_key), onPressed: _downloadKey),
         spacer,
         AMButton(
           color: theme.errorColor,
@@ -146,8 +144,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
             );
             if (result == DeleteKeyConfirmationDialogResult.delete) {
               showSnack(
-                context: context,
-                scaffoldState: _scaffoldKey.currentState,
+                context,
                 msg: s.delete_encryption_key_success,
                 isError: false,
               );

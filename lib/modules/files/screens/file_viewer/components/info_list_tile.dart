@@ -43,7 +43,7 @@ class _InfoListTileState extends State<InfoListTile> {
           if (widget.isShared)
           Icon(
             Icons.share,
-            semanticLabel: s.btn_share_to_email,
+            semanticLabel: s.label_share_with_teammates,
           ),
           if (widget.isPublic) SizedBox(width: 10),
           if (widget.isPublic)

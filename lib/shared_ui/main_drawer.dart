@@ -1,15 +1,15 @@
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
-import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MainDrawer extends StatelessWidget {
   void _showAvailableSpaceInfo(BuildContext context, Quota quota) {
@@ -48,7 +48,7 @@ class MainDrawer extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         AppStore.authState.friendlyName ?? "",
-                        style: theme.textTheme.title,
+                        style: theme.textTheme.headline6,
                       ),
                       SizedBox(height: 8.0),
                       Row(
@@ -96,38 +96,40 @@ class MainDrawer extends StatelessWidget {
                     padding: EdgeInsets.only(top: 10.0),
                     children: <Widget>[
                       ...filesState.currentStorages.map((Storage storage) {
-                        if (storage.type == "encrypted" &&
+                        if (storage.type == StorageType.encrypted &&
                             !settingsState.isParanoidEncryptionEnabled) {
-                          return SizedBox();
+                          return SizedBox.shrink();
                         }
-
                         bool enable = true;
                         if (filesState.isMoveModeEnabled ||
                             filesState.isShareUpload) {
-                          if (storage.type == "shared") {
+                          if (storage.type == StorageType.shared) {
                             enable = false;
                           }
                         }
                         if (filesState.isMoveModeEnabled) {
-                          final copyFromEncrypted =
-                              filesState.filesToMoveCopy.first.type ==
-                                  "encrypted";
+                          final copyFromEncrypted = StorageTypeHelper.toEnum(
+                                  filesState.filesToMoveCopy.first.type) ==
+                              StorageType.encrypted;
                           if (copyFromEncrypted) {
-                            if (storage.type != "encrypted") {
+                            if (storage.type != StorageType.encrypted) {
                               enable = false;
                             }
-                          }else{
-                            if (storage.type == "encrypted") {
+                          } else {
+                            if (storage.type == StorageType.encrypted) {
                               enable = false;
                             }
                           }
                         }
+                        final isSelected =
+                            filesState.selectedStorage.type == storage.type;
+                        final color =
+                            isSelected ? Theme.of(context).primaryColor : null;
                         return Container(
                           child: ListTile(
                             enabled: enable,
-                            selected:
-                                filesState.selectedStorage.type == storage.type,
-                            leading: Icon(Icons.storage),
+                            selected: isSelected,
+                            leading: _getStorageIcon(storage.type, color),
                             title: Text(storage.displayName),
                             onTap: () async {
                               filesState.selectedStorage = storage;
@@ -196,5 +198,24 @@ class MainDrawer extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _getStorageIcon(StorageType type, Color color) {
+    switch (type) {
+      case StorageType.encrypted:
+        return SvgPicture.asset(Asset.svg.iconStorageEncrypted,
+            width: 24, height: 24, color: color);
+      case StorageType.shared:
+        return SvgPicture.asset(Asset.svg.iconStorageShared,
+            width: 24, height: 24, color: color);
+      case StorageType.personal:
+        return SvgPicture.asset(Asset.svg.iconStoragePersonal,
+            width: 24, height: 24, color: color);
+      case StorageType.corporate:
+        return SvgPicture.asset(Asset.svg.iconStorageCorporate,
+            width: 24, height: 24, color: color);
+      default:
+        return Icon(Icons.storage, color: color);
+    }
   }
 }

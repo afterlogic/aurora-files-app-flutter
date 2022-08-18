@@ -3,12 +3,16 @@ import 'dart:convert';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/account.dart';
 import 'package:aurorafiles/models/api_body.dart';
+import 'package:aurorafiles/models/contact_group.dart';
 import 'package:aurorafiles/models/folder.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/models/share_access_history.dart';
+import 'package:aurorafiles/models/share_principal.dart';
+import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-
-import '../../app_store.dart';
+import 'package:flutter/cupertino.dart';
 
 class MailApi {
   Future<List<Recipient>> getRecipient() async {
@@ -102,13 +106,14 @@ class MailApi {
     }
   }
 
-  Future<List<Recipient>> searchContact(String pattern) async {
+  Future<List<SharePrincipal>> searchContact(String pattern) async {
     final parameters = {
       "Search": pattern,
       "Storage": "team",
       "SortField": 3,
       "SortOrder": 1,
       "WithGroups": false,
+      "WithUserGroups": true,
       "WithoutTeamContactsDuplicates": true,
     };
     final body = new ApiBody(
@@ -120,9 +125,47 @@ class MailApi {
     final res = (await sendRequest(body)) as Map;
 
     if (res.containsKey("Result")) {
-      return (res["Result"]["List"] as List)
-          .map((item) => Recipient.fromJson(item))
-          .toList();
+      final List<SharePrincipal> principals = [];
+      final list = res["Result"]["List"] as List;
+      if (list?.isNotEmpty == true) {
+        list.forEach((map) {
+          if (map["IsGroup"] != null) {
+            final group = ContactGroup.fromJson(map);
+            principals.add(group);
+          } else if (map["IdUser"] != null) {
+            final recipient = Recipient.fromJson(map);
+            principals.add(recipient);
+          }
+        });
+      }
+      return principals;
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> shareFileToTeammate(
+    LocalFile localFile,
+    List<ShareAccessEntry> shares,
+  ) async {
+    final shareList = shares.map((e) => e.toMap()).toList();
+    final parameters = {
+      "Storage": localFile.type,
+      "Path": localFile.path,
+      "Id": localFile.id,
+      "Shares": shareList,
+      "IsDir": localFile.isFolder,
+    };
+    final body = new ApiBody(
+      module: "SharedFiles",
+      method: "UpdateShare",
+      parameters: json.encode(parameters),
+    );
+
+    final res = (await sendRequest(body)) as Map;
+
+    if (res["Result"] == true) {
+      return shareList;
     } else {
       throw CustomException(getErrMsg(res));
     }
@@ -157,6 +200,79 @@ class MailApi {
 
     if (res["Result"] == true) {
       return;
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<ShareAccessHistory> getFileShareHistory({
+    @required LocalFile file,
+    int offset = 0,
+    int limit = 5,
+  }) async {
+    final parameters = {
+      "ResourceType": "file",
+      "ResourceId": file.type + file.fullPath,
+      "Offset": offset,
+      "Limit": limit,
+    };
+    final body = new ApiBody(
+      module: "ActivityHistory",
+      method: "GetList",
+      parameters: json.encode(parameters),
+    );
+
+    final res = (await sendRequest(body)) as Map;
+
+    if (res.containsKey("Result")) {
+      return ShareAccessHistory.fromJson(res["Result"]);
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<bool> deleteFileShareHistory({
+    @required LocalFile file,
+  }) async {
+    final parameters = {
+      "ResourceType": "file",
+      "ResourceId": file.type + file.fullPath,
+    };
+    final body = new ApiBody(
+      module: "ActivityHistory",
+      method: "Delete",
+      parameters: json.encode(parameters),
+    );
+
+    final res = (await sendRequest(body)) as Map;
+
+    if (res.containsKey("Result")) {
+      return true;
+    } else {
+      throw CustomException(getErrMsg(res));
+    }
+  }
+
+  Future<bool> leaveFileShare({
+    @required LocalFile file,
+  }) async {
+    final parameters = {
+      "Type": file.type,
+      "Path": file.path,
+      "Items": [
+        {"Path": file.path, "Name": file.name, "IsFolder": file.isFolder}
+      ],
+    };
+    final body = new ApiBody(
+      module: "Files",
+      method: "LeaveShare",
+      parameters: json.encode(parameters),
+    );
+
+    final res = (await sendRequest(body)) as Map;
+
+    if (res.containsKey("Result")) {
+      return true;
     } else {
       throw CustomException(getErrMsg(res));
     }

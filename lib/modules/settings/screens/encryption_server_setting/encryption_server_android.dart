@@ -133,10 +133,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
       Navigator.pop(context);
     } catch (err) {
       _setProgress(false);
-      showSnack(
-          context: context,
-          scaffoldState: scaffoldKey.currentState,
-          msg: err.toString());
+      showSnack(context, msg: err.toString());
     }
   }
 
@@ -176,15 +173,13 @@ class _EncryptionServerState extends State<EncryptionServer> {
       ),
     );
     if (exportedDir is String) {
-      showSnack(
-          context: context,
-          scaffoldState: scaffoldKey.currentState,
+      showSnack(context,
           msg: s.key_downloaded_into(exportedDir),
           isError: false,
           duration: Duration(minutes: 10),
           action: SnackBarAction(
             label: s.oK,
-            onPressed: scaffoldKey.currentState.hideCurrentSnackBar,
+            onPressed: () => hideSnack(context),
           ));
     }
   }
@@ -215,16 +210,13 @@ class _EncryptionServerState extends State<EncryptionServer> {
         AMButton(
           child: Text(s.import_key_from_file),
           onPressed: () => _settingsState.onImportKeyFromFile(
-              onSuccess: () => showSnack(
-                  context: context,
-                  scaffoldState: scaffoldKey.currentState,
-                  isError: false,
-                  msg: s.import_encryption_key_success),
-              onError: (err) => showSnack(
-                    context: context,
-                    scaffoldState: scaffoldKey.currentState,
-                    msg: s.key_not_found_in_file,
-                  )),
+            onSuccess: () => showSnack(
+              context,
+              msg: s.import_encryption_key_success,
+              isError: false,
+            ),
+            onError: (err) => showSnack(context, msg: s.key_not_found_in_file),
+          ),
         ),
         spacer,
       ];
@@ -273,8 +265,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
             );
             if (result == DeleteKeyConfirmationDialogResult.delete) {
               showSnack(
-                context: context,
-                scaffoldState: scaffoldKey.currentState,
+                context,
                 msg: s.delete_encryption_key_success,
                 isError: false,
               );

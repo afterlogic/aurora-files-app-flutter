@@ -244,8 +244,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   @override
   Future<void> showError(String error) async {
     showSnack(
-      context: context,
-      scaffoldState: _scaffoldKey.currentState,
+      context,
       msg: error,
       isError: true,
     );

@@ -83,7 +83,9 @@ abstract class _FilesPageState with Store {
     try {
       filesLoading = showLoading;
       final response = await _filesApi.getFiles(
-        AppStore.filesState.selectedStorage.type,
+        StorageTypeHelper.toName(
+          AppStore.filesState.selectedStorage.type,
+        ),
         path != null ? path : pagePath,
         searchPattern,
       );
@@ -114,7 +116,7 @@ abstract class _FilesPageState with Store {
       } else {
         currentFiles = filesFromServer;
       }
-    } catch (err, s) {
+    } catch (err) {
       if (!AppStore.filesState.isOfflineMode &&
           AppStore.settingsState.internetConnection !=
               ConnectivityResult.none) {
@@ -178,7 +180,7 @@ abstract class _FilesPageState with Store {
   }
 
   // supports both extracting files from selected ids and passing file(s) directly
-  void onDeleteFiles({
+  Future<void> onDeleteFiles({
     List<LocalFile> filesToDelete,
     @required Storage storage,
     @required Function onSuccess,
@@ -212,7 +214,11 @@ abstract class _FilesPageState with Store {
 
     try {
       filesLoading = FilesLoadingType.filesVisible;
-      await _filesApi.delete(storage.type, pagePath, mappedFilesToDelete);
+      await _filesApi.delete(
+        StorageTypeHelper.toName(storage.type),
+        pagePath,
+        mappedFilesToDelete,
+      );
       await _filesLocal.deleteFilesFromCache(files: filesToDeleteFromCache);
       await _filesDao.deleteFiles(filesToDeleteLocally);
       onSuccess();
@@ -229,8 +235,11 @@ abstract class _FilesPageState with Store {
     Function(String) onError,
   }) async {
     try {
-      final String newFolderNameFromServer =
-          await _filesApi.createFolder(storage.type, pagePath, folderName);
+      final String newFolderNameFromServer = await _filesApi.createFolder(
+        StorageTypeHelper.toName(storage.type),
+        pagePath,
+        folderName,
+      );
       onSuccess(newFolderNameFromServer);
     } catch (err) {
       onError(err.toString());

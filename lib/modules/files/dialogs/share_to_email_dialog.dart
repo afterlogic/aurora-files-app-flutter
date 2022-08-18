@@ -40,8 +40,12 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   Set<String> pgpKeysEmail = {};
   String error;
 
-  Future<List<Recipient>> searchContact(String pattern) {
-    return widget.fileState.searchContact(pattern.replaceAll(" ", ""));
+  Future<List<Recipient>> searchContact(String pattern) async {
+    final principals =
+        await widget.fileState.searchContact(pattern.replaceAll(" ", ""));
+    final List<Recipient> recipients =
+        principals.where((e) => e is Recipient).toList();
+    return recipients;
   }
 
   share() async {
@@ -121,7 +125,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   Widget build(BuildContext context) {
     s = Str.of(context);
     return AMDialog(
-      title: Text(s.btn_share_to_email),
+      title: Text(s.label_share_with_teammates),
       content: SizedBox(
         width: double.infinity,
         child: SingleChildScrollView(
@@ -161,12 +165,12 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
         ),
       ),
       actions: [
-        FlatButton(
+        TextButton(
           focusNode: btnFocus,
-          child: Text(s.btn_share_save),
+          child: Text(s.label_save),
           onPressed: progress ? null : share,
         ),
-        FlatButton(
+        TextButton(
           child: Text(s.cancel),
           onPressed: () => Navigator.pop(context),
         )

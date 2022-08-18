@@ -10,12 +10,16 @@ import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/secure_link.dart';
+import 'package:aurorafiles/models/share_access_history.dart';
+import 'package:aurorafiles/models/share_access_history_item.dart';
+import 'package:aurorafiles/models/share_principal.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_api.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
+import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/download_directory.dart';
@@ -38,7 +42,12 @@ part 'files_state.g.dart';
 class FilesState = _FilesState with _$FilesState;
 
 final dummyStorage = new Storage(
-    type: "", displayName: "", isExternal: false, isDroppable: false, order: 0);
+  type: StorageType.personal,
+  displayName: "",
+  isExternal: false,
+  isDroppable: false,
+  order: 0,
+);
 
 // Global files state
 abstract class _FilesState with Store {
@@ -158,21 +167,23 @@ abstract class _FilesState with Store {
 
   Future<void> refreshQuota() async {
     final response = await _filesApi.getFiles(
-      AppStore.filesState.selectedStorage.type,
+      StorageTypeHelper.toName(
+        AppStore.filesState.selectedStorage.type,
+      ),
       "",
       "",
     );
     quota = response.quota;
   }
 
-  Future<LocalFile> getFileFromServer(LocalFile file) {
-    return _filesApi.getFiles(file.type, file.path, file.name).then(
-          (value) => value.items.firstWhere(
-            (element) => element.name == file.name,
-            orElse: () => null,
-          ),
-        );
-  }
+  // Future<LocalFile> getFileFromServer(LocalFile file) {
+  //   return _filesApi.getFiles(file.type, file.path, file.name).then(
+  //         (value) => value.items.firstWhere(
+  //           (element) => element.name == file.name,
+  //           orElse: () => null,
+  //         ),
+  //       );
+  // }
 
   onUploadShared(List<SharedMediaFile> files) {
     isShareUpload = true;
@@ -215,7 +226,7 @@ abstract class _FilesState with Store {
           onUploadStart: (_) {},
           onSuccess: onSuccess,
           onError: onError,
-          shouldEncrypt: selectedStorage.type == "encrypted",
+          shouldEncrypt: selectedStorage.type == StorageType.encrypted,
         );
       }
     } catch (e) {}
@@ -252,7 +263,7 @@ abstract class _FilesState with Store {
         copy: copy,
         files: mappedFiles,
         fromType: filesToMoveCopy[0].type,
-        toType: selectedStorage.type,
+        toType: StorageTypeHelper.toName(selectedStorage.type),
         fromPath: filesToMoveCopy[0].path,
         toPath: toPath,
       );
@@ -314,7 +325,12 @@ abstract class _FilesState with Store {
   }) async {
     try {
       final String link = await _filesApi.createPublicLink(
-          selectedStorage.type, path, name, size, isFolder);
+        StorageTypeHelper.toName(selectedStorage.type),
+        path,
+        name,
+        size,
+        isFolder,
+      );
       onSuccess(link);
     } catch (err) {
       onError(err.toString());
@@ -334,7 +350,7 @@ abstract class _FilesState with Store {
   }) async {
     try {
       final SecureLink result = await _filesApi.createSecureLink(
-        selectedStorage.type,
+        StorageTypeHelper.toName(selectedStorage.type),
         path,
         name,
         size,
@@ -356,7 +372,11 @@ abstract class _FilesState with Store {
     @required Function(String) onError,
   }) async {
     try {
-      await _filesApi.deletePublicLink(selectedStorage.type, path, name);
+      await _filesApi.deletePublicLink(
+        StorageTypeHelper.toName(selectedStorage.type),
+        path,
+        name,
+      );
       onSuccess();
     } catch (err) {
       onError(err.toString());
@@ -482,7 +502,7 @@ abstract class _FilesState with Store {
         shouldEncrypt,
         name: name,
         passwordEncryption: passwordEncryption,
-        storageType: selectedStorage.type,
+        storageType: StorageTypeHelper.toName(selectedStorage.type),
         path: path,
         password: password,
         encryptionRecipientEmail: encryptionRecipientEmail,
@@ -496,7 +516,7 @@ abstract class _FilesState with Store {
           onError(err.toString());
         },
       );
-    } catch (err, s) {
+    } catch (err) {
       deleteFromProcessing(processingFile.guid);
       onError(err.toString());
     }
@@ -586,7 +606,7 @@ abstract class _FilesState with Store {
         );
         processingFile.subscription = sub;
       }
-    } catch (err, s) {
+    } catch (err) {
       onError(err.toString());
       deleteFromProcessing(file.guid);
     }
@@ -827,12 +847,61 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future<List<Recipient>> searchContact(String pattern) async {
+  Future<List<SharePrincipal>> searchContact(String pattern) async {
     return _mailApi.searchContact(pattern);
+  }
+
+  Future<List<ShareAccessEntry>> getFileShares(LocalFile file) async {
+    final props = await _filesApi.getFileExtendedProps(file);
+    final result = <ShareAccessEntry>[];
+    if (props["Shares"] == null) {
+      return result;
+    }
+    final shares = props["Shares"] as List;
+    for (final value in shares) {
+      final share = ShareAccessEntry.fromShareJson(value);
+      if (share != null) {
+        result.add(share);
+      }
+    }
+    return result;
+  }
+
+  Future<List<Map>> shareFileToTeammate(
+      LocalFile localFile, List<ShareAccessEntry> shares) async {
+    return _mailApi.shareFileToTeammate(localFile, shares);
   }
 
   Future<void> shareFileToContact(
       LocalFile localFile, Set<String> canEdit, Set<String> canSee) async {
     return _mailApi.shareFileToContact(localFile, canEdit, canSee);
+  }
+
+  Future<ShareAccessHistory> getFileShareHistory(LocalFile file) async {
+    final itemsPerPage = 100;
+    int page = 0;
+    int totalCount = 0;
+    List<ShareAccessHistoryItem> items = [];
+
+    do {
+      final chunk = await _mailApi.getFileShareHistory(
+        file: file,
+        offset: page * itemsPerPage,
+        limit: itemsPerPage,
+      );
+      totalCount = chunk.count;
+      items.addAll(chunk.items);
+      page++;
+    } while (items.length < totalCount);
+
+    return ShareAccessHistory(count: totalCount, items: items);
+  }
+
+  Future<bool> deleteFileShareHistory(LocalFile file) {
+    return _mailApi.deleteFileShareHistory(file: file);
+  }
+
+  Future<bool> leaveFileShare(LocalFile file) {
+    return _mailApi.leaveFileShare(file: file);
   }
 }

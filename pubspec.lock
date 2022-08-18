@@ -48,10 +48,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "42557b6607b63bae952327a13a6901e9a47b9ac1"
+      resolved-ref: "8ac1aab0148f1ad8bc3dd014c8e1d00ea09455a3"
       url: "https://github.com/afterlogic/aurora_logger_flutter"
     source: git
-    version: "0.0.2"
+    version: "0.0.3"
   aurora_ui_kit:
     dependency: "direct main"
     description:
@@ -324,6 +324,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  dropdown_search:
+    dependency: "direct main"
+    description:
+      name: dropdown_search
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   encrypt:
     dependency: "direct main"
     description:

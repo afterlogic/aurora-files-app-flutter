@@ -48,14 +48,12 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       path: filesPageState.pagePath,
       name: widget.file.name,
       size: widget.file.size,
+      isFolder: widget.file.isFolder,
       onSuccess: (link) async {
         Clipboard.setData(ClipboardData(text: link));
         setState(() => _isGettingPublicLink = false);
         showSnack(
-          context: context,
-          scaffoldState: widget.scaffoldKey != null
-              ? widget.scaffoldKey.currentState
-              : filesPageState.scaffoldKey.currentState,
+          context,
           msg: s.link_coppied_to_clipboard,
           isError: false,
         );
@@ -68,13 +66,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = false;
-        showSnack(
-          context: context,
-          scaffoldState: widget.scaffoldKey != null
-              ? widget.scaffoldKey.currentState
-              : filesPageState.scaffoldKey.currentState,
-          msg: err,
-        );
+        showSnack(context, msg: err);
       }),
     );
   }
@@ -91,13 +83,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = true;
-        showSnack(
-          context: context,
-          scaffoldState: widget.scaffoldKey != null
-              ? widget.scaffoldKey.currentState
-              : filesPageState.scaffoldKey.currentState,
-          msg: err,
-        );
+        showSnack(context, msg: err);
       }),
     );
   }

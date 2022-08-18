@@ -1,40 +1,34 @@
 import 'package:flutter/material.dart';
 
-void showSnack({
-  @required BuildContext context,
-  @required ScaffoldState scaffoldState,
+void showSnack(
+  BuildContext context, {
   @required String msg,
   Duration duration = const Duration(seconds: 5),
   SnackBarAction action,
   isError = true,
 }) {
-  if (Theme == null || scaffoldState == null) return;
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  if (Theme == null || scaffoldMessenger == null) return;
   if (isError) {
     print(msg);
   }
   final theme = Theme.of(context);
-  final snack = theme.brightness == Brightness.light
-      ? SnackBar(
-          duration: duration,
-          content: Text(
-            msg,
-            style: TextStyle(
-                color: !isError ? theme.scaffoldBackgroundColor : Colors.white),
-          ),
-          backgroundColor: isError ? theme.errorColor : null,
-          action: action,
-        )
-      : SnackBar(
-          duration: duration,
-          content: Text(
-            msg,
-            style: TextStyle(
-                color: !isError ? theme.scaffoldBackgroundColor : Colors.white),
-          ),
-          backgroundColor: isError ? theme.errorColor : null,
-          action: action,
-        );
+  final textColor = !isError ? theme.scaffoldBackgroundColor : Colors.white;
+  final backgroundColor = isError ? theme.errorColor : null;
+  final snack = SnackBar(
+    duration: duration,
+    content: Text(
+      msg,
+      style: TextStyle(color: textColor),
+    ),
+    backgroundColor: backgroundColor,
+    action: action,
+  );
 
-  scaffoldState.removeCurrentSnackBar();
-  scaffoldState.showSnackBar(snack);
+  scaffoldMessenger.clearSnackBars();
+  scaffoldMessenger.showSnackBar(snack);
+}
+
+void hideSnack(BuildContext context) {
+  ScaffoldMessenger.of(context).clearSnackBars();
 }

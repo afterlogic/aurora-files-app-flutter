@@ -265,10 +265,9 @@ class EnString extends S {
       "Enable Paranoid Encryption";
   final String btn_encryption_enable = "Enable Paranoid Encryption";
   final String label_encryption_mode = "Encrypt uploaded files";
-  final String btn_encryption_save = "Save";
+  final String label_save = "Save";
   final String label_encryption_password_for_pgp_key =
       "Required password for PGP key";
-  final String btn_share_save = "Save";
   final String label_pgp_import_key = "Import keys";
   final String hint_pgp_already_have_keys =
       "Keys which are already in the system are greyed out.";
@@ -279,7 +278,7 @@ class EnString extends S {
   final String label_pgp_contact_public_keys = "External public keys";
   String error_pgp_required_key(String user) =>
       "No private key found for $user user.";
-  final String btn_share_to_email = "Share with teammates";
+  final String label_share_with_teammates = "Share with teammates";
   final String hint_pgp_share_warning =
       "You are going to share you private PGP key. The key must be kept from the 3rd parties. Do you want to continue?";
   final String label_pgp_share_warning = "Warning";
@@ -345,4 +344,10 @@ class EnString extends S {
       "External private keys are not supported and will not be imported";
   final String label_encryption_module_not_exist =
       "The encryption module\nis not available on the backend";
+  final String label_leave_share = "Leave share";
+  final String label_leave_share_of = "Leave share of the ";
+  final String label_share_history_title = "Shared file activity history";
+  final String hint_select_teammate = "Select teammate";
+  final String label_no_share = "No shares yet";
+  final String label_show_history = "Show history";
 }

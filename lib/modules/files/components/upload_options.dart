@@ -28,11 +28,7 @@ class _UploadOptionsState extends State<UploadOptions> {
     widget.filesState.uploadShared(context,
         toPath: widget.filesPageState.pagePath, onSuccess: () async {
       await widget.filesPageState.onGetFiles(
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-          msg: err,
-        ),
+        onError: (String err) => showSnack(context, msg: err),
       );
       setState(() => _buttonsDisabled = false);
       widget.filesState.disableUploadShared();
@@ -41,11 +37,7 @@ class _UploadOptionsState extends State<UploadOptions> {
     }, onError: (err) {
       setState(() => _buttonsDisabled = false);
       widget.filesPageState.filesLoading = FilesLoadingType.none;
-      showSnack(
-        context: context,
-        scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-        msg: err,
-      );
+      showSnack(context, msg: err);
     });
   }
 
@@ -63,16 +55,24 @@ class _UploadOptionsState extends State<UploadOptions> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              FlatButton(
-                child: Text(s.cancel),
-                textColor: Theme.of(context).iconTheme.color,
+              TextButton(
+                child: Text(
+                  s.cancel,
+                  style: TextStyle(
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                ),
                 onPressed: () {
                   widget.filesState.disableUploadShared();
                 },
               ),
-              FlatButton(
-                child: Text(s.upload),
-                textColor: Theme.of(context).iconTheme.color,
+              TextButton(
+                child: Text(
+                  s.upload,
+                  style: TextStyle(
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                ),
                 onPressed: _buttonsDisabled
                     ? null
                     : () => _uploadFiles(context, false),

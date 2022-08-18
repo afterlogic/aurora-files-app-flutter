@@ -27,10 +27,16 @@ abstract class _SettingsState with Store {
   bool isParanoidEncryptionEnabled = true;
 
   @observable
-  Map<String, String> encryptionKeys = new Map();
+  Map<String, String> encryptionKeys = {};
 
   @observable
   String selectedKeyName;
+
+  List<String> _availableModules = [];
+
+  bool get isTeamSharingEnable =>
+      BuildProperty.teamSharingEnable &&
+      _availableModules.contains('SharedFiles');
 
   String get currentKey => encryptionKeys[selectedKeyName];
 
@@ -180,5 +186,14 @@ abstract class _SettingsState with Store {
     await _settingsLocal.setEncryptEnable(setting.enable);
     await _settingsLocal
         .setEncryptInPersonalStorage(setting.enableInPersonalStorage);
+  }
+
+  Future<void> updateAppData() async {
+    try {
+      final appData = await settingApi.getAppData();
+      _availableModules = appData.availableClientModules;
+    } catch (err) {
+      print("getAppData ERROR: $err");
+    }
   }
 }

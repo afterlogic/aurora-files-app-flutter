@@ -26,7 +26,7 @@ class SettingApi {
     }
   }
 
-  Future setEncryptSetting(EncryptionSetting encryptionSetting) async {
+  Future<void> setEncryptSetting(EncryptionSetting encryptionSetting) async {
     final parameters = json.encode({
       "EnableModule": encryptionSetting.enable,
       "EnableInPersonalStorage": encryptionSetting.enableInPersonalStorage,
@@ -45,6 +45,26 @@ class SettingApi {
       throw CustomException(getErrMsg(resBody));
     }
   }
+
+  Future<AppData> getAppData() async {
+    final body = ApiBody(
+      module: "Core",
+      method: "GetAppData",
+    );
+    final resBody = await sendRequest(body);
+    final result = resBody['Result'];
+    if (result != null) {
+      final modules = (result['Core']['AvailableClientModules'] as List)
+          .map((e) => e as String)
+          .toList();
+      final appData = AppData(
+        availableClientModules: modules,
+      );
+      return appData;
+    } else {
+      throw CustomException(getErrMsg(resBody));
+    }
+  }
 }
 
 class EncryptionSetting {
@@ -57,4 +77,10 @@ class EncryptionSetting {
     @required this.enable,
     @required this.enableInPersonalStorage,
   });
+}
+
+class AppData {
+  final List<String> availableClientModules;
+
+  AppData({@required this.availableClientModules});
 }

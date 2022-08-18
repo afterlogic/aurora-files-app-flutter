@@ -57,6 +57,7 @@ class _AppState extends State<App> {
 
   Future _updateAppSettings() async {
     _settingsState.updateEncryptionSettings();
+    _settingsState.updateAppData();
   }
 
   ThemeData _getTheme(bool isDarkTheme) {

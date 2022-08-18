@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +112,7 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
                 borderRadius: BorderRadius.circular(size),
                 border: Border.all(color: Color(0xFF007bff), width: 6)),
             child: Image.asset(
-              "lib/assets/images/use_key.png",
+              Asset.images.useKey,
               width: size,
               height: size,
             ),

@@ -2,7 +2,6 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-// import 'package:aurorafiles/modules/auth/auth_data.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/screens/fido_auth/fido_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';
@@ -119,28 +118,19 @@ class _AuthAndroidState extends State<AuthAndroid> {
           UpgradeRoute.name,
           arguments: UpgradeArg(message),
         ),
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: Scaffold.of(context),
-          msg: err,
-        ),
+        onError: (String err) => showSnack(context, msg: err),
       );
       if (showHost) {
 //        _authState.hostCtrl.text = _authState.hostName;
         setState(() => _showHostField = true);
         showSnack(
-          context: context,
-          scaffoldState: Scaffold.of(context),
-          duration: Duration(seconds: 6),
+          context,
           msg: s.enter_host,
+          duration: Duration(seconds: 6),
         );
       }
     } else {
-      showSnack(
-        context: context,
-        scaffoldState: Scaffold.of(context),
-        msg: errMsg,
-      );
+      showSnack(context, msg: errMsg);
     }
   }
 

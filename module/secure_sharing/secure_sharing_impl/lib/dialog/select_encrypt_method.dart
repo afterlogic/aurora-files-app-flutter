@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
@@ -52,7 +51,6 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
       child: Stack(
         children: <Widget>[
           ListView(
-
             padding: EdgeInsets.all(0),
             children: <Widget>[
               RecipientWidget(
@@ -103,7 +101,9 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
                     ? s.password_sign
                     : widget.pgpKey == null
                         ? s.sign_data_with_not_key(s.data)
-                        : useSign ? s.data_signed : s.data_not_signed(s.data),
+                        : useSign
+                            ? s.data_signed
+                            : s.data_not_signed(s.data),
                 style: theme.textTheme.caption,
               )
             ],
@@ -119,13 +119,13 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
     );
 
     final actions = <Widget>[
-      FlatButton(
+      TextButton(
         child: Text(s.encrypt),
         onPressed: () {
           checkSign();
         },
       ),
-      FlatButton(
+      TextButton(
         child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);
@@ -237,6 +237,7 @@ class RadioAnalog extends StatelessWidget {
         : Radio(
             value: false,
             groupValue: !isCheck,
+            onChanged: null,
           );
   }
 }

@@ -53,20 +53,12 @@ class _AboutAndroidState extends State<AboutAndroid> {
     setState(() => loading = true);
     final packageInfo = await PackageInfo.fromPlatform();
     _appName = packageInfo.appName;
-    _version =
-        _getPackageVersion(packageInfo.version, packageInfo.buildNumber) +
-            "+" +
-            packageInfo.buildNumber;
+    _version = _getPackageVersion(packageInfo.version, packageInfo.buildNumber);
     setState(() => loading = false);
   }
 
   String _getPackageVersion(String version, String build) {
-    if (Platform.isAndroid) {
-      final startIndex = version.length - build.length - 1;
-      return version.replaceFirst(build, '', startIndex);
-    } else {
-      return version;
-    }
+    return Platform.isAndroid ? version : '$version+$build';
   }
 
   @override
@@ -85,7 +77,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(_appName, style: Theme.of(context).textTheme.title),
+                Text(_appName, style: Theme.of(context).textTheme.headline6),
                 SizedBox(height: 12.0),
                 Text(
                   s.version(_version),

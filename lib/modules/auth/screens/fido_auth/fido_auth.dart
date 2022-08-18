@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/generated/string/s.dart';
@@ -15,7 +13,6 @@ import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:theme/app_color.dart';
 import 'package:theme/app_theme.dart';
 
 import 'nfc_dialog.dart';
@@ -77,7 +74,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
             s.tfa_label,
             style: Theme.of(context)
                 .textTheme
-                .title
+                .headline6
                 .copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
@@ -146,7 +143,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                           Text(
                             s.fido_error_title,
                             textAlign: TextAlign.center,
-                            style: theme.textTheme.title
+                            style: theme.textTheme.headline6
                                 .copyWith(color: AppTheme.loginTextColor),
                           ),
                           SizedBox(height: 10),
@@ -159,7 +156,6 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                           SizedBox(
                             width: double.infinity,
                             child: AMButton(
-
                               child: Text(
                                 s.fido_btn_try_again,
                                 style:
@@ -177,7 +173,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                           SizedBox(height: 20),
                           SizedBox(
                             width: double.infinity,
-                            child: FlatButton(
+                            child: TextButton(
                               child: Text(
                                 s.tfa_btn_other_options,
                                 style:
@@ -201,13 +197,11 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                             child: Column(
                             children: [
                               CircularProgressIndicator(),
-                              FlatButton(
+                              TextButton(
                                 onPressed: () {
                                   bloc.add(Cancel());
                                 },
-                                child: Text(
-                                  s.cancel,
-                                ),
+                                child: Text(s.cancel),
                               )
                             ],
                           ))
@@ -221,6 +215,6 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
   }
 
   void _showError(BuildContext context, String msg) {
-    showSnack(context: context, scaffoldState: Scaffold.of(context), msg: msg);
+    showSnack(context, msg: msg);
   }
 }

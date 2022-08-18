@@ -168,8 +168,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>{
     }
     final result = await widget._pgpKeyUtil.downloadKey(widget._pgpKey);
     showSnack(
-      context: context,
-      scaffoldState: _scaffoldKey.currentState,
+      context,
       msg: s.downloading_to(result.path),
       isError: false,
     );

@@ -297,19 +297,20 @@ class _FilesAppBarState extends State<FilesAppBar>
                   bool enable = true;
                   if (_filesState.isMoveModeEnabled ||
                       _filesState.isShareUpload) {
-                    if (storage.type == "shared") {
+                    if (storage.type == StorageType.shared) {
                       enable = false;
                     }
                   }
                   if (_filesState.isMoveModeEnabled) {
-                    final copyFromEncrypted =
-                        _filesState.filesToMoveCopy.first.type == "encrypted";
+                    final copyFromEncrypted = StorageTypeHelper.toEnum(
+                            _filesState.filesToMoveCopy.first.type) ==
+                        StorageType.encrypted;
                     if (copyFromEncrypted) {
-                      if (storage.type != "encrypted") {
+                      if (storage.type != StorageType.encrypted) {
                         enable = false;
                       }
                     } else {
-                      if (storage.type == "encrypted") {
+                      if (storage.type == StorageType.encrypted) {
                         enable = false;
                       }
                     }

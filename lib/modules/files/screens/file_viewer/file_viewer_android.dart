@@ -2,21 +2,28 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/models/share_access_right.dart';
+import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
 import 'package:aurorafiles/modules/files/dialogs/delete_confirmation_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/leave_share_dialog.dart';
 import 'package:aurorafiles/modules/files/dialogs/rename_dialog_android.dart';
 import 'package:aurorafiles/modules/files/dialogs/share_dialog.dart';
-import 'package:aurorafiles/modules/files/dialogs/share_to_email_dialog.dart';
+import 'package:aurorafiles/modules/files/dialogs/share_teammate_dialog.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
+import 'package:aurorafiles/modules/files/screens/file_viewer/components/image_viewer.dart';
+import 'package:aurorafiles/modules/files/screens/file_viewer/components/info_list_tile.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/components/pdf_viewer.dart';
+import 'package:aurorafiles/modules/files/screens/file_viewer/components/text_viewer.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -29,13 +36,10 @@ import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:secure_sharing/secure_sharing.dart';
-
-import 'components/image_viewer.dart';
-import 'components/info_list_tile.dart';
-import 'components/text_viewer.dart';
 
 class FileViewerAndroid extends StatefulWidget {
   final LocalFile immutableFile;
@@ -66,6 +70,26 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   bool _isFileOffline = false;
   bool _isSyncingForOffline = false;
   String password;
+  StorageType storageType;
+  bool isFolder;
+  Map<String, dynamic> _extendedProps = {};
+  bool _hasShares = false;
+  ShareAccessRight _sharedWithMeAccess;
+
+  bool get _sharedWithMe => _sharedWithMeAccess != null;
+
+  bool get _canShared =>
+      _sharedWithMeAccess == null ||
+      _sharedWithMeAccess == ShareAccessRight.readWriteReshare;
+
+  bool get _enableSecureLink => isFolder
+      ? [StorageType.corporate, StorageType.personal].contains(storageType)
+      : storageType != StorageType.shared;
+
+  bool get _enableTeamShare =>
+      storageType == StorageType.personal &&
+      AppStore.settingsState.isTeamSharingEnable &&
+      _canShared;
 
   @override
   void initState() {
@@ -78,6 +102,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       _fileViewerState.fileWithContents = widget.offlineFile;
     }
     _fileType = getFileType(_file);
+    storageType = StorageTypeHelper.toEnum(widget.immutableFile.type);
+    isFolder = widget.immutableFile.isFolder;
+    _initExtendedProps();
+    _initShareProps();
   }
 
   @override
@@ -87,6 +115,27 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     if (_fileViewerState.processingFile != null) {
       _fileViewerState.processingFile.subscription?.cancel();
       _fileViewerState.processingFile.fileOnDevice?.delete();
+    }
+  }
+
+  void _initExtendedProps() {
+    if (_file.extendedProps != null) {
+      try {
+        _extendedProps = jsonDecode(_file.extendedProps);
+      } catch (err) {
+        print('extendedProps decode ERROR: $err');
+      }
+    }
+  }
+
+  void _initShareProps() {
+    if (_extendedProps.containsKey("Shares")) {
+      final list = _extendedProps["Shares"] as List;
+      _hasShares = list.isNotEmpty;
+    }
+    if (_extendedProps.containsKey("SharedWithMeAccess")) {
+      final code = _extendedProps["SharedWithMeAccess"] as int;
+      _sharedWithMeAccess = ShareAccessRightHelper.fromCode(code);
     }
   }
 
@@ -123,16 +172,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         context,
         storedFile: _fileViewerState.fileWithContents,
         onSuccess: complete,
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-          msg: err,
-        ),
+        onError: _onError,
       );
     } else if (_fileViewerState.downloadProgress != null) {
       showSnack(
-        context: context,
-        scaffoldState: _fileViewerScaffoldKey.currentState,
+        context,
         msg: s.please_wait_until_loading,
         isError: false,
       );
@@ -166,14 +210,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _deleteFile() async {
-    final shouldDelete = await AMDialog.show(
-      context: context,
-      builder: (_) => DeleteConfirmationDialog(
-        itemsNumber: 1,
-        isFolder: false,
-      ),
-    );
-    if (shouldDelete != null && shouldDelete) {
+    final shouldDelete = await AMDialog.show<bool>(
+            context: context,
+            builder: (_) => DeleteConfirmationDialog(
+              itemsNumber: 1,
+              isFolder: _file.isFolder,
+            ),
+          );
+    if (shouldDelete == true) {
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [_file],
         storage: widget.filesState.selectedStorage,
@@ -182,11 +226,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         },
         onError: (String err) {
           widget.filesPageState.filesLoading = FilesLoadingType.none;
-          showSnack(
-            context: context,
-            scaffoldState: _fileViewerScaffoldKey.currentState,
-            msg: err,
-          );
+          _onError(err);
+          ;
         },
       );
       widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;
@@ -200,38 +241,33 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       file: _file,
       onStart: (ProcessingFile process) {
         // TODO VO: update ui without refreshing files
-        widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesHidden);
+        widget.filesPageState
+            .onGetFiles(showLoading: FilesLoadingType.filesHidden);
         showSnack(
-          context: context,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
+          context,
           msg: s.downloading(_file.name),
           isError: false,
         );
       },
-      onSuccess: (File savedFile) => showSnack(
-          context: context,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
+      onSuccess: (File savedFile) => showSnack(context,
           msg: s.downloaded_successfully_into(_file.name, savedFile.path),
           isError: false,
           duration: Duration(minutes: 10),
           action: SnackBarAction(
             label: s.oK,
-            onPressed: _fileViewerScaffoldKey.currentState.hideCurrentSnackBar,
+            onPressed: () => hideSnack(context),
           )),
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: _fileViewerScaffoldKey.currentState,
-        msg: err,
-      ),
+      onError: _onError,
     );
   }
 
-  Future _setFileForOffline() async {
+  Future<void> _setFileForOffline() async {
     if (widget.filesState.isOfflineMode) {
       widget.filesState.onSetFileOffline(_file, context,
           onStart: (process) {
             _fileViewerState.processingFile = process;
-            widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesHidden);
+            widget.filesPageState
+                .onGetFiles(showLoading: FilesLoadingType.filesHidden);
           },
           onSuccess: () async {
             _fileViewerState.processingFile = null;
@@ -247,8 +283,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         });
         if (_file.localId == null) {
           showSnack(
-            context: context,
-            scaffoldState: _fileViewerScaffoldKey.currentState,
+            context,
             msg: s.synch_file_progress,
             isError: false,
           );
@@ -256,14 +291,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         await widget.filesState.onSetFileOffline(_file, context,
             onStart: (process) {
               _fileViewerState.processingFile = process;
-              widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesHidden);
+              widget.filesPageState
+                  .onGetFiles(showLoading: FilesLoadingType.filesHidden);
             },
             onSuccess: () async {
               _fileViewerState.processingFile = null;
               if (_file.localId == null) {
                 showSnack(
-                  context: context,
-                  scaffoldState: _fileViewerScaffoldKey.currentState,
+                  context,
                   msg: s.synched_successfully,
                   isError: false,
                 );
@@ -278,16 +313,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           _isSyncingForOffline = false;
           _isFileOffline = !_isFileOffline;
         });
-        showSnack(
-          context: context,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-          msg: err.toString(),
-        );
+        _onError(err);
       }
     }
   }
 
-  _shareWithTeammates() async {
+  Future<void> _shareWithTeammates() async {
     if (widget.immutableFile.initVector != null &&
         widget.immutableFile.encryptedDecryptionKey == null) {
       return AMDialog.show(
@@ -295,7 +326,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         builder: (_) => AMDialog(
           content: Text(s.error_backward_compatibility_sharing_not_supported),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text(s.oK),
               onPressed: () => Navigator.pop(context),
             ),
@@ -305,21 +336,45 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     } else {
       final file = await AMDialog.show(
         context: context,
-        builder: (_) => ShareToEmailDialog(
-          widget.filesState,
-          _file,
-          context,
+        builder: (_) => ShareTeammateDialog(
+          fileState: widget.filesState,
+          file: _file,
         ),
       );
       if (file is LocalFile) {
         _file = file;
-        widget.filesPageState.onGetFiles(showLoading: FilesLoadingType.filesVisible);
+        widget.filesPageState
+            .onGetFiles(showLoading: FilesLoadingType.filesVisible);
         setState(() {});
       }
     }
   }
 
-  _secureSharing() async {
+  Future<void> _leaveShare(BuildContext context) async {
+    final result = await _confirmLeaveShare();
+    if (result == true) {
+      try {
+        await widget.filesState.leaveFileShare(_file);
+      } catch (err) {
+        _onError(err);
+      }
+      widget.filesPageState.onGetFiles();
+      Navigator.pop(context);
+    }
+  }
+
+  Future<bool> _confirmLeaveShare() async {
+    final result = await AMDialog.show<bool>(
+      context: context,
+      builder: (_) => LeaveShareDialog(
+        name: _file.name,
+        isFolder: _file.isFolder,
+      ),
+    );
+    return result == true;
+  }
+
+  Future<void> _secureSharing() async {
     if (_file.published == false && widget.immutableFile.initVector != null) {
       if (widget.immutableFile.encryptedDecryptionKey == null) {
         return AMDialog.show(
@@ -327,7 +382,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           builder: (_) => AMDialog(
             content: Text(s.error_backward_compatibility_sharing_not_supported),
             actions: [
-              FlatButton(
+              TextButton(
                 child: Text(s.oK),
                 onPressed: () => Navigator.pop(context),
               ),
@@ -354,7 +409,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     setState(() {});
   }
 
-  _secureEncryptSharing(PreparedForShare preparedForShare) async {
+  Future<void> _secureEncryptSharing(PreparedForShare preparedForShare) async {
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
@@ -377,14 +432,17 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     setState(() {});
   }
 
-  Widget _getPreviewContent() {
+  Widget _getPreviewContent(BuildContext context) {
     final previewIconSize = 120.0;
+    Widget result;
     if (_file.initVector != null && _showEncrypt == false) {
-      return Column(
+      result = Column(
         children: <Widget>[
-          Icon(Icons.lock_outline, size: previewIconSize, color: Theme.of(context).disabledColor),
-          if ([FileType.image, FileType.text, FileType.code].contains(_fileType))
-            FlatButton(
+          Icon(Icons.lock_outline,
+              size: previewIconSize, color: Theme.of(context).disabledColor),
+          if ([FileType.image, FileType.text, FileType.code]
+              .contains(_fileType))
+            TextButton(
               child: Text(s.btn_show_encrypt),
               onPressed: () async {
                 if (widget.immutableFile.encryptedDecryptionKey != null) {
@@ -397,70 +455,56 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             )
         ],
       );
+    } else {
+      switch (_fileType) {
+        case FileType.image:
+          result = ImageViewer(
+            password: password,
+            fileViewerState: _fileViewerState,
+            scaffoldState: _fileViewerScaffoldKey.currentState,
+          );
+          break;
+        case FileType.svg:
+          result = Icon(MdiIcons.fileImageOutline,
+              size: previewIconSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.text:
+        case FileType.code:
+          result = TextViewer(
+            password: password,
+            fileViewerState: _fileViewerState,
+            scaffoldState: _fileViewerScaffoldKey.currentState,
+          );
+          break;
+        case FileType.pdf:
+          result = PdfViewer(
+            file: _file,
+            scaffoldState: _fileViewerScaffoldKey.currentState,
+          );
+          break;
+        case FileType.zip:
+          result = Icon(MdiIcons.zipBoxOutline,
+              size: previewIconSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.unknown:
+          result = Icon(MdiIcons.fileOutline,
+              size: previewIconSize, color: Theme.of(context).disabledColor);
+          break;
+        default:
+          result = Icon(MdiIcons.fileOutline,
+              size: previewIconSize, color: Theme.of(context).disabledColor);
+      }
     }
-    switch (_fileType) {
-      case FileType.image:
-        return ImageViewer(
-          password: password,
-          fileViewerState: _fileViewerState,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-        );
-      case FileType.svg:
-        return Icon(MdiIcons.fileImageOutline,
-            size: previewIconSize, color: Theme.of(context).disabledColor);
-      case FileType.text:
-      case FileType.code:
-        return TextViewer(
-          password: password,
-          fileViewerState: _fileViewerState,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-        );
-      case FileType.pdf:
-        return PdfViewer(
-          file: _file,
-          scaffoldState: _fileViewerScaffoldKey.currentState,
-        );
-      case FileType.zip:
-        return Icon(MdiIcons.zipBoxOutline,
-            size: previewIconSize, color: Theme.of(context).disabledColor);
+    return result;
+  }
 
-      case FileType.unknown:
-        return Icon(MdiIcons.fileOutline,
-            size: previewIconSize, color: Theme.of(context).disabledColor);
-      default:
-        return Icon(MdiIcons.fileOutline,
-            size: previewIconSize, color: Theme.of(context).disabledColor);
-    }
+  void _onError(dynamic error) {
+    showSnack(context, msg: '$error');
   }
 
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
-    final storage = widget.immutableFile.type;
-    final isFolder = widget.immutableFile.isFolder;
-    final theme = Theme.of(context);
-    bool hasShares = false;
-    if (_file.extendedProps != null) {
-      try {
-        hasShares = (jsonDecode(_file.extendedProps)["Shares"] as List).isNotEmpty;
-      } catch (e) {}
-    }
-    bool enableSecureLink() {
-      if (isFolder) {
-        return ["corporate", "personal"].contains(storage);
-      } else {
-        return storage != "shared";
-      }
-    }
-
-    bool enableTeamShare() {
-      if (isFolder) {
-        return storage == "personal";
-      } else {
-        return ["encrypted", "personal"].contains(storage);
-      }
-    }
-
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, _file);
@@ -484,7 +528,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             actions: widget.filesState.isOfflineMode
                 ? [
                     IconButton(
-                      icon: Icon(PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
+                      icon: Icon(PlatformOverride.isIOS
+                          ? MdiIcons.exportVariant
+                          : Icons.share),
                       tooltip: s.share,
                       onPressed: () => _shareFile(
                         PreparedForShare(
@@ -501,10 +547,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                       ),
                   ]
                 : [
-                    if (BuildProperty.secureSharingEnable && enableSecureLink())
+                    if (BuildProperty.secureSharingEnable && _enableSecureLink)
                       IconButton(
                         icon: AssetIcon(
-                          "lib/assets/svg/insert_link.svg",
+                          Asset.svg.insertLink,
                           addedSize: 14,
                         ),
                         tooltip: widget.immutableFile.initVector != null
@@ -529,18 +575,31 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         PopupMenuItem(
                           value: () => _prepareShareFile(_shareFile),
                           child: ListTile(
-                            leading:
-                                Icon(PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
+                            leading: Icon(PlatformOverride.isIOS
+                                ? MdiIcons.exportVariant
+                                : Icons.share),
                             title: Text(s.share),
                           ),
                         ),
-                        if (enableTeamShare())
+                        if (_enableTeamShare)
                           PopupMenuItem(
                             value: _shareWithTeammates,
                             child: ListTile(
-                              leading: Icon(
-                                  PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share),
-                              title: Text(s.btn_share_to_email),
+                              leading: Icon(Icons.share),
+                              title: Text(s.label_share_with_teammates),
+                            ),
+                          ),
+                        if (_sharedWithMe)
+                          PopupMenuItem(
+                            value: () => _leaveShare(context),
+                            child: ListTile(
+                              leading: SvgPicture.asset(
+                                Asset.svg.iconShareLeave,
+                                width: 24,
+                                height: 24,
+                                color: Theme.of(context).disabledColor,
+                              ),
+                              title: Text(s.label_leave_share),
                             ),
                           ),
                         PopupMenuItem(
@@ -561,60 +620,76 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     ),
                   ],
           ),
-          body: ListView(
-            padding: const EdgeInsets.all(16.0),
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: 30.0),
-                child: _getPreviewContent(),
-              ),
-              InfoListTile(
-                label: s.filename,
-                content: _file.name,
-                isPublic: _file.published,
-                isShared: hasShares,
-                isOffline: _file.localId != null,
-                isEncrypted: _file.initVector != null,
-              ),
-              Row(
+          body: Stack(
+            alignment: Alignment.topRight,
+            children: [
+              ListView(
+                padding: const EdgeInsets.all(16.0),
                 children: <Widget>[
-                  Expanded(
-                    child: InfoListTile(label: s.size, content: filesize(_file.size)),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 30.0),
+                    child: _getPreviewContent(context),
                   ),
-                  SizedBox(width: 30),
-                  Expanded(
-                    child: InfoListTile(
-                      label: s.created,
-                      content: DateFormatting.formatDateFromSeconds(
-                        timestamp: _file.lastModified,
+                  InfoListTile(
+                    label: s.filename,
+                    content: _file.name,
+                    isPublic: _file.published,
+                    isShared: _hasShares,
+                    isOffline: _file.localId != null,
+                    isEncrypted: _file.initVector != null,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: InfoListTile(
+                          label: s.size,
+                          content: filesize(_file.size),
+                        ),
                       ),
+                      SizedBox(width: 30),
+                      Expanded(
+                        child: InfoListTile(
+                          label: s.created,
+                          content: DateFormatting.formatDateFromSeconds(
+                            timestamp: _file.lastModified,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  InfoListTile(
+                      label: s.location, content: _file.type + _file.path),
+                  InfoListTile(label: s.owner, content: _file.owner),
+                  if (!widget.filesState.isOfflineMode &&
+                      !BuildProperty.secureSharingEnable)
+                    PublicLinkSwitch(
+                      file: _file,
+                      isFileViewer: true,
+                      updateFile: _updateFile,
+                      scaffoldKey: _fileViewerScaffoldKey,
+                    ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    onTap: _isSyncingForOffline ? null : _setFileForOffline,
+                    leading: Icon(Icons.airplanemode_active),
+                    title: Text(s.offline),
+                    trailing: Switch.adaptive(
+                      value: _isFileOffline,
+                      activeColor: Theme.of(context).accentColor,
+                      onChanged: _isSyncingForOffline
+                          ? null
+                          : (bool val) => _setFileForOffline(),
                     ),
                   ),
+                  SizedBox(
+                    height: 16.0 + MediaQuery.of(context).padding.bottom,
+                  )
                 ],
               ),
-              InfoListTile(label: s.location, content: _file.type + _file.path),
-              InfoListTile(label: s.owner, content: _file.owner),
-              if (!widget.filesState.isOfflineMode && !BuildProperty.secureSharingEnable)
-                PublicLinkSwitch(
-                  file: _file,
-                  isFileViewer: true,
-                  updateFile: _updateFile,
-                  scaffoldKey: _fileViewerScaffoldKey,
+              if (_sharedWithMe)
+                SvgPicture.asset(
+                  Asset.svg.iconSharedWithMeBig,
                 ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                onTap: _isSyncingForOffline ? null : _setFileForOffline,
-                leading: Icon(Icons.airplanemode_active),
-                title: Text(s.offline),
-                trailing: Switch.adaptive(
-                  value: _isFileOffline,
-                  activeColor: Theme.of(context).accentColor,
-                  onChanged: _isSyncingForOffline ? null : (bool val) => _setFileForOffline(),
-                ),
-              ),
-              SizedBox(
-                height: 16.0 + MediaQuery.of(context).padding.bottom,
-              )
             ],
           ),
         ),

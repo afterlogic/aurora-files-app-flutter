@@ -29,11 +29,7 @@ class _MoveOptionsState extends State<MoveOptions> {
         copy: copy,
         onSuccess: () async {
           await widget.filesPageState.onGetFiles(
-            onError: (String err) => showSnack(
-              context: context,
-              scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-              msg: err,
-            ),
+            onError: (String err) => showSnack(context, msg: err),
           );
           setState(() => _buttonsDisabled = false);
           widget.filesState.disableMoveMode();
@@ -41,17 +37,14 @@ class _MoveOptionsState extends State<MoveOptions> {
         onError: (err) {
           setState(() => _buttonsDisabled = false);
           widget.filesPageState.filesLoading = FilesLoadingType.none;
-          showSnack(
-            context: context,
-            scaffoldState: widget.filesPageState.scaffoldKey.currentState,
-            msg: err,
-          );
+          showSnack(context, msg: err);
         });
   }
 
   @override
   Widget build(BuildContext context) {
     final s = Str.of(context);
+    final textColor = Theme.of(context).iconTheme.color;
     return Container(
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: Colors.grey)),
@@ -63,24 +56,30 @@ class _MoveOptionsState extends State<MoveOptions> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              FlatButton(
-                child: Text(s.cancel),
-                textColor: Theme.of(context).iconTheme.color,
+              TextButton(
+                child: Text(
+                  s.cancel,
+                  style: TextStyle(color: textColor),
+                ),
                 onPressed: () {
                   widget.filesState.disableMoveMode();
                 },
               ),
-              FlatButton(
-                child: Text(s.copy),
-                textColor: Theme.of(context).iconTheme.color,
+              TextButton(
+                child: Text(
+                  s.copy,
+                  style: TextStyle(color: textColor),
+                ),
                 onPressed:
-                _buttonsDisabled ? null : () => _moveFiles(context, true),
+                    _buttonsDisabled ? null : () => _moveFiles(context, true),
               ),
-              FlatButton(
-                child: Text(s.move),
-                textColor: Theme.of(context).iconTheme.color,
+              TextButton(
+                child: Text(
+                  s.move,
+                  style: TextStyle(color: textColor),
+                ),
                 onPressed:
-                _buttonsDisabled ? null : () => _moveFiles(context, false),
+                    _buttonsDisabled ? null : () => _moveFiles(context, false),
               ),
             ],
           ),

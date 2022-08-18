@@ -30,10 +30,10 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
     if (result == true) {
       await AppStore.filesState.clearCache(deleteCachedImages: true);
       showSnack(
-          context: context,
-          scaffoldState: scaffoldKey.currentState,
-          isError: false,
-          msg: s.cache_cleared_success);
+        context,
+        msg: s.cache_cleared_success,
+        isError: false,
+      );
     }
   }
 

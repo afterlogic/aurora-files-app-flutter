@@ -4,13 +4,13 @@ import 'dart:io';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/components/upload_options.dart';
 import 'package:aurorafiles/modules/files/dialogs/encrypt_ask_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
-import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
@@ -70,11 +70,7 @@ class _FilesAndroidState extends State<FilesAndroid>
         if (_filesState.currentStorages.length <= 0) {
           _filesPageState.filesLoading = FilesLoadingType.filesHidden;
           await _filesState.onGetStorages(
-            onError: (String err) => showSnack(
-              context: context,
-              scaffoldState: _filesPageState.scaffoldKey.currentState,
-              msg: err,
-            ),
+            onError: (String err) => showSnack(context, msg: err),
           );
         }
         _getFiles(
@@ -123,11 +119,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (_filesState.currentStorages.length <= 0) {
       _filesPageState.filesLoading = FilesLoadingType.filesHidden;
       await _filesState.onGetStorages(
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: err,
-        ),
+        onError: (String err) => showSnack(context, msg: err),
       );
     }
     if (_filesState.selectedStorage != null) {
@@ -142,11 +134,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) async {
     return _filesPageState.onGetFiles(
       showLoading: showLoading,
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: _filesPageState.scaffoldKey.currentState,
-        msg: err,
-      ),
+      onError: (String err) => showSnack(context, msg: err),
     );
   }
 
@@ -178,11 +166,7 @@ class _FilesAndroidState extends State<FilesAndroid>
           _filesPageState.quitSelectMode();
           _getFiles(context);
         },
-        onError: (String err) => showSnack(
-          context: context,
-          scaffoldState: _filesPageState.scaffoldKey.currentState,
-          msg: err,
-        ),
+        onError: (String err) => showSnack(context, msg: err),
       );
     }
   }
@@ -194,10 +178,11 @@ class _FilesAndroidState extends State<FilesAndroid>
         final encryptionSettings = await _settingsState.getEncryptionSetting();
         bool shouldEncrypt = false;
         if (encryptionSettings.enable) {
-          shouldEncrypt = _filesState.selectedStorage.type == "encrypted";
+          shouldEncrypt =
+              _filesState.selectedStorage.type == StorageType.encrypted;
         }
         if (encryptionSettings.enableInPersonalStorage &&
-            _filesState.selectedStorage.type == "personal") {
+            _filesState.selectedStorage.type == StorageType.personal) {
           shouldEncrypt = await AMDialog.show<bool>(
               builder: (_) => EncryptAskDialog(
                   file.path.split(Platform.pathSeparator).last),
@@ -205,11 +190,8 @@ class _FilesAndroidState extends State<FilesAndroid>
         }
         if (shouldEncrypt == true &&
             !(await PgpKeyUtil.instance.hasUserKey())) {
-          showSnack(
-            context: context,
-            scaffoldState: _filesPageState.scaffoldKey.currentState,
-            msg: s.error_pgp_required_key(AppStore.authState.userEmail),
-          );
+          showSnack(context,
+              msg: s.error_pgp_required_key(AppStore.authState.userEmail));
           return null;
         }
         return shouldEncrypt;
@@ -217,16 +199,11 @@ class _FilesAndroidState extends State<FilesAndroid>
       path: widget.path,
       onUploadStart: _addUploadingFileToFiles,
       onSuccess: () => showSnack(
-        context: context,
-        scaffoldState: _filesPageState.scaffoldKey.currentState,
+        context,
         msg: s.successfully_uploaded,
         isError: false,
       ),
-      onError: (String err) => showSnack(
-        context: context,
-        scaffoldState: _filesPageState.scaffoldKey.currentState,
-        msg: err,
-      ),
+      onError: (String err) => showSnack(context, msg: err),
     );
   }
 
@@ -257,11 +234,11 @@ class _FilesAndroidState extends State<FilesAndroid>
           Icon(Icons.signal_wifi_off, size: 48.0),
           Text(s.no_internet_connection),
           SizedBox(height: 16.0),
-          FlatButton(
+          TextButton(
             child: Text(s.retry),
             onPressed: () => _getFiles(context),
           ),
-          FlatButton(
+          TextButton(
             child: Text(s.go_offline),
             onPressed: () => _goOffline(),
           ),
@@ -287,6 +264,13 @@ class _FilesAndroidState extends State<FilesAndroid>
     }
   }
 
+  Future<void> _refreshFilesList() async {
+    if (_filesState.currentStorages.length <= 0) {
+      await _filesState.onGetStorages();
+    }
+    _getFiles(context, FilesLoadingType.none);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -295,12 +279,7 @@ class _FilesAndroidState extends State<FilesAndroid>
 
     Widget body = Observer(
       builder: (_) => RefreshIndicator(
-        onRefresh: () async {
-          if (_filesState.currentStorages.length <= 0) {
-            await _filesState.onGetStorages();
-          }
-          return _getFiles(context, FilesLoadingType.none);
-        },
+        onRefresh: _refreshFilesList,
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
@@ -424,7 +403,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                               ConnectivityResult.none &&
                           _filesPageState.currentFiles.isEmpty) ||
                       _filesPageState.isSearchMode ||
-                      _filesState.selectedStorage.type == "shared" ||
+                      _filesState.selectedStorage.type == StorageType.shared ||
                       _filesPageState.isInsideZip
                   ? SizedBox()
                   : FloatingActionButton(
@@ -437,8 +416,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                         ),
                       ),
                       onPressed: () {
-                        _filesPageState.scaffoldKey.currentState
-                            .removeCurrentSnackBar();
+                        hideSnack(context);
                         Navigator.push(
                             context,
                             CustomSpeedDial(tag: widget.path, children: [

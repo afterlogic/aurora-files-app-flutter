@@ -1,12 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
+import 'package:aurorafiles/modules/files/components/files_item_tile.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
+import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -19,11 +23,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-
-import '../files_route.dart';
-import 'files_item_tile.dart';
 
 class FileWidget extends StatefulWidget {
   final LocalFile file;
@@ -45,6 +47,15 @@ class _FileWidgetState extends State<FileWidget> {
   double _progress;
   ProcessingFile _processingFile;
   S s;
+  Map<String, dynamic> _extendedProps = {};
+  bool _hasShares = false;
+  ShareAccessRight _sharedWithMeAccess;
+
+  bool get _sharedWithMe => _sharedWithMeAccess != null;
+
+  bool get _canShared =>
+      _sharedWithMeAccess == null ||
+      _sharedWithMeAccess == ShareAccessRight.readWriteReshare;
 
   @override
   void initState() {
@@ -54,6 +65,29 @@ class _FileWidgetState extends State<FileWidget> {
           .firstWhere((process) => process.guid == widget.file.guid);
       _subscribeToProgress(processingFile);
     } catch (err) {}
+    _initExtendedProps();
+    _initShareProps();
+  }
+
+  void _initExtendedProps() {
+    if (widget.file.extendedProps != null) {
+      try {
+        _extendedProps = jsonDecode(widget.file.extendedProps);
+      } catch (err) {
+        print('extendedProps decode ERROR: $err');
+      }
+    }
+  }
+
+  void _initShareProps() {
+    if (_extendedProps.containsKey("Shares")) {
+      final list = _extendedProps["Shares"] as List;
+      _hasShares = list.isNotEmpty;
+    }
+    if (_extendedProps.containsKey("SharedWithMeAccess")) {
+      final code = _extendedProps["SharedWithMeAccess"] as int;
+      _sharedWithMeAccess = ShareAccessRightHelper.fromCode(code);
+    }
   }
 
   void _subscribeToProgress(ProcessingFile processingFile) {
@@ -84,12 +118,14 @@ class _FileWidgetState extends State<FileWidget> {
     if (mounted) setState(() => _progress = num);
   }
 
-  Future _showModalBottomSheet(context) async {
+  Future<void> _showModalBottomSheet(context) async {
     final result = await FileOptionsBottomSheet.show(
       context: context,
       file: widget.file,
       filesState: _filesState,
       filesPageState: _filesPageState,
+      canShare: _canShared,
+      sharedWithMe: _sharedWithMe,
     );
 
     switch (result) {
@@ -109,35 +145,21 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _cantDownloadMessage() {
-    showSnack(
-      context: context,
-      scaffoldState: _filesPageState.scaffoldKey.currentState,
-      msg: s.need_an_encryption_to_download,
-    );
+    showSnack(context, msg: s.need_an_encryption_to_download);
   }
 
   void _cantShareMessage() {
-    showSnack(
-      context: context,
-      scaffoldState: _filesPageState.scaffoldKey.currentState,
-      msg: s.need_an_encryption_to_share,
-    );
+    showSnack(context, msg: s.need_an_encryption_to_share);
   }
 
   void _openEncryptedFile(BuildContext context) async {
     if (widget.file.encryptedDecryptionKey == null) {
       if (AppStore.settingsState.selectedKeyName == null) {
-        return showSnack(
-            context: context,
-            scaffoldState: _filesPageState.scaffoldKey.currentState,
-            msg: s.set_any_encryption_key);
+        return showSnack(context, msg: s.set_any_encryption_key);
       }
     } else {
       if (!await PgpKeyUtil.instance.hasUserKey()) {
-        return showSnack(
-            context: context,
-            scaffoldState: _filesPageState.scaffoldKey.currentState,
-            msg: s.set_any_encryption_key);
+        return showSnack(context, msg: s.set_any_encryption_key);
       }
     }
     _openFile(context);
@@ -145,37 +167,29 @@ class _FileWidgetState extends State<FileWidget> {
 
   void _downloadFile() {
     final filesState = _filesState;
-    final filesPageState = _filesPageState;
     filesState.onDownloadFile(
       context,
       file: widget.file,
       onStart: (ProcessingFile process) {
         _subscribeToProgress(process);
         showSnack(
-          context: context,
-          scaffoldState: filesPageState.scaffoldKey.currentState,
+          context,
           msg: s.downloading(widget.file.name),
           isError: false,
         );
       },
       onSuccess: (File savedFile) => showSnack(
-          context: context,
-          scaffoldState: filesPageState.scaffoldKey.currentState,
-          msg: s.downloaded_successfully_into(widget.file.name, savedFile.path),
-          isError: false,
-          duration: Duration(minutes: 10),
-          action: SnackBarAction(
-            label: s.oK,
-            onPressed:
-                filesPageState.scaffoldKey.currentState.hideCurrentSnackBar,
-          )),
-      onError: (String err) => err.isNotEmpty == true
-          ? showSnack(
-              context: context,
-              scaffoldState: filesPageState.scaffoldKey.currentState,
-              msg: err,
-            )
-          : null,
+        context,
+        msg: s.downloaded_successfully_into(widget.file.name, savedFile.path),
+        isError: false,
+        duration: Duration(minutes: 10),
+        action: SnackBarAction(
+          label: s.oK,
+          onPressed: () => hideSnack(context),
+        ),
+      ),
+      onError: (String err) =>
+          err.isNotEmpty == true ? showSnack(context, msg: err) : null,
     );
   }
 
@@ -185,8 +199,7 @@ class _FileWidgetState extends State<FileWidget> {
     try {
       if (widget.file.localId == null) {
         showSnack(
-          context: context,
-          scaffoldState: filesPageState.scaffoldKey.currentState,
+          context,
           msg: s.synch_file_progress,
           isError: false,
         );
@@ -198,25 +211,17 @@ class _FileWidgetState extends State<FileWidget> {
         onSuccess: () {
           if (widget.file.localId == null) {
             showSnack(
-              context: context,
-              scaffoldState: filesPageState.scaffoldKey.currentState,
+              context,
               msg: s.synched_successfully,
               isError: false,
             );
           }
           filesPageState.onGetFiles();
         },
-        onError: (err) => showSnack(
-            context: context,
-            scaffoldState: filesPageState.scaffoldKey.currentState,
-            msg: err.toString()),
+        onError: (err) => showSnack(context, msg: err.toString()),
       );
     } catch (err) {
-      showSnack(
-        context: context,
-        scaffoldState: filesPageState.scaffoldKey.currentState,
-        msg: err.toString(),
-      );
+      showSnack(context, msg: err.toString());
     }
   }
 
@@ -243,10 +248,12 @@ class _FileWidgetState extends State<FileWidget> {
           filesPageState: _filesPageState,
         ),
       );
-      for (var i = 0; i < _filesPageState.currentFiles.length; i++) {
-        if (_filesPageState.currentFiles[i].id == widget.file.id) {
-          _filesPageState.currentFiles[i] = file;
-          break;
+      if (file != null && file is LocalFile) {
+        for (var i = 0; i < _filesPageState.currentFiles.length; i++) {
+          if (_filesPageState.currentFiles[i].id == widget.file.id) {
+            _filesPageState.currentFiles[i] = file;
+            break;
+          }
         }
       }
     }
@@ -257,13 +264,14 @@ class _FileWidgetState extends State<FileWidget> {
     final thumbnailSize = filesState.filesTileLeadingSize;
     final hostName = Provider.of<AuthState>(context).hostName;
 
+    Widget result;
     if (widget.file.initVector != null) {
-      return Icon(MdiIcons.fileLockOutline,
+      result = Icon(MdiIcons.fileLockOutline,
           size: thumbnailSize, color: Theme.of(context).disabledColor);
     } else if (widget.file.thumbnailUrl != null ||
         filesState.isOfflineMode &&
             getFileType(widget.file) == FileType.image) {
-      return SizedBox(
+      result = SizedBox(
         width: thumbnailSize,
         height: thumbnailSize,
         child: ClipRRect(
@@ -272,8 +280,7 @@ class _FileWidgetState extends State<FileWidget> {
             decoration: BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.cover,
-                    image:
-                        AssetImage("lib/assets/images/image_placeholder.jpg"))),
+                    image: AssetImage(Asset.images.imagePlaceholder))),
             child: Hero(
               tag: widget.file.localId ?? widget.file.guid ?? widget.file.hash,
               child: filesState.isOfflineMode && widget.file.localPath != null
@@ -289,34 +296,55 @@ class _FileWidgetState extends State<FileWidget> {
           ),
         ),
       );
+    } else {
+      switch (getFileType(widget.file)) {
+        case FileType.text:
+          result = Icon(MdiIcons.fileDocumentOutline,
+              size: thumbnailSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.code:
+          result = Icon(MdiIcons.fileCode,
+              size: thumbnailSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.pdf:
+          result = Icon(MdiIcons.filePdfBox,
+              size: thumbnailSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.zip:
+          result = Icon(MdiIcons.zipBoxOutline,
+              size: thumbnailSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.image:
+          result = Icon(MdiIcons.fileImageOutline,
+              size: thumbnailSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.svg:
+          result = Icon(MdiIcons.fileImageOutline,
+              size: thumbnailSize, color: Theme.of(context).disabledColor);
+          break;
+        case FileType.unknown:
+          result = Icon(MdiIcons.fileOutline,
+              size: thumbnailSize, color: Theme.of(context).disabledColor);
+          break;
+        default:
+          result = Icon(MdiIcons.fileOutline,
+              size: thumbnailSize, color: Theme.of(context).disabledColor);
+      }
     }
 
-    switch (getFileType(widget.file)) {
-      case FileType.text:
-        return Icon(MdiIcons.fileDocumentOutline,
-            size: thumbnailSize, color: Theme.of(context).disabledColor);
-      case FileType.code:
-        return Icon(MdiIcons.fileCode,
-            size: thumbnailSize, color: Theme.of(context).disabledColor);
-      case FileType.pdf:
-        return Icon(MdiIcons.filePdfBox,
-            size: thumbnailSize, color: Theme.of(context).disabledColor);
-      case FileType.zip:
-        return Icon(MdiIcons.zipBoxOutline,
-            size: thumbnailSize, color: Theme.of(context).disabledColor);
-      case FileType.image:
-        return Icon(MdiIcons.fileImageOutline,
-            size: thumbnailSize, color: Theme.of(context).disabledColor);
-      case FileType.svg:
-        return Icon(MdiIcons.fileImageOutline,
-            size: thumbnailSize, color: Theme.of(context).disabledColor);
-      case FileType.unknown:
-        return Icon(MdiIcons.fileOutline,
-            size: thumbnailSize, color: Theme.of(context).disabledColor);
-      default:
-        return Icon(MdiIcons.fileOutline,
-            size: thumbnailSize, color: Theme.of(context).disabledColor);
-    }
+    return Stack(
+      children: [
+        result,
+        if (_sharedWithMe)
+          Positioned(
+            top: -2,
+            right: -3,
+            child: SvgPicture.asset(
+              Asset.svg.iconSharedWithMe,
+            ),
+          ),
+      ],
+    );
   }
 
   IconData _getProcessIcon() {
@@ -336,18 +364,19 @@ class _FileWidgetState extends State<FileWidget> {
     }
   }
 
+  void _onItemTap(BuildContext context) {
+    hideSnack(context);
+    widget.file.initVector != null
+        ? _openEncryptedFile(context)
+        : _openFile(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     s = Str.of(context);
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
-    bool hasShares = false;
-    if (widget.file.extendedProps != null) {
-      try {
-        hasShares = (jsonDecode(widget.file.extendedProps)["Shares"] as List)
-            .isNotEmpty;
-      } catch (e) {}
-    }
+
     final margin = 5.0;
     return Observer(
       builder: (_) {
@@ -357,12 +386,7 @@ class _FileWidgetState extends State<FileWidget> {
             !_filesPageState.isInsideZip;
         return SelectableFilesItemTile(
           file: widget.file,
-          onTap: () {
-            _filesPageState.scaffoldKey.currentState.hideCurrentSnackBar();
-            widget.file.initVector != null
-                ? _openEncryptedFile(context)
-                : _openFile(context);
-          },
+          onTap: () => _onItemTap(context),
           isSelected: _filesPageState.selectedFilesIds[widget.file.id] != null,
           child: Stack(children: [
             ListTile(
@@ -407,12 +431,12 @@ class _FileWidgetState extends State<FileWidget> {
                             ])
                           : Row(
                               children: <Widget>[
-                                if (hasShares)
+                                if (_hasShares)
                                   Icon(
                                     Icons.share,
-                                    semanticLabel: s.btn_share_to_email,
+                                    semanticLabel: s.label_share_with_teammates,
                                   ),
-                                if (hasShares) SizedBox(width: margin),
+                                if (_hasShares) SizedBox(width: margin),
                                 if (widget.file.published)
                                   Icon(
                                     Icons.link,

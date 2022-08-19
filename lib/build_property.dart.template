@@ -1,0 +1,51 @@
+class BuildProperty {
+  static const version_ios = "1.0.0+1";
+
+  static const deepLink = "com.vendor.product";
+
+  static const icon = "build_res/template/image/icon.png";
+
+  static const mainLogo = "build_res/template/image/main_logo.png";
+
+  static const foregroundIcon =
+      "build_res/template/image/icon_foreground.png";
+
+  static const termsOfService = "";
+
+  static const canUpgradePlan = false;
+
+  static const legacyPgpKey = false;
+
+  static const logger = true;
+
+  static const supportAllowAccess = false;
+
+  static const useMainLogo = true;
+
+  static const useYubiKit = false;
+
+  static const yubico_flutter_lib = "path: module/mocks/yubico_flutter";
+
+  static const appName = "Vendor Product Files";
+
+  static const backgroundColor = "#FFFFFF";
+
+  static const splashGradientTop = "#FFFFFF";
+
+  static const splashGradientBottom = "#FFFFFF";
+
+  static const splashGradientTopDark = "#000000";
+
+  static const splashGradientBottomDark = "#000000";
+
+  static const privacyPolicy = "";
+
+  static const autodiscover_url =
+      "https://{domain}/aurora-autodiscover.json?email={email}";
+
+  static const pgpEnable = true;
+
+  static const secureSharingEnable = true;
+
+  static const teamSharingEnable = false;
+}

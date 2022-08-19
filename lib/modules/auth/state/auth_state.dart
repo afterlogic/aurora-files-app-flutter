@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:aurora_ui_kit/components/dialogs/am_confirmation_dialog.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_local_storage.dart';
 import 'package:aurorafiles/modules/auth/repository/device_id_storage.dart';
+import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/repository/mail_api.dart';
 import 'package:aurorafiles/modules/settings/repository/encryption_local_storage.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +23,7 @@ abstract class _AuthState with Store {
   final _authApi = AuthApi();
   final _mailApi = MailApi();
   final _authLocal = AuthLocalStorage();
+  final _filesLocal = FilesLocalStorage();
 
   String hostName;
 
@@ -113,12 +117,15 @@ abstract class _AuthState with Store {
   }
 
   // returns true the host field needs to be revealed because auto discover was unsuccessful
-  Future<bool> onLogin(
-      {bool isFormValid,
-      Function() onSuccess,
-      Function(RequestTwoFactor) onTwoFactorAuth,
-      Function(String message) onShowUpgrade,
-      Function(String) onError}) async {
+  Future<bool> onLogin({
+    @required BuildContext context,
+    bool isFormValid,
+    Function() onSuccess,
+    Function(RequestTwoFactor) onTwoFactorAuth,
+    Function(String message) onShowUpgrade,
+    Function(String) onError,
+  }) async {
+    final s = Str.of(context);
     if (isFormValid) {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
       String email = emailCtrl.text;
@@ -150,8 +157,21 @@ abstract class _AuthState with Store {
         final String token = res['Result']['AuthToken'];
         final int id = res['AuthenticatedUserId'];
         final oldUserId = await _authLocal.getUserIdFromStorage();
-        if (oldUserId != id) {
-          _clearPgpKeys();
+        if (oldUserId != null && oldUserId != id) {
+          final result = await AMConfirmationDialog.show(
+            context,
+            s.clear_cache,
+            s.clear_cache_during_login,
+            s.clear,
+            s.cancel,
+          );
+          if (result == true) {
+            await _clearCachedData();
+          } else {
+            isLoggingIn = false;
+            return null;
+            // throw s.clear_cache_during_login;
+          }
         }
         await _setAuthSharedPrefs(
             host: host, token: token, email: email, id: id);
@@ -181,12 +201,19 @@ abstract class _AuthState with Store {
     _authApi.logout();
     _authLocal.deleteTokenFromStorage();
     if (clearCache) {
-      _authLocal.deleteUserIdFromStorage();
-      _clearPgpKeys();
+      _clearCachedData();
     }
     authToken = null;
     userId = null;
     EncryptionLocalStorage.instance.setStorePasswordStorage(false);
+  }
+
+  Future<void> _clearCachedData() async {
+    await _authLocal.deleteUserIdFromStorage();
+    _clearPgpKeys();
+    await AppStore.filesState.deleteAllOfflineFiles();
+    await _filesLocal.deleteFilesFromCache(deleteCachedImages: true);
+    await _filesLocal.deleteFilesFromCache(deleteCachedImages: false);
   }
 
   void _clearPgpKeys() {

@@ -697,10 +697,13 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future<void> onSetFileOffline(LocalFile file, BuildContext context,
-      {@required Function() onSuccess,
-      @required Function(ProcessingFile) onStart,
-      @required Function(String) onError}) async {
+  Future<void> onSetFileOffline(
+    LocalFile file,
+    BuildContext context, {
+    @required Function() onSuccess,
+    @required Function(ProcessingFile) onStart,
+    @required Function(String) onError,
+  }) async {
     if (_isFileIsBeingProcessed(file.guid)) {
       throw CustomException("This file is occupied with another operation.");
     }
@@ -708,9 +711,9 @@ abstract class _FilesState with Store {
     if (file.localId == null) {
       // if file exists in cache, just copy it to downloads folder
       final Directory dir = await getApplicationDocumentsDirectory();
-      final offlineDir =
+      final offlinePath =
           "${dir.path}/offline${file.path + (file.path.isNotEmpty ? "/" : "")}${file.guid}_${file.name}";
-      File fileForOffline = await _filesLocal.copyFromCache(file, offlineDir);
+      File fileForOffline = await _filesLocal.copyFromCache(file, offlinePath);
       if (fileForOffline != null && fileForOffline.lengthSync() == file.size) {
         final FilesCompanion filesCompanion =
             getCompanionFromLocalFile(file, fileForOffline.path);
@@ -756,7 +759,9 @@ abstract class _FilesState with Store {
       processingFile =
           processedFiles.firstWhere((process) => process.guid == file.guid);
       return processingFile;
-    } catch (err) {}
+    } catch (err) {
+      print('addFileToProcessing ERROR: $err');
+    }
 
     // else
     processingFile = new ProcessingFile(
@@ -781,7 +786,9 @@ abstract class _FilesState with Store {
       if (deleteLocally) fileToDelete.fileOnDevice.delete(recursive: true);
       processedFiles.removeWhere((file) => file.guid == guid);
       print("process removed: ${processedFiles.length}");
-    } catch (err) {}
+    } catch (err) {
+      print('deleteFromProcessing ERROR: $err');
+    }
   }
 
   Future<void> clearCache({deleteCachedImages = false}) async {
@@ -903,5 +910,9 @@ abstract class _FilesState with Store {
 
   Future<bool> leaveFileShare(LocalFile file) {
     return _mailApi.leaveFileShare(file: file);
+  }
+
+  Future<int> deleteAllOfflineFiles() {
+    return _filesDao.deleteAllFiles();
   }
 }

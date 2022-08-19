@@ -104,13 +104,13 @@ class _ShareLinkState extends State<ShareLink> {
     }
   }
 
-  onError(e) {
+  void onError(e) {
     progress = false;
     error = e.toString();
     setState(() {});
   }
 
-  void _deleteLink() async {
+  Future<void> _deleteLink() async {
     widget.file.localFile = widget.file.localFile
         .copyWith(linkPassword: "", linkUrl: "", published: false);
 
@@ -120,8 +120,6 @@ class _ShareLinkState extends State<ShareLink> {
       onSuccess: () async {},
       onError: (String err) {},
     );
-    await widget.filesState
-        .updateFile(getCompanionFromLocalFile(widget.file.localFile));
     Navigator.pop(context);
   }
 

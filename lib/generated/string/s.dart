@@ -285,4 +285,5 @@ abstract class S {
   String get hint_select_teammate;
   String get label_no_share;
   String get label_show_history;
+  String get clear_cache_during_login;
 }

@@ -193,7 +193,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     }
   }
 
-  _secureSharing() async {
+  Future<void> _secureSharing() async {
     if (widget.file.published == false && widget.file.initVector != null) {
       if (widget.file.encryptedDecryptionKey == null) {
         return AMDialog.show(
@@ -224,9 +224,6 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       preparedForShare,
       s,
     );
-
-    await widget.filesState
-        .updateFile(getCompanionFromLocalFile(preparedForShare.localFile));
     setState(() {});
   }
 

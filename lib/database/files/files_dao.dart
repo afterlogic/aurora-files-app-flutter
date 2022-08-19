@@ -1,13 +1,12 @@
 import 'dart:io';
 
+import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/database/files/files_table.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:moor_flutter/moor_flutter.dart';
-
-import '../app_database.dart';
-import 'files_table.dart';
 
 part 'files_dao.g.dart';
 
@@ -29,13 +28,11 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
       );
 
   Future<List<LocalFile>> getAllFiles() {
-    return (select(files)..where((file) => file.owner.equals(userEmail))).get();
+    return select(files).get();
   }
 
   Future<List<Storage>> getStorages() async {
-    final offlineFiles = await (select(files)
-          ..where((file) => file.owner.equals(userEmail)))
-        .get();
+    final offlineFiles = await select(files).get();
     final storageNames = new Set<String>();
     offlineFiles.forEach((file) => storageNames.add(file.type));
 
@@ -45,7 +42,6 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
   Future<List<LocalFile>> getFilesAtPath(String nullablePath) async {
     final path = nullablePath ?? "";
     final offlineFiles = await (select(files)
-          ..where((file) => file.owner.equals(userEmail))
           ..where((file) => file.type.equals(storageType)))
         .get();
     // get files from subfolders to recreate folders structure
@@ -60,7 +56,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
         final name = trimmedPath.split("/")[0];
         if (name.isNotEmpty) folderNames.add(name);
       } catch (err) {
-        err;
+        print(err);
       }
     });
     Set<LocalFile> filesAtPath = new Set();
@@ -79,7 +75,6 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     final path = nullablePath == null ? "" : nullablePath;
     final query = searchPattern.toLowerCase().trim();
     final offlineFiles = await (select(files)
-          ..where((file) => file.owner.equals(userEmail))
           ..where((file) => file.type.equals(storageType)))
         .get();
     // get files from subfolders to recreate folders structure
@@ -137,9 +132,12 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
   }
 
   Future<List<LocalFile>> getFilesForStorage(String displayName) async {
-    return (select(files)
-          ..where((file) => file.owner.equals(userEmail))
-          ..where((file) => file.type.equals(storageType)))
+    return (select(files)..where((file) => file.type.equals(storageType)))
         .get();
+  }
+
+  Future<int> deleteAllFiles() async {
+    final files = await getAllFiles();
+    return deleteFiles(files);
   }
 }

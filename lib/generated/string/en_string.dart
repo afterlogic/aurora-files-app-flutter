@@ -350,4 +350,6 @@ class EnString extends S {
   final String hint_select_teammate = "Select teammate";
   final String label_no_share = "No shares yet";
   final String label_show_history = "Show history";
+  final String clear_cache_during_login =
+      "When changing the user, it is necessary to clear the cached data and keys from the previous user.";
 }

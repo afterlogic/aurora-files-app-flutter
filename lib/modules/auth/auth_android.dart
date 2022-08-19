@@ -87,6 +87,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     }
     if (errMsg.isEmpty) {
       final showHost = await _authState.onLogin(
+        context: context,
         isFormValid: _authFormKey.currentState.validate(),
         onTwoFactorAuth: (request) {
           if (request.hasSecurityKey == true && BuildProperty.useYubiKit) {
@@ -120,7 +121,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
         onError: (String err) => showSnack(context, msg: err),
       );
-      if (showHost) {
+      if (showHost == true) {
 //        _authState.hostCtrl.text = _authState.hostName;
         setState(() => _showHostField = true);
         showSnack(

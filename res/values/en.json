@@ -277,5 +277,6 @@
   "label_share_history_title": "Shared file activity history",
   "hint_select_teammate": "Select teammate",
   "label_no_share": "No shares yet",
-  "label_show_history": "Show history"
+  "label_show_history": "Show history",
+  "clear_cache_during_login": "When changing the user, it is necessary to clear the cached data and keys from the previous user."
 }

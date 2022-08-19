@@ -340,10 +340,10 @@ class EnString extends S {
       "Allow encrypt files in Personal Storage";
   final String hint_pgp_no_keys_to_import =
       "The text contains no keys that can be imported.";
-  final String hint_pgp_external_private_keys =
-      "External private keys are not supported and will not be imported";
   final String label_encryption_module_not_exist =
       "The encryption module\nis not available on the backend";
+  final String hint_pgp_external_private_keys =
+      "External private keys are not supported and will not be imported";
   final String label_leave_share = "Leave share";
   final String label_leave_share_of = "Leave share of the ";
   final String label_share_history_title = "Shared file activity history";

@@ -2,7 +2,6 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/string/s.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
-import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';

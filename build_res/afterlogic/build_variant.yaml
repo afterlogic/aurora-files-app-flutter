@@ -4,7 +4,7 @@ _appId: "com.afterlogic.aurora.files"
 _appIdIos: "com.afterlogic.aurorafiles"
 _iosDeveloperId: "J7AW6VHJK4"
 _appleGroupId: "group.com.afterlogic.aurora"
-_version: "2.3.1"
+_version: "2.4.0"
 
 backgroundColor: "#FFFFFF"
 splashGradientTop: "#FFFFFF"

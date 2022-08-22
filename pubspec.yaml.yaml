@@ -2,7 +2,7 @@ name: aurorafiles
 description: File management system for ...
 publish_to: none
 
-version: {{version_ios}}
+version: {{version}}+{{build}}
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

@@ -90,6 +90,11 @@ class AppTheme {
   );
 
   static final ThemeData login = null;
+  static final Color loginTextColor = null;
+
+  static final floatIconTheme = IconThemeData(
+    color: Colors.white,
+  );
 
   static final _dialogTheme = DialogTheme(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -105,13 +110,7 @@ class AppTheme {
     backgroundColor: AppColor.accent,
   );
 
-  static final floatIconTheme = IconThemeData(
-    color: Colors.white,
-  );
-
   static final _cardTheme = CardTheme(
     elevation: 0,
   );
-
-  static Color loginTextColor;
 }

@@ -1,5 +1,5 @@
 APP_NAME={{appName}}
 PRODUCT_ID = {{_appIdIos}}
 DEVELOPMENT_ID = {{_iosDeveloperId}}
-PRODUCT_VERSION = {{_version}}
-PRODUCT_BUILD_CODE = {{_build}}
+PRODUCT_VERSION = {{version}}
+PRODUCT_BUILD_CODE = {{build}}

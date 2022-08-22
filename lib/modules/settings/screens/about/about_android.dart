@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:flutter/material.dart';
@@ -53,12 +51,8 @@ class _AboutAndroidState extends State<AboutAndroid> {
     setState(() => loading = true);
     final packageInfo = await PackageInfo.fromPlatform();
     _appName = packageInfo.appName;
-    _version = _getPackageVersion(packageInfo.version, packageInfo.buildNumber);
+    _version = '${packageInfo.version}+${packageInfo.buildNumber}';
     setState(() => loading = false);
-  }
-
-  String _getPackageVersion(String version, String build) {
-    return Platform.isAndroid ? version : '$version+$build';
   }
 
   @override

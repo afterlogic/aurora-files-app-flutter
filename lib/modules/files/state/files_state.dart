@@ -148,7 +148,7 @@ abstract class _FilesState with Store {
     } catch (err) {
       if (!isOfflineMode &&
           AppStore.settingsState.internetConnection !=
-              ConnectivityResult.none) {
+              ConnectivityResult.none && onError != null) {
         onError(err.toString());
       }
     }

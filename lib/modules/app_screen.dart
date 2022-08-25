@@ -31,23 +31,23 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
     WebMailApi.onLogout = onLogout;
+    WebMailApi.isMethodEnable = _settingsState.isMethodEnable;
     _initLocalStorage();
   }
 
   @override
-  dispose() {
-    if (WebMailApi.onLogout == onLogout) {
-      WebMailApi.onLogout = null;
-    }
+  void dispose() {
+    WebMailApi.onLogout = null;
+    WebMailApi.isMethodEnable = null;
     super.dispose();
   }
 
-  onLogout() {
+  void onLogout() {
     _authState.onLogout();
     navigatorKey.currentState.pushReplacementNamed(AuthRoute.name);
   }
 
-  Future _initLocalStorage() async {
+  void _initLocalStorage() {
     _localStorageInitialization = Future.wait([
       _authState.getAuthSharedPrefs(),
       _settingsState.getUserEncryptionKeys(),
@@ -55,7 +55,7 @@ class _AppState extends State<App> {
     ]);
   }
 
-  Future _updateAppSettings() async {
+  void _updateAppSettings() {
     _settingsState.updateEncryptionSettings();
     _settingsState.updateAppData();
   }

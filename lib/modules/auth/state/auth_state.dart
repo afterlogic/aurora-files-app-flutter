@@ -76,6 +76,7 @@ abstract class _AuthState with Store {
   }
 
   Future successLogin() async {
+    await AppStore.settingsState.updateAppData();
     return Future.wait([
       setIdentity(),
       setAccount(),
@@ -83,7 +84,6 @@ abstract class _AuthState with Store {
       setDevice(),
       AppStore.settingsState.getUserEncryptionKeys(),
       AppStore.filesState.onGetStorages(),
-      AppStore.settingsState.updateAppData(),
     ]);
   }
 
@@ -177,7 +177,7 @@ abstract class _AuthState with Store {
             host: host, token: token, email: email, id: id);
         await successLogin();
         onSuccess();
-      } catch (err, s) {
+      } catch (err) {
         isLoggingIn = false;
         if (err is RequestTwoFactor) {
           onTwoFactorAuth(err);
@@ -278,9 +278,9 @@ abstract class _AuthState with Store {
     return true;
   }
 
-  Future setDevice() async {
+  Future<void> setDevice() async {
     final deviceId = await DeviceIdStorage.getDeviceId();
     final deviceName = await DeviceIdStorage.getDeviceName();
-    _authApi.saveDevice(deviceId, deviceName, authToken);
+    await _authApi.saveDevice(deviceId, deviceName, authToken);
   }
 }

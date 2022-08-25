@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aurorafiles/models/api_body.dart';
+import 'package:aurorafiles/models/server_settings.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:flutter/foundation.dart';
@@ -19,7 +20,8 @@ class SettingApi {
       return EncryptionSetting(
         exist: true,
         enable: resBody['Result']["EnableModule"] ?? false,
-        enableInPersonalStorage: resBody['Result']["EnableInPersonalStorage"] ?? false,
+        enableInPersonalStorage:
+            resBody['Result']["EnableInPersonalStorage"] ?? false,
       );
     } else {
       throw CustomException(getErrMsg(resBody));
@@ -46,7 +48,7 @@ class SettingApi {
     }
   }
 
-  Future<AppData> getAppData() async {
+  Future<ServerSettings> getServerSettings() async {
     final body = ApiBody(
       module: "Core",
       method: "GetAppData",
@@ -57,12 +59,24 @@ class SettingApi {
       final modules = (result['Core']['AvailableClientModules'] as List)
           .map((e) => e as String)
           .toList();
-      final appData = AppData(
-        availableClientModules: modules,
+      final backendModules = (result['Core']['AvailableBackendModules'] as List)
+          .map((e) => e as String)
+          .toList();
+      modules.addAll(backendModules);
+      modules.sort();
+
+      final Map<String, dynamic> settings = {};
+      modules.forEach((name) {
+        settings[name] = result[name];
+      });
+      final serverSettings = ServerSettings(
+        availableModules: modules,
+        modulesSettings: settings,
       );
-      return appData;
+      return serverSettings;
     } else {
-      throw CustomException(getErrMsg(resBody));
+      final msg = getErrMsg(resBody);
+      throw CustomException(msg);
     }
   }
 }
@@ -77,10 +91,4 @@ class EncryptionSetting {
     @required this.enable,
     @required this.enableInPersonalStorage,
   });
-}
-
-class AppData {
-  final List<String> availableClientModules;
-
-  AppData({@required this.availableClientModules});
 }

@@ -14,7 +14,6 @@ Map<String, String> getHeader() {
   return {'Authorization': 'Bearer ${AppStore.authState.authToken}'};
 }
 
-
 Future sendRequest(ApiBody body, [Map<String, dynamic> addedBody]) async {
   final authState = AppStore.authState;
   final map = body.toMap();
@@ -24,7 +23,10 @@ Future sendRequest(ApiBody body, [Map<String, dynamic> addedBody]) async {
   final rawResponse =
       await WebMailApi.request(authState.apiUrl, map, getHeader());
   if (rawResponse.statusCode != 200) {
-    return {"ErrorCode": unknownError};
+    return {
+      "ErrorCode": rawResponse.statusCode,
+      "ErrorMessage": rawResponse.reasonPhrase,
+    };
   }
   return json.decode(rawResponse.body);
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aurorafiles/build_property.dart';
+import 'package:aurorafiles/models/server_settings.dart';
 import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
@@ -33,11 +34,11 @@ abstract class _SettingsState with Store {
   @observable
   String selectedKeyName;
 
-  List<String> _availableModules = [];
+  ServerSettings _serverSettings = ServerSettings();
 
   bool get isTeamSharingEnable =>
       BuildProperty.teamSharingEnable &&
-      _availableModules.contains('SharedFiles');
+      _serverSettings.isModuleEnable("SharedFiles");
 
   String get currentKey => encryptionKeys[selectedKeyName];
 
@@ -191,10 +192,13 @@ abstract class _SettingsState with Store {
 
   Future<void> updateAppData() async {
     try {
-      final appData = await settingApi.getAppData();
-      _availableModules = appData.availableClientModules;
+      _serverSettings = await settingApi.getServerSettings();
     } catch (err) {
       print("getAppData ERROR: $err");
     }
+  }
+
+  bool isMethodEnable(String module, String method) {
+    return _serverSettings.isMethodEnable(module, method);
   }
 }

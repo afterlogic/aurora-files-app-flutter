@@ -7,14 +7,12 @@ class ServerSettings {
     this.modulesSettings = const {},
   });
 
-  // 'Core' - available always
-  final _uncheckableModules = ['Core'];
-
   bool isModuleEnable(String module) {
     if (module == null) {
       return false;
     }
-    if (_uncheckableModules.contains(module)) {
+    //request for available modules is still in progress
+    if (availableModules.isEmpty) {
       return true;
     }
     return availableModules.contains(module);

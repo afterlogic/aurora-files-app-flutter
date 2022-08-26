@@ -1,6 +1,6 @@
 #variables
 appName: ""
-version: "2.2.2"
+version: "1.0.0"
 
 # android App ID
 _appId: ""
@@ -22,7 +22,6 @@ autodiscover_url: "https://{domain}/aurora-autodiscover.json?email={email}"
 privacyPolicy: ""
 termsOfService: ""
 
-canUpgradePlan: false
 legacyPgpKey: false
 logger: false
 pgpEnable: false

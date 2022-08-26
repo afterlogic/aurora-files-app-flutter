@@ -246,6 +246,8 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
       children: [
         AMDialog(
           title: Text(s.label_share_with_teammates),
+          insetPadding: const EdgeInsets.symmetric(
+              horizontal: 8.0, vertical: 24.0),
           content: SizedBox(
             width: 350,
             child: Column(

@@ -113,13 +113,18 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  localizator: 0.1.0+2
+  localizator:
+    git:
+      url: https://github.com/afterlogic/flutter_localizator.git
+      ref: flutter_2.10
   build_runner: ^1.6.5
   mobx_codegen: ^0.3.3+1
   chopper_generator: ^3.0.0
   moor_generator: ^1.6.0+2
   build_variant:
-    git: "https://github.com/afterlogic/build_variant"
+    git:
+      url: "https://github.com/afterlogic/build_variant"
+      ref: flutter_2.10
   flutter_launcher_icons: ^0.7.4
 
 flutter_icons:

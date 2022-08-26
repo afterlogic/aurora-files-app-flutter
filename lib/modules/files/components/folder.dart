@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
@@ -9,6 +10,7 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../files_route.dart';
@@ -99,13 +101,7 @@ class _FolderWidgetState extends State<FolderWidget> {
         },
         child: Stack(children: [
           ListTile(
-            leading: Icon(
-              Icons.folder,
-              size: _filesState.filesTileLeadingSize,
-              color: _filesState.filesToMoveCopy.contains(widget.folder)
-                  ? Theme.of(context).disabledColor.withOpacity(0.11)
-                  : Theme.of(context).disabledColor,
-            ),
+            leading: _getThumbnail(context),
             title: Padding(
               padding: const EdgeInsets.only(right: 28.0),
               child: Column(
@@ -162,6 +158,29 @@ class _FolderWidgetState extends State<FolderWidget> {
             ),
         ]),
       ),
+    );
+  }
+
+  Widget _getThumbnail(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Icon(
+          Icons.folder,
+          size: _filesState.filesTileLeadingSize,
+          color: _filesState.filesToMoveCopy.contains(widget.folder)
+              ? Theme.of(context).disabledColor.withOpacity(0.11)
+              : Theme.of(context).disabledColor,
+        ),
+        if (_sharedWithMe)
+          Positioned(
+            top: -2,
+            right: -3,
+            child: SvgPicture.asset(
+              Asset.svg.iconSharedWithMe,
+            ),
+          ),
+      ],
     );
   }
 }

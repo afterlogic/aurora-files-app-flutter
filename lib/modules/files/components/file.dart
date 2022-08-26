@@ -333,6 +333,7 @@ class _FileWidgetState extends State<FileWidget> {
     }
 
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         result,
         if (_sharedWithMe)

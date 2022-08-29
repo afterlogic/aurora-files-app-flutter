@@ -13,10 +13,9 @@
    "flutter_2.2.3"
 5) aurora_ui_kit (https://github.com/afterlogic/aurora_ui_kit_flutter) ветка "master", предыдущее состояние сохранено в ветке
    "flutter_2.2.3"
+6) yubico_flutter (https://github.com/afterlogic/yubico_flutter) ветка "flutter_2.10"
 
-4. Текущие вопросы:
-1) проверить/обновить плагин yubico_flutter (https://github.com/afterlogic/yubico_flutter)
-
-5. Осталось:
+4. Осталось:
 1) проверить корректность работы цветовых тем для разных конфигураций
-2) заменить самописный пакет localizator на стандартное решение
+2) проверить плагин yubico_flutter (https://github.com/afterlogic/yubico_flutter)
+3) заменить самописный пакет localizator на стандартное решение

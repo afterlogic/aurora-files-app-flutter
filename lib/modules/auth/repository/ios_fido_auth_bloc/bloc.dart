@@ -126,7 +126,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
       }
       fidoRequest
           ?.start()
-          .then((value) => add(KeyResult(value)))
+          .then((value) => add(KeyResult(value ?? {})))
           .catchError((e) => add(Cancel(e)));
     } catch (e) {
       yield mapError(e);

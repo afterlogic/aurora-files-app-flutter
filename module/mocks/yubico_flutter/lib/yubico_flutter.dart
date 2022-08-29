@@ -20,7 +20,7 @@ class FidoAuthRequest {
     throw 'Mock Not Implemented';
   }
 
-  Future<Map<dynamic, dynamic>> start() {
+  Future<Map<dynamic, dynamic>?> start() {
     throw 'Mock Not Implemented';
   }
 

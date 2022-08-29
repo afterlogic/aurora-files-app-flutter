@@ -16,7 +16,7 @@ class PgpSettingPresenter {
   final PgpKeyApi _pgpKeyApi = PgpKeyApi();
   final encryptionStorage = EncryptionLocalStorage.instance;
   bool? storePassword;
-  late List<LocalPgpKey> externalKeys;
+  List<LocalPgpKey> externalKeys = [];
 
   PgpSettingPresenter(this._view, this._pgpKeyDao)
       : pgpKeyUtil = PgpKeyUtil.instance {

@@ -103,14 +103,6 @@ dependencies:
   flutter_custom_tabs: ^1.0.4
   equatable: ^2.0.3
 
-dependency_overrides:
-  recase: ^4.0.0
-#  yaml: ^2.1.15
-#  dart_style: ^1.0.0
-#  image: ^2.1.1
-#  xml: ^4.2.0
-#  firebase_crashlytics_platform_interface: 3.1.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

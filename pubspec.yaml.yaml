@@ -5,7 +5,7 @@ publish_to: none
 version: {{version_ios}}
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -21,64 +21,64 @@ dependencies:
     path: module/secure_sharing/secure_sharing_impl
   # end : if
 
-  meta:
+  meta: ^1.7.0
   # state management
-  mobx:
-  flutter_mobx:
-  provider:
+  mobx: ^2.0.7
+  flutter_mobx: ^2.0.6+1
+  provider: ^6.0.3
 
   # http
-  http:
+  http: ^0.13.5
 
   # local storage`
-  moor_flutter:
-  shared_preferences: 0.5.6+3
-  flutter_secure_storage: 4.2.1
-  sqflite:
+  moor_flutter: ^4.1.0
+  shared_preferences: ^2.0.15
+  flutter_secure_storage: ^5.0.2
+  sqflite: ^2.0.2+1
 
   # file downloading/uploading+
-  file_picker: ^4.0.0
+  file_picker: ^4.6.1
   #  flutter_uploader: ^1.0.3+1
   #  flutter_downloader: ^1.1.9
-  path_provider:
+  path_provider: ^2.0.11
 
   # file encryption
-  encrypt:
+  encrypt: ^5.0.1
 
   # file share
-  share: 0.6.5+4
+  share: ^2.0.4
 
   # opening files with other apps
   open_file: ^3.2.1
 
   # ui
-  flutter_keyboard_visibility: ^5.0.3
-  material_design_icons_flutter:
-  cupertino_icons:
-  shimmer:
-  cached_network_image:
-  percent_indicator: 3.0.1
-  flutter_svg: 0.21.0
+  flutter_keyboard_visibility: ^5.3.0
+  material_design_icons_flutter: ^5.0.6996
+  cupertino_icons: ^1.0.5
+  shimmer: ^2.0.0
+  cached_network_image: ^3.2.0
+  percent_indicator: ^4.2.1
+  flutter_svg: ^1.0.3
   #  fluttertoast: 3.0.5
-  dropdown_search: 2.0.1
+  dropdown_search: ^3.0.1
 
   # misc
-  url_launcher: ^6.0.9
-  filesize:
-  intl:
-  permission_handler: 3.3.0
-  connectivity:
-  uuid:
-  uni_links: 0.4.0
-  package_info:
-  device_info_plus: ^2.1.0
-  get_it:
+  url_launcher: ^6.1.5
+  filesize: ^2.0.1
+  intl: ^0.17.0
+  permission_handler: ^10.0.0
+  connectivity: ^3.0.6
+  uuid: ^3.0.6
+  uni_links: ^0.5.1
+  package_info: ^2.0.2
+  device_info_plus: ^4.0.0
+  get_it: ^7.2.0
 
   #async util
-  rxdart:
+  rxdart: ^0.27.5
 
   #crashlytics
-  firebase_crashlytics: 2.2.1
+  firebase_crashlytics: ^2.8.6
 
   theme:
     path: {{_themeModule}}
@@ -99,16 +99,17 @@ dependencies:
   aurora_logger:
     git: https://github.com/afterlogic/aurora_logger_flutter
 
-  flutter_bloc: 3.2.0
-  flutter_custom_tabs: 1.0.2
-  equatable: 1.1.1
+  flutter_bloc: 7.3.3
+  flutter_custom_tabs: ^1.0.4
+  equatable: ^2.0.3
 
 dependency_overrides:
-  yaml: ^2.1.15
-  dart_style: ^1.0.0
-  image: ^2.1.1
-  xml: ^4.2.0
-  firebase_crashlytics_platform_interface: 3.1.2
+  recase: ^4.0.0
+#  yaml: ^2.1.15
+#  dart_style: ^1.0.0
+#  image: ^2.1.1
+#  xml: ^4.2.0
+#  firebase_crashlytics_platform_interface: 3.1.2
 
 dev_dependencies:
   flutter_test:
@@ -117,15 +118,15 @@ dev_dependencies:
     git:
       url: https://github.com/afterlogic/flutter_localizator.git
       ref: flutter_2.10
-  build_runner: ^1.6.5
-  mobx_codegen: ^0.3.3+1
-  chopper_generator: ^3.0.0
-  moor_generator: ^1.6.0+2
+  build_runner: ^2.2.0
+  mobx_codegen: ^2.0.7
+  chopper_generator: ^4.0.5
+  moor_generator: ^4.6.0+1
   build_variant:
     git:
       url: "https://github.com/afterlogic/build_variant"
       ref: flutter_2.10
-  flutter_launcher_icons: ^0.7.4
+  flutter_launcher_icons: ^0.9.3
 
 flutter_icons:
   ios: true

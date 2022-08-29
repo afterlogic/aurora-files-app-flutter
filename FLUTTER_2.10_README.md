@@ -15,9 +15,8 @@
    "flutter_2.2.3"
 
 4. Текущие вопросы:
-1) пакет build_variant после обновления не все свойства заменяет согласно входному build_variant.yaml
+1) проверить/обновить плагин yubico_flutter (https://github.com/afterlogic/yubico_flutter)
 
 5. Осталось:
 1) проверить корректность работы цветовых тем для разных конфигураций
-2) проверить/обновить плагин yubico_flutter (https://github.com/afterlogic/yubico_flutter)
-3) заменить самописный пакет localizator на стандартное решение
+2) заменить самописный пакет localizator на стандартное решение

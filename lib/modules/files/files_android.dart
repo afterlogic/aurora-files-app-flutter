@@ -430,7 +430,6 @@ class _FilesAndroidState extends State<FilesAndroid>
                       _filesPageState.isInsideZip
                   ? SizedBox()
                   : FloatingActionButton(
-                      backgroundColor: theme.colorScheme.secondary,
                       heroTag: widget.path,
                       child: Icon(Icons.add),
                       onPressed: () {

@@ -28,13 +28,10 @@ class AppInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return TextFormField(
       style: style,
       validator: validator,
       keyboardType: keyboardType,
-      cursorColor: theme.colorScheme.secondary,
       controller: controller,
       obscureText: obscureText,
       autocorrect: keyboardType != null ? false : true,

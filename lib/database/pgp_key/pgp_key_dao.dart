@@ -15,7 +15,7 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
     return prepareToLoad(await (select(pgpKey)
           ..where((item) => item.isPrivate.equals(isPrivate))
           ..where((item) => item.email.equals(email)))
-        .getSingle());
+        .getSingleOrNull());
   }
 
   Future<List<LocalPgpKey>> getKeys() async {

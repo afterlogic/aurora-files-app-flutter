@@ -36,7 +36,12 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
     super.initState();
     useKey = widget.pgpKey != null;
     useSign = useKey && widget.userPgpKey != null && widget.pgpKey != null;
+  }
+
+  @override
+  void didChangeDependencies() {
     s = Str.of(context);
+    super.didChangeDependencies();
   }
 
   @override

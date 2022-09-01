@@ -94,7 +94,6 @@ class CustomSpeedDial extends ModalRoute<void> {
               }),
               SizedBox(height: 14.0),
               FloatingActionButton(
-                backgroundColor: theme.accentColor,
                 heroTag: tag,
                 elevation: 0.0,
                 child: RotationTransition(

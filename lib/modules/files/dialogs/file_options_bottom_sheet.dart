@@ -340,7 +340,6 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               title: Text(s.offline),
               trailing: Switch.adaptive(
                 value: widget.file.localId != -1,
-                activeColor: Theme.of(context).colorScheme.secondary,
                 onChanged: (bool val) =>
                     onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
               ),

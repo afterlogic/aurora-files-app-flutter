@@ -115,7 +115,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
                     child: Drawer(
                       child: ListTileTheme(
                         style: ListTileStyle.drawer,
-                        selectedColor: Theme.of(context).accentColor,
+                        selectedColor: Theme.of(context).colorScheme.secondary,
                         child: SafeArea(child: body),
                       ),
                     ),

@@ -57,13 +57,18 @@ class _ShareLinkState extends State<ShareLink> {
 
   @override
   void initState() {
-    s = Str.of(context);
     useSign = widget.userPrivateKey != null &&
         widget.selectRecipientResult?.pgpKey != null;
     super.initState();
     if (!widget.file.localFile.published) {
       _createLink();
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    s = Str.of(context);
+    super.didChangeDependencies();
   }
 
   _createLink() {

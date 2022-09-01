@@ -139,12 +139,17 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
 
   @override
   void initState() {
-    s = Str.of(context);
     _prepare();
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       share();
     });
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    s = Str.of(context);
+    super.didChangeDependencies();
   }
 
   static Future<File> get tempFile async {

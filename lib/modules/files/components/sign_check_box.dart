@@ -34,7 +34,6 @@ class SignCheckBoxState extends State<SignCheckBox> {
           ),
           trailing: Switch.adaptive(
             value: widget.checked,
-            activeColor: Theme.of(context).accentColor,
             onChanged: widget.enable ? widget.onCheck : null,
           ),
         ),

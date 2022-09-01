@@ -147,7 +147,6 @@ class MainDrawer extends StatelessWidget {
                       Divider(),
                       SwitchListTile.adaptive(
                         value: filesState.isOfflineMode,
-                        activeColor: Theme.of(context).accentColor,
                         onChanged: (bool val) async {
                           if (Navigator.canPop(context)) {
                             Navigator.popUntil(
@@ -168,7 +167,6 @@ class MainDrawer extends StatelessWidget {
                       ),
 //                  SwitchListTile.adaptive(
 //                    value: false,
-//                    activeColor: Theme.of(context).accentColor,
 //                    onChanged: (bool val) {},
 //                    title: ListTile(
 //                      contentPadding: EdgeInsets.zero,

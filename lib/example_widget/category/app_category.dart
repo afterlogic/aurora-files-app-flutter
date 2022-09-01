@@ -79,7 +79,6 @@ class AppCategory extends StatelessWidget {
             width: 40,
             height: 40,
             child: FloatingActionButton(
-              backgroundColor: theme.accentColor,
               heroTag: "FloatingActionButton",
               child: Icon(Icons.add),
               onPressed: () {

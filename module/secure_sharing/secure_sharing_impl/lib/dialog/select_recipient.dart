@@ -33,8 +33,13 @@ class _SelectRecipientState extends State<SelectRecipient> {
   @override
   void initState() {
     super.initState();
-    s = Str.of(context);
     _loadRecipients();
+  }
+
+  @override
+  void didChangeDependencies() {
+    s = Str.of(context);
+    super.didChangeDependencies();
   }
 
   void _loadRecipients() {

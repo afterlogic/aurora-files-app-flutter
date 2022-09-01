@@ -17,5 +17,6 @@
 
 4. Осталось:
 1) проверить корректность работы цветовых тем для разных конфигураций
-2) проверить плагин yubico_flutter (https://github.com/afterlogic/yubico_flutter)
-3) заменить самописный пакет localizator на стандартное решение
+2) проверить корректность работы localizator
+3) проверить плагин yubico_flutter (https://github.com/afterlogic/yubico_flutter)
+4) заменить самописный пакет localizator на стандартное решение

@@ -2,11 +2,16 @@
 appName: "Aurora Files"
 version: "2.4.0"
 
+#Android App ID
 _appId: "com.afterlogic.aurora.files"
+#iOS App ID
 _appIdIos: "com.afterlogic.aurorafiles"
+#iOS Developer ID
 _iosDeveloperId: "J7AW6VHJK4"
+#iOS App Group ID
 _appleGroupId: "group.com.afterlogic.aurora"
 
+#Colors for android splash screen
 backgroundColor: "#FFFFFF"
 splashGradientTop: "#FFFFFF"
 splashGradientBottom: "#FFFFFF"
@@ -15,11 +20,16 @@ splashGradientBottomDark: "#000000"
 
 autodiscover_url: "https://{domain}/aurora-autodiscover.json?email={email}"
 privacyPolicy: "https://afterlogic.com/privacy-policy"
+termsOfService: ""
 
-pgpEnable: true
+pgpEnable: false
+legacyPgpKey: false
 secureSharingEnable: true
 teamSharingEnable: true
+useMainLogo: true
+logger: false
+supportAllowAccess: false
 
-# fido
+#Fido secure keys
 useYubiKit: false
 yubico_flutter_lib: "path: module/mocks/yubico_flutter"

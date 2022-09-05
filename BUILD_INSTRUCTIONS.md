@@ -11,7 +11,7 @@
    
    1.3. Install Flutter according to [instructions](https://flutter.dev/docs/get-started/install) (Flutter v2.2.3)
    
-   1.4. Install Java JDK. Since Auкora Files uses gradle build tool, it has impact on the version of Java to be installed. You can check related requirements at https://gradle.org/install/. At the time of writing it's Java 8
+   1.4. Install Java JDK. Since Aurora Files uses gradle build tool, it has impact on the version of Java to be installed. You can check related requirements at https://gradle.org/install/. At the time of writing it's Java 8
    
    1.5. If PGP functionality is required, the "Java to Objective-C Translator" needs to be installed as well.
    Download [j2objc](https://github.com/google/j2objc/releases/download/2.7/j2objc-2.7.zip), unpack into `ios` directory and rename the unpacked directory to `dist`.

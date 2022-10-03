@@ -43,14 +43,14 @@ Images are found in `image` subdirectory.
 All the images must be of 512�512 or 1024�1024 size.
 
 * `icon.png` icon is used on desktop. Should not have alpha channel. 
-* `icon_foreground.png` icon with transparent background is used as physical icnon in some versions of Android. 
+* `icon_foreground.png` icon with transparent background is used as physical icon in some versions of Android. 
 * `main_logo.png` icon is displayed on login and About screens.
 
 The color scheme is described in `theme/lib/app_color.dart` file.
 
 12. To switch to custom build, run `sh/build_variant.sh <path>` where `path` variable holds a path to `build_variant.yaml` file in a directory holding custom version resources.
 
-13. To create certificates for signing iOS version, open XCode project. Click root project Runner in project structure, and in the new window openeed, select Runner from Targets list, then select Signing & Capabilities. Certificates should be created automatically.
+13. To create certificates for signing iOS version, open XCode project. Click root project Runner in project structure, and in the new window opened, select Runner from Targets list, then select Signing & Capabilities. Certificates should be created automatically.
 
 14. To build Android version run `build_android.sh`
 
@@ -64,7 +64,7 @@ In the application, you can turn specific features on/off by specifying `true` o
 
 Build flags:
 * multiUserEnable - allows for adding and switching between mail users
-* multiAccountEnable - allows for swtching email account for a user
+* multiAccountEnable - allows for switching email account for a user
 * cryptoEnable - PGP email encryption
 * useMainLogo - using `main_logo.png` on login screen
 * selfDestructingEmail - allows for sending mails which are made unavailable after certain amount of time

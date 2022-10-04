@@ -4,6 +4,7 @@ The current status of transferring the project to the new version of Flutter.
 
 2. Self-written libraries have been replaced with standard ones:
 1) receive_sharing (https://github.com/afterlogic/receive_sharing ) -> receive_sharing_intent (pub.dev)
+2) localizator (https://github.com/afterlogic/flutter_localizator.git) -> flutter gen-l10n
 
 3. Updated packages/plugins:
 1) crypto_stream (https://github.com/afterlogic/flutter_crypto_stream) branch "flutter_2.10"
@@ -17,6 +18,4 @@ The current status of transferring the project to the new version of Flutter.
 
 4. It remains to do:
 1) check the correctness of the color themes for different configurations
-2) check the correctness of the localizator
 3) check the yubico_flutter plugin (https://github.com/afterlogic/yubico_flutter )
-4) replace the self-written localizator package with a standard solution

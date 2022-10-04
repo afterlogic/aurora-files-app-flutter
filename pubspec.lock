@@ -687,15 +687,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.6.0"
-  localizator:
-    dependency: "direct dev"
-    description:
-      path: "."
-      ref: "flutter_2.10"
-      resolved-ref: f53e22926b6fd98673b3087d57713e478e90a0b0
-      url: "https://github.com/afterlogic/flutter_localizator.git"
-    source: git
-    version: "0.4.3"
   logging:
     dependency: transitive
     description:

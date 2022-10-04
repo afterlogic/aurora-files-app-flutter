@@ -1,7 +1,6 @@
 library secure_sharing;
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/string/s.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
@@ -16,7 +15,6 @@ abstract class SecureSharing {
     LocalPgpKey? userPublicKey,
     PgpKeyUtil pgpKeyUtil,
     PreparedForShare preparedForShare,
-    S s,
   );
 
   Future encryptSharing(
@@ -28,6 +26,5 @@ abstract class SecureSharing {
     PreparedForShare preparedForShare,
     Function onUpdate,
     Pgp pgp,
-    S s,
   );
 }

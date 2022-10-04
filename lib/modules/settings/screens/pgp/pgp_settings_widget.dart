@@ -1,7 +1,7 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/create_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/key_from_text_widget.dart';
@@ -27,7 +27,6 @@ class PgpSettingWidget extends StatefulWidget {
 class _PgpSettingWidgetState extends State<PgpSettingWidget>
     with PgpSettingView {
   late PgpSettingPresenter _presenter;
-  late S s;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -39,7 +38,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final theme = Theme.of(context);
     return Scaffold(
@@ -130,6 +129,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
   Widget buttons(
       BuildContext context, KeysState state, List<KeyWidget> externalKeys) {
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet
         ? SizedBox.shrink()
@@ -228,6 +228,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   Future<void> keysNotFound() async {
+    final s = context.l10n;
     AMDialog.show(
       context: context,
       builder: (_) => ErrorDialog(s.failed, s.keys_not_found),

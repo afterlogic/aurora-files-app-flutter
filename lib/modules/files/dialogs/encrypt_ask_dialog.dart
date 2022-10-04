@@ -1,5 +1,4 @@
-import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class EncryptAskDialog extends StatefulWidget {
@@ -16,7 +15,7 @@ class EncryptAskDialog extends StatefulWidget {
 class _EncryptAskDialogState extends State<EncryptAskDialog> {
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     return AlertDialog(
       content: Text(s.hint_upload_encrypt_ask(widget.fileName)),
       actions: <Widget>[

@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/screens/fido_auth/fido_auth_route.dart';
@@ -13,7 +13,6 @@ import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,7 +31,6 @@ class AuthAndroid extends StatefulWidget {
 
 class _AuthAndroidState extends State<AuthAndroid> {
   final _authFormKey = GlobalKey<FormState>();
-  late S s;
   AuthState _authState = AppStore.authState;
   bool _showHostField = false;
   bool _obscureText = true;
@@ -75,6 +73,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
   }
 
   Future _login(BuildContext context) async {
+    final s = context.l10n;
     // autodiscover field if it's hidden
 //    if (!_showHostField) _authState.hostCtrl.clear();
     String errMsg = "";
@@ -135,6 +134,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
   }
 
   List<Widget> _buildTextFields() {
+    final s = context.l10n;
     return [
       if (_showHostField)
         AppInput(
@@ -185,7 +185,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return Provider(
       create: (_) => _authState,
       child: theme(

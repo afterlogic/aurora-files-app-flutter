@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -45,7 +45,6 @@ class _FileWidgetState extends State<FileWidget> {
   late FilesPageState _filesPageState;
   double? _progress;
   ProcessingFile? _processingFile;
-  late S s;
   Map<String, dynamic> _extendedProps = {};
   bool _hasShares = false;
   ShareAccessRight? _sharedWithMeAccess;
@@ -148,14 +147,17 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _cantDownloadMessage() {
+    final s = context.l10n;
     showSnack(context, msg: s.need_an_encryption_to_download);
   }
 
   void _cantShareMessage() {
+    final s = context.l10n;
     showSnack(context, msg: s.need_an_encryption_to_share);
   }
 
   void _openEncryptedFile(BuildContext context) async {
+    final s = context.l10n;
     if (widget.file.encryptedDecryptionKey == null) {
       if (AppStore.settingsState.selectedKeyName == null) {
         return showSnack(context, msg: s.set_any_encryption_key);
@@ -169,6 +171,7 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _downloadFile() {
+    final s = context.l10n;
     final filesState = _filesState;
     filesState.onDownloadFile(
       context,
@@ -197,6 +200,7 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   Future _setFileForOffline() async {
+    final s = context.l10n;
     final filesState = _filesState;
     final filesPageState = _filesPageState;
     try {
@@ -376,7 +380,7 @@ class _FileWidgetState extends State<FileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
 

@@ -1,5 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
@@ -34,7 +34,7 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
       title: Text(widget.isImport ? s.import_key : s.generate_key),
       content: _isAdding

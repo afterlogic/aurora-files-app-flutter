@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 class FileToDelete {
   final String path;
   final String name;

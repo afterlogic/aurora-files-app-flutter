@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/auth/component/mail_logo.dart';
 import 'package:aurorafiles/modules/auth/component/presentation_header.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
@@ -26,7 +26,7 @@ class UpgradeAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     return themeWidget(
       Scaffold(

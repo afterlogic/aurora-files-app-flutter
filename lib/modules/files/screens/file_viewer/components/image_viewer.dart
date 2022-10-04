@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:aurorafiles/assets/asset.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
 import 'package:aurorafiles/shared_ui/progress_loader.dart';
@@ -31,7 +31,6 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  late S s;
   late FileViewerState _fileViewerState;
   bool _isError = false;
   late Widget builtImage;
@@ -86,6 +85,7 @@ class _ImageViewerState extends State<ImageViewer> {
   }
 
   Widget _buildImage() {
+    final s = context.l10n;
     final downloadProgress = _fileViewerState.downloadProgress;
     final fileWithContents = _fileViewerState.fileWithContents;
     // if the image is encrypted
@@ -146,6 +146,7 @@ class _ImageViewerState extends State<ImageViewer> {
   }
 
   Widget _buildOfflineImage() {
+    final s = context.l10n;
     if (_fileViewerState.file.initVector != null) {
       return FutureBuilder<Uint8List>(
         future: decryptFuture,
@@ -183,7 +184,6 @@ class _ImageViewerState extends State<ImageViewer> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
     double prevProgress = 999;
     Widget? placeholder;
     if (_fileViewerState.file.initVector != null) {

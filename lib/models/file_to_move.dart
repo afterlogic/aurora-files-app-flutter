@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 class FileToMove {
   final String type;
   final String path;

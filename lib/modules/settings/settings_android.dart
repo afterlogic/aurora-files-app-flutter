@@ -1,7 +1,7 @@
 import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/settings/screens/about/about_route.dart';
@@ -38,11 +38,11 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final current = isTablet
         ? (navigatorKey.currentState?.current.name ?? CommonSettingsRoute.name)
         : null;
-    final s = Str.of(context);
     Widget body = ListView(
       children: <Widget>[
         ListTile(
@@ -160,7 +160,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
   }
 
   _exit() async {
-    final s = Str.of(context);
+    final s = context.l10n;
     final authState = AppStore.authState;
     final clearCacheText = s.clear_cache_during_logout;
 

@@ -1,14 +1,12 @@
 import 'dart:async';
 
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/localization_string_widget.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/http/interceptor.dart';
 import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:theme/app_theme.dart';
 
@@ -94,17 +92,9 @@ class _AppState extends State<App> {
                   theme: theme ?? AppTheme.light,
                   darkTheme: theme ?? AppTheme.dark,
                   onGenerateRoute: AppNavigation.onGenerateRoute,
-                  localizationsDelegates: [
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                    LocalizationStringWidget.delegate,
-                  ],
-                  supportedLocales:
-                      LocalizationStringWidget.delegate.supportedLocales,
-                  localeResolutionCallback: LocalizationStringWidget.delegate
-                      .resolution(
-                          fallback: new Locale("en", ""), withCountry: false),
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
                   initialRoute: _canEnterMainApp(snapshot.data)
                       ? FilesRoute.name
                       : AuthRoute.name,

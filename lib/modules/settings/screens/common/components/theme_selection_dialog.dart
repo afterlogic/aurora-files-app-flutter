@@ -1,6 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class ThemeSelectionDialog extends StatelessWidget {
@@ -22,7 +21,7 @@ class ThemeSelectionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
       contentPadding: EdgeInsets.zero,
       titlePadding: EdgeInsets.all(24.0),

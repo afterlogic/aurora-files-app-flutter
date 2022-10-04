@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/string/s.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
@@ -22,8 +22,8 @@ class SecureSharingImpl extends SecureSharing {
     LocalPgpKey? userPublicKey,
     PgpKeyUtil pgpKeyUtil,
     PreparedForShare preparedForShare,
-    S s,
   ) async {
+    final s = context.l10n;
     bool? usePassword = true;
 
     if (!preparedForShare.localFile.published) {
@@ -74,8 +74,8 @@ class SecureSharingImpl extends SecureSharing {
     PreparedForShare preparedForShare,
     Function onUpdate,
     Pgp pgp,
-    S s,
   ) async {
+    final s = context.l10n;
     final selectRecipientResult = await AMDialog.show(
       context: context,
       builder: (context) =>

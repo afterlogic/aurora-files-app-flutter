@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:aurorafiles/assets/asset.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,14 +15,6 @@ class IosPressOnKeyDialog extends _IosDialog {
 }
 
 class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
-  late S s;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    s = Str.of(context);
-  }
-
   Future success() async {
     setState(() => isSuccess = true);
     await Future.delayed(Duration(seconds: 2));
@@ -53,6 +45,7 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
   }
 
   Widget _successWidget() {
+    final s = context.l10n;
     final size = 115.0;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -6,7 +6,7 @@ import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/models/storage.dart';
@@ -62,7 +62,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   final _fileViewerScaffoldKey = GlobalKey<ScaffoldState>();
   SecureSharing secureSharing = DI.get();
   final _fileViewerState = FileViewerState();
-  late S s;
   late LocalFile _file;
   late FileType _fileType;
   bool _showEncrypt = false;
@@ -165,6 +164,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _prepareShareFile(Function(PreparedForShare) complete) async {
+    final s = context.l10n;
     if (_fileViewerState.fileWithContents != null) {
       widget.filesState.prepareForShare(
         _file,
@@ -235,6 +235,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _downloadFile() {
+    final s = context.l10n;
     widget.filesState.onDownloadFile(
       context,
       file: _file,
@@ -261,6 +262,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   Future<void> _setFileForOffline() async {
+    final s = context.l10n;
     if (widget.filesState.isOfflineMode) {
       widget.filesState.onSetFileOffline(_file, context,
           onStart: (process) {
@@ -318,6 +320,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   Future<void> _shareWithTeammates() async {
+    final s = context.l10n;
     if (widget.immutableFile.initVector != null &&
         widget.immutableFile.encryptedDecryptionKey == null) {
       return AMDialog.show(
@@ -374,6 +377,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   Future<void> _secureSharing() async {
+    final s = context.l10n;
     if (_file.published == false && widget.immutableFile.initVector != null) {
       if (widget.immutableFile.encryptedDecryptionKey == null) {
         return AMDialog.show(
@@ -402,7 +406,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       userPublicKey,
       pgpKeyUtil,
       preparedForShare,
-      s,
     );
     _file = preparedForShare.localFile;
     setState(() {});
@@ -425,13 +428,13 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         );
       },
       DI.get(),
-      s,
     );
     _file = preparedForShare.localFile;
     setState(() {});
   }
 
   Widget _getPreviewContent(BuildContext context) {
+    final s = context.l10n;
     final previewIconSize = 120.0;
     Widget result;
     if (_file.initVector != null && _showEncrypt == false) {
@@ -503,7 +506,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, _file);

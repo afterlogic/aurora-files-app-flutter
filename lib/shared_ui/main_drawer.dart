@@ -1,12 +1,11 @@
 import 'package:aurorafiles/assets/asset.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,7 +28,7 @@ class MainDrawer extends StatelessWidget {
     final authState = AppStore.authState;
     final filesState = AppStore.filesState;
     final settingsState = AppStore.settingsState;
-    final s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     return Drawer(
       child: SafeArea(

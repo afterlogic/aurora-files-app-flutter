@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
@@ -20,11 +20,10 @@ class ExportPgpKeyWidget extends StatefulWidget {
 
 class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  late S s;
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     var keysText = "";
     for (LocalPgpKey key in widget._pgpKeys) {
       if (key.key != null) keysText += key.key + "\n\n";
@@ -74,6 +73,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   }
 
   Widget buttons(BuildContext context, String keysText) {
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet
         ? SizedBox.shrink()
@@ -122,6 +122,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   }
 
   download() async {
+    final s = context.l10n;
     final result = await widget._pgpKeyUtil.downloadPublicKeys(widget._pgpKeys);
 
     showSnack(

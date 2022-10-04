@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
@@ -47,7 +47,6 @@ class ShareLink extends StatefulWidget {
 
 class _ShareLinkState extends State<ShareLink> {
   Pgp pgp = DI.get();
-  late S s;
   bool progress = false;
   bool sendProgress = false;
   late bool useSign;
@@ -63,12 +62,6 @@ class _ShareLinkState extends State<ShareLink> {
     if (!widget.file.localFile.published) {
       _createLink();
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    s = Str.of(context);
-    super.didChangeDependencies();
   }
 
   _createLink() {
@@ -131,6 +124,7 @@ class _ShareLinkState extends State<ShareLink> {
   }
 
   Future<bool> checkSign(String password) async {
+    final s = context.l10n;
     if (useSign && widget.userPrivateKey != null) {
       if (password.isEmpty) {
         toastKey.currentState?.show(s.password_is_empty);
@@ -147,6 +141,7 @@ class _ShareLinkState extends State<ShareLink> {
   }
 
   void _sendTo() async {
+    final s = context.l10n;
     sendProgress = true;
     toastKey.currentState?.show(s.sending);
     setState(() {});
@@ -215,6 +210,7 @@ class _ShareLinkState extends State<ShareLink> {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(s.btn_shareable_link);

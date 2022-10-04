@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurora_ui_kit/components/am_button.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/repository/two_factor_auth/bloc.dart';
 import 'package:aurorafiles/modules/auth/screens/component/two_factor_screen.dart';
@@ -28,13 +28,6 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
   final pinCtrl = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final bloc = TwoFactorBloc();
-  late S s;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    s = Str.of(context);
-  }
 
   @override
   void dispose() {
@@ -44,6 +37,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     return TwoFactorScene(
       logoHint: "",
       isDialog: widget.args.isDialog,

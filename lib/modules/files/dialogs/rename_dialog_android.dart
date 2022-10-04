@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
@@ -25,7 +25,6 @@ class RenameDialog extends StatefulWidget {
 class _RenameDialogState extends State<RenameDialog> {
   final _fileNameCtrl = TextEditingController();
   final _renameFormKey = GlobalKey<FormState>();
-  late S s;
   bool isRenaming = false;
   String errMsg = "";
 
@@ -55,7 +54,7 @@ class _RenameDialogState extends State<RenameDialog> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
       title: SingleChildScrollView(
           scrollDirection: Axis.horizontal,

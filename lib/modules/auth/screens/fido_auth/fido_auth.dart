@@ -1,6 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/generated/string/s.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/repository/ios_fido_auth_bloc/bloc.dart';
@@ -29,7 +28,6 @@ class FidoAuthWidget extends StatefulWidget {
 
 class _FidoAuthWidgetState extends State<FidoAuthWidget> {
   late FidoAuthBloc bloc;
-  late S s;
   late ThemeData theme;
   final touchDialogKey = GlobalKey<IosPressOnKeyDialogState>();
 
@@ -43,7 +41,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
       AppStore.authState.passwordCtrl.text,
     );
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      s = Str.of(context);
+      final s = context.l10n;
       bloc.add(
           StartAuth(true, s.fido_label_connect_your_key, s.fido_label_success));
     });
@@ -52,7 +50,6 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    s = Str.of(context);
     theme = Theme.of(context);
   }
 
@@ -64,6 +61,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     return TwoFactorScene(
       logoHint: "",
       isDialog: widget.args.isDialog,

@@ -1,13 +1,11 @@
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/generated/string/s.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/component/mail_logo.dart';
 import 'package:aurorafiles/modules/auth/component/presentation_header.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:theme/app_theme.dart';
 
 class TwoFactorScene extends StatefulWidget {
@@ -31,14 +29,6 @@ class TwoFactorScene extends StatefulWidget {
 }
 
 class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
-  late S s;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    s = Str.of(context);
-  }
-
   Widget _gradientWrap(Widget child) {
     if (widget.isDialog) {
       return child;
@@ -71,6 +61,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
   }
 
   Widget _buildPinForm(BuildContext context) {
+    final s = context.l10n;
     return SafeArea(
       top: false,
       child: Stack(

@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurora_ui_kit/components/am_button.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/trust_device/bloc.dart';
 import 'package:aurorafiles/modules/auth/screens/component/two_factor_screen.dart';
@@ -23,7 +23,6 @@ class TrustDeviceWidget extends StatefulWidget {
 class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
   late TrustDeviceBloc bloc;
   bool check = false;
-  late S s;
 
   @override
   void initState() {
@@ -35,12 +34,6 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    s = Str.of(context);
-  }
-
-  @override
   void dispose() {
     super.dispose();
     bloc.close();
@@ -48,6 +41,7 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     return TwoFactorScene(
       logoHint: "",
       isDialog: widget.args.isDialog,

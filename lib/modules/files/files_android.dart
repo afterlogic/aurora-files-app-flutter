@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -54,7 +54,6 @@ class _FilesAndroidState extends State<FilesAndroid>
   late FilesPageState _filesPageState;
   late SettingsState _settingsState;
   late StreamSubscription sub;
-  late S s;
 
   @override
   void initState() {
@@ -193,6 +192,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   void _uploadFile() async {
+    final s = context.l10n;
     _filesState.onUploadFile(
       context,
       (file) async {
@@ -240,6 +240,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   Widget _buildFiles(BuildContext context) {
+    final s = context.l10n;
     if (_filesPageState.filesLoading == FilesLoadingType.filesHidden) {
       return ListView.separated(
         itemBuilder: (_, index) => SkeletonLoader(),
@@ -296,8 +297,6 @@ class _FilesAndroidState extends State<FilesAndroid>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    s = Str.of(context);
     final isTablet = LayoutConfig.of(context).isTablet;
 
     Widget body = Observer(

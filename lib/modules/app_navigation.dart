@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/auth/auth_android.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/backup_code_auth/backup_code_auth_route.dart';
@@ -36,7 +36,6 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/fade_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'auth/screens/fido_auth/fido_auth.dart';
 import 'auth/screens/fido_auth/fido_auth_route.dart';
@@ -329,7 +328,7 @@ class AppNavigation {
               name: settings.name,
             ),
             builder: (context) {
-              final s = Str.of(context);
+              final s = context.l10n;
               return Scaffold(
                 body: Center(child: Text(s.no_route(settings.name ?? ''))),
               );

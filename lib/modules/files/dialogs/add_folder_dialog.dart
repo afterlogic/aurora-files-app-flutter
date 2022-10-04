@@ -1,5 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
@@ -22,7 +22,6 @@ class AddFolderDialogAndroid extends StatefulWidget {
 class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
   final _folderNameCtrl = TextEditingController();
   final _addFolderFormKey = GlobalKey<FormState>();
-  late S s;
   bool isAdding = false;
   String errMsg = "";
 
@@ -34,7 +33,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
       title: Text(s.add_new_folder),
       content: isAdding

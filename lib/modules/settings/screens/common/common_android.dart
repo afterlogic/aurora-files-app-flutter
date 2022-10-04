@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -17,9 +17,9 @@ class CommonSettingsAndroid extends StatefulWidget {
 class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
   final _settingsState = AppStore.settingsState;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  late S s;
 
   Future _clearCache() async {
+    final s = context.l10n;
     final result = await AMConfirmationDialog.show(
       context,
       s.clear_cache,
@@ -38,7 +38,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
   }
 
   String _getThemeName(bool? isDarkTheme) {
-    s = Str.of(context);
+    final s = context.l10n;
     if (isDarkTheme == false)
       return s.light_theme;
     else if (isDarkTheme == true)
@@ -49,7 +49,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     return Scaffold(
       key: scaffoldKey,

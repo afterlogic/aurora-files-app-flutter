@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
@@ -32,7 +32,6 @@ class FilesAppBar extends StatefulWidget {
 class _FilesAppBarState extends State<FilesAppBar>
     with TickerProviderStateMixin {
   late FilesState _filesState;
-  late S s;
   late FilesPageState _filesPageState;
   late AnimationController _appBarIconAnimCtrl;
   final _searchInputCtrl = TextEditingController();
@@ -69,6 +68,7 @@ class _FilesAppBarState extends State<FilesAppBar>
   }
 
   AMAppBar _getAppBar(BuildContext context) {
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     if (widget.isAppBar && isTablet) {
       return AMAppBar(
@@ -539,7 +539,6 @@ class _FilesAppBarState extends State<FilesAppBar>
   Widget build(BuildContext context) {
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
-    s = Str.of(context);
     return Observer(
       builder: (_) {
         final appBar = _getAppBar(context);

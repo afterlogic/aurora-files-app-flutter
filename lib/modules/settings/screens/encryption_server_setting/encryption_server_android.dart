@@ -1,5 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_dialog.dart';
@@ -21,7 +21,6 @@ class _EncryptionServerState extends State<EncryptionServer> {
   final _settingsState = AppStore.settingsState;
   final _filesState = AppStore.filesState;
   bool showBackwardCompatibility = false;
-  late S s;
   bool progress = false;
   bool? encryptionEnable;
   bool? encryptionInPersonalStorage;
@@ -42,7 +41,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     return Provider<SettingsState>(
       create: (_) => _settingsState,
@@ -143,6 +142,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
   }
 
   void _downloadKey() async {
+    final s = context.l10n;
     var exportedDir;
     exportedDir = await AMDialog.show(
       context: context,
@@ -163,6 +163,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
   }
 
   List<Widget> _buildAddingKey() {
+    final s = context.l10n;
     final spacer = const SizedBox(height: 10.0);
     if (_settingsState.isParanoidEncryptionEnabled &&
         _settingsState.selectedKeyName == null) {
@@ -204,6 +205,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
   }
 
   List<Widget> _buildKeyOptions() {
+    final s = context.l10n;
     final spacer = const SizedBox(height: 10.0);
     final theme = Theme.of(context);
     if (_settingsState.selectedKeyName != null) {

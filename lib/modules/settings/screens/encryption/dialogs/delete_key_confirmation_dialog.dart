@@ -1,5 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class DeleteKeyConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final title = Text(s.delete_key);
     final content = Text(s.delete_key_description);
     return AMDialog(

@@ -1,5 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class LeaveShareDialog extends StatelessWidget {
@@ -14,7 +14,7 @@ class LeaveShareDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final textStyle = Theme.of(context).textTheme.subtitle1;
     final text = RichText(
       text: TextSpan(

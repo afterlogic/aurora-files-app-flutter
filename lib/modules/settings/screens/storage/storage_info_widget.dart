@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
@@ -14,8 +14,8 @@ class StorageInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     final theme = Theme.of(context);
-    final s = Str.of(context);
     final isTablet = LayoutConfig.of(context).isTablet;
     return Scaffold(
       appBar: isTablet && !fromDrawer

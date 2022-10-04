@@ -1,6 +1,6 @@
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/component/key_item.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/override_platform.dart';
@@ -56,7 +56,7 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     return AlertDialog(
       title: Text(s.label_pgp_import_key),
       content: SizedDialogContent(

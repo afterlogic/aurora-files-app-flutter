@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:aurora_ui_kit/components/dialogs/am_dialog.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/contact_group.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/share_principal.dart';
@@ -212,7 +212,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
 

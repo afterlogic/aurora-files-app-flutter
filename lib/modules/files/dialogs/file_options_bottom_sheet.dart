@@ -3,7 +3,7 @@ import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
@@ -100,7 +100,6 @@ class FileOptionsBottomSheet extends StatefulWidget {
 
 class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
-  late S s;
   SecureSharing secureSharing = DI.get();
   late StorageType storageType;
   late bool isFolder;
@@ -177,12 +176,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
 
   void _deleteFile() async {
     final shouldDelete = await AMDialog.show<bool>(
-            context: context,
-            builder: (_) => DeleteConfirmationDialog(
-              itemsNumber: 1,
-              isFolder: widget.file.isFolder,
-            ),
-          );
+      context: context,
+      builder: (_) => DeleteConfirmationDialog(
+        itemsNumber: 1,
+        isFolder: widget.file.isFolder,
+      ),
+    );
     if (shouldDelete == true) {
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [widget.file],
@@ -194,6 +193,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
   }
 
   Future<void> _secureSharing() async {
+    final s = context.l10n;
     if (widget.file.published == false && widget.file.initVector != null) {
       if (widget.file.encryptedDecryptionKey == null) {
         return AMDialog.show(
@@ -222,7 +222,6 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       userPublicKey,
       pgpKeyUtil,
       preparedForShare,
-      s,
     );
 
     await widget.filesState
@@ -241,18 +240,18 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       userPublicKey,
       pgpKeyUtil,
       preparedForShare,
-          () {
+      () {
         widget.filesPageState.onGetFiles(
           showLoading: FilesLoadingType.filesVisible,
         );
       },
       DI.get(),
-      s,
     );
     setState(() {});
   }
 
   Future<void> _shareWithTeammates(BuildContext context) async {
+    final s = context.l10n;
     Navigator.pop(context);
     if (widget.file.initVector != null &&
         widget.file.encryptedDecryptionKey == null) {
@@ -313,7 +312,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final offline = widget.filesState.isOfflineMode;
     final isTablet = LayoutConfig.of(context).isTablet;
     Widget content = SingleChildScrollView(
@@ -452,6 +451,4 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       ],
     );
   }
-
-
 }

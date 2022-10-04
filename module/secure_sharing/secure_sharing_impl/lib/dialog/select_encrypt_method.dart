@@ -1,9 +1,9 @@
 import 'dart:math';
 
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
@@ -29,7 +29,6 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   final toastKey = GlobalKey<ToastWidgetState>();
   late bool useKey;
   late bool useSign;
-  late S s;
 
   @override
   void initState() {
@@ -39,13 +38,8 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   }
 
   @override
-  void didChangeDependencies() {
-    s = Str.of(context);
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(s.btn_encrypted_shareable_link);
@@ -144,6 +138,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   }
 
   checkSign() async {
+    final s = context.l10n;
     String password = '';
     if (useSign && widget.userPgpKey != null) {
       try {
@@ -173,7 +168,7 @@ class RadioEncryptMethod extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

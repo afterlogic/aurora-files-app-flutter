@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/settings/repository/encryption_local_storage.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +49,7 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     return AlertDialog(
       title: Text(s.label_encryption_password_for_pgp_key),
       content: Column(

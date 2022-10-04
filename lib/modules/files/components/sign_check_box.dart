@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class SignCheckBox extends StatefulWidget {
@@ -18,10 +18,9 @@ class SignCheckBox extends StatefulWidget {
 }
 
 class SignCheckBoxState extends State<SignCheckBox> {
-
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

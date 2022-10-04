@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
@@ -81,7 +81,7 @@ class _FolderWidgetState extends State<FolderWidget> {
   @override
   Widget build(BuildContext context) {
     final margin = 5.0;
-    final s = Str.of(context);
+    final s = context.l10n;
     return Observer(
       builder: (_) => SelectableFilesItemTile(
         file: widget.folder,

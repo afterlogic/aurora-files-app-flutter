@@ -12,7 +12,6 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:flutter/cupertino.dart';
 
 class MailApi {
   Future<List<Recipient>> getRecipient() async {

@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
@@ -60,12 +60,12 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   bool isDownload = false;
   bool sendProgress = false;
   String? link;
-  late S s;
   String? error;
   String password = '';
   final toastKey = GlobalKey<ToastWidgetState>();
 
-  encrypt() async {
+  Future<void> encrypt(BuildContext context) async {
+    final s = context.l10n;
     if (widget.useKey) {
       widget.filesState.addDecryptedPublicKey(
           context, widget.file.localFile, [widget.pgpKey?.key ?? '']).then((_) {
@@ -99,13 +99,13 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     }
   }
 
-  upload() {
+  void upload() {
     isDownload = true;
     widget.onLoad();
     createPublicLink();
   }
 
-  createPublicLink() {
+  void createPublicLink() {
     isDownload = true;
     setState(() {});
 
@@ -125,12 +125,12 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     );
   }
 
-  share() async {
+  Future<void> share(BuildContext context) async {
     if (widget.useEncrypt) {
       if (isDownload) {
         upload();
       } else {
-        encrypt();
+        encrypt(context);
       }
     } else {
       createPublicLink();
@@ -141,15 +141,9 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   void initState() {
     _prepare();
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      share();
+      share(context);
     });
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    s = Str.of(context);
-    super.didChangeDependencies();
   }
 
   static Future<File> get tempFile async {
@@ -187,6 +181,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     final size = MediaQuery.of(context).size;
     final actions = <Widget>[
       if (link != null)
@@ -240,6 +235,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   }
 
   sendEmail() async {
+    final s = context.l10n;
     sendProgress = true;
     setState(() {});
     toastKey.currentState?.show(s.sending);
@@ -283,6 +279,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   }
 
   List<Widget> progressLabel() {
+    final s = context.l10n;
     final theme = Theme.of(context);
     String? recipient = widget.recipient?.fullName;
     if (recipient?.isNotEmpty != true) {
@@ -300,7 +297,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
           child: AMButton(
             onPressed: () {
               error = null;
-              share();
+              share(context);
             },
             child: Text(s.try_again),
           ),

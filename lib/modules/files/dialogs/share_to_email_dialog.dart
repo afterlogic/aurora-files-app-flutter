@@ -4,7 +4,7 @@ import 'package:aurora_ui_kit/components/dialogs/am_dialog.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/components/emails_input.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -27,7 +27,6 @@ class ShareToEmailDialog extends StatefulWidget {
 }
 
 class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
-  late S s;
   Set<String> canSee = {};
   Set<String> canEdit = {};
   bool progress = false;
@@ -49,6 +48,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   }
 
   share() async {
+    final s = context.l10n;
     error = null;
     canSeeKey.currentState?.addEmail();
     canEditKey.currentState?.addEmail();
@@ -125,7 +125,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
       title: Text(s.label_share_with_teammates),
       content: SizedBox(

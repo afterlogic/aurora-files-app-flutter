@@ -1,5 +1,5 @@
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
@@ -33,7 +33,6 @@ class PublicLinkSwitch extends StatefulWidget {
 class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
   late FilesState filesState;
   late FilesPageState filesPageState;
-  late S s;
   bool _isGettingPublicLink = false;
   bool _hasPublicLink = false;
 
@@ -44,6 +43,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
   }
 
   void _getLink() {
+    final s = context.l10n;
     filesState.onGetPublicLink(
       path: filesPageState.pagePath,
       name: widget.file.name,
@@ -90,10 +90,11 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     filesState = widget.filesState ?? Provider.of<FilesState>(context);
     filesPageState =
         widget.filesPageState ?? Provider.of<FilesPageState>(context);
-    s = Str.of(context);
+
     return Column(
       children: <Widget>[
         InkWell(

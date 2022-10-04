@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:flutter/foundation.dart';
 
 class SettingApi {
   Future<EncryptionSetting> getEncryptSetting() async {

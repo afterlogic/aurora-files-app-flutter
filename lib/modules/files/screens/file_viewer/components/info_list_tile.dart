@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -17,7 +17,7 @@ class InfoListTile extends StatefulWidget {
     this.isOffline = false,
     this.isPublic = false,
     this.isEncrypted = false,
-    this.isShared=false,
+    this.isShared = false,
   }) : super(key: key);
 
   @override
@@ -26,10 +26,10 @@ class InfoListTile extends StatefulWidget {
 
 class _InfoListTileState extends State<InfoListTile> {
   bool _expanded = false;
-  late S s;
   double _rightPaddingForStatusIcons = 0.0;
 
   Widget _buildStatusIcons() {
+    final s = context.l10n;
     return Theme(
       data: Theme.of(context).copyWith(
         iconTheme: IconThemeData(
@@ -41,10 +41,10 @@ class _InfoListTileState extends State<InfoListTile> {
         children: <Widget>[
           if (widget.isShared) SizedBox(width: 10),
           if (widget.isShared)
-          Icon(
-            Icons.share,
-            semanticLabel: s.label_share_with_teammates,
-          ),
+            Icon(
+              Icons.share,
+              semanticLabel: s.label_share_with_teammates,
+            ),
           if (widget.isPublic) SizedBox(width: 10),
           if (widget.isPublic)
             Icon(
@@ -70,7 +70,6 @@ class _InfoListTileState extends State<InfoListTile> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
     _rightPaddingForStatusIcons = 0.0;
     if (widget.isOffline) _rightPaddingForStatusIcons += 35.0;
     if (widget.isPublic) _rightPaddingForStatusIcons += 35.0;

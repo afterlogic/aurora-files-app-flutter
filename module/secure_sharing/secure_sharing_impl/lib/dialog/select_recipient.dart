@@ -1,12 +1,12 @@
 import 'dart:math';
+
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_api.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SelectRecipient extends StatefulWidget {
@@ -24,8 +24,6 @@ class _SelectRecipientState extends State<SelectRecipient> {
   final pgpApi = PgpKeyApi();
   final List<RecipientWithKey> recipients = [];
 
-  late S s;
-
   Map<String, LocalPgpKey> keys = {};
   bool hasError = false;
   bool inProgress = false;
@@ -34,12 +32,6 @@ class _SelectRecipientState extends State<SelectRecipient> {
   void initState() {
     super.initState();
     _loadRecipients();
-  }
-
-  @override
-  void didChangeDependencies() {
-    s = Str.of(context);
-    super.didChangeDependencies();
   }
 
   void _loadRecipients() {
@@ -85,7 +77,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
 
   @override
   Widget build(BuildContext context) {
-
+    final s = context.l10n;
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(widget.title);
@@ -115,6 +107,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
   }
 
   List<Widget> body(ThemeData theme) {
+    final s = context.l10n;
     if (inProgress) {
       return [
         Expanded(
@@ -193,7 +186,7 @@ class RecipientWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     var name = recipient.recipient?.fullName;
     final hasName = !(name?.isNotEmpty != true);

@@ -1,5 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmDeleteKeyWidget extends StatefulWidget {
@@ -14,7 +14,7 @@ class ConfirmDeleteKeyWidget extends StatefulWidget {
 class _ConfirmDeleteKeyWidgetState extends State<ConfirmDeleteKeyWidget> {
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final content = Text(widget._message);
     final actions = <Widget>[
       TextButton(

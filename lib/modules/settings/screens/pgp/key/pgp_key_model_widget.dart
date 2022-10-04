@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
@@ -25,7 +25,6 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     with WidgetsBindingObserver {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isPoped = false;
-  late S s;
 
   @override
   void initState() {
@@ -50,7 +49,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final theme = Theme.of(context);
     return Scaffold(
@@ -110,6 +109,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
   }
 
   Widget buttons(BuildContext context) {
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet
         ? SizedBox.shrink()
@@ -151,6 +151,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
   }
 
   share() async {
+    final s = context.l10n;
     if (widget._pgpKey.isPrivate) {
       final result = await AMConfirmationDialog.show(
         context,
@@ -175,6 +176,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
   }
 
   download() async {
+    final s = context.l10n;
     if (widget._pgpKey.isPrivate) {
       final result = await AMConfirmationDialog.show(
         context,
@@ -197,6 +199,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
   }
 
   delete() async {
+    final s = context.l10n;
     final result = await AMDialog.show(
       context: context,
       builder: (_) {

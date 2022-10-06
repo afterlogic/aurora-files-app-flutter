@@ -7,6 +7,7 @@ _files:
   - ios/BuildVariable.xcconfig.temp
   - ios/Runner/Runner.entitlements.temp
   - ios/AppShareExtension/AppShareExtension.entitlements.temp
+  - ios/AppShareExtension/ShareViewController.swift.temp
   - sh/build_apk.sh.temp
   - sh/build_appbundle.sh.temp
   - ios/ExportOptions.plist.temp

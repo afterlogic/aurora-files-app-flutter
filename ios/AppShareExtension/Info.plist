@@ -26,6 +26,11 @@
 	<dict>
 		<key>NSExtensionAttributes</key>
 		<dict>
+            <key>PHSupportedMediaTypes</key>
+               <array>
+                   <string>Video</string>
+                   <string>Image</string>
+               </array>
 			<key>NSExtensionActivationRule</key>
 			<dict>
 				<key>NSExtensionActivationSupportsFileWithMaxCount</key>

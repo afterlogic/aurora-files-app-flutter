@@ -41,7 +41,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>$(PRODUCT_ID).Share</string>
+				<string>ShareMedia.$(PRODUCT_ID)</string>
 			</array>
 		</dict>
 	</array>

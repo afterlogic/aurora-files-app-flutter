@@ -124,7 +124,7 @@ crypto_plugin/ios/Classes/
 **/build_res/afterlogic/sign/
 /ios/GoogleService-Info.plist
 /ios/AppShareExtension/AppShareExtension.entitlements
-/ios/Runner/Runner.entitlements
+/ios/AppShareExtension/ShareViewController.swift
 **/build_res/afterlogic/crashlytics/
 sh/build_appbundle.sh
 sh/build_apk.sh

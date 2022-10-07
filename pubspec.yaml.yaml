@@ -5,7 +5,7 @@ publish_to: none
 version: {{version_ios}}
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: '>=2.18.2 <3.0.0'
 
 dependencies:
   flutter:
@@ -56,9 +56,9 @@ dependencies:
   material_design_icons_flutter: ^5.0.6996
   cupertino_icons: ^1.0.5
   shimmer: ^2.0.0
-  cached_network_image: ^3.2.0
+  cached_network_image: ^3.2.2
   percent_indicator: 4.0.1
-  flutter_svg: ^1.0.3
+  flutter_svg: ^1.1.5
   #  fluttertoast: 3.0.5
   dropdown_search: ^3.0.1
 
@@ -66,7 +66,7 @@ dependencies:
   url_launcher: ^6.1.5
   filesize: ^2.0.1
   intl: ^0.17.0
-  permission_handler: ^10.0.0
+  permission_handler: ^10.1.0
   connectivity: ^3.0.6
   uuid: ^3.0.6
   uni_links: ^0.5.1
@@ -87,7 +87,7 @@ dependencies:
   crypto_stream:
     git:
       url: https://github.com/afterlogic/flutter_crypto_stream
-      ref: flutter_2.10
+      ref: flutter_3.3
 
   receive_sharing_intent: ^1.4.5
 

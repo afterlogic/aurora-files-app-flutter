@@ -1,10 +1,10 @@
 name: secure_sharing
 description: A new Flutter package.
-version: 0.0.2
 publish_to: none
+version: 0.0.3
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: '>=2.18.2 <3.0.0'
 
 dependencies:
   flutter:
@@ -14,11 +14,8 @@ dependencies:
   crypto_stream:
     git:
       url: https://github.com/afterlogic/flutter_crypto_stream
-      ref: flutter_2.10
-#      ref: master
+      ref: flutter_3.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-flutter:

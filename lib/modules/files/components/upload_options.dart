@@ -32,7 +32,9 @@ class _UploadOptionsState extends State<UploadOptions> {
         await widget.filesPageState.onGetFiles(
           onError: (String err) => showSnack(context, msg: err),
         );
-        setState(() => _buttonsDisabled = false);
+        if (mounted) {
+          setState(() => _buttonsDisabled = false);
+        }
         widget.filesState.disableUploadShared();
         //todo
         SystemNavigator.pop();

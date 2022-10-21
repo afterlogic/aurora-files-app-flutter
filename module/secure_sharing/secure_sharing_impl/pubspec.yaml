@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider: ^2.0.11
+  drift_sqflite: ^2.0.0
+
   aurorafiles:
     path: ../../..
   crypto_stream:

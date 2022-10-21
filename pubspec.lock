@@ -7,21 +7,21 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "38.0.0"
+    version: "47.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.4.1"
+    version: "4.7.0"
   analyzer_plugin:
     dependency: transitive
     description:
       name: analyzer_plugin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.0"
+    version: "0.11.1"
   archive:
     dependency: transitive
     description:
@@ -195,14 +195,14 @@ packages:
       name: chopper
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.6"
+    version: "5.1.0"
   chopper_generator:
     dependency: "direct dev"
     description:
       name: chopper_generator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.5"
+    version: "5.1.0+1"
   cli_util:
     dependency: transitive
     description:
@@ -223,7 +223,7 @@ packages:
       name: code_builder
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.3.0"
   collection:
     dependency: transitive
     description:
@@ -344,21 +344,21 @@ packages:
       name: drift
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0"
+    version: "2.1.0"
   drift_dev:
     dependency: "direct dev"
     description:
       name: drift_dev
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.2"
+    version: "2.1.0"
   drift_sqflite:
     dependency: "direct main"
     description:
       name: drift_sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "2.0.0"
   dropdown_search:
     dependency: "direct main"
     description:
@@ -749,7 +749,7 @@ packages:
       name: mobx_codegen
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.7"
+    version: "2.0.7+3"
   nested:
     dependency: transitive
     description:
@@ -1125,14 +1125,14 @@ packages:
       name: sqlite3
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.1"
+    version: "1.9.1"
   sqlparser:
     dependency: transitive
     description:
       name: sqlparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.21.0"
+    version: "0.23.3"
   stack_trace:
     dependency: transitive
     description:

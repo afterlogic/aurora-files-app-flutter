@@ -29,7 +29,7 @@ dependencies:
   http: ^0.13.5
 
   # local storage`
-  drift_sqflite: ^1.0.0
+  drift_sqflite: ^2.0.0
   shared_preferences: ^2.0.15
   flutter_secure_storage: ^5.0.2
   sqflite: ^2.0.2+1
@@ -105,9 +105,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.2.0
-  mobx_codegen: ^2.0.7
-  chopper_generator: ^4.0.5
-  drift_dev: ^1.0.0
+  mobx_codegen: ^2.0.7+3
+  chopper_generator: ^5.1.0+1
+  drift_dev: ^2.1.0
   build_variant:
     git:
       url: "https://github.com/afterlogic/build_variant"

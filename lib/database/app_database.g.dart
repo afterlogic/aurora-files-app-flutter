@@ -3,10 +3,10 @@
 part of 'app_database.dart';
 
 // **************************************************************************
-// MoorGenerator
+// DriftDatabaseGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+// ignore_for_file: type=lint
 class LocalFile extends DataClass implements Insertable<LocalFile> {
   final int localId;
   final String id;
@@ -37,7 +37,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   final String? initVector;
   final String? linkPassword;
   final String? encryptedDecryptionKey;
-  LocalFile(
+  const LocalFile(
       {required this.localId,
       required this.id,
       this.guid,
@@ -67,76 +67,13 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       this.initVector,
       this.linkPassword,
       this.encryptedDecryptionKey});
-  factory LocalFile.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return LocalFile(
-      localId: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}local_id'])!,
-      id: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      guid: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}guid']),
-      type: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}type'])!,
-      path: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}path'])!,
-      fullPath: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}full_path'])!,
-      localPath: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}local_path'])!,
-      name: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-      size: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}size'])!,
-      isFolder: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_folder'])!,
-      isOpenable: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_openable'])!,
-      isLink: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_link'])!,
-      linkType: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}link_type'])!,
-      linkUrl: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}link_url'])!,
-      lastModified: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}last_modified'])!,
-      contentType: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}content_type'])!,
-      oEmbedHtml: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}o_embed_html'])!,
-      published: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}published'])!,
-      owner: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}owner'])!,
-      content: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}content'])!,
-      viewUrl: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}view_url'])!,
-      downloadUrl: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}download_url'])!,
-      thumbnailUrl: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}thumbnail_url']),
-      hash: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}hash'])!,
-      extendedProps: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}extended_props'])!,
-      isExternal: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_external'])!,
-      initVector: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}init_vector']),
-      linkPassword: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}link_password']),
-      encryptedDecryptionKey: const StringType().mapFromDatabaseResponse(
-          data['${effectivePrefix}encrypted_decryption_key']),
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['local_id'] = Variable<int>(localId);
     map['id'] = Variable<String>(id);
     if (!nullToAbsent || guid != null) {
-      map['guid'] = Variable<String?>(guid);
+      map['guid'] = Variable<String>(guid);
     }
     map['type'] = Variable<String>(type);
     map['path'] = Variable<String>(path);
@@ -158,20 +95,20 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
     map['view_url'] = Variable<String>(viewUrl);
     map['download_url'] = Variable<String>(downloadUrl);
     if (!nullToAbsent || thumbnailUrl != null) {
-      map['thumbnail_url'] = Variable<String?>(thumbnailUrl);
+      map['thumbnail_url'] = Variable<String>(thumbnailUrl);
     }
     map['hash'] = Variable<String>(hash);
     map['extended_props'] = Variable<String>(extendedProps);
     map['is_external'] = Variable<bool>(isExternal);
     if (!nullToAbsent || initVector != null) {
-      map['init_vector'] = Variable<String?>(initVector);
+      map['init_vector'] = Variable<String>(initVector);
     }
     if (!nullToAbsent || linkPassword != null) {
-      map['link_password'] = Variable<String?>(linkPassword);
+      map['link_password'] = Variable<String>(linkPassword);
     }
     if (!nullToAbsent || encryptedDecryptionKey != null) {
       map['encrypted_decryption_key'] =
-          Variable<String?>(encryptedDecryptionKey);
+          Variable<String>(encryptedDecryptionKey);
     }
     return map;
   }
@@ -294,7 +231,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   LocalFile copyWith(
           {int? localId,
           String? id,
-          String? guid,
+          Value<String?> guid = const Value.absent(),
           String? type,
           String? path,
           String? fullPath,
@@ -314,17 +251,17 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
           String? content,
           String? viewUrl,
           String? downloadUrl,
-          String? thumbnailUrl,
+          Value<String?> thumbnailUrl = const Value.absent(),
           String? hash,
           String? extendedProps,
           bool? isExternal,
-          String? initVector,
-          String? linkPassword,
-          String? encryptedDecryptionKey}) =>
+          Value<String?> initVector = const Value.absent(),
+          Value<String?> linkPassword = const Value.absent(),
+          Value<String?> encryptedDecryptionKey = const Value.absent()}) =>
       LocalFile(
         localId: localId ?? this.localId,
         id: id ?? this.id,
-        guid: guid ?? this.guid,
+        guid: guid.present ? guid.value : this.guid,
         type: type ?? this.type,
         path: path ?? this.path,
         fullPath: fullPath ?? this.fullPath,
@@ -344,14 +281,17 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
         content: content ?? this.content,
         viewUrl: viewUrl ?? this.viewUrl,
         downloadUrl: downloadUrl ?? this.downloadUrl,
-        thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+        thumbnailUrl:
+            thumbnailUrl.present ? thumbnailUrl.value : this.thumbnailUrl,
         hash: hash ?? this.hash,
         extendedProps: extendedProps ?? this.extendedProps,
         isExternal: isExternal ?? this.isExternal,
-        initVector: initVector ?? this.initVector,
-        linkPassword: linkPassword ?? this.linkPassword,
-        encryptedDecryptionKey:
-            encryptedDecryptionKey ?? this.encryptedDecryptionKey,
+        initVector: initVector.present ? initVector.value : this.initVector,
+        linkPassword:
+            linkPassword.present ? linkPassword.value : this.linkPassword,
+        encryptedDecryptionKey: encryptedDecryptionKey.present
+            ? encryptedDecryptionKey.value
+            : this.encryptedDecryptionKey,
       );
   @override
   String toString() {
@@ -573,7 +513,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
   static Insertable<LocalFile> custom({
     Expression<int>? localId,
     Expression<String>? id,
-    Expression<String?>? guid,
+    Expression<String>? guid,
     Expression<String>? type,
     Expression<String>? path,
     Expression<String>? fullPath,
@@ -593,13 +533,13 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
     Expression<String>? content,
     Expression<String>? viewUrl,
     Expression<String>? downloadUrl,
-    Expression<String?>? thumbnailUrl,
+    Expression<String>? thumbnailUrl,
     Expression<String>? hash,
     Expression<String>? extendedProps,
     Expression<bool>? isExternal,
-    Expression<String?>? initVector,
-    Expression<String?>? linkPassword,
-    Expression<String?>? encryptedDecryptionKey,
+    Expression<String>? initVector,
+    Expression<String>? linkPassword,
+    Expression<String>? encryptedDecryptionKey,
   }) {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
@@ -709,7 +649,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       map['id'] = Variable<String>(id.value);
     }
     if (guid.present) {
-      map['guid'] = Variable<String?>(guid.value);
+      map['guid'] = Variable<String>(guid.value);
     }
     if (type.present) {
       map['type'] = Variable<String>(type.value);
@@ -769,7 +709,7 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       map['download_url'] = Variable<String>(downloadUrl.value);
     }
     if (thumbnailUrl.present) {
-      map['thumbnail_url'] = Variable<String?>(thumbnailUrl.value);
+      map['thumbnail_url'] = Variable<String>(thumbnailUrl.value);
     }
     if (hash.present) {
       map['hash'] = Variable<String>(hash.value);
@@ -781,14 +721,14 @@ class FilesCompanion extends UpdateCompanion<LocalFile> {
       map['is_external'] = Variable<bool>(isExternal.value);
     }
     if (initVector.present) {
-      map['init_vector'] = Variable<String?>(initVector.value);
+      map['init_vector'] = Variable<String>(initVector.value);
     }
     if (linkPassword.present) {
-      map['link_password'] = Variable<String?>(linkPassword.value);
+      map['link_password'] = Variable<String>(linkPassword.value);
     }
     if (encryptedDecryptionKey.present) {
       map['encrypted_decryption_key'] =
-          Variable<String?>(encryptedDecryptionKey.value);
+          Variable<String>(encryptedDecryptionKey.value);
     }
     return map;
   }
@@ -837,168 +777,168 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   $FilesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _localIdMeta = const VerificationMeta('localId');
   @override
-  late final GeneratedColumn<int?> localId = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> localId = GeneratedColumn<int>(
       'local_id', aliasedName, false,
-      type: const IntType(),
+      type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<String?> id = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _guidMeta = const VerificationMeta('guid');
   @override
-  late final GeneratedColumn<String?> guid = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> guid = GeneratedColumn<String>(
       'guid', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
-  late final GeneratedColumn<String?> type = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
       'type', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _pathMeta = const VerificationMeta('path');
   @override
-  late final GeneratedColumn<String?> path = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
       'path', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _fullPathMeta = const VerificationMeta('fullPath');
   @override
-  late final GeneratedColumn<String?> fullPath = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> fullPath = GeneratedColumn<String>(
       'full_path', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _localPathMeta = const VerificationMeta('localPath');
   @override
-  late final GeneratedColumn<String?> localPath = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> localPath = GeneratedColumn<String>(
       'local_path', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _sizeMeta = const VerificationMeta('size');
   @override
-  late final GeneratedColumn<int?> size = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> size = GeneratedColumn<int>(
       'size', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
+      type: DriftSqlType.int, requiredDuringInsert: true);
   final VerificationMeta _isFolderMeta = const VerificationMeta('isFolder');
   @override
-  late final GeneratedColumn<bool?> isFolder = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> isFolder = GeneratedColumn<bool>(
       'is_folder', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (is_folder IN (0, 1))');
   final VerificationMeta _isOpenableMeta = const VerificationMeta('isOpenable');
   @override
-  late final GeneratedColumn<bool?> isOpenable = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> isOpenable = GeneratedColumn<bool>(
       'is_openable', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (is_openable IN (0, 1))');
   final VerificationMeta _isLinkMeta = const VerificationMeta('isLink');
   @override
-  late final GeneratedColumn<bool?> isLink = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> isLink = GeneratedColumn<bool>(
       'is_link', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (is_link IN (0, 1))');
   final VerificationMeta _linkTypeMeta = const VerificationMeta('linkType');
   @override
-  late final GeneratedColumn<String?> linkType = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> linkType = GeneratedColumn<String>(
       'link_type', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _linkUrlMeta = const VerificationMeta('linkUrl');
   @override
-  late final GeneratedColumn<String?> linkUrl = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> linkUrl = GeneratedColumn<String>(
       'link_url', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _lastModifiedMeta =
       const VerificationMeta('lastModified');
   @override
-  late final GeneratedColumn<int?> lastModified = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> lastModified = GeneratedColumn<int>(
       'last_modified', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
+      type: DriftSqlType.int, requiredDuringInsert: true);
   final VerificationMeta _contentTypeMeta =
       const VerificationMeta('contentType');
   @override
-  late final GeneratedColumn<String?> contentType = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> contentType = GeneratedColumn<String>(
       'content_type', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _oEmbedHtmlMeta = const VerificationMeta('oEmbedHtml');
   @override
-  late final GeneratedColumn<String?> oEmbedHtml = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> oEmbedHtml = GeneratedColumn<String>(
       'o_embed_html', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _publishedMeta = const VerificationMeta('published');
   @override
-  late final GeneratedColumn<bool?> published = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> published = GeneratedColumn<bool>(
       'published', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (published IN (0, 1))');
   final VerificationMeta _ownerMeta = const VerificationMeta('owner');
   @override
-  late final GeneratedColumn<String?> owner = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> owner = GeneratedColumn<String>(
       'owner', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _contentMeta = const VerificationMeta('content');
   @override
-  late final GeneratedColumn<String?> content = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
       'content', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _viewUrlMeta = const VerificationMeta('viewUrl');
   @override
-  late final GeneratedColumn<String?> viewUrl = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> viewUrl = GeneratedColumn<String>(
       'view_url', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _downloadUrlMeta =
       const VerificationMeta('downloadUrl');
   @override
-  late final GeneratedColumn<String?> downloadUrl = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> downloadUrl = GeneratedColumn<String>(
       'download_url', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _thumbnailUrlMeta =
       const VerificationMeta('thumbnailUrl');
   @override
-  late final GeneratedColumn<String?> thumbnailUrl = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> thumbnailUrl = GeneratedColumn<String>(
       'thumbnail_url', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _hashMeta = const VerificationMeta('hash');
   @override
-  late final GeneratedColumn<String?> hash = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> hash = GeneratedColumn<String>(
       'hash', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _extendedPropsMeta =
       const VerificationMeta('extendedProps');
   @override
-  late final GeneratedColumn<String?> extendedProps = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> extendedProps = GeneratedColumn<String>(
       'extended_props', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _isExternalMeta = const VerificationMeta('isExternal');
   @override
-  late final GeneratedColumn<bool?> isExternal = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> isExternal = GeneratedColumn<bool>(
       'is_external', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (is_external IN (0, 1))');
   final VerificationMeta _initVectorMeta = const VerificationMeta('initVector');
   @override
-  late final GeneratedColumn<String?> initVector = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> initVector = GeneratedColumn<String>(
       'init_vector', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _linkPasswordMeta =
       const VerificationMeta('linkPassword');
   @override
-  late final GeneratedColumn<String?> linkPassword = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> linkPassword = GeneratedColumn<String>(
       'link_password', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   final VerificationMeta _encryptedDecryptionKeyMeta =
       const VerificationMeta('encryptedDecryptionKey');
   @override
-  late final GeneratedColumn<String?> encryptedDecryptionKey =
-      GeneratedColumn<String?>('encrypted_decryption_key', aliasedName, true,
-          type: const StringType(), requiredDuringInsert: false);
+  late final GeneratedColumn<String> encryptedDecryptionKey =
+      GeneratedColumn<String>('encrypted_decryption_key', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         localId,
@@ -1230,8 +1170,68 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   Set<GeneratedColumn> get $primaryKey => {localId};
   @override
   LocalFile map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return LocalFile.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalFile(
+      localId: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}local_id'])!,
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      guid: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}guid']),
+      type: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
+      path: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
+      fullPath: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}full_path'])!,
+      localPath: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}local_path'])!,
+      name: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      size: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}size'])!,
+      isFolder: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_folder'])!,
+      isOpenable: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_openable'])!,
+      isLink: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_link'])!,
+      linkType: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}link_type'])!,
+      linkUrl: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}link_url'])!,
+      lastModified: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}last_modified'])!,
+      contentType: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}content_type'])!,
+      oEmbedHtml: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}o_embed_html'])!,
+      published: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}published'])!,
+      owner: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}owner'])!,
+      content: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      viewUrl: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}view_url'])!,
+      downloadUrl: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}download_url'])!,
+      thumbnailUrl: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}thumbnail_url']),
+      hash: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}hash'])!,
+      extendedProps: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}extended_props'])!,
+      isExternal: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_external'])!,
+      initVector: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}init_vector']),
+      linkPassword: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}link_password']),
+      encryptedDecryptionKey: attachedDatabase.options.types.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}encrypted_decryption_key']),
+    );
   }
 
   @override
@@ -1247,30 +1247,13 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   final bool isPrivate;
   final int? length;
   final String name;
-  LocalPgpKey(
+  const LocalPgpKey(
       {required this.id,
       required this.email,
       required this.key,
       required this.isPrivate,
       this.length,
       required this.name});
-  factory LocalPgpKey.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return LocalPgpKey(
-      id: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      email: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}email'])!,
-      key: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}key'])!,
-      isPrivate: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_private'])!,
-      length: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}length']),
-      name: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1279,7 +1262,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
     map['key'] = Variable<String>(key);
     map['is_private'] = Variable<bool>(isPrivate);
     if (!nullToAbsent || length != null) {
-      map['length'] = Variable<int?>(length);
+      map['length'] = Variable<int>(length);
     }
     map['name'] = Variable<String>(name);
     return map;
@@ -1327,14 +1310,14 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
           String? email,
           String? key,
           bool? isPrivate,
-          int? length,
+          Value<int?> length = const Value.absent(),
           String? name}) =>
       LocalPgpKey(
         id: id ?? this.id,
         email: email ?? this.email,
         key: key ?? this.key,
         isPrivate: isPrivate ?? this.isPrivate,
-        length: length ?? this.length,
+        length: length.present ? length.value : this.length,
         name: name ?? this.name,
       );
   @override
@@ -1395,7 +1378,7 @@ class PgpKeyCompanion extends UpdateCompanion<LocalPgpKey> {
     Expression<String>? email,
     Expression<String>? key,
     Expression<bool>? isPrivate,
-    Expression<int?>? length,
+    Expression<int>? length,
     Expression<String>? name,
   }) {
     return RawValuesInsertable({
@@ -1441,7 +1424,7 @@ class PgpKeyCompanion extends UpdateCompanion<LocalPgpKey> {
       map['is_private'] = Variable<bool>(isPrivate.value);
     }
     if (length.present) {
-      map['length'] = Variable<int?>(length.value);
+      map['length'] = Variable<int>(length.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -1470,38 +1453,38 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
   $PgpKeyTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
-      type: const IntType(),
+      type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _emailMeta = const VerificationMeta('email');
   @override
-  late final GeneratedColumn<String?> email = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
       'email', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _keyMeta = const VerificationMeta('key');
   @override
-  late final GeneratedColumn<String?> key = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
       'key', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _isPrivateMeta = const VerificationMeta('isPrivate');
   @override
-  late final GeneratedColumn<bool?> isPrivate = GeneratedColumn<bool?>(
+  late final GeneratedColumn<bool> isPrivate = GeneratedColumn<bool>(
       'is_private', aliasedName, false,
-      type: const BoolType(),
+      type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (is_private IN (0, 1))');
   final VerificationMeta _lengthMeta = const VerificationMeta('length');
   @override
-  late final GeneratedColumn<int?> length = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> length = GeneratedColumn<int>(
       'length', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
       [id, email, key, isPrivate, length, name];
@@ -1552,8 +1535,21 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   LocalPgpKey map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return LocalPgpKey.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalPgpKey(
+      id: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      email: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}email'])!,
+      key: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}key'])!,
+      isPrivate: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_private'])!,
+      length: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}length']),
+      name: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+    );
   }
 
   @override
@@ -1563,11 +1559,12 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
 }
 
 abstract class _$AppDatabase extends GeneratedDatabase {
-  _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  _$AppDatabase(QueryExecutor e) : super(e);
   late final $FilesTable files = $FilesTable(this);
   late final $PgpKeyTable pgpKey = $PgpKeyTable(this);
   @override
-  Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+  Iterable<TableInfo<Table, dynamic>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [files, pgpKey];
 }

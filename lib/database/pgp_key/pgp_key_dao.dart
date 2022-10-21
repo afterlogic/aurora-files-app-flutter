@@ -42,7 +42,7 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
             ..where((item) => item.email.equals(key.email))
             ..where((item) => item.isPrivate.equals(key.isPrivate)))
           .go();
-      await into(pgpKey).insert(key);
+      await into(pgpKey).insert(key.toCompanion(true));
     }
   }
 

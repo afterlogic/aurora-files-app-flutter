@@ -18,6 +18,7 @@ import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:flutter/material.dart';
+import 'package:drift/drift.dart' show Value;
 
 import 'encrypted_share_link.dart';
 import 'select_recipient.dart';
@@ -70,7 +71,7 @@ class _ShareLinkState extends State<ShareLink> {
     if (mounted) setState(() {});
     if (widget.usePassword) {
       widget.file.localFile = widget.file.localFile.copyWith(
-        linkPassword: PgpUtil.createSymmetricKey(),
+        linkPassword: Value(PgpUtil.createSymmetricKey()),
       );
 
       widget.filesState.createSecureLink(
@@ -109,8 +110,11 @@ class _ShareLinkState extends State<ShareLink> {
   }
 
   void _deleteLink() async {
-    widget.file.localFile = widget.file.localFile
-        .copyWith(linkPassword: "", linkUrl: "", published: false);
+    widget.file.localFile = widget.file.localFile.copyWith(
+      linkPassword: Value(""),
+      linkUrl: "",
+      published: false,
+    );
 
     widget.filesState.onDeletePublicLink(
       path: widget.file.localFile.path,

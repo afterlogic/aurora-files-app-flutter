@@ -4,7 +4,8 @@ import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/permissions.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:drift_sqflite/drift_sqflite.dart';
+import 'package:drift/drift.dart';
 
 import '../app_database.dart';
 import 'files_table.dart';
@@ -14,7 +15,7 @@ part 'files_dao.g.dart';
 // the _FilesDaoMixin will be created by moor. It contains all the necessary
 // fields for the tables. The <AppDatabase> type annotation is the database class
 // that should use this dao.
-@UseDao(tables: [Files])
+@DriftAccessor(tables: [Files])
 class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
   // this constructor is required so that the main database can create an instance
   // of this object.

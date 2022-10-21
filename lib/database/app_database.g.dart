@@ -67,8 +67,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
       this.initVector,
       this.linkPassword,
       this.encryptedDecryptionKey});
-  factory LocalFile.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory LocalFile.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return LocalFile(
       localId: const IntType()
@@ -221,7 +220,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
 
   factory LocalFile.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return LocalFile(
       localId: serializer.fromJson<int>(json['localId']),
       id: serializer.fromJson<String>(json['id']),
@@ -257,7 +256,7 @@ class LocalFile extends DataClass implements Insertable<LocalFile> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'localId': serializer.toJson<int>(localId),
       'id': serializer.toJson<String>(id),
@@ -1231,7 +1230,7 @@ class $FilesTable extends Files with TableInfo<$FilesTable, LocalFile> {
   Set<GeneratedColumn> get $primaryKey => {localId};
   @override
   LocalFile map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return LocalFile.fromData(data, attachedDatabase,
+    return LocalFile.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
@@ -1255,8 +1254,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
       required this.isPrivate,
       this.length,
       required this.name});
-  factory LocalPgpKey.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory LocalPgpKey.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return LocalPgpKey(
       id: const IntType()
@@ -1301,7 +1299,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
 
   factory LocalPgpKey.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return LocalPgpKey(
       id: serializer.fromJson<int>(json['id']),
       email: serializer.fromJson<String>(json['email']),
@@ -1313,7 +1311,7 @@ class LocalPgpKey extends DataClass implements Insertable<LocalPgpKey> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'email': serializer.toJson<String>(email),
@@ -1554,7 +1552,7 @@ class $PgpKeyTable extends PgpKey with TableInfo<$PgpKeyTable, LocalPgpKey> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   LocalPgpKey map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return LocalPgpKey.fromData(data, attachedDatabase,
+    return LocalPgpKey.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 

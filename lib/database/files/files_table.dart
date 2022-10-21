@@ -1,4 +1,5 @@
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:drift_sqflite/drift_sqflite.dart';
+import 'package:drift/drift.dart';
 
 @DataClassName("LocalFile")
 class Files extends Table {

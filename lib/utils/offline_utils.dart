@@ -1,7 +1,8 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:drift_sqflite/drift_sqflite.dart';
+import 'package:drift/drift.dart';
 
 Storage getStorageFromName(String name) {
   return new Storage(

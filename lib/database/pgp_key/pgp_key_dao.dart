@@ -1,11 +1,12 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:drift_sqflite/drift_sqflite.dart';
+import 'package:drift/drift.dart';
 
 part 'pgp_key_dao.g.dart';
 
-@UseDao(tables: [PgpKey])
+@DriftAccessor(tables: [PgpKey])
 class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
   final secureStorage = SettingsLocalStorage();
 

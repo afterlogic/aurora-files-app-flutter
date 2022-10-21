@@ -1,13 +1,14 @@
 import 'package:aurorafiles/database/files/files_table.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:drift_sqflite/drift_sqflite.dart';
+import 'package:drift/drift.dart';
 
 part 'app_database.g.dart';
 
-@UseMoor(tables: [Files, PgpKey])
+@DriftDatabase(tables: [Files, PgpKey])
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
-      : super(FlutterQueryExecutor.inDatabaseFolder(path: 'app_db.sqlite'));
+      : super(SqfliteQueryExecutor.inDatabaseFolder(path: 'app_db.sqlite'));
 
   @override
   MigrationStrategy get migration => MigrationStrategy(onCreate: (Migrator m) {

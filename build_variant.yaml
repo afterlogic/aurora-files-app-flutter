@@ -3,6 +3,7 @@ _files:
   - pubspec.yaml.yaml
   - lib/di/di.dart.temp
   - android/app/src/main/res/values/.build_res.xml.temp
+  - android/app/src/main/AndroidManifest.xml.temp
   - android/build_variable.properties.temp
   - ios/BuildVariable.xcconfig.temp
   - ios/Runner/Runner.entitlements.temp
@@ -17,6 +18,8 @@ _copy:
   "{{_dir}}/sign/{{_jksName}}": "android/app/key.jks"
   "{{_dir}}/crashlytics/{{_androidGoogleService}}": "android/app/google-services.json"
   "{{_dir}}/crashlytics/{{_iosGoogleService}}": "ios/GoogleService-Info.plist"
+  "{{_dir}}/crashlytics/firebase_app_id_file.json": "ios/firebase_app_id_file.json"
+  "{{_dir}}/crashlytics/firebase_options.dart": "lib/firebase_options.dart"
 
 _buildPropertyPath: lib/build_property.dart
 

@@ -120,20 +120,28 @@ crypto_plugin/ios/Classes/
 /ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png
 /ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png
 /lib/build_property.dart
-/android/app/google-services.json
-**/build_res/afterlogic/sign/
-/ios/GoogleService-Info.plist
+
+
 /ios/AppShareExtension/AppShareExtension.entitlements
 /ios/AppShareExtension/ShareViewController.swift
-**/build_res/afterlogic/crashlytics/
+
 sh/build_appbundle.sh
 sh/build_apk.sh
-ios/GoogleService-Info.plist
+
 ios/dist/
 ios/Flutter/.last_build_id
 /ios/RunnerArchive.xcarchive
-/build_res/template/crashlytics/google-services.json
-/build_res/template/crashlytics/GoogleService-Info.plist
+
 /.gradle/
-/build_res/private_mail/crashlytics/
-/build_res/private_mail/sign/
+
+# Build_res
+/build_res/afterlogic/crashlytics/**
+/build_res/afterlogic/sign/**
+/build_res/template/crashlytics/**
+/build_res/template/sign/**
+
+# Firebase crashlitics
+/android/app/google-services.json
+ios/GoogleService-Info.plist
+ios/firebase_app_id_file.json
+/lib/firebase_options.dart

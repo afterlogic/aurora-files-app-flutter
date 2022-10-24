@@ -154,14 +154,14 @@ class PgpSettingPresenter {
   Future<void> addPrivateKey(CreateKeyResult result) async {
     var privateKey = LocalPgpKey(
         id: -1,
-        key: '',
+        key: 'null',
         email: result.email,
         isPrivate: true,
         length: result.length,
         name: result.name);
     var publicKey = LocalPgpKey(
         id: -1,
-        key: '',
+        key: 'null',
         email: result.email,
         isPrivate: false,
         length: result.length,

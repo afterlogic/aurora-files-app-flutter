@@ -22,6 +22,7 @@
 		DBEB4DFA23E081F200E957F6 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBEB4DF823E081F200E957F6 /* MainInterface.storyboard */; };
 		DBEB4DFE23E081F200E957F6 /* AppShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DBEB4DF423E081F200E957F6 /* AppShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DDC2D6C62301649F00D60A3F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DDC2D6C52301649F00D60A3F /* libsqlite3.tbd */; };
+		EF0972C72906D3AE0060CC4A /* firebase_app_id_file.json in Resources */ = {isa = PBXBuildFile; fileRef = EF0972C62906D3AE0060CC4A /* firebase_app_id_file.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		DBEB4E0423E0859100E957F6 /* AppShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppShareExtension.entitlements; sourceTree = "<group>"; };
 		DDC2D6C52301649F00D60A3F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		DDC97FE623572B4A007336A2 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		EF0972C62906D3AE0060CC4A /* firebase_app_id_file.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = firebase_app_id_file.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +145,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				EF0972C62906D3AE0060CC4A /* firebase_app_id_file.json */,
 				DB72CAFB2510C6C900FA8A53 /* ExportOptions.plist */,
 				DB2A1EB624EC123B00FEFFAD /* ExtensionConfig */,
 				DBB2978123EC410400FAC526 /* GoogleService-Info.plist */,
@@ -325,6 +328,7 @@
 				DB72CAFC2510C6C900FA8A53 /* ExportOptions.plist in Resources */,
 				9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
+				EF0972C72906D3AE0060CC4A /* firebase_app_id_file.json in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 				DBB2978223EC410400FAC526 /* GoogleService-Info.plist in Resources */,
 			);

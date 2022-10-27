@@ -2,7 +2,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -52,8 +52,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       onSuccess: (link) async {
         Clipboard.setData(ClipboardData(text: link));
         setState(() => _isGettingPublicLink = false);
-        showSnack(
-          context,
+        AuroraSnackBar.showSnack(
           msg: s.link_coppied_to_clipboard,
           isError: false,
         );
@@ -66,7 +65,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = false;
-        showSnack(context, msg: err);
+        AuroraSnackBar.showSnack(msg: err);
       }),
     );
   }
@@ -83,7 +82,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = true;
-        showSnack(context, msg: err);
+        AuroraSnackBar.showSnack(msg: err);
       }),
     );
   }

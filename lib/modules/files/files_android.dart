@@ -13,10 +13,10 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -67,7 +67,7 @@ class _FilesAndroidState extends State<FilesAndroid>
         if (_filesState.currentStorages.isEmpty) {
           _filesPageState.filesLoading = FilesLoadingType.filesHidden;
           await _filesState.onGetStorages(
-            onError: (String err) => showSnack(context, msg: err),
+            onError: (String err) => AuroraSnackBar.showSnack(msg: err),
           );
         }
         if (!mounted) return;
@@ -140,7 +140,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (_filesState.currentStorages.isEmpty) {
       _filesPageState.filesLoading = FilesLoadingType.filesHidden;
       await _filesState.onGetStorages(
-        onError: (String err) => showSnack(context, msg: err),
+        onError: (String err) => AuroraSnackBar.showSnack(msg: err),
       );
     }
     if (!mounted) return;
@@ -154,7 +154,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) async {
     return _filesPageState.onGetFiles(
       showLoading: showLoading,
-      onError: (String err) => showSnack(context, msg: err),
+      onError: (String err) => AuroraSnackBar.showSnack(msg: err),
     );
   }
 
@@ -186,7 +186,7 @@ class _FilesAndroidState extends State<FilesAndroid>
           _filesPageState.quitSelectMode();
           _getFiles(context);
         },
-        onError: (String err) => showSnack(context, msg: err),
+        onError: (String err) => AuroraSnackBar.showSnack(msg: err),
       );
     }
   }
@@ -214,21 +214,20 @@ class _FilesAndroidState extends State<FilesAndroid>
         if (shouldEncrypt == true &&
             !(await PgpKeyUtil.instance.hasUserKey())) {
           if (!mounted) return null;
-          showSnack(context,
-              msg:
-                  s.error_pgp_required_key(AppStore.authState.userEmail ?? ''));
+          AuroraSnackBar.showSnack(
+            msg: s.error_pgp_required_key(AppStore.authState.userEmail ?? ''),
+          );
           return null;
         }
         return shouldEncrypt;
       },
       path: widget.path,
       onUploadStart: _addUploadingFileToFiles,
-      onSuccess: () => showSnack(
-        context,
+      onSuccess: () => AuroraSnackBar.showSnack(
         msg: s.successfully_uploaded,
         isError: false,
       ),
-      onError: (String err) => showSnack(context, msg: err),
+      onError: (String err) => AuroraSnackBar.showSnack(msg: err),
     );
   }
 
@@ -433,7 +432,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                       heroTag: widget.path,
                       child: const Icon(Icons.add),
                       onPressed: () {
-                        hideSnack(context);
+                        AuroraSnackBar.hideSnack();
                         Navigator.push(
                             context,
                             CustomSpeedDial(tag: widget.path, children: [

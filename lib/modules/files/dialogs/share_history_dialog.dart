@@ -3,8 +3,8 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/share_access_history.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 
 class ShareHistoryDialog extends StatefulWidget {
@@ -74,7 +74,7 @@ class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
   }
 
   void _onError(dynamic error) {
-    showSnack(context, msg: '$error');
+    AuroraSnackBar.showSnack(msg: '$error');
   }
 
   @override

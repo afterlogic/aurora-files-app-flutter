@@ -11,7 +11,7 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -120,20 +120,19 @@ class _AuthAndroidState extends State<AuthAndroid> {
           UpgradeRoute.name,
           arguments: UpgradeArg(message),
         ),
-        onError: (String err) => showSnack(context, msg: err),
+        onError: (String err) => AuroraSnackBar.showSnack(msg: err),
       );
       if (showHost) {
         if (!mounted) return;
 //        _authState.hostCtrl.text = _authState.hostName;
         setState(() => _showHostField = true);
-        showSnack(
-          context,
+        AuroraSnackBar.showSnack(
           msg: s.enter_host,
           duration: const Duration(seconds: 6),
         );
       }
     } else {
-      showSnack(context, msg: errMsg);
+      AuroraSnackBar.showSnack(msg: errMsg);
     }
   }
 

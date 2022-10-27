@@ -6,7 +6,7 @@ import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +27,6 @@ class _FolderWidgetState extends State<FolderWidget> {
   late FilesState _filesState;
   late FilesPageState _filesPageState;
   Map<String, dynamic> _extendedProps = {};
-  bool _hasShares = false;
   ShareAccessRight? _sharedWithMeAccess;
 
   bool get _sharedWithMe => _sharedWithMeAccess != null;
@@ -58,7 +57,6 @@ class _FolderWidgetState extends State<FolderWidget> {
   void _initShareProps() {
     if (_extendedProps.containsKey("Shares")) {
       final list = _extendedProps["Shares"] as List;
-      _hasShares = list.isNotEmpty;
     }
     if (_extendedProps.containsKey("SharedWithMeAccess")) {
       final code = _extendedProps["SharedWithMeAccess"] as int;
@@ -87,7 +85,7 @@ class _FolderWidgetState extends State<FolderWidget> {
         file: widget.folder,
         isSelected: _filesPageState.selectedFilesIds[widget.folder.id] != null,
         onTap: () {
-          hideSnack(context);
+          AuroraSnackBar.hideSnack();
           Navigator.pushNamed(
             context,
             FilesRoute.name,

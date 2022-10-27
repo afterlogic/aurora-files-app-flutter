@@ -30,9 +30,9 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/asset_icon.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -175,8 +175,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         onError: _onError,
       );
     } else if (_fileViewerState.downloadProgress != null) {
-      showSnack(
-        context,
+      AuroraSnackBar.showSnack(
         msg: s.please_wait_until_loading,
         isError: false,
       );
@@ -244,20 +243,20 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         // TODO VO: update ui without refreshing files
         widget.filesPageState
             .onGetFiles(showLoading: FilesLoadingType.filesHidden);
-        showSnack(
-          context,
+        AuroraSnackBar.showSnack(
           msg: s.downloading(_file.name),
           isError: false,
         );
       },
-      onSuccess: (File savedFile) => showSnack(context,
-          msg: s.downloaded_successfully_into(_file.name, savedFile.path),
-          isError: false,
-          duration: const Duration(minutes: 10),
-          action: SnackBarAction(
-            label: s.oK,
-            onPressed: () => hideSnack(context),
-          )),
+      onSuccess: (File savedFile) => AuroraSnackBar.showSnack(
+        msg: s.downloaded_successfully_into(_file.name, savedFile.path),
+        isError: false,
+        duration: const Duration(minutes: 10),
+        action: SnackBarAction(
+          label: s.oK,
+          onPressed: () => AuroraSnackBar.hideSnack(),
+        ),
+      ),
       onError: _onError,
     );
   }
@@ -285,8 +284,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           _isFileOffline = !_isFileOffline;
         });
         if (_file.localId == -1) {
-          showSnack(
-            context,
+          AuroraSnackBar.showSnack(
             msg: s.synch_file_progress,
             isError: false,
           );
@@ -300,8 +298,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             onSuccess: () async {
               _fileViewerState.processingFile = null;
               if (_file.localId == -1) {
-                showSnack(
-                  context,
+                AuroraSnackBar.showSnack(
                   msg: s.synched_successfully,
                   isError: false,
                 );
@@ -504,7 +501,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _onError(dynamic error) {
-    showSnack(context, msg: '$error');
+    AuroraSnackBar.showSnack(msg: '$error');
   }
 
   @override

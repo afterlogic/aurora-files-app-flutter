@@ -1,7 +1,7 @@
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -31,9 +31,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
     );
     if (result == true) {
       await AppStore.filesState.clearCache(deleteCachedImages: true);
-      if (!mounted) return;
-      showSnack(
-        context,
+      AuroraSnackBar.showSnack(
         msg: s.cache_cleared_success,
         isError: false,
       );

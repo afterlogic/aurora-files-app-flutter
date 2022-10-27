@@ -6,8 +6,8 @@ import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_k
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/export_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -43,15 +43,13 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       ),
     );
     if (exportedDir != null) {
-      if (!mounted) return;
-      showSnack(
-        context,
+      AuroraSnackBar.showSnack(
         msg: s.key_downloaded_into(exportedDir),
         isError: false,
         duration: const Duration(minutes: 10),
         action: SnackBarAction(
           label: s.oK,
-          onPressed: () => hideSnack(context),
+          onPressed: () => AuroraSnackBar.hideSnack(),
         ),
       );
     }
@@ -84,12 +82,12 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         AMButton(
           child: Text(s.import_key_from_file),
           onPressed: () => _settingsState.onImportKeyFromFile(
-            onSuccess: () => showSnack(
-              context,
+            onSuccess: () => AuroraSnackBar.showSnack(
               msg: s.import_encryption_key_success,
               isError: false,
             ),
-            onError: (err) => showSnack(context, msg: s.key_not_found_in_file),
+            onError: (err) =>
+                AuroraSnackBar.showSnack(msg: s.key_not_found_in_file),
           ),
         ),
         spacer,
@@ -146,8 +144,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
               ),
             );
             if (result == DeleteKeyConfirmationDialogResult.delete) {
-              showSnack(
-                context,
+              AuroraSnackBar.showSnack(
                 msg: s.delete_encryption_key_success,
                 isError: false,
               );

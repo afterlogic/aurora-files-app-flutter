@@ -1,7 +1,7 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class ExportKeyDialog extends StatefulWidget {
@@ -43,7 +43,7 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
                         Navigator.pop(context, exportedDir),
                     onError: (String err) {
                       Navigator.pop(context);
-                      showSnack(context, msg: err);
+                      AuroraSnackBar.showSnack(msg: err);
                     },
                   );
                 },

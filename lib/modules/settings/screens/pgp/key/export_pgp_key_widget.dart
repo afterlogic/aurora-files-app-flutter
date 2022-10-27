@@ -3,8 +3,8 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
@@ -124,9 +124,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   download() async {
     final s = context.l10n;
     final result = await widget._pgpKeyUtil.downloadPublicKeys(widget._pgpKeys);
-    if (!mounted) return;
-    showSnack(
-      context,
+    AuroraSnackBar.showSnack(
       msg: s.downloading_to(result.path),
       isError: false,
     );

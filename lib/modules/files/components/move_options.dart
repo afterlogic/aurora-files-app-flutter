@@ -1,7 +1,7 @@
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class MoveOptions extends StatefulWidget {
@@ -29,7 +29,7 @@ class _MoveOptionsState extends State<MoveOptions> {
         copy: copy,
         onSuccess: () async {
           await widget.filesPageState.onGetFiles(
-            onError: (String err) => showSnack(context, msg: err),
+            onError: (String err) => AuroraSnackBar.showSnack(msg: err),
           );
           setState(() => _buttonsDisabled = false);
           widget.filesState.disableMoveMode();
@@ -37,7 +37,7 @@ class _MoveOptionsState extends State<MoveOptions> {
         onError: (err) {
           setState(() => _buttonsDisabled = false);
           widget.filesPageState.filesLoading = FilesLoadingType.none;
-          showSnack(context, msg: err);
+          AuroraSnackBar.showSnack(msg: err);
         });
   }
 

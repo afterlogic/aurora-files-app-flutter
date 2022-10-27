@@ -9,9 +9,9 @@ import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
 import 'package:aurorafiles/modules/settings/settings_navigator.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/error_dialog.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:aurorafiles/utils/stream_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -251,8 +251,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
 
   @override
   Future<void> showError(String error) async {
-    showSnack(
-      context,
+    AuroraSnackBar.showSnack(
       msg: error,
       isError: true,
     );

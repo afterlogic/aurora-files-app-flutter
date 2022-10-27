@@ -13,7 +13,7 @@ import 'package:aurorafiles/modules/files/dialogs/share_teammate_dialog_item.dar
 import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -208,7 +208,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
   }
 
   void _onError(dynamic error) {
-    showSnack(context, msg: '$error');
+    AuroraSnackBar.showSnack(msg: '$error');
   }
 
   @override

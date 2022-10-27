@@ -9,7 +9,7 @@ import 'package:aurorafiles/modules/auth/screens/component/two_factor_screen.dar
 import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor_route.dart';
 import 'package:aurorafiles/modules/auth/screens/trust_device/trust_device_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:theme/app_theme.dart';
@@ -109,7 +109,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
             }
             if (state is ErrorState) {
               if (state.errorToShow != null) {
-                _showError(context, state.errorToShow ?? '');
+                _showError(state.errorToShow ?? '');
               }
             }
             if (state is TouchKeyState) {
@@ -212,7 +212,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
     );
   }
 
-  void _showError(BuildContext context, String msg) {
-    showSnack(context, msg: msg);
+  void _showError(String msg) {
+    AuroraSnackBar.showSnack(msg: msg);
   }
 }

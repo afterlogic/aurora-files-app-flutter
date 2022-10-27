@@ -15,11 +15,11 @@ import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
@@ -150,23 +150,23 @@ class _FileWidgetState extends State<FileWidget> {
 
   void _cantDownloadMessage() {
     final s = context.l10n;
-    showSnack(context, msg: s.need_an_encryption_to_download);
+    AuroraSnackBar.showSnack(msg: s.need_an_encryption_to_download);
   }
 
   void _cantShareMessage() {
     final s = context.l10n;
-    showSnack(context, msg: s.need_an_encryption_to_share);
+    AuroraSnackBar.showSnack(msg: s.need_an_encryption_to_share);
   }
 
   void _openEncryptedFile(BuildContext context) async {
     final s = context.l10n;
     if (widget.file.encryptedDecryptionKey == null) {
       if (AppStore.settingsState.selectedKeyName == null) {
-        return showSnack(context, msg: s.set_any_encryption_key);
+        return AuroraSnackBar.showSnack(msg: s.set_any_encryption_key);
       }
     } else {
       if (!await PgpKeyUtil.instance.hasUserKey()) {
-        return showSnack(context, msg: s.set_any_encryption_key);
+        return AuroraSnackBar.showSnack(msg: s.set_any_encryption_key);
       }
     }
     if (!mounted) return;
@@ -181,24 +181,22 @@ class _FileWidgetState extends State<FileWidget> {
       file: widget.file,
       onStart: (ProcessingFile process) {
         _subscribeToProgress(process);
-        showSnack(
-          context,
+        AuroraSnackBar.showSnack(
           msg: s.downloading(widget.file.name),
           isError: false,
         );
       },
-      onSuccess: (File savedFile) => showSnack(
-        context,
+      onSuccess: (File savedFile) => AuroraSnackBar.showSnack(
         msg: s.downloaded_successfully_into(widget.file.name, savedFile.path),
         isError: false,
         duration: const Duration(minutes: 10),
         action: SnackBarAction(
           label: s.oK,
-          onPressed: () => hideSnack(context),
+          onPressed: () => AuroraSnackBar.hideSnack(),
         ),
       ),
       onError: (String err) =>
-          err.isNotEmpty == true ? showSnack(context, msg: err) : null,
+          err.isNotEmpty == true ? AuroraSnackBar.showSnack(msg: err) : null,
     );
   }
 
@@ -208,8 +206,7 @@ class _FileWidgetState extends State<FileWidget> {
     final filesPageState = _filesPageState;
     try {
       if (widget.file.localId == -1) {
-        showSnack(
-          context,
+        AuroraSnackBar.showSnack(
           msg: s.synch_file_progress,
           isError: false,
         );
@@ -220,18 +217,17 @@ class _FileWidgetState extends State<FileWidget> {
         onStart: _subscribeToProgress,
         onSuccess: () {
           if (widget.file.localId == -1) {
-            showSnack(
-              context,
+            AuroraSnackBar.showSnack(
               msg: s.synched_successfully,
               isError: false,
             );
           }
           filesPageState.onGetFiles();
         },
-        onError: (err) => showSnack(context, msg: err.toString()),
+        onError: (err) => AuroraSnackBar.showSnack(msg: err.toString()),
       );
     } catch (err) {
-      showSnack(context, msg: err.toString());
+      AuroraSnackBar.showSnack(msg: err.toString());
     }
   }
 
@@ -376,7 +372,7 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _onItemTap(BuildContext context) {
-    hideSnack(context);
+    AuroraSnackBar.hideSnack();
     widget.file.initVector != null
         ? _openEncryptedFile(context)
         : _openFile(context);

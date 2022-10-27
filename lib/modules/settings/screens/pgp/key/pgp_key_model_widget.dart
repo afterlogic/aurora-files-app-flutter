@@ -5,8 +5,8 @@ import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
@@ -192,9 +192,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
       }
     }
     final result = await widget._pgpKeyUtil.downloadKey(widget._pgpKey);
-    if (!mounted) return;
-    showSnack(
-      context,
+    AuroraSnackBar.showSnack(
       msg: s.downloading_to(result.path),
       isError: false,
     );

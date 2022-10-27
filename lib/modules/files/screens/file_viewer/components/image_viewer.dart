@@ -6,10 +6,10 @@ import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/progress_loader.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -64,7 +64,7 @@ class _ImageViewerState extends State<ImageViewer> {
       _isError = true;
       setState(() {});
     } else if (err.isNotEmpty) {
-      showSnack(context, msg: err);
+      AuroraSnackBar.showSnack(msg: err);
     }
   }
 

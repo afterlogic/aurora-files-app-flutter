@@ -9,8 +9,8 @@ import 'package:aurorafiles/modules/auth/screens/trust_device/trust_device_route
 import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:theme/app_theme.dart';
@@ -66,10 +66,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
           listener: (BuildContext context, state) {
             if (state is ErrorState) {
               pinCtrl.clear();
-              _showError(
-                context,
-                state.errorMsg,
-              );
+              _showError(state.errorMsg);
             } else if (state is CompleteState) {
               if (state.daysCount == 0) {
                 Navigator.pushReplacementNamed(
@@ -152,8 +149,8 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
     );
   }
 
-  void _showError(BuildContext context, String error) {
-    showSnack(context, msg: error);
+  void _showError(String error) {
+    AuroraSnackBar.showSnack(msg: error);
   }
 
   _login() {

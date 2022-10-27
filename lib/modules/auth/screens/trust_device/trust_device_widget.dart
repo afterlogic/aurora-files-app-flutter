@@ -6,7 +6,7 @@ import 'package:aurorafiles/modules/auth/repository/trust_device/bloc.dart';
 import 'package:aurorafiles/modules/auth/screens/component/two_factor_screen.dart';
 import 'package:aurorafiles/modules/auth/screens/trust_device/trust_device_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:theme/app_theme.dart';
@@ -50,7 +50,7 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
           bloc: bloc,
           listener: (BuildContext context, state) {
             if (state is ErrorState) {
-              _showError(context, state.errorMsg);
+              _showError(state.errorMsg);
             } else if (state is CompleteState) {
               Navigator.pushNamedAndRemoveUntil(
                   context, FilesRoute.name, (route) => route.isFirst,
@@ -111,7 +111,7 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
     );
   }
 
-  void _showError(BuildContext context, String msg) {
-    showSnack(context, msg: msg);
+  void _showError(String msg) {
+    AuroraSnackBar.showSnack(msg: msg);
   }
 }

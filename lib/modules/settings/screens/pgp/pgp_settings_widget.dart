@@ -20,6 +20,8 @@ import 'key/export_pgp_key_route.dart';
 import 'key/pgp_key_model_route.dart';
 
 class PgpSettingWidget extends StatefulWidget {
+  const PgpSettingWidget({super.key});
+
   @override
   _PgpSettingWidgetState createState() => _PgpSettingWidgetState();
 }
@@ -52,7 +54,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
           keysState,
           (_, state) {
             if (state.isProgress) {
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             }
 
             final publicKeys =
@@ -110,7 +112,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                           ],
                         ),
                       if (externalKeys == null)
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.all(16),
                           child: Center(
                             child: CircularProgressIndicator(),
@@ -132,8 +134,8 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet
-        ? SizedBox.shrink()
-        : SizedBox(
+        ? const SizedBox.shrink()
+        : const SizedBox(
             height: 10.0,
             width: 10,
           );
@@ -147,18 +149,18 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
         ),
       if (externalKeys.isNotEmpty == true) space,
       AMButton(
-        child: Text(s.import_keys_from_text),
         onPressed: importKeyDialog,
+        child: Text(s.import_keys_from_text),
       ),
       space,
       AMButton(
-        child: Text(s.import_keys_from_file),
         onPressed: _presenter.getKeysFromFile,
+        child: Text(s.import_keys_from_file),
       ),
       space,
       AMButton(
-        child: Text(s.generate_keys),
         onPressed: generateKeyDialog,
+        child: Text(s.generate_keys),
       ),
     ];
     return SafeArea(
@@ -186,6 +188,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
         return;
       }
     }
+    if (!mounted) return;
     final result = await SettingsNavigatorWidget.of(context).pushNamed(
       PgpKeyModelRoute.name,
       arguments: [_presenter, pgpKey, _presenter.pgpKeyUtil],
@@ -207,7 +210,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   Future<void> importKeyDialog() async {
     final result = await AMDialog.show(
       context: context,
-      builder: (_) => KeyFromTextWidget(),
+      builder: (_) => const KeyFromTextWidget(),
     );
     if (result is String) {
       _presenter.getKeysFromText(result);
@@ -227,6 +230,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     );
   }
 
+  @override
   Future<void> keysNotFound() async {
     final s = context.l10n;
     AMDialog.show(

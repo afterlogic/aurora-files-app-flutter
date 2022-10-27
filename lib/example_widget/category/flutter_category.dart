@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FlutterCategory extends StatelessWidget {
+  const FlutterCategory({super.key});
+
   @override
   Widget build(BuildContext context) {
     return CategoryWidget(
@@ -10,25 +12,25 @@ class FlutterCategory extends StatelessWidget {
       [
         AppBar(
           titleSpacing: NavigationToolbar.kMiddleSpacing,
-          title: Text("Title"),
+          title: const Text("Title"),
         ),
-        Card(
+        const Card(
           child: SizedBox(
             width: 100,
             height: 100,
           ),
         ),
-        TextButton(
-          child: Text("Button"),
+        const TextButton(
           onPressed: null,
+          child: Text("Button"),
         ),
         TextButton(
-          child: Text("Button"),
+          child: const Text("Button"),
           onPressed: () {},
         ),
-        Icon(Icons.ac_unit),
+        const Icon(Icons.ac_unit),
         IconButton(
-          icon: Icon(Icons.ac_unit),
+          icon: const Icon(Icons.ac_unit),
           onPressed: () {},
         ),
         Switch(value: false, onChanged: (_) {}),

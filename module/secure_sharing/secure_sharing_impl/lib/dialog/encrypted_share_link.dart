@@ -140,7 +140,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   @override
   void initState() {
     _prepare();
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       share(context);
     });
     super.initState();

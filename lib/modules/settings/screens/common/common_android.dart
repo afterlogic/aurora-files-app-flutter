@@ -10,13 +10,15 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'components/theme_selection_dialog.dart';
 
 class CommonSettingsAndroid extends StatefulWidget {
+  const CommonSettingsAndroid({super.key});
+
   @override
   _CommonSettingsAndroidState createState() => _CommonSettingsAndroidState();
 }
 
 class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
   final _settingsState = AppStore.settingsState;
-  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future _clearCache() async {
     final s = context.l10n;
@@ -29,6 +31,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
     );
     if (result == true) {
       await AppStore.filesState.clearCache(deleteCachedImages: true);
+      if (!mounted) return;
       showSnack(
         context,
         msg: s.cache_cleared_success,
@@ -39,12 +42,13 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
 
   String _getThemeName(bool? isDarkTheme) {
     final s = context.l10n;
-    if (isDarkTheme == false)
+    if (isDarkTheme == false) {
       return s.light_theme;
-    else if (isDarkTheme == true)
+    } else if (isDarkTheme == true) {
       return s.dark_theme;
-    else
+    } else {
       return s.system_theme;
+    }
   }
 
   @override
@@ -62,7 +66,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
         children: <Widget>[
           Observer(
             builder: (_) => ListTile(
-              leading: AMCircleIcon(MdiIcons.themeLightDark),
+              leading: const AMCircleIcon(MdiIcons.themeLightDark),
               title: Text(s.app_theme),
               trailing: Text(
                 _getThemeName(_settingsState.isDarkTheme),
@@ -78,7 +82,7 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
             ),
           ),
           ListTile(
-            leading: AMCircleIcon(MdiIcons.broom),
+            leading: const AMCircleIcon(MdiIcons.broom),
             title: Text(s.clear_cache),
             onTap: _clearCache,
           ),

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class KeyRequestDialog extends StatefulWidget {
   final bool? forSign;
 
-  KeyRequestDialog(this.forSign);
+  const KeyRequestDialog(this.forSign, {super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -75,7 +75,7 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
                 labelText: s.password,
                 helperText: '',
                 suffixIcon: Padding(
-                  padding: EdgeInsets.only(top: 11),
+                  padding: const EdgeInsets.only(top: 11),
                   child: IconButton(
                     icon: Icon(
                       obscure ? Icons.visibility : Icons.visibility_off,
@@ -93,7 +93,6 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: isProgress ? CircularProgressIndicator() : Text(s.oK),
           onPressed: isProgress
               ? null
               : () {
@@ -101,6 +100,7 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
                     _check();
                   }
                 },
+          child: isProgress ? const CircularProgressIndicator() : Text(s.oK),
         )
       ],
     );

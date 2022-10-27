@@ -40,8 +40,8 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
       content: _isAdding
           ? Row(
               children: <Widget>[
-                CircularProgressIndicator(),
-                SizedBox(width: 20.0),
+                const CircularProgressIndicator(),
+                const SizedBox(width: 20.0),
                 Text(s.add_key_progress)
               ],
             )
@@ -55,9 +55,9 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                     autofocus: true,
                     decoration: InputDecoration(
                       isDense: true,
-                      icon: Icon(Icons.title),
+                      icon: const Icon(Icons.title),
                       hintText: s.key_name,
-                      border: UnderlineInputBorder(),
+                      border: const UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
                       value ?? '',
@@ -65,15 +65,15 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                       widget.settingsState.encryptionKeys.keys.toList(),
                     ),
                   ),
-                  if (widget.isImport) SizedBox(height: 8.0),
+                  if (widget.isImport) const SizedBox(height: 8.0),
                   if (widget.isImport)
                     TextFormField(
                       controller: _keyCtrl,
                       decoration: InputDecoration(
                         isDense: true,
-                        icon: Icon(Icons.vpn_key),
+                        icon: const Icon(Icons.vpn_key),
                         hintText: s.key_text,
-                        border: UnderlineInputBorder(),
+                        border: const UnderlineInputBorder(),
                       ),
                       validator: (value) => validateInput(
                         value ?? '',
@@ -89,12 +89,12 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-            child: Text(widget.isImport ? s.import : s.generate),
             onPressed: _isAdding
                 ? null
                 : () async {
-                    if (_addKeyFormKey.currentState?.validate() == false)
+                    if (_addKeyFormKey.currentState?.validate() == false) {
                       return;
+                    }
                     errMsg = "";
                     setState(() => _isAdding = true);
                     await widget.settingsState.onAddKey(
@@ -106,8 +106,10 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                       },
                     );
                     await widget.settingsState.getUserEncryptionKeys();
+                    if (!mounted) return;
                     Navigator.pop(context, true);
-                  }),
+                  },
+            child: Text(widget.isImport ? s.import : s.generate)),
       ],
     );
   }

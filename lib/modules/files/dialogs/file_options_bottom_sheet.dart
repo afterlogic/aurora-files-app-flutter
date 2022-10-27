@@ -147,6 +147,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       }
     }
     if (canDownload) {
+      if (!mounted) return;
       Navigator.pop(context);
       final result = await AMDialog.show(
         context: context,
@@ -215,6 +216,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
+    if (!mounted) return;
     await secureSharing.sharing(
       context,
       widget.filesState,
@@ -233,6 +235,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
+    if (!mounted) return;
     secureSharing.encryptSharing(
       context,
       widget.filesState,
@@ -330,12 +333,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               filesState: widget.filesState,
               filesPageState: widget.filesPageState,
             ),
-          if (!isFolder && !offline) Divider(height: 0),
+          if (!isFolder && !offline) const Divider(height: 0),
           if (!isFolder)
             ListTile(
               onTap: () =>
                   onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
-              leading: Icon(Icons.airplanemode_active),
+              leading: const Icon(Icons.airplanemode_active),
               title: Text(s.offline),
               trailing: Switch.adaptive(
                 value: widget.file.localId != -1,
@@ -343,7 +346,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                     onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
               ),
             ),
-          Divider(height: 0),
+          const Divider(height: 0),
           if (!offline)
             ListTile(
               leading: Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove),
@@ -370,7 +373,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!offline && _enableTeamShare)
             ListTile(
-              leading: Icon(Icons.share),
+              leading: const Icon(Icons.share),
               title: Text(s.label_share_with_teammates),
               onTap: () => _shareWithTeammates(context),
             ),
@@ -395,13 +398,13 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!PlatformOverride.isIOS && !isFolder)
             ListTile(
-              leading: Icon(Icons.file_download),
+              leading: const Icon(Icons.file_download),
               title: Text(s.download),
               onTap: _download,
             ),
           if (!offline)
             ListTile(
-              leading: Icon(Icons.edit),
+              leading: const Icon(Icons.edit),
               title: Text(s.rename),
               onTap: () async {
                 Navigator.pop(context);
@@ -417,7 +420,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!offline)
             ListTile(
-              leading: Icon(Icons.delete_outline),
+              leading: const Icon(Icons.delete_outline),
               title: Text(s.delete),
               onTap: () {
                 Navigator.pop(context);
@@ -446,7 +449,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             style: Theme.of(context).textTheme.headline6,
           ),
         ),
-        Divider(height: 0),
+        const Divider(height: 0),
         content,
       ],
     );

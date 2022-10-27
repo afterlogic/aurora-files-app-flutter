@@ -6,7 +6,7 @@ class AssetIcon extends StatelessWidget {
   final double? size;
   final double? addedSize;
 
-  const AssetIcon(this.res, {this.size, this.addedSize});
+  const AssetIcon(this.res, {super.key, this.size, this.addedSize});
 
   @override
   Widget build(BuildContext context) {

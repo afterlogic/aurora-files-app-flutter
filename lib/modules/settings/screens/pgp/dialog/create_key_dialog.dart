@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 class CreateKeyDialog extends StatefulWidget {
   final PgpKeyUtil pgpKeyUtil;
 
-  CreateKeyDialog(this.pgpKeyUtil);
+  const CreateKeyDialog(this.pgpKeyUtil, {super.key});
 
   @override
   _CreateKeyDialogState createState() => _CreateKeyDialogState();
@@ -110,16 +110,16 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(s.close),
           onPressed: _pop,
+          child: Text(s.close),
         ),
         TextButton(
-          child: Text(s.generate),
           onPressed: () {
             if (_formKey.currentState?.validate() == true) {
               _generate();
             }
           },
+          child: Text(s.generate),
         ),
       ],
     );
@@ -135,7 +135,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
 
   String? _validatePassword(String text) {
     final s = context.l10n;
-    if (text.length < 1) {
+    if (text.isEmpty) {
       return s.password_is_empty;
     }
     return null;
@@ -158,6 +158,7 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     }
 
     final future = widget.pgpKeyUtil.createKeys(length, email, password);
+    if (!mounted) return;
     Navigator.pop(context, CreateKeyResult(email, length, future, hasKey, ""));
   }
 

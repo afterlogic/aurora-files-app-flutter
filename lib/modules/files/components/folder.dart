@@ -80,7 +80,7 @@ class _FolderWidgetState extends State<FolderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final margin = 5.0;
+    const margin = 5.0;
     final s = context.l10n;
     return Observer(
       builder: (_) => SelectableFilesItemTile(
@@ -116,7 +116,7 @@ class _FolderWidgetState extends State<FolderWidget> {
                     child: Text(widget.folder.name),
                   ),
                   if (widget.folder.published || widget.folder.localId != -1)
-                    SizedBox(height: 7.0),
+                    const SizedBox(height: 7.0),
                   Theme(
                     data: Theme.of(context).copyWith(
                       iconTheme: IconThemeData(
@@ -127,7 +127,7 @@ class _FolderWidgetState extends State<FolderWidget> {
                     child: Row(children: <Widget>[
                       if (widget.folder.published)
                         Padding(
-                          padding: EdgeInsets.only(right: margin),
+                          padding: const EdgeInsets.only(right: margin),
                           child: Icon(
                             Icons.link,
                             semanticLabel: s.has_public_link,
@@ -147,7 +147,7 @@ class _FolderWidgetState extends State<FolderWidget> {
           if (!_filesState.isOfflineMode &&
               !_filesState.isMoveModeEnabled &&
               !_filesState.isShareUpload &&
-              _filesPageState.selectedFilesIds.length <= 0 &&
+              _filesPageState.selectedFilesIds.isEmpty &&
               !_filesPageState.isInsideZip)
             Positioned(
               top: 0.0,

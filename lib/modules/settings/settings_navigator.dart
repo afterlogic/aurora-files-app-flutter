@@ -84,11 +84,11 @@ class SettingsNavigatorState extends State<SettingsNavigatorWidget>
       final child = route.buildPage(
         context,
         AnimationController(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           vsync: this,
         ),
         AnimationController(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           vsync: this,
         ),
       );
@@ -100,6 +100,7 @@ class SettingsNavigatorState extends State<SettingsNavigatorWidget>
     return Completer()..complete();
   }
 
+  @override
   Future<dynamic> pushNamed(String name, {dynamic arguments}) {
     final future = _add(name, arguments).future;
     setState(() {});
@@ -107,6 +108,7 @@ class SettingsNavigatorState extends State<SettingsNavigatorWidget>
     return future;
   }
 
+  @override
   bool pop() {
     if (_stack.length == 1) {
       return true;
@@ -126,7 +128,7 @@ class SettingsNavigatorState extends State<SettingsNavigatorWidget>
         return pop();
       },
       child: _stack.isEmpty
-          ? SizedBox.shrink()
+          ? const SizedBox.shrink()
           : Provider<SettingsNavigator>.value(
               value: this,
               child: current.widget,

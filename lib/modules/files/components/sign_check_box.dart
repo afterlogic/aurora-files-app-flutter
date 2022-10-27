@@ -29,7 +29,7 @@ class SignCheckBoxState extends State<SignCheckBox> {
           onTap: widget.enable ? () => widget.onCheck(!widget.checked) : null,
           title: Text(
             s.sign_email,
-            style: !widget.enable ? TextStyle(color: Colors.grey) : null,
+            style: !widget.enable ? const TextStyle(color: Colors.grey) : null,
           ),
           trailing: Switch.adaptive(
             value: widget.checked,

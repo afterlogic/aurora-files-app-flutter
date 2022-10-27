@@ -44,7 +44,7 @@ class _ImageViewerState extends State<ImageViewer> {
     _fileViewerState = widget.fileViewerState;
     if (!AppStore.filesState.isOfflineMode) {
       Future.delayed(
-        Duration(milliseconds: 250),
+        const Duration(milliseconds: 250),
         () => _fileViewerState.getPreviewImage(
             widget.password, (err) => _showError(err), context),
       );
@@ -63,7 +63,9 @@ class _ImageViewerState extends State<ImageViewer> {
     if (err == "Invalid password" || err == "Instance of 'CryptoException'") {
       _isError = true;
       setState(() {});
-    } else if (err.isNotEmpty) showSnack(context, msg: err);
+    } else if (err.isNotEmpty) {
+      showSnack(context, msg: err);
+    }
   }
 
   void _precacheImage(BuildContext context, Image image) {
@@ -74,7 +76,7 @@ class _ImageViewerState extends State<ImageViewer> {
         onError: (e, stack) {
           imagePrecached = null;
           Future.delayed(
-              Duration(milliseconds: 100),
+              const Duration(milliseconds: 100),
                   () => setState(
                     () => _isError = true,
               ));
@@ -93,8 +95,8 @@ class _ImageViewerState extends State<ImageViewer> {
       if (_isError) {
         return Row(
           children: <Widget>[
-            Icon(Icons.error),
-            SizedBox(width: 16.0),
+            const Icon(Icons.error),
+            const SizedBox(width: 16.0),
             Flexible(
               child: Text(s.decrypt_error),
             ),
@@ -119,8 +121,8 @@ class _ImageViewerState extends State<ImageViewer> {
       if (_isError) {
         return Row(
           children: <Widget>[
-            Icon(Icons.error),
-            SizedBox(width: 16.0),
+            const Icon(Icons.error),
+            const SizedBox(width: 16.0),
             Flexible(
               child: Text(s.file_is_damaged),
             ),
@@ -154,8 +156,8 @@ class _ImageViewerState extends State<ImageViewer> {
           if (snap.error != null) {
             return Row(
               children: <Widget>[
-                Icon(Icons.error),
-                SizedBox(width: 16.0),
+                const Icon(Icons.error),
+                const SizedBox(width: 16.0),
                 Flexible(
                   child: Text(s.decrypt_error),
                 ),
@@ -167,7 +169,7 @@ class _ImageViewerState extends State<ImageViewer> {
               fit: fit,
             );
           } else {
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
         },
       );
@@ -256,7 +258,7 @@ class _ImageViewerState extends State<ImageViewer> {
             ),
           ));
     } else {
-      return SizedBox();
+      return const SizedBox();
     }
   }
 }

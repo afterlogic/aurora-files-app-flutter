@@ -18,8 +18,9 @@ class ImportKeyDialog extends StatefulWidget {
     this.userKeys,
     this.contactKeys,
     this.alienKeys,
-    this.presenter,
-  );
+    this.presenter, {
+    super.key,
+  });
 
   @override
   _ImportKeyDialogState createState() => _ImportKeyDialogState();
@@ -64,17 +65,17 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
           children: <Widget>[
             if (!isKeysToImport)
               Padding(
-                padding: EdgeInsets.only(top: 8, bottom: 32),
+                padding: const EdgeInsets.only(top: 8, bottom: 32),
                 child: Text(s.hint_pgp_no_keys_to_import),
               ),
             if (areExistingKeys)
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(s.hint_pgp_already_have_keys),
               ),
             if (userKeys.isNotEmpty && !BuildProperty.legacyPgpKey)
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(s.hint_pgp_your_keys),
               ),
             Column(
@@ -92,7 +93,7 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
             if (!BuildProperty.legacyPgpKey) ...[
               if (contactKeys.isNotEmpty)
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(s.hint_pgp_keys_will_be_import_to_contacts),
                 ),
               Column(
@@ -111,7 +112,7 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
             ],
             if (alienKeys.isNotEmpty) ...[
               Padding(
-                padding: EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 8),
                 child: Text(s.hint_pgp_external_private_keys),
               ),
               Column(
@@ -135,10 +136,10 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
         ),
         if (isKeysToImport)
           TextButton(
+            onPressed: _canImport() ? _import : null,
             child: !isProgress
                 ? Text(s.btn_pgp_import_selected_key)
-                : CircularProgressIndicator(),
-            onPressed: _canImport() ? _import : null,
+                : const CircularProgressIndicator(),
           ),
       ],
     );
@@ -170,6 +171,7 @@ class _ImportKeyDialogState extends State<ImportKeyDialog> {
         userKey,
         contactKey,
       );
+      if (!mounted) return;
       Navigator.pop(context);
     } catch (e) {
       print(e);
@@ -183,7 +185,7 @@ class CheckAnalog extends StatelessWidget {
   final bool isCheck;
   final Function(bool)? onChange;
 
-  const CheckAnalog(this.isCheck, this.onChange);
+  const CheckAnalog(this.isCheck, this.onChange, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +197,7 @@ class CheckAnalog extends StatelessWidget {
               }
             },
             child: Padding(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Icon(
                 isCheck ? Icons.check_box : Icons.check_box_outline_blank,
                 color: onChange == null ? Colors.grey : null,

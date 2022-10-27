@@ -4,6 +4,7 @@ class StreamWidget<T> extends StreamBuilder {
   StreamWidget(
     Stream<T> stream,
     Widget Function(BuildContext, T) onBuild, {
+    super.key,
     T? initialData,
   }) : super(
           initialData: initialData,

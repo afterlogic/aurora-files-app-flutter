@@ -15,7 +15,7 @@ import 'package:theme/app_theme.dart';
 class SelectTwoFactorWidget extends StatefulWidget {
   final SelectTwoFactorRouteArgs args;
 
-  const SelectTwoFactorWidget(this.args);
+  const SelectTwoFactorWidget(this.args, {super.key});
 
   @override
   _SelectTwoFactorWidgetState createState() => _SelectTwoFactorWidgetState();
@@ -39,7 +39,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
                 ?.copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             s.tfa_hint_step,
             textAlign: TextAlign.center,
@@ -52,7 +52,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
           s.tfa_label_hint_security_options,
           style: TextStyle(color: AppTheme.loginTextColor),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         if (widget.args.state.hasSecurityKey && BuildProperty.useYubiKit) ...[
           SizedBox(
             width: double.infinity,
@@ -72,7 +72,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
               },
             ),
           ),
-          SizedBox(height: 20)
+          const SizedBox(height: 20)
         ],
         if (widget.args.state.hasAuthenticatorApp) ...[
           SizedBox(
@@ -93,7 +93,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
               },
             ),
           ),
-          SizedBox(height: 20)
+          const SizedBox(height: 20)
         ],
         if (widget.args.state.hasBackupCodes) ...[
           SizedBox(

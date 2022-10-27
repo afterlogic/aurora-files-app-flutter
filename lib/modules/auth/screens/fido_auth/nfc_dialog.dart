@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class IosPressOnKeyDialog extends _IosDialog {
   final Function breaker;
 
-  IosPressOnKeyDialog(Key? key, this.breaker) : super(key);
+  const IosPressOnKeyDialog(Key? key, this.breaker) : super(key);
 
   @override
   _IosDialogState createState() => IosPressOnKeyDialogState();
@@ -17,26 +17,28 @@ class IosPressOnKeyDialog extends _IosDialog {
 class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
   Future success() async {
     setState(() => isSuccess = true);
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     await _animationController.reverse();
+    if (!mounted) return;
     Navigator.pop(context);
   }
 
   @override
-  Future close() async {
+  Future close(BuildContext context) async {
     if (isSuccess || isClosed) {
       return;
     }
     isClosed = true;
     widget.breaker();
     await _animationController.reverse();
+    if (!mounted) return;
     Navigator.pop(context);
   }
 
   @override
   Widget content(BuildContext context) {
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 200),
       child: KeyedSubtree(
         key: ValueKey(isSuccess),
         child: isSuccess ? _successWidget() : _scanKeyWidget(),
@@ -46,11 +48,11 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
 
   Widget _successWidget() {
     final s = context.l10n;
-    final size = 115.0;
+    const size = 115.0;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Opacity(
+        const Opacity(
           opacity: 0,
           child: Text(
             "Ready to Scan",
@@ -67,8 +69,8 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
               position: DecorationPosition.foreground,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(size),
-                  border: Border.all(color: Color(0xFF007bff), width: 6)),
-              child: Center(
+                  border: Border.all(color: const Color(0xFF007bff), width: 6)),
+              child: const Center(
                 child: Icon(
                   Icons.done_rounded,
                   size: size - 30,
@@ -80,7 +82,7 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
         ),
         Text(
           s.fido_label_success,
-          style: TextStyle(
+          style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w400),
         ),
       ],
@@ -88,11 +90,11 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
   }
 
   Widget _scanKeyWidget() {
-    final size = 115.0;
+    const size = 115.0;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
+        const Text(
           "Ready to Scan",
           style: TextStyle(
               fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w400),
@@ -103,7 +105,7 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
             position: DecorationPosition.foreground,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(size),
-                border: Border.all(color: Color(0xFF007bff), width: 6)),
+                border: Border.all(color: const Color(0xFF007bff), width: 6)),
             child: Image.asset(
               Asset.images.useKey,
               width: size,
@@ -111,7 +113,7 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
             ),
           ),
         ),
-        Text(
+        const Text(
           "Touch your security key",
           style: TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w400),
@@ -122,13 +124,13 @@ class IosPressOnKeyDialogState extends _IosDialogState<IosPressOnKeyDialog> {
 }
 
 abstract class _IosDialog extends StatefulWidget {
-  _IosDialog(Key? key) : super(key: key);
+  const _IosDialog(Key? key) : super(key: key);
 
   Future show(BuildContext context) {
     return showCupertinoDialog(
       context: context,
       builder: (_) => DecoratedBox(
-        decoration: BoxDecoration(color: Colors.black45),
+        decoration: const BoxDecoration(color: Colors.black45),
         child: this,
       ),
     );
@@ -145,10 +147,11 @@ abstract class _IosDialogState<W extends _IosDialog> extends State<W>
   bool isSuccess = false;
   bool isClosed = false;
 
+  @override
   initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 350));
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 350));
     _animationController.forward();
     _offsetAnimation = Tween<Offset>(
       begin: const Offset(0, 1),
@@ -165,11 +168,13 @@ abstract class _IosDialogState<W extends _IosDialog> extends State<W>
     super.dispose();
   }
 
-  Future close() async {
+  Future close(BuildContext context) async {
     await _animationController.reverse();
+    if (!mounted) return;
     Navigator.pop(context);
   }
 
+  @override
   Widget build(BuildContext context) {
     final displaySize = MediaQuery.of(context).size;
     final displayHeight = displaySize.height;
@@ -185,8 +190,9 @@ abstract class _IosDialogState<W extends _IosDialog> extends State<W>
               child: Container(
                 width: size,
                 height: size * 0.95,
-                margin: EdgeInsets.all(6),
-                padding: EdgeInsets.symmetric(vertical: 27, horizontal: 35),
+                margin: const EdgeInsets.all(6),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 27, horizontal: 35),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(35),
@@ -196,7 +202,7 @@ abstract class _IosDialogState<W extends _IosDialog> extends State<W>
                   children: [
                     Flexible(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Material(
                           color: Colors.white,
                           child: Theme(
@@ -206,7 +212,7 @@ abstract class _IosDialogState<W extends _IosDialog> extends State<W>
                         ),
                       ),
                     ),
-                    SizedBox(height: 35),
+                    const SizedBox(height: 35),
                     Opacity(
                       opacity: isSuccess ? 0 : 1,
                       child: IgnorePointer(
@@ -216,15 +222,13 @@ abstract class _IosDialogState<W extends _IosDialog> extends State<W>
                           child: CupertinoButton(
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.grey.withOpacity(0.5),
-                            child: Text(
+                            child: const Text(
                               "Cancel",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w600),
                             ),
-                            onPressed: () async {
-                              close();
-                            },
+                            onPressed: () => close(context),
                           ),
                         ),
                       ),

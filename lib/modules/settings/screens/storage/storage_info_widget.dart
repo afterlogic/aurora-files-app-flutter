@@ -10,7 +10,7 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 class StorageInfoWidget extends StatelessWidget {
   final bool fromDrawer;
 
-  const StorageInfoWidget({this.fromDrawer = false});
+  const StorageInfoWidget({super.key, this.fromDrawer = false});
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,8 @@ class StorageInfoWidget extends StatelessWidget {
               padding: const EdgeInsets.all(18.0),
               child: Row(
                 children: <Widget>[
-                  Icon(Icons.error),
-                  SizedBox(width: 18.0),
+                  const Icon(Icons.error),
+                  const SizedBox(width: 18.0),
                   Flexible(
                       child: Text(
                           AppStore.filesState.isOfflineMode
@@ -46,7 +46,7 @@ class StorageInfoWidget extends StatelessWidget {
                   final quota = AppStore.filesState.quota ?? Quota(null, null);
 
                   return ListView(
-                    padding: EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16.0),
                     children: <Widget>[
                       CircularPercentIndicator(
                         percent: quota.progress,
@@ -58,17 +58,17 @@ class StorageInfoWidget extends StatelessWidget {
                             style: theme.textTheme.headline6),
                         radius: 100.0,
                       ),
-                      SizedBox(height: 32.0),
+                      const SizedBox(height: 32.0),
                       Text(
                         s.available_space(quota.availableFormatted),
                         style: theme.textTheme.subtitle1,
                       ),
-                      SizedBox(height: 22.0),
+                      const SizedBox(height: 22.0),
                       Text(
                           s.used_space(
                               quota.usedFormatted, quota.limitFormatted),
                           style: theme.textTheme.subtitle1),
-                      SizedBox(height: 46.0),
+                      const SizedBox(height: 46.0),
                       // if (BuildProperty.canUpgradePlan)
                       //   SizedBox(
                       //     width: double.infinity,

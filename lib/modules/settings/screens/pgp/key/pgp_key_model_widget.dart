@@ -15,7 +15,8 @@ class PgpKeyModelWidget extends StatefulWidget {
   final PgpKeyUtil _pgpKeyUtil;
   final PgpSettingPresenter presenter;
 
-  const PgpKeyModelWidget(this.presenter, this._pgpKey, this._pgpKeyUtil);
+  const PgpKeyModelWidget(this.presenter, this._pgpKey, this._pgpKeyUtil,
+      {super.key});
 
   @override
   _PgpKeyModelWidgetState createState() => _PgpKeyModelWidgetState();
@@ -29,13 +30,13 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     super.dispose();
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
@@ -85,14 +86,14 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
                         ),
                       ),
                     ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   Text(
                     widget._pgpKey.email,
                     style: theme.textTheme.headline6,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   SelectableText(
@@ -112,31 +113,31 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet
-        ? SizedBox.shrink()
-        : SizedBox(
+        ? const SizedBox.shrink()
+        : const SizedBox(
             height: 10.0,
             width: 10,
           );
     final children = <Widget>[
       AMButton(
-        child: Text(s.share),
         onPressed: share,
+        child: Text(s.share),
       ),
       space,
       if (!PlatformOverride.isIOS) ...[
         AMButton(
-          child: Text(s.download),
           onPressed: download,
+          child: Text(s.download),
         ),
         space,
       ],
       AMButton(
-        child: Text(s.delete),
         onPressed: delete,
+        child: Text(s.delete),
       ),
     ];
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       child: isTablet
           ? Wrap(
               spacing: 10,
@@ -150,8 +151,9 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
   }
 
-  share() async {
+  Future<void> share() async {
     final s = context.l10n;
+    final center = MediaQuery.of(context).size.bottomCenter(Offset.zero);
     if (widget._pgpKey.isPrivate) {
       final result = await AMConfirmationDialog.show(
         context,
@@ -168,7 +170,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
       widget._pgpKey.key,
       subject: widget._pgpKey.name,
       sharePositionOrigin: Rect.fromCenter(
-        center: MediaQuery.of(context).size.bottomCenter(Offset.zero),
+        center: center,
         width: 0,
         height: 0,
       ),
@@ -190,7 +192,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
       }
     }
     final result = await widget._pgpKeyUtil.downloadKey(widget._pgpKey);
-
+    if (!mounted) return;
     showSnack(
       context,
       msg: s.downloading_to(result.path),
@@ -198,7 +200,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     );
   }
 
-  delete() async {
+  Future<void> delete() async {
     final s = context.l10n;
     final result = await AMDialog.show(
       context: context,
@@ -208,7 +210,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
       },
     );
     if (result == true) {
-      if (widget._pgpKey.id != null) {
+      if (widget._pgpKey.id != -1) {
         await widget._pgpKeyUtil.deleteKey(widget._pgpKey);
       } else {
         widget.presenter.deleteKey(widget._pgpKey.email);

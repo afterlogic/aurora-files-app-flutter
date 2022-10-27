@@ -26,7 +26,7 @@ class TrustDeviceBloc extends Bloc<TrustDeviceEvent, TrustDeviceState> {
       if (state.trust) {
         await _methods.trustDevice(login, password);
       }
-      yield CompleteState();
+      yield const CompleteState();
     } catch (err, s) {
       yield ErrorState(s.toString());
     }

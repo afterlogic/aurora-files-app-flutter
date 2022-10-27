@@ -8,7 +8,7 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
   CustomBottomSheet({required this.child});
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 200);
+  Duration get transitionDuration => const Duration(milliseconds: 200);
 
   @override
   bool get opaque => false;
@@ -42,7 +42,7 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
   Widget _buildOverlayContent(BuildContext context) {
     final isTablet = LayoutConfig.of(context).isTablet;
     Widget content = ClipRRect(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
       child: Container(
         width: MediaQuery.of(context).size.width,
         color: Theme.of(context).cardColor,
@@ -52,7 +52,7 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
     if (isTablet) {
       content = Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             maxWidth: LayoutConfig.formWidth,
           ),
           child: content,
@@ -84,8 +84,8 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
       Animation<double> secondaryAnimation, Widget child) {
     // You can add your own animations for the overlay content
     return SlideTransition(
-      position:
-          Tween<Offset>(begin: Offset(0.0, 0.5), end: Offset.zero).animate(
+      position: Tween<Offset>(begin: const Offset(0.0, 0.5), end: Offset.zero)
+          .animate(
         CurvedAnimation(
           parent: animation,
           curve: Curves.easeOutCubic,

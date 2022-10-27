@@ -18,7 +18,7 @@ import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
 import 'package:crypto_stream/algorithm/aes.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:encrypt/encrypt.dart' as prefixEncrypt;
+import 'package:encrypt/encrypt.dart' as encrypt_lib;
 import 'package:file/memory.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
@@ -28,9 +28,9 @@ part 'file_viewer_state.g.dart';
 class FileViewerState = _FileViewerState with _$FileViewerState;
 
 abstract class _FileViewerState with Store {
-  final _filesApi = new FilesApi();
-  final _mailApi = new MailApi();
-  final _filesLocal = new FilesLocalStorage();
+  final _filesApi = FilesApi();
+  final _mailApi = MailApi();
+  final _filesLocal = FilesLocalStorage();
   FilesState? fileState;
   Aes aes = DI.get();
   Storage? storage;
@@ -56,7 +56,7 @@ abstract class _FileViewerState with Store {
     } else {
       decryptKey = AppStore.settingsState.currentKey ?? '';
     }
-    final key = prefixEncrypt.Key.fromBase16(decryptKey);
+    final key = encrypt_lib.Key.fromBase16(decryptKey);
     final decrypted = await aes.decrypt(
       (await fileWithContents?.readAsBytes()) ?? [],
       key.base64,
@@ -83,10 +83,10 @@ abstract class _FileViewerState with Store {
       }
     }
     downloadProgress = 0.0;
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     // get file contents
     if (AppStore.filesState.isOfflineMode) {
-      fileWithContents = new File(file.localPath);
+      fileWithContents = File(file.localPath);
       downloadProgress = null;
       if (onDownloadEnd != null) onDownloadEnd(fileWithContents!);
     } else {
@@ -198,8 +198,9 @@ abstract class _FileViewerState with Store {
       required bool passwordEncryption,
       required String encryptionRecipientEmail,
       required String extend}) {
-    if (fileState == null)
+    if (fileState == null) {
       return Future.error('FileViewerState: fileState is not defined');
+    }
     return fileState!.uploadFile(context,
         passwordEncryption: passwordEncryption,
         encryptionRecipientEmail: encryptionRecipientEmail,

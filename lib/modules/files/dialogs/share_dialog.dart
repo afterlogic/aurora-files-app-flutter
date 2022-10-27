@@ -22,7 +22,7 @@ class _ShareDialogState extends State<ShareDialog> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _shareFile();
     });
   }
@@ -55,7 +55,7 @@ class _ShareDialogState extends State<ShareDialog> {
           value: _downloadProgress,
           backgroundColor: Colors.grey.withOpacity(0.3),
         ),
-        SizedBox(width: 20.0),
+        const SizedBox(width: 20.0),
         Text(s.getting_file_progress),
       ]),
       actions: <Widget>[

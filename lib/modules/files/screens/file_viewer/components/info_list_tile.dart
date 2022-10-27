@@ -39,25 +39,25 @@ class _InfoListTileState extends State<InfoListTile> {
       ),
       child: Row(
         children: <Widget>[
-          if (widget.isShared) SizedBox(width: 10),
+          if (widget.isShared) const SizedBox(width: 10),
           if (widget.isShared)
             Icon(
               Icons.share,
               semanticLabel: s.label_share_with_teammates,
             ),
-          if (widget.isPublic) SizedBox(width: 10),
+          if (widget.isPublic) const SizedBox(width: 10),
           if (widget.isPublic)
             Icon(
               Icons.link,
               semanticLabel: s.has_public_link,
             ),
-          if (widget.isOffline) SizedBox(width: 10),
+          if (widget.isOffline) const SizedBox(width: 10),
           if (widget.isOffline)
             Icon(
               Icons.airplanemode_active,
               semanticLabel: s.available_offline,
             ),
-          if (widget.isEncrypted) SizedBox(width: 10),
+          if (widget.isEncrypted) const SizedBox(width: 10),
           if (widget.isEncrypted)
             Icon(
               MdiIcons.alien,
@@ -102,11 +102,11 @@ class _InfoListTileState extends State<InfoListTile> {
               children: <Widget>[
                 SingleChildScrollView(
                   padding: EdgeInsets.only(right: _rightPaddingForStatusIcons),
+                  scrollDirection: _expanded ? Axis.vertical : Axis.horizontal,
                   child: Text(
                     widget.content,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
-                  scrollDirection: _expanded ? Axis.vertical : Axis.horizontal,
                 ),
                 Positioned(
                   right: 0,
@@ -114,24 +114,22 @@ class _InfoListTileState extends State<InfoListTile> {
                   top: 0,
                   child: Container(
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        Theme.of(context)
-                            .scaffoldBackgroundColor
-                            .withOpacity(0.0),
-                        Theme.of(context).scaffoldBackgroundColor,
-                      ], stops: [
-                        0.0,
-                        0.3
-                      ]),
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(0.0),
+                          Theme.of(context).scaffoldBackgroundColor,
+                        ],
+                        stops: const [0.0, 0.3],
+                      ),
                     ),
                     child: _buildStatusIcons(),
                   ),
                 ),
               ],
             ),
-          Divider(
-            height: 26.0,
-          ),
+          const Divider(height: 26.0),
         ],
       ),
     );

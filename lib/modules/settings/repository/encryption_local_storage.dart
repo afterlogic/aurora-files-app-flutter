@@ -7,7 +7,7 @@ class EncryptionLocalStorage {
   static const storePassword = "storePassword";
   static String? _memoryPassword;
   static int? _lastAccess;
-  static int _accessDuration = Duration(hours: 1).inMilliseconds;
+  static final _accessDuration = const Duration(hours: 1).inMilliseconds;
 
   static set memoryPassword(v) {
     _lastAccess = DateTime.now().millisecondsSinceEpoch;

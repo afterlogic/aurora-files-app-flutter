@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EncryptionServer extends StatefulWidget {
+  const EncryptionServer({super.key});
+
   @override
   _EncryptionServerState createState() => _EncryptionServerState();
 }
@@ -49,7 +51,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
         key: scaffoldKey,
         appBar: isTablet ? null : AMAppBar(title: Text(s.encryption)),
         body: encryptionSetting == null
-            ? SizedBox.shrink()
+            ? const SizedBox.shrink()
             : ListView(
                 padding: const EdgeInsets.all(16.0),
                 children: <Widget>[
@@ -75,13 +77,13 @@ class _EncryptionServerState extends State<EncryptionServer> {
                       });
                     },
                   ),
-                  SizedBox(height: 48),
+                  const SizedBox(height: 48),
                   AMButton(
                     isLoading: progress,
-                    child: Text(s.label_save),
                     onPressed: progress ? null : save,
+                    child: Text(s.label_save),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   if (!showBackwardCompatibility)
                     AMButton(
                       child: Text(s.btn_enable_backward_compatibility),
@@ -143,18 +145,19 @@ class _EncryptionServerState extends State<EncryptionServer> {
 
   void _downloadKey() async {
     final s = context.l10n;
-    var exportedDir;
+    String? exportedDir;
     exportedDir = await AMDialog.show(
       context: context,
       builder: (_) => ExportKeyDialog(
         settingsState: _settingsState,
       ),
     );
-    if (exportedDir is String) {
+    if (exportedDir != null) {
+      if (!mounted) return;
       showSnack(context,
           msg: s.key_downloaded_into(exportedDir),
           isError: false,
-          duration: Duration(minutes: 10),
+          duration: const Duration(minutes: 10),
           action: SnackBarAction(
             label: s.oK,
             onPressed: () => hideSnack(context),
@@ -164,17 +167,17 @@ class _EncryptionServerState extends State<EncryptionServer> {
 
   List<Widget> _buildAddingKey() {
     final s = context.l10n;
-    final spacer = const SizedBox(height: 10.0);
+    const spacer = SizedBox(height: 10.0);
     if (_settingsState.isParanoidEncryptionEnabled &&
         _settingsState.selectedKeyName == null) {
       return [
         Text(s.encryption_keys),
-        SizedBox(height: 32.0),
+        const SizedBox(height: 32.0),
         Text(
           s.need_to_set_encryption_key,
           style: Theme.of(context).textTheme.caption,
         ),
-        SizedBox(height: 32.0),
+        const SizedBox(height: 32.0),
         AMButton(
           child: Text(s.import_key_from_text),
           onPressed: () => AMDialog.show(
@@ -206,31 +209,31 @@ class _EncryptionServerState extends State<EncryptionServer> {
 
   List<Widget> _buildKeyOptions() {
     final s = context.l10n;
-    final spacer = const SizedBox(height: 10.0);
+    const spacer = SizedBox(height: 10.0);
     final theme = Theme.of(context);
     if (_settingsState.selectedKeyName != null) {
       return [
-        SizedBox(height: 26.0),
+        const SizedBox(height: 26.0),
         Text(s.encryption_keys),
         spacer,
         Text(
           _settingsState.selectedKeyName ?? '',
           style: Theme.of(context).textTheme.subtitle1,
         ),
-        Divider(height: 32.0),
+        const Divider(height: 32.0),
         Text(
           s.encryption_export_description,
           style: Theme.of(context).textTheme.caption,
         ),
-        SizedBox(height: 32.0),
-        AMButton(child: Text(s.share_key), onPressed: _shareKey),
+        const SizedBox(height: 32.0),
+        AMButton(onPressed: _shareKey, child: Text(s.share_key)),
         if (!PlatformOverride.isIOS) spacer,
         if (!PlatformOverride.isIOS)
-          AMButton(child: Text(s.download_key), onPressed: _downloadKey),
+          AMButton(onPressed: _downloadKey, child: Text(s.download_key)),
         spacer,
         AMButton(
           color: theme.errorColor,
-          shadow: BoxShadow(
+          shadow: const BoxShadow(
             color: Colors.black26,
             blurRadius: 8.0,
             offset: Offset(0.0, 3.0),
@@ -244,6 +247,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
               ),
             );
             if (result == DeleteKeyConfirmationDialogResult.delete) {
+              if (!mounted) return;
               showSnack(
                 context,
                 msg: s.delete_encryption_key_success,

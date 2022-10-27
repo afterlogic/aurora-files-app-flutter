@@ -67,31 +67,31 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
       child: Stack(
         children: <Widget>[
           if (!widget.isDialog && !BuildProperty.useMainLogo)
-            Positioned(
+            const Positioned(
               top: -70.0,
               left: -70.0,
               child: MailLogo(isBackground: true),
             ),
           Center(
             child: ConstrainedBox(
-              constraints: BoxConstraints(
+              constraints: const BoxConstraints(
                 maxWidth: LayoutConfig.formWidth,
               ),
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 22.0),
+                margin: const EdgeInsets.symmetric(horizontal: 22.0),
                 child: Column(
                   mainAxisAlignment: widget.isDialog
                       ? MainAxisAlignment.start
                       : MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Spacer(),
+                    const Spacer(),
                     if (!widget.isDialog) ...[
                       PresentationHeader(
                         message: widget.logoHint,
                       ),
                     ],
-                    if (widget.isDialog) SizedBox(height: 40.0),
+                    if (widget.isDialog) const SizedBox(height: 40.0),
                     Flexible(
                       flex: 4,
                       child: ListView(
@@ -110,7 +110,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                                             color: AppTheme.loginTextColor),
                                     textAlign: TextAlign.center,
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Text(
                                     s.tfa_hint_step,
                                     textAlign: TextAlign.center,
@@ -119,7 +119,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                                   ),
                                 ],
                               ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           ...widget.buttons
                         ],
                       ),
@@ -142,7 +142,7 @@ class _SelectTwoFactorWidgetState extends State<TwoFactorScene> {
                                 },
                               ),
                             )
-                          : SizedBox.shrink(),
+                          : const SizedBox.shrink(),
                     ),
                   ],
                 ),

@@ -25,16 +25,15 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
       content: _isExporting
           ? Row(
               children: <Widget>[
-                CircularProgressIndicator(),
-                SizedBox(width: 20.0),
+                const CircularProgressIndicator(),
+                const SizedBox(width: 20.0),
                 Text(s.download_key_progress)
               ],
             )
           : Text(s.download_confirm),
       actions: <Widget>[
-        TextButton(child: Text(s.cancel), onPressed: Navigator.of(context).pop),
+        TextButton(onPressed: Navigator.of(context).pop, child: Text(s.cancel)),
         TextButton(
-          child: Text(s.download),
           onPressed: _isExporting
               ? null
               : () {
@@ -48,6 +47,7 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
                     },
                   );
                 },
+          child: Text(s.download),
         )
       ],
     );

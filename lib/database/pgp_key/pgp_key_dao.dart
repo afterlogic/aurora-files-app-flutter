@@ -43,8 +43,8 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
           .go();
       await into(pgpKey).insert(
         PgpKeyCompanion(
-          id: key.id == -1 ? Value.absent() : Value(key.id),
-          email: key.email == 'null' ? Value.absent() : Value(key.email),
+          id: key.id == -1 ? const Value.absent() : Value(key.id),
+          email: Value(key.email),
           key: Value(key.key),
           isPrivate: Value(key.isPrivate),
           length: Value(key.length),
@@ -60,9 +60,9 @@ class PgpKeyDao extends DatabaseAccessor<AppDatabase> with _$PgpKeyDaoMixin {
 
   Future<bool> checkHasKey(String email, [bool? isPrivate]) {
     final query = select(pgpKey);
-    query..where((item) => item.email.equals(email));
+    query.where((item) => item.email.equals(email));
     if (isPrivate != null) {
-      query..where((item) => item.isPrivate.equals(isPrivate));
+      query.where((item) => item.isPrivate.equals(isPrivate));
     }
     return query.get().then((i) => i.isNotEmpty);
   }

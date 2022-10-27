@@ -13,7 +13,7 @@ class ShareAccessEntry {
     required this.principal,
     required this.access,
     String? id,
-  }) : _id = id ?? Uuid().v4();
+  }) : _id = id ?? const Uuid().v4();
 
   String get id => _id;
 
@@ -50,9 +50,9 @@ class ShareAccessEntry {
 
   ShareAccessEntry copyWith({ShareAccessRight? access}) {
     return ShareAccessEntry(
-      principal: this.principal,
+      principal: principal,
       access: access ?? this.access,
-      id: this._id,
+      id: _id,
     );
   }
 }

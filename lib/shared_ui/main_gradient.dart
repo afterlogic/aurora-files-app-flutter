@@ -15,7 +15,7 @@ class LoginGradient extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          stops: [0, 1],
+          stops: const [0, 1],
           colors: [
             _fromHex(
               theme.brightness == Brightness.light

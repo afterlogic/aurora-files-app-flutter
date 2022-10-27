@@ -2,21 +2,21 @@ import 'dart:async';
 
 StreamSubscription<T> listener<T>(
   Stream<T> stream,
-  onData(T event), {
+  Function(T) onData, {
   Function? onError,
   Function? onDone,
   bool? cancelOnError,
 }) {
   return stream.listen(
-    (v) async {
+    (value) async {
       try {
         if (onData is Future Function()) {
-          await onData(v);
+          await onData(value);
         } else {
-          onData(v);
+          onData(value);
         }
-      } catch (e) {
-        if (onError != null) onError(e);
+      } catch (err) {
+        if (onError != null) onError(err);
       }
     },
     onDone: () async {
@@ -27,8 +27,8 @@ StreamSubscription<T> listener<T>(
         } else {
           onDone();
         }
-      } catch (e) {
-        if (onError != null) onError(e);
+      } catch (err) {
+        if (onError != null) onError(err);
       }
     },
     onError: onError,

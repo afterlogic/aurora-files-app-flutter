@@ -52,12 +52,12 @@ class _UploadOptionsState extends State<UploadOptions> {
     final s = context.l10n;
     return Container(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey)),
+        border: const Border(top: BorderSide(color: Colors.grey)),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(top: 3.0, bottom: 6.0),
+          padding: const EdgeInsets.only(top: 3.0, bottom: 6.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
@@ -73,15 +73,15 @@ class _UploadOptionsState extends State<UploadOptions> {
                 },
               ),
               TextButton(
+                onPressed: _buttonsDisabled
+                    ? null
+                    : () => _uploadFiles(context, false),
                 child: Text(
                   s.upload,
                   style: TextStyle(
                     color: Theme.of(context).iconTheme.color,
                   ),
                 ),
-                onPressed: _buttonsDisabled
-                    ? null
-                    : () => _uploadFiles(context, false),
               ),
             ],
           ),

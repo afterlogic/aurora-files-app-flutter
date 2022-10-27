@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsLocalStorage {
-  final secureStorage = new FlutterSecureStorage();
+  final secureStorage = const FlutterSecureStorage();
 
   String _getNameWithOwner([String keyName = ""]) =>
       "${AppStore.authState.userEmail}_$keyName";
@@ -26,8 +26,9 @@ class SettingsLocalStorage {
     await getStoragePermissions();
     Directory dir = await getDownloadDirectory();
     if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
-    if (!dir.existsSync())
+    if (!dir.existsSync()) {
       throw CustomException("Could not resolve save directory");
+    }
 
     final formattedKeyName = keyName.replaceAll("/", "").replaceAll(" ", "_");
 
@@ -35,7 +36,7 @@ class SettingsLocalStorage {
         (dir.path.endsWith("/") ? "" : "/") +
         "$formattedKeyName key.txt";
 
-    final exportedTextFile = new File(filePath);
+    final exportedTextFile = File(filePath);
     await exportedTextFile.create(recursive: true);
     await exportedTextFile.writeAsString(encryptionKey);
 
@@ -68,7 +69,7 @@ class SettingsLocalStorage {
   Future<Map<String, String>> getAllUserKeys() async {
     final encryptionKeys = await secureStorage.readAll();
     // return key names without owner's prefix
-    final Map<String, String> userKeys = new Map();
+    final Map<String, String> userKeys = {};
     encryptionKeys.keys.forEach((nameWithOwner) {
       if (nameWithOwner.startsWith(_getNameWithOwner()) &&
           !nameWithOwner.endsWith("false") &&

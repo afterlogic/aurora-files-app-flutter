@@ -27,7 +27,7 @@ class SelectableFilesItemTile extends StatelessWidget {
     if (filesPageState.filesLoading == FilesLoadingType.filesHidden ||
         filesState.isMoveModeEnabled && file?.isFolder == false) {
       return null;
-    } else if (filesPageState.selectedFilesIds.length > 0) {
+    } else if (filesPageState.selectedFilesIds.isNotEmpty) {
       return () => filesPageState.selectFile(file);
     } else {
       return onTap;
@@ -40,15 +40,15 @@ class SelectableFilesItemTile extends StatelessWidget {
       color: Theme.of(context).selectedRowColor.withOpacity(0.5),
       child: Column(
         children: <Widget>[
-          SizedBox(height: 6.0),
+          const SizedBox(height: 6.0),
           ListTile(
             leading: SizedBox(
               width: thumbnailSize,
               height: thumbnailSize,
-              child: Icon(Icons.check_circle, color: Colors.white),
+              child: const Icon(Icons.check_circle, color: Colors.white),
             ),
           ),
-          SizedBox(height: 6.0),
+          const SizedBox(height: 6.0),
         ],
       ),
     );
@@ -65,16 +65,16 @@ class SelectableFilesItemTile extends StatelessWidget {
               filesState.isMoveModeEnabled ||
               file == null ||
               file?.extendedProps == "fake" ||
-              filesPageState.selectedFilesIds.length > 0
+              filesPageState.selectedFilesIds.isNotEmpty
           ? null
           : () => filesPageState.selectFile(file),
       child: Stack(
         children: <Widget>[
           Column(
             children: <Widget>[
-              SizedBox(height: 6.0),
+              const SizedBox(height: 6.0),
               child,
-              SizedBox(height: 6.0),
+              const SizedBox(height: 6.0),
             ],
           ),
           if (isSelected) _buildSelectionOverlay(context),

@@ -10,12 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class AppCategory extends StatelessWidget {
+  const AppCategory({super.key});
+
   @override
   Widget build(BuildContext context) {
     return CategoryWidget(
       "App widgets",
       [
-        LoginGradient(
+        const LoginGradient(
           child: SizedBox(
             width: double.infinity,
             height: 400,
@@ -24,30 +26,30 @@ class AppCategory extends StatelessWidget {
         GroupLabel(
           name: "AMButton",
           children: <Widget>[
-            AMButton(
+            const AMButton(
               onPressed: null,
               child: Text("Disabled"),
             ),
             AMButton(
               onPressed: () {},
-              child: Text("enabled"),
+              child: const Text("enabled"),
             ),
             AMButton(
               onPressed: () {},
               isLoading: true,
-              child: Text("Loading"),
+              child: const Text("Loading"),
             ),
             AMButton(
               onPressed: () {},
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
             ),
             AMButton(
               onPressed: () {},
-              child: Text("Warning"),
+              child: const Text("Warning"),
             ),
             AMButton(
               onPressed: () {},
-              child: Text("Filled"),
+              child: const Text("Filled"),
             ),
           ],
         ),
@@ -56,20 +58,20 @@ class AppCategory extends StatelessWidget {
           children: <Widget>[
             AppInput(
               controller: TextEditingController(text: "text"),
-              key: Key((this.hashCode + 0).toString()),
+              key: Key((hashCode + 0).toString()),
             ),
             AppInput(
               labelText: "Password",
-              suffix: Icon(Icons.visibility),
+              suffix: const Icon(Icons.visibility),
               obscureText: true,
               controller: TextEditingController(text: "text"),
-              key: Key((this.hashCode + 1).toString()),
+              key: Key((hashCode + 1).toString()),
             ),
             AppInput(
-              inputCase: InputCase.Underline,
+              inputCase: InputCase.underline,
               labelText: "Label",
               controller: TextEditingController(text: "Static color"),
-              key: Key((this.hashCode + 2).toString()),
+              key: Key((hashCode + 2).toString()),
             ),
           ],
         ),
@@ -79,15 +81,15 @@ class AppCategory extends StatelessWidget {
             height: 40,
             child: FloatingActionButton(
               heroTag: "FloatingActionButton",
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
               onPressed: () {
                 Navigator.push(
                     context,
                     CustomSpeedDial(tag: "FloatingActionButton", children: [
-                      MiniFab(
+                      const MiniFab(
                         icon: Icon(Icons.create_new_folder),
                       ),
-                      MiniFab(
+                      const MiniFab(
                         icon: Icon(MdiIcons.filePlus),
                       ),
                     ]));
@@ -104,7 +106,7 @@ class AppCategory extends StatelessWidget {
                 appBar: AppBar(
                   titleSpacing: NavigationToolbar.kMiddleSpacing,
                 ),
-                drawer: MainDrawer(),
+                drawer: const MainDrawer(),
               )),
           name: "Drawer",
         )

@@ -5,7 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 
 class DeviceIdStorage {
-  static DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
+  static final _deviceInfo = DeviceInfoPlugin();
 
   DeviceIdStorage._();
 

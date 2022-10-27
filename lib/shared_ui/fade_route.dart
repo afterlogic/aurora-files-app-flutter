@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FadeRoute extends PageRouteBuilder {
+  @override
   final RouteSettings settings;
   final Widget page;
   final int duration;

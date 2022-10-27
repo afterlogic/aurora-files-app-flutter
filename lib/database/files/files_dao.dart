@@ -36,7 +36,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     final offlineFiles = await (select(files)
           ..where((file) => file.owner.equals(userEmail)))
         .get();
-    final storageNames = new Set<String>();
+    final Set<String> storageNames = {};
     offlineFiles.forEach((file) => storageNames.add(file.type));
 
     return storageNames.map((name) => getStorageFromName(name)).toList();
@@ -51,7 +51,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     // get files from subfolders to recreate folders structure
     final childFiles =
         offlineFiles.where((file) => file.path.contains(path)).toList();
-    final folderNames = new Set<String>();
+    final Set<String> folderNames = {};
     childFiles.forEach((file) {
       try {
         String trimmedPath =
@@ -63,19 +63,19 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
         print(err);
       }
     });
-    Set<LocalFile> filesAtPath = new Set();
+    Set<LocalFile> filesAtPath = {};
     folderNames.forEach((name) {
       filesAtPath.add(getFolderFromName(name, path));
     });
-    filesAtPath = [
+    filesAtPath = <LocalFile>{
       ...filesAtPath,
       ...offlineFiles.where((file) => file.path == path).toList()
-    ].toSet();
+    };
     return filesAtPath.toList();
   }
 
   Future<List<LocalFile>> searchFiles(
-      String nullablePath, String searchPattern) async {
+      String? nullablePath, String searchPattern) async {
     final path = nullablePath == null ? "" : nullablePath;
     final query = searchPattern.toLowerCase().trim();
     final offlineFiles = await (select(files)
@@ -85,7 +85,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
     // get files from subfolders to recreate folders structure
     final childFiles =
         offlineFiles.where((file) => file.path.contains(path)).toList();
-    final folders = new Set<Map<String, String>>();
+    final Set<Map<String, String>> folders = {};
     try {
       childFiles.forEach((file) {
         String trimmedPath = file.path.substring(path.length);
@@ -103,18 +103,20 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
           }
         }
       });
-    } catch (err) {}
-    Set<LocalFile> filesAtPath = new Set();
+    } catch (err) {
+      print(err);
+    }
+    Set<LocalFile> filesAtPath = {};
     folders.forEach((folder) {
       filesAtPath
           .add(getFolderFromName(folder["name"] ?? '', folder["path"] ?? ''));
     });
-    filesAtPath = [
+    filesAtPath = <LocalFile>{
       ...filesAtPath,
       ...childFiles
           .where((file) => file.name.toLowerCase().contains(query))
           .toList()
-    ].toSet();
+    };
     return filesAtPath.toList();
   }
 
@@ -127,7 +129,7 @@ class FilesDao extends DatabaseAccessor<AppDatabase> with _$FilesDaoMixin {
 
     final List<int> ids = filesToDelete.map((file) => file.localId).toList();
     filesToDelete.forEach((file) {
-      final fileToDelete = new File(file.localPath);
+      final fileToDelete = File(file.localPath);
       if (fileToDelete.existsSync()) fileToDelete.delete();
     });
     return (delete(files)..where((file) => file.localId.isIn(ids))).go();

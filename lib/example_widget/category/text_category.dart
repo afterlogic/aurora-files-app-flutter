@@ -3,6 +3,8 @@ import 'package:aurorafiles/example_widget/test_widget/group_label.dart';
 import 'package:flutter/material.dart';
 
 class TextCategory extends StatelessWidget {
+  const TextCategory({super.key});
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

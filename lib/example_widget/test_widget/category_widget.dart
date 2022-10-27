@@ -8,8 +8,9 @@ class CategoryWidget extends StatefulWidget {
 
   const CategoryWidget(
     this.name,
-    this.children,
-  );
+    this.children, {
+    super.key,
+  });
 
   @override
   _CategoryWidgetState createState() => _CategoryWidgetState();
@@ -33,7 +34,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
             width: double.infinity,
             child: Container(
               color: Colors.black26,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Text(
                 "Category: " + widget.name + " (${widget.children.length})",
                 textAlign: TextAlign.center,

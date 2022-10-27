@@ -9,6 +9,7 @@ class KeyItem extends StatefulWidget {
   final Function(bool)? onSelect;
 
   const KeyItem({
+    super.key,
     required this.pgpKey,
     this.selected,
     this.external = false,
@@ -26,7 +27,7 @@ class _KeyItemState extends State<KeyItem> {
     var textTheme = theme.textTheme;
 
     final length =
-        widget.pgpKey.key.length != 0 ? "(${widget.pgpKey.length}-bit," : "(";
+        widget.pgpKey.key.isNotEmpty ? "(${widget.pgpKey.length}-bit," : "(";
 
     final description =
         '$length ${widget.pgpKey.isPrivate ? "private" : "public"})'
@@ -42,7 +43,7 @@ class _KeyItemState extends State<KeyItem> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Divider(
+        const Divider(
           color: Colors.transparent,
         ),
         Row(
@@ -72,13 +73,14 @@ class _KeyItemState extends State<KeyItem> {
               Checkbox(
                 value: widget.selected,
                 onChanged: (isSelected) {
-                  if (widget.onSelect != null && isSelected != null)
+                  if (widget.onSelect != null && isSelected != null) {
                     widget.onSelect!(isSelected);
+                  }
                 },
               )
           ],
         ),
-        Divider(
+        const Divider(
           color: Colors.grey,
         ),
       ],

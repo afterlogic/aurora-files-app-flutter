@@ -69,7 +69,7 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
                       s.tfa_label_trust_device,
                       style: TextStyle(color: AppTheme.loginTextColor),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     IgnorePointer(
                       ignoring: loading,
                       child: CheckboxListTile(
@@ -88,21 +88,21 @@ class _TrustDeviceWidgetState extends State<TrustDeviceWidget> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
                       child: AMButton(
-                        child: Text(
-                          s.tfa_button_continue,
-                          style: TextStyle(color: AppTheme.loginTextColor),
-                        ),
                         isLoading: loading,
                         onPressed: () {
                           bloc.add(TrustThisDevice(check));
                         },
+                        child: Text(
+                          s.tfa_button_continue,
+                          style: TextStyle(color: AppTheme.loginTextColor),
+                        ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 );
               }),

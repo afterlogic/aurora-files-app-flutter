@@ -41,7 +41,7 @@ part 'files_state.g.dart';
 
 class FilesState = _FilesState with _$FilesState;
 
-final dummyStorage = new Storage(
+final dummyStorage = Storage(
   type: StorageType.personal,
   displayName: "",
   isExternal: false,
@@ -114,9 +114,9 @@ abstract class _FilesState with Store {
     Map<String, LocalFile>? selectedFileIds,
     List<LocalFile>? currentFiles,
   }) {
-    if (filesToMove != null)
+    if (filesToMove != null) {
       filesToMoveCopy = filesToMove;
-    else {
+    } else {
       filesToMoveCopy = [];
       currentFiles?.forEach((file) {
         if (selectedFileIds?[file.id] != null) filesToMoveCopy.add(file);
@@ -142,7 +142,7 @@ abstract class _FilesState with Store {
     try {
       currentStorages = await _filesApi.getStorages();
       currentStorages.sort((a, b) => a.order.compareTo(b.order));
-      if (currentStorages.length > 0) {
+      if (currentStorages.isNotEmpty) {
         selectedStorage = currentStorages[0];
       }
     } catch (err) {
@@ -157,7 +157,7 @@ abstract class _FilesState with Store {
   Future<void> _getOfflineStorages(Function(String) onError) async {
     try {
       currentStorages = await _filesDao.getStorages();
-      if (currentStorages.length > 0) {
+      if (currentStorages.isNotEmpty) {
         selectedStorage = currentStorages[0];
       }
     } catch (err) {
@@ -229,7 +229,9 @@ abstract class _FilesState with Store {
           shouldEncrypt: selectedStorage.type == StorageType.encrypted,
         );
       }
-    } catch (e) {}
+    } catch (err) {
+      print(err);
+    }
     onSuccess();
   }
 
@@ -459,10 +461,10 @@ abstract class _FilesState with Store {
       }
     }
     final fileName = name ?? FileUtils.getFileNameFromPath(file.path);
-    final localFile = new LocalFile(
+    final localFile = LocalFile(
       localId: -1,
       id: fileName,
-      guid: Uuid().v4(),
+      guid: const Uuid().v4(),
       type: '',
       path: path,
       fullPath: path + fileName,
@@ -742,11 +744,8 @@ abstract class _FilesState with Store {
   }
 
   bool _isFileIsBeingProcessed(String guid) {
-    try {
-      return processedFiles.firstWhere((file) => file.guid == guid) != null;
-    } catch (err) {
-      return false;
-    }
+    final index = processedFiles.indexWhere((file) => file.guid == guid);
+    return index != -1;
   }
 
   ProcessingFile addFileToProcessing(LocalFile file, File deviceLocation,
@@ -757,10 +756,12 @@ abstract class _FilesState with Store {
       processingFile =
           processedFiles.firstWhere((process) => process.guid == file.guid);
       return processingFile;
-    } catch (err) {}
+    } catch (err) {
+      print(err);
+    }
 
     // else
-    processingFile = new ProcessingFile(
+    processingFile = ProcessingFile(
       guid: file.guid ?? '',
       name: file.name,
       size: file.size,
@@ -783,7 +784,9 @@ abstract class _FilesState with Store {
       if (deleteLocally) fileToDelete.fileOnDevice.delete(recursive: true);
       processedFiles.removeWhere((file) => file.guid == guid);
       print("process removed: ${processedFiles.length}");
-    } catch (err) {}
+    } catch (err) {
+      print(err);
+    }
   }
 
   Future<void> clearCache({deleteCachedImages = false}) async {
@@ -880,7 +883,7 @@ abstract class _FilesState with Store {
   }
 
   Future<ShareAccessHistory> getFileShareHistory(LocalFile file) async {
-    final itemsPerPage = 100;
+    const itemsPerPage = 100;
     int page = 0;
     int totalCount = 0;
     List<ShareAccessHistoryItem> items = [];

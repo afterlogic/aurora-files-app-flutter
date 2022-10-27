@@ -25,13 +25,15 @@ import 'component/presentation_header.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 
 class AuthAndroid extends StatefulWidget {
+  const AuthAndroid({super.key});
+
   @override
   _AuthAndroidState createState() => _AuthAndroidState();
 }
 
 class _AuthAndroidState extends State<AuthAndroid> {
   final _authFormKey = GlobalKey<FormState>();
-  AuthState _authState = AppStore.authState;
+  final _authState = AppStore.authState;
   bool _showHostField = false;
   bool _obscureText = true;
 
@@ -120,12 +122,13 @@ class _AuthAndroidState extends State<AuthAndroid> {
         onError: (String err) => showSnack(context, msg: err),
       );
       if (showHost) {
+        if (!mounted) return;
 //        _authState.hostCtrl.text = _authState.hostName;
         setState(() => _showHostField = true);
         showSnack(
           context,
           msg: s.enter_host,
-          duration: Duration(seconds: 6),
+          duration: const Duration(seconds: 6),
         );
       }
     } else {
@@ -138,23 +141,23 @@ class _AuthAndroidState extends State<AuthAndroid> {
     return [
       if (_showHostField)
         AppInput(
-          inputCase: InputCase.Underline,
+          inputCase: InputCase.underline,
           controller: _authState.hostCtrl,
           keyboardType: TextInputType.url,
           labelText: s.host,
         ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       AppInput(
         controller: _authState.emailCtrl,
         keyboardType: TextInputType.emailAddress,
         validator: (value) => validateInput(
             value ?? '', [ValidationTypes.empty, ValidationTypes.email]),
         labelText: s.email,
-        inputCase: InputCase.Underline,
+        inputCase: InputCase.underline,
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       AppInput(
-        inputCase: InputCase.Underline,
+        inputCase: InputCase.underline,
         controller: _authState.passwordCtrl,
         validator: (value) =>
             validateInput(value ?? '', [ValidationTypes.empty]),
@@ -194,25 +197,25 @@ class _AuthAndroidState extends State<AuthAndroid> {
             child: Stack(
               children: <Widget>[
                 if (!BuildProperty.useMainLogo)
-                  Positioned(
+                  const Positioned(
                     top: -70.0,
                     left: -70.0,
                     child: MailLogo(isBackground: true),
                   ),
                 Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(
+                    constraints: const BoxConstraints(
                       maxWidth: LayoutConfig.formWidth,
                     ),
                     child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 22.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 22.0),
                       child: Form(
                         key: _authFormKey,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            PresentationHeader(),
+                            const PresentationHeader(),
                             Column(
                               children: _buildTextFields(),
                             ),

@@ -11,12 +11,14 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MainDrawer extends StatelessWidget {
+  const MainDrawer({super.key});
+
   void _showAvailableSpaceInfo(BuildContext context, Quota quota) {
     Navigator.push(
       context,
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (_) => StorageInfoWidget(
+        builder: (_) => const StorageInfoWidget(
           fromDrawer: true,
         ),
       ),
@@ -39,7 +41,7 @@ class MainDrawer extends StatelessWidget {
             InkWell(
               onTap: null,
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
                   width: double.infinity,
                   child: Column(
@@ -49,7 +51,7 @@ class MainDrawer extends StatelessWidget {
                         AppStore.authState.friendlyName ?? "",
                         style: theme.textTheme.headline6,
                       ),
-                      SizedBox(height: 8.0),
+                      const SizedBox(height: 8.0),
                       Row(
                         children: <Widget>[
                           Text(authState.userEmail ?? ''),
@@ -66,7 +68,7 @@ class MainDrawer extends StatelessWidget {
                 return GestureDetector(
                   onTap: () => _showAvailableSpaceInfo(context, quota),
                   child: Tooltip(
-                    showDuration: Duration(seconds: 2),
+                    showDuration: const Duration(seconds: 2),
                     message: s.quota_using(
                       (quota.progress * 100).round().toString(),
                       quota.limitFormatted,
@@ -78,7 +80,7 @@ class MainDrawer extends StatelessWidget {
                   ),
                 );
               } else {
-                return SizedBox();
+                return const SizedBox();
               }
             }),
             Expanded(
@@ -92,12 +94,12 @@ class MainDrawer extends StatelessWidget {
                 },
                 child: Observer(
                   builder: (_) => ListView(
-                    padding: EdgeInsets.only(top: 10.0),
+                    padding: const EdgeInsets.only(top: 10.0),
                     children: <Widget>[
                       ...filesState.currentStorages.map((Storage storage) {
                         if (storage.type == StorageType.encrypted &&
                             !settingsState.isParanoidEncryptionEnabled) {
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                         }
                         bool enable = true;
                         if (filesState.isMoveModeEnabled ||
@@ -124,26 +126,24 @@ class MainDrawer extends StatelessWidget {
                             filesState.selectedStorage.type == storage.type;
                         final color =
                             isSelected ? Theme.of(context).primaryColor : null;
-                        return Container(
-                          child: ListTile(
-                            enabled: enable,
-                            selected: isSelected,
-                            leading: _getStorageIcon(storage.type, color),
-                            title: Text(storage.displayName),
-                            onTap: () async {
-                              filesState.selectedStorage = storage;
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                FilesRoute.name,
-                                (r) => false,
-                                arguments: FilesScreenArguments(
-                                  path: "",
-                                ),
-                              );
-                            },
-                          ),
+                        return ListTile(
+                          enabled: enable,
+                          selected: isSelected,
+                          leading: _getStorageIcon(storage.type, color),
+                          title: Text(storage.displayName),
+                          onTap: () async {
+                            filesState.selectedStorage = storage;
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              FilesRoute.name,
+                              (r) => false,
+                              arguments: FilesScreenArguments(
+                                path: "",
+                              ),
+                            );
+                          },
                         );
                       }),
-                      Divider(),
+                      const Divider(),
                       SwitchListTile.adaptive(
                         value: filesState.isOfflineMode,
                         onChanged: (bool val) async {
@@ -160,7 +160,7 @@ class MainDrawer extends StatelessWidget {
                         },
                         title: ListTile(
                           contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.airplanemode_active),
+                          leading: const Icon(Icons.airplanemode_active),
                           title: Text(s.offline_mode),
                         ),
                       ),
@@ -178,11 +178,11 @@ class MainDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(
+            const Divider(
               height: 0,
             ),
             ListTile(
-              leading: Icon(Icons.settings),
+              leading: const Icon(Icons.settings),
               title: Text(s.settings),
               onTap: () {
                 if (Navigator.canPop(context)) {

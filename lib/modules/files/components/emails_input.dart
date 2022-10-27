@@ -12,7 +12,7 @@ class EmailsInput extends StatefulWidget {
   final bool enable;
   final Set<String> pgpKeys;
 
-  EmailsInput(
+  const EmailsInput(
     this.searchContact,
     this.emails,
     this.enable,
@@ -51,7 +51,7 @@ class EmailsInputState extends State<EmailsInput> {
     var _completer = completer;
     debounce?.cancel();
     print(pattern);
-    debounce = Timer(Duration(milliseconds: 500), () async {
+    debounce = Timer(const Duration(milliseconds: 500), () async {
       if (pattern == textCtrl.text) {
         lastSuggestions = await widget.searchContact(pattern);
         if (_completer == completer && pattern == textCtrl.text) {
@@ -88,8 +88,9 @@ class EmailsInputState extends State<EmailsInput> {
     final posRes = TextStyle(fontWeight: FontWeight.w700, color: color);
     final negRes = TextStyle(fontWeight: FontWeight.w400, color: color);
 
-    if (_search == null || _search == "")
+    if (_search == null || _search == "") {
       return TextSpan(text: match, style: negRes);
+    }
     var refinedMatch = match.toLowerCase();
     var refinedSearch = _search?.toLowerCase() ?? '';
     if (refinedMatch.contains(refinedSearch)) {
@@ -156,8 +157,8 @@ class EmailsInputState extends State<EmailsInput> {
             ],
           ),
         ),
-        if (widget.pgpKeys.contains(contact.email)) Icon(Icons.vpn_key),
-        SizedBox(
+        if (widget.pgpKeys.contains(contact.email)) const Icon(Icons.vpn_key),
+        const SizedBox(
           width: 10,
         )
       ],
@@ -172,7 +173,7 @@ class EmailsInputState extends State<EmailsInput> {
   void _addEmail(String _email) {
     final email = _email.replaceAll(" ", "");
     textCtrl.text = " ";
-    textCtrl.selection = TextSelection.collapsed(offset: 1);
+    textCtrl.selection = const TextSelection.collapsed(offset: 1);
     lastSuggestions = [];
     final error =
         validateInput(email, [ValidationTypes.email, ValidationTypes.empty]);
@@ -188,14 +189,14 @@ class EmailsInputState extends State<EmailsInput> {
     final dropDownWidth = screenWidth / 1.25;
 
     return Padding(
-      padding: EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.only(top: 4),
       child: GestureDetector(
         onTap: focusNode.requestFocus,
         child: InputDecorator(
           decoration: InputDecoration(
             labelText: widget.label,
-            contentPadding: EdgeInsets.all(8),
-            border: OutlineInputBorder(gapPadding: 0),
+            contentPadding: const EdgeInsets.all(8),
+            border: const OutlineInputBorder(gapPadding: 0),
           ),
           expands: false,
           child: Wrap(
@@ -207,7 +208,7 @@ class EmailsInputState extends State<EmailsInput> {
                   onDelete: (e) => setState(() => widget.emails.remove(e)),
                 );
               }),
-              if (widget.emails.isNotEmpty) SizedBox(height: 8),
+              if (widget.emails.isNotEmpty) const SizedBox(height: 8),
               ComposeTypeAheadField<Recipient>(
                 key: composeTypeAheadFieldKey,
                 textFieldConfiguration: TextFieldConfiguration(
@@ -230,7 +231,7 @@ class EmailsInputState extends State<EmailsInput> {
                 hideOnLoading: true,
                 keepSuggestionsOnLoading: true,
                 getImmediateSuggestions: true,
-                noItemsFoundBuilder: (_) => SizedBox(),
+                noItemsFoundBuilder: (_) => const SizedBox(),
                 suggestionsCallback: (pattern) async => search(pattern),
                 itemBuilder: (_, c) {
                   return Padding(
@@ -248,7 +249,8 @@ class EmailsInputState extends State<EmailsInput> {
                   onChanged: (value) {
                     if (widget.emails.isNotEmpty && value.isEmpty) {
                       textCtrl.text = " ";
-                      textCtrl.selection = TextSelection.collapsed(offset: 1);
+                      textCtrl.selection =
+                          const TextSelection.collapsed(offset: 1);
                       _deleteEmail(widget.emails.last);
                     } else if (value.length > 1 && value.endsWith(" ")) {
                       onSubmit();
@@ -310,7 +312,7 @@ class _EmailItemState extends State<EmailItem> {
           avatar: CircleAvatar(
             child: Text(
               widget.email[0],
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
           label: Text(widget.email),

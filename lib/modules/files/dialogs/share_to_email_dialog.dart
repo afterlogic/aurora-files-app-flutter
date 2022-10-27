@@ -16,11 +16,12 @@ class ShareToEmailDialog extends StatefulWidget {
   final FilesState fileState;
   final LocalFile file;
 
-  ShareToEmailDialog(
+  const ShareToEmailDialog(
     this.fileState,
     this.file,
-    this.context,
-  );
+    this.context, {
+    super.key,
+  });
 
   @override
   _ShareToEmailDialogState createState() => _ShareToEmailDialogState();
@@ -43,7 +44,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
     final principals =
         await widget.fileState.searchContact(pattern.replaceAll(" ", ""));
     final List<Recipient> recipients =
-        principals.where((e) => e is Recipient).toList() as List<Recipient>;
+        principals.whereType<Recipient>().toList();
     return recipients;
   }
 
@@ -87,6 +88,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
           : json.decode(widget.file.extendedProps);
       map["Shares"] = shares;
       final file = widget.file.copyWith(extendedProps: json.encode(map));
+      if (!mounted) return;
       Navigator.pop(context, file);
     } catch (e) {
       error = e.toString();
@@ -142,7 +144,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
                 pgpKeysEmail,
                 s.input_who_cas_see,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               EmailsInput(
                 searchContact,
                 canEdit,
@@ -151,16 +153,16 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
                 pgpKeysEmail,
                 s.input_who_cas_edit,
               ),
-              if (widget.file.isFolder) SizedBox(height: 20),
+              if (widget.file.isFolder) const SizedBox(height: 20),
               if (widget.file.isFolder)
                 Text(
                   s.hint_share_folder,
                 ),
-              if (error != null) SizedBox(height: 20),
+              if (error != null) const SizedBox(height: 20),
               if (error != null)
                 Text(
                   error ?? '',
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
             ],
           ),
@@ -169,8 +171,8 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
       actions: [
         TextButton(
           focusNode: btnFocus,
-          child: Text(s.label_save),
           onPressed: progress ? null : share,
+          child: Text(s.label_save),
         ),
         TextButton(
           child: Text(s.cancel),

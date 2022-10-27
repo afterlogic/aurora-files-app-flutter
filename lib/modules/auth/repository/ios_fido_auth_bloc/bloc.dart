@@ -90,12 +90,13 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
   Stream<FidoAuthState> _startAuth(StartAuth event) async* {
     try {
       yield SendingBeginAuthRequestState();
+      //ignore: dead_code
       if (Platform.isAndroid && false) {
         final uri = Uri.parse(
             "${AppStore.authState.hostName}/?verify-security-key&login=$login&password=$password&package_name=${BuildProperty.deepLink}");
 
         tab.launch(uri.toString(),
-            customTabsOption: tab.CustomTabsOption(
+            customTabsOption: const tab.CustomTabsOption(
               enableUrlBarHiding: true,
               enableInstantApps: true,
               extraCustomTabs: <String>[
@@ -110,7 +111,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
       yield WaitKeyState();
       final domainUrl = Uri.parse(request.host).origin;
       fidoRequest = FidoAuthRequest(
-        Duration(seconds: 30),
+        const Duration(seconds: 30),
         domainUrl,
         request.timeout,
         request.challenge,

@@ -20,7 +20,7 @@ import 'fido_auth_route.dart';
 class FidoAuthWidget extends StatefulWidget {
   final FidoAuthRouteArgs args;
 
-  const FidoAuthWidget(this.args);
+  const FidoAuthWidget(this.args, {super.key});
 
   @override
   _FidoAuthWidgetState createState() => _FidoAuthWidgetState();
@@ -40,7 +40,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
       AppStore.authState.emailCtrl.text,
       AppStore.authState.passwordCtrl.text,
     );
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final s = context.l10n;
       bloc.add(
           StartAuth(true, s.fido_label_connect_your_key, s.fido_label_success));
@@ -76,7 +76,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                 ?.copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             s.tfa_hint_step,
             textAlign: TextAlign.center,
@@ -114,7 +114,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
             }
             if (state is TouchKeyState) {
               if (touchDialogKey.currentState != null) {
-                touchDialogKey.currentState?.close();
+                touchDialogKey.currentState?.close(context);
               }
               IosPressOnKeyDialog(touchDialogKey, () => bloc.add(Cancel()))
                   .show(context);
@@ -128,7 +128,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
               }
             } else {
               if (touchDialogKey.currentState != null) {
-                touchDialogKey.currentState?.close();
+                touchDialogKey.currentState?.close(context);
               }
             }
           },
@@ -144,13 +144,13 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                             style: theme.textTheme.headline6
                                 ?.copyWith(color: AppTheme.loginTextColor),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Text(
                             s.fido_error_hint,
                             textAlign: TextAlign.center,
                             style: TextStyle(color: AppTheme.loginTextColor),
                           ),
-                          SizedBox(height: 30),
+                          const SizedBox(height: 30),
                           SizedBox(
                             width: double.infinity,
                             child: AMButton(
@@ -168,7 +168,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                               },
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           SizedBox(
                             width: double.infinity,
                             child: TextButton(
@@ -194,7 +194,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                         ? Center(
                             child: Column(
                             children: [
-                              CircularProgressIndicator(),
+                              const CircularProgressIndicator(),
                               TextButton(
                                 onPressed: () {
                                   bloc.add(Cancel());
@@ -203,7 +203,7 @@ class _FidoAuthWidgetState extends State<FidoAuthWidget> {
                               )
                             ],
                           ))
-                        : Center(
+                        : const Center(
                             child: CircularProgressIndicator(),
                           ));
               }),

@@ -32,7 +32,7 @@ LocalFile getFakeLocalFileForUploadProgress(
     ProcessingFile processingFile, String path) {
   final fileName =
       FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path);
-  return new LocalFile(
+  return LocalFile(
     localId: -1,
     id: fileName,
     guid: processingFile.guid,
@@ -193,7 +193,9 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
   return LocalFile(
     localId: -1,
     id: rawFile["Id"] ?? '',
-    guid: props != null ? (props["GUID"] ?? Uuid().v4()) : Uuid().v4(),
+    guid: props != null
+        ? (props["GUID"] ?? const Uuid().v4())
+        : const Uuid().v4(),
     type: rawFile["Type"] ?? '',
     localPath: '',
     path: rawFile["Path"] ?? '',
@@ -216,7 +218,7 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
     isExternal: rawFile["IsExternal"] ?? false,
     thumbnailUrl: rawFile["ThumbnailUrl"],
     downloadUrl: rawFile["Actions"]["download"] != null
-        ? rawFile["Actions"]["download"]["url"]  ?? ''
+        ? rawFile["Actions"]["download"]["url"] ?? ''
         : '',
     viewUrl: rawFile["Actions"]["view"] != null
         ? rawFile["Actions"]["view"]["url"] ?? ''

@@ -29,7 +29,7 @@ abstract class _FilesPageState with Store {
   final FilesDao _filesDao = DI.get();
   final _filesLocal = FilesLocalStorage();
 
-  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String pagePath = "";
   List<LocalFile> currentFiles = [];
@@ -150,7 +150,7 @@ abstract class _FilesPageState with Store {
   }
 
   List<LocalFile> _sortFiles(List<LocalFile> list) {
-    List<LocalFile> filesToSort = new List.from(list);
+    List<LocalFile> filesToSort = List.from(list);
     filesToSort.sort((a, b) {
       return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
@@ -158,15 +158,19 @@ abstract class _FilesPageState with Store {
     List<LocalFile> files = [];
     try {
       folders = filesToSort.where((file) => file.isFolder).toList();
-    } catch (err) {}
+    } catch (err) {
+      print(err);
+    }
     try {
       files = filesToSort.where((file) => !file.isFolder).toList();
-    } catch (err) {}
+    } catch (err) {
+      print(err);
+    }
     return [...folders, ...files];
   }
 
   List<LocalFile> _addFakeUploadFiles(List<LocalFile> list) {
-    List<LocalFile> filesFromServer = new List.from(list);
+    List<LocalFile> filesFromServer = List.from(list);
     try {
       final uploadingFiles = AppStore.filesState.processedFiles
           .where((process) => process.processingType == ProcessingType.upload);
@@ -194,7 +198,7 @@ abstract class _FilesPageState with Store {
 
     if (filesToDelete?.isNotEmpty == true) {
       filesToDelete?.forEach((file) {
-        if (file.localPath != null) filesToDeleteLocally.add(file);
+        if (file.localPath.isNotEmpty) filesToDeleteLocally.add(file);
         filesToDeleteFromCache.add(file);
         mappedFilesToDelete.add(FileToDelete(
                 path: file.path, name: file.name, isFolder: file.isFolder)
@@ -204,7 +208,7 @@ abstract class _FilesPageState with Store {
       // find selected files by their id
       currentFiles.forEach((file) {
         if (selectedFilesIds[file.id] != null) {
-          if (file.localPath != null) filesToDeleteLocally.add(file);
+          if (file.localPath.isNotEmpty) filesToDeleteLocally.add(file);
           filesToDeleteFromCache.add(file);
           mappedFilesToDelete.add(FileToDelete(
                   path: file.path, name: file.name, isFolder: file.isFolder)

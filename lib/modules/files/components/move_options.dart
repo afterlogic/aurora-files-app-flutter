@@ -47,12 +47,12 @@ class _MoveOptionsState extends State<MoveOptions> {
     final textColor = Theme.of(context).iconTheme.color;
     return Container(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey)),
+        border: const Border(top: BorderSide(color: Colors.grey)),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(top: 3.0, bottom: 6.0),
+          padding: const EdgeInsets.only(top: 3.0, bottom: 6.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -66,20 +66,20 @@ class _MoveOptionsState extends State<MoveOptions> {
                 },
               ),
               TextButton(
+                onPressed:
+                    _buttonsDisabled ? null : () => _moveFiles(context, true),
                 child: Text(
                   s.copy,
                   style: TextStyle(color: textColor),
                 ),
-                onPressed:
-                    _buttonsDisabled ? null : () => _moveFiles(context, true),
               ),
               TextButton(
+                onPressed:
+                    _buttonsDisabled ? null : () => _moveFiles(context, false),
                 child: Text(
                   s.move,
                   style: TextStyle(color: textColor),
                 ),
-                onPressed:
-                    _buttonsDisabled ? null : () => _moveFiles(context, false),
               ),
             ],
           ),

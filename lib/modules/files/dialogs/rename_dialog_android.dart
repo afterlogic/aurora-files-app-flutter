@@ -63,11 +63,11 @@ class _RenameDialogState extends State<RenameDialog> {
         child: isRenaming
             ? Row(
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: CircularProgressIndicator(),
                   ),
-                  SizedBox(width: 20.0),
+                  const SizedBox(width: 20.0),
                   Expanded(child: Text(s.renaming_to(_fileNameCtrl.text))),
                 ],
               )
@@ -79,7 +79,7 @@ class _RenameDialogState extends State<RenameDialog> {
                   decoration: InputDecoration(
                     errorText: errMsg.isEmpty == true ? null : errMsg,
                     hintText: s.enter_new_name,
-                    border: UnderlineInputBorder(),
+                    border: const UnderlineInputBorder(),
                   ),
                   validator: (value) => validateInput(
                     value ?? '',
@@ -99,7 +99,6 @@ class _RenameDialogState extends State<RenameDialog> {
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-            child: Text(s.rename),
             onPressed: isRenaming
                 ? null
                 : () {
@@ -116,10 +115,12 @@ class _RenameDialogState extends State<RenameDialog> {
                       onSuccess: (String newNameFromServer) async {
                         await widget.filesPageState
                             .onGetFiles(path: widget.file.path);
+                        if (!mounted) return;
                         Navigator.pop(context, newNameFromServer);
                       },
                     );
-                  }),
+                  },
+            child: Text(s.rename)),
       ],
     );
   }

@@ -23,7 +23,7 @@ class MailApi {
       "WithGroups": false,
       "WithoutTeamContactsDuplicates": true
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Contacts",
       method: "GetContacts",
       parameters: json.encode(parameters),
@@ -42,7 +42,7 @@ class MailApi {
 
   Future<List<Account>> getAccounts() async {
     final parameters = {"UserId": AppStore.authState.userId};
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Mail",
       method: "GetAccounts",
       parameters: json.encode(parameters),
@@ -63,7 +63,7 @@ class MailApi {
     final parameters = {
       "AccountID": accountID,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Mail",
       method: "GetFolders",
       parameters: json.encode(parameters),
@@ -90,7 +90,7 @@ class MailApi {
       "IdentityId": 677,
       "Method": "SendMessage"
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Mail",
       method: "SendMessage",
       parameters: json.encode(parameters),
@@ -115,7 +115,7 @@ class MailApi {
       "WithUserGroups": true,
       "WithoutTeamContactsDuplicates": true,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Contacts",
       method: "GetContactSuggestions",
       parameters: json.encode(parameters),
@@ -155,7 +155,7 @@ class MailApi {
       "Shares": shareList,
       "IsDir": localFile.isFolder,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "SharedFiles",
       method: "UpdateShare",
       parameters: json.encode(parameters),
@@ -189,7 +189,7 @@ class MailApi {
       "Shares": contact,
       "IsDir": false
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "SharedFiles",
       method: "UpdateShare",
       parameters: json.encode(parameters),
@@ -215,7 +215,7 @@ class MailApi {
       "Offset": offset,
       "Limit": limit,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "ActivityHistory",
       method: "GetList",
       parameters: json.encode(parameters),
@@ -237,7 +237,7 @@ class MailApi {
       "ResourceType": "file",
       "ResourceId": file.type + file.fullPath,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "ActivityHistory",
       method: "Delete",
       parameters: json.encode(parameters),
@@ -262,7 +262,7 @@ class MailApi {
         {"Path": file.path, "Name": file.name, "IsFolder": file.isFolder}
       ],
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: "LeaveShare",
       parameters: json.encode(parameters),

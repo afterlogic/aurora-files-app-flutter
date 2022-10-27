@@ -36,18 +36,18 @@ class ToastWidgetState extends State<ToastWidget>
 
   _show(String message) async {
     _toast = Container(
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
       child: Text(
         message,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
     );
     await _animation.forward(from: 0);
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
     await _animation.reverse(from: 1);
   }
 
@@ -58,7 +58,7 @@ class ToastWidgetState extends State<ToastWidget>
       builder: (context, child) {
         final value = _animation.value;
         if (value == null || _toast == null) {
-          return SizedBox(
+          return const SizedBox(
             height: 20,
           );
         }

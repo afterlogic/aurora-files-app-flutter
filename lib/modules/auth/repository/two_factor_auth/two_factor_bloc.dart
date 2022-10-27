@@ -18,7 +18,7 @@ class TwoFactorBloc extends Bloc<TwoFactorEvent, TwoFactorState> {
     try {
       final result = await AppStore.authState.twoFactorAuth(state.pin);
       if (!result) {
-        yield ErrorState("Invalid pin");
+        yield const ErrorState("Invalid pin");
         return;
       }
       await AppStore.authState.successLogin();

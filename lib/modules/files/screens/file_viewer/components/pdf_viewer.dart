@@ -21,7 +21,7 @@ class PdfViewer extends StatefulWidget {
 }
 
 class _PdfViewerState extends State<PdfViewer> {
-  final _fileViewerState = new FileViewerState();
+  final _fileViewerState = FileViewerState();
 
   @override
   void initState() {

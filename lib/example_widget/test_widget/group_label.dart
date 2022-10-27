@@ -8,6 +8,7 @@ class GroupLabel extends StatelessWidget {
   final Color? background;
 
   const GroupLabel({
+    super.key,
     required this.name,
     required this.children,
     this.description,

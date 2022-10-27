@@ -44,13 +44,13 @@ String? validateInput(
 }
 
 bool _isFileNameValid(String fileName) {
-  final regExp = new RegExp(r'["\/\\*?<>|:]');
+  final regExp = RegExp(r'["\/\\*?<>|:]');
 
   return !regExp.hasMatch(fileName);
 }
 
 bool isEmailValid(String email) {
-  final regExp = new RegExp(
+  final regExp = RegExp(
       r'^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
 
   return regExp.hasMatch(email);

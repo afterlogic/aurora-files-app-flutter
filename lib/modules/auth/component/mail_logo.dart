@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class MailLogo extends StatelessWidget {
   final bool isBackground;
 
-  const MailLogo({this.isBackground = false});
+  const MailLogo({super.key, this.isBackground = false});
 
   @override
   Widget build(BuildContext context) {

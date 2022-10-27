@@ -5,11 +5,12 @@ class ProgressLoader extends StatelessWidget {
   final double progress;
 
   const ProgressLoader(this.progress, {Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(50.0),
-      child: Container(
+      child: SizedBox(
         height: 50.0,
         width: 50.0,
         child: CircularPercentIndicator(

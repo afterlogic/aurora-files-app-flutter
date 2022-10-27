@@ -6,6 +6,8 @@ import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 
 class LoggerScreen extends StatefulWidget {
+  const LoggerScreen({super.key});
+
   @override
   _LoggerScreenState createState() => _LoggerScreenState();
 }
@@ -18,7 +20,7 @@ class _LoggerScreenState extends State<LoggerScreen> {
     return Scaffold(
       appBar: isTablet
           ? null
-          : AMAppBar(
+          : const AMAppBar(
               title: Text("Debug"),
             ),
       body: LoggerSettingWidget(

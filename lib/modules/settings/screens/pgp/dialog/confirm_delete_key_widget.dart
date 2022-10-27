@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ConfirmDeleteKeyWidget extends StatefulWidget {
   final String _message;
 
-  const ConfirmDeleteKeyWidget(this._message);
+  const ConfirmDeleteKeyWidget(this._message, {super.key});
 
   @override
   _ConfirmDeleteKeyWidgetState createState() => _ConfirmDeleteKeyWidgetState();

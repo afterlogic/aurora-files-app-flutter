@@ -36,7 +36,7 @@ class AppDatabase extends _$AppDatabase {
                 await m.addColumn(files, files.linkPassword);
                 break;
               }
-            case 3:
+            case 4:
               {
                 await m.addColumn(pgpKey, pgpKey.name);
                 break;

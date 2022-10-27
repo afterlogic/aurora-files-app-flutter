@@ -12,7 +12,7 @@ import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:crypto_stream/algorithm/aes.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:encrypt/encrypt.dart' as prefixEncrypt;
+import 'package:encrypt/encrypt.dart' as encrypt_lib;
 import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,12 +33,13 @@ class FilesLocalStorage {
   // is used to download files on iOS
   Future<void> shareFile(File? storedFile, LocalFile file, Rect rect) async {
     String fileType;
-    if (file.contentType.startsWith("image"))
+    if (file.contentType.startsWith("image")) {
       fileType = "image";
-    else if (file.contentType.startsWith("video"))
+    } else if (file.contentType.startsWith("video")) {
       fileType = "video";
-    else
+    } else {
       fileType = "file";
+    }
 
     await Share.shareFiles(
       [storedFile?.path ?? file.path],
@@ -57,7 +58,7 @@ class FilesLocalStorage {
 //    if (!PlatformOverride.isIOS) await getStoragePermissions();
 //    Directory dir = await DownloadsPathProvider.downloadsDirectory;
 //
-//    final fileToDownload = new File("${dir.path}/${file.name}");
+//    final fileToDownload = File("${dir.path}/${file.name}");
 //    await fileToDownload.create(recursive: true);
 //    await fileToDownload.writeAsBytes(fileBytes);
 //
@@ -69,7 +70,7 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getDownloadDirectory();
-    File dartFile = new File("${dir.path}/${file.name}");
+    File dartFile = File("${dir.path}/${file.name}");
 
     // if name exists add suffix (name_0.png)
     int suffix = 0;
@@ -78,7 +79,7 @@ class FilesLocalStorage {
       final String ext = splitName.last;
       splitName.removeLast();
       final String nameWithoutExt = splitName.join(".");
-      dartFile = new File("${dir.path}/${nameWithoutExt}_$suffix.$ext");
+      dartFile = File("${dir.path}/${nameWithoutExt}_$suffix.$ext");
       suffix++;
     }
     await dartFile.create(recursive: true);
@@ -90,7 +91,7 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getTemporaryDirectory();
-    final File dartFile = new File(
+    final File dartFile = File(
         "${dir.path}/files_to_delete/${useName == true ? file.name : file.guid}");
     if (await dartFile.exists()) {
       return dartFile;
@@ -108,7 +109,7 @@ class FilesLocalStorage {
 
     final Directory dir = await getTemporaryDirectory();
     final File dartFile =
-        new File("${dir.path}/images/${file.guid}_${file.name}");
+        File("${dir.path}/images/${file.guid}_${file.name}");
     final bool exist = await dartFile.exists();
     if (exist) {
       return dartFile;
@@ -122,7 +123,7 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getApplicationDocumentsDirectory();
-    final dartFile = new File(
+    final dartFile = File(
         "${dir.path}/offline${file.path + (file.path.isNotEmpty ? "/" : "")}${file.guid}_${file.name}");
     if (await dartFile.exists()) {
       return dartFile;
@@ -139,19 +140,19 @@ class FilesLocalStorage {
     splitDir.removeLast();
     final dir = Directory(splitDir.join("/"));
     if (await dir.exists() != true) dir.create(recursive: true);
-    File cachedFile = new File("${tempDir.path}/files_to_delete/${file.guid}");
+    File cachedFile = File("${tempDir.path}/files_to_delete/${file.guid}");
     if (await cachedFile.exists()) {
       final copiedFile = await cachedFile.copy(pathToCopyTo);
       return copiedFile;
     }
 
-    cachedFile = new File("${tempDir.path}/files_to_delete/${file.name}");
+    cachedFile = File("${tempDir.path}/files_to_delete/${file.name}");
     if (await cachedFile.exists()) {
       final copiedFile = await cachedFile.copy(pathToCopyTo);
       return copiedFile;
     }
 
-    cachedFile = new File("${tempDir.path}/images/${file.guid}_${file.name}");
+    cachedFile = File("${tempDir.path}/images/${file.guid}_${file.name}");
     if (await cachedFile.exists()) {
       final copiedFile = await cachedFile.copy(pathToCopyTo);
       return copiedFile;
@@ -165,19 +166,19 @@ class FilesLocalStorage {
     final Directory dir = await getTemporaryDirectory();
     if (files != null) {
       for (final file in files) {
-        File cachedFile = new File("${dir.path}/images/${file.guid}");
+        File cachedFile = File("${dir.path}/images/${file.guid}");
         if (cachedFile.existsSync()) {
           await cachedFile.delete(recursive: true);
         }
       }
     } else {
       if (deleteCachedImages == true) {
-        final cacheDir = new Directory(dir.path);
+        final cacheDir = Directory(dir.path);
         if (cacheDir.existsSync()) {
           await cacheDir.delete(recursive: true);
         }
       } else {
-        final cacheDir = new Directory("${dir.path}/files_to_delete");
+        final cacheDir = Directory("${dir.path}/files_to_delete");
         if (cacheDir.existsSync()) {
           await cacheDir.delete(recursive: true);
         }
@@ -190,7 +191,7 @@ class FilesLocalStorage {
     ProcessingFile processingFile,
     String? keyPassword,
   ) async {
-    final offlineFile = new File(file.localPath);
+    final offlineFile = File(file.localPath);
     if (!await offlineFile.exists()) {
       throw CustomException(
           "The file does not exist, please remove it and set offline when you are online again.");
@@ -216,7 +217,7 @@ class FilesLocalStorage {
     ProcessingFile processingFile,
     String? keyPassword,
   ) async {
-    File offlineFile = new File(file.localPath);
+    File offlineFile = File(file.localPath);
     if (!await offlineFile.exists()) {
       throw CustomException(
           "The file does not exist, please remove it and set offline when you are online again.");
@@ -243,7 +244,7 @@ class FilesLocalStorage {
 
     await processingFile.fileOnDevice.create(recursive: true);
 
-    final key = prefixEncrypt.Key.fromBase16(await PgpKeyUtil.instance
+    final key = encrypt_lib.Key.fromBase16(await PgpKeyUtil.instance
         .userDecrypt(encryptedDecryptionKey, password));
 
     List<int> fileBytesBuffer = [];
@@ -306,7 +307,7 @@ class PreparedForShare {
 //    final fileBytes = await file.readAsBytes();
 ////    final chunkedList = _chunk(fileBytes);
 //    Directory appDocDir = await getApplicationDocumentsDirectory();
-//    final encryptedFile = new File(
+//    final encryptedFile = File(
 //      '${appDocDir.path}/temp_encrypted_files/${FileUtils.getFileNameFromPath(file.path)}',
 //    );
 //    await encryptedFile.create(recursive: true);
@@ -374,9 +375,9 @@ class PreparedForShare {
 // OLD DART ENCRYPTION. VERY SLOW!
 
 //    List<int> encryptedFileBytes = fileBytes;
-//    final List<int> decryptedFileBytes = new List();
+//    final List<int> decryptedFileBytes = List();
 //    final chunkedList = _chunk(encryptedFileBytes);
-//    final chunksToSort = new List<Future<DecryptionResult>>();
+//    final chunksToSort = List<Future<DecryptionResult>>();
 //
 //    chunkedList.forEach((chunk) async {
 //      final i = chunkedList.indexOf(chunk);
@@ -394,7 +395,7 @@ class PreparedForShare {
 //    });
 //
 //    // decrypt chunks in parallel
-//    final decryptionResults = new List<DecryptionResult>();
+//    final decryptionResults = List<DecryptionResult>();
 //    final decryptionStream = Stream.fromFutures(chunksToSort);
 //    int index = 1;
 //    await for (final res in decryptionStream) {
@@ -424,7 +425,7 @@ class PreparedForShare {
 //  static Future<DecryptionResult> _decrypt(DecryptionArgs args) async {
 //    final decryptedBytes =
 //        args.encrypter.decryptBytes(args.encrypted, iv: args.iv);
-//    return new DecryptionResult(args.chunkIndex, decryptedBytes);
+//    return DecryptionResult(args.chunkIndex, decryptedBytes);
 //  }
 //}
 

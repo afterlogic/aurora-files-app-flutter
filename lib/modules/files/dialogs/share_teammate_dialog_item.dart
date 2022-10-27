@@ -26,16 +26,16 @@ class ShareTeammateDialogItem extends StatelessWidget {
       background: Container(
         color: theme.disabledColor,
         alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8),
+        child: const Padding(
+          padding: EdgeInsets.only(left: 8),
           child: Icon(Icons.delete_outline, color: Colors.white),
         ),
       ),
       secondaryBackground: Container(
         color: theme.disabledColor,
         alignment: Alignment.centerRight,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 8),
+        child: const Padding(
+          padding: EdgeInsets.only(right: 8),
           child: Icon(Icons.delete_outline, color: Colors.white),
         ),
       ),

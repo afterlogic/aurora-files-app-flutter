@@ -33,8 +33,8 @@ class ShareTeammateDialog extends StatefulWidget {
 }
 
 class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
-  List<SharePrincipal> _sharePrincipals = [];
-  List<ShareAccessEntry> _fileShares = [];
+  final List<SharePrincipal> _sharePrincipals = [];
+  final List<ShareAccessEntry> _fileShares = [];
   ShareAccessRight _lastSelectedRight = ShareAccessRight.read;
   bool _rebuildingDropdown = false;
   bool _progress = true;
@@ -111,7 +111,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     setState(() {
       _rebuildingDropdown = true;
     });
-    SchedulerBinding.instance?.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
         _rebuildingDropdown = false;
       });
@@ -195,6 +195,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
           : json.decode(widget.file.extendedProps);
       map["Shares"] = newShares;
       final file = widget.file.copyWith(extendedProps: json.encode(map));
+      if (!mounted) return;
       Navigator.pop(context, file);
     } catch (err) {
       _onError(err);
@@ -234,7 +235,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
             maxHeight: screenHeight / 3,
             dropdownSearchDecoration: InputDecoration(
               hintText: s.hint_select_teammate,
-              contentPadding: EdgeInsets.only(left: 8),
+              contentPadding: const EdgeInsets.only(left: 8),
               border: OutlineInputBorder(
                 borderSide: BorderSide(color: theme.disabledColor),
                 borderRadius: const BorderRadius.all(Radius.circular(4.0)),
@@ -261,15 +262,15 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
                 ),
                 Container(
                   height: screenHeight / 4,
-                  margin: EdgeInsets.symmetric(vertical: 16),
+                  margin: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: theme.disabledColor,
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                    borderRadius: const BorderRadius.all(Radius.circular(7)),
                     child: _fileShares.isEmpty
                         ? Align(
                             alignment: Alignment.topCenter,
@@ -310,20 +311,20 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
           ),
           actions: [
             TextButton(
-              child: Text(s.label_show_history),
               onPressed: _onShowHistory,
+              child: Text(s.label_show_history),
             ),
             TextButton(
-              child: Text(s.label_save),
               onPressed: _onSave,
+              child: Text(s.label_save),
             ),
             TextButton(
-              child: Text(s.cancel),
               onPressed: _onCancel,
+              child: Text(s.cancel),
             ),
           ],
         ),
-        if (_progress) CircularProgressIndicator(),
+        if (_progress) const CircularProgressIndicator(),
       ],
     );
   }

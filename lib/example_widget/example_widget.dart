@@ -12,15 +12,17 @@ import 'category/flutter_category.dart';
 
 main() {
   PlatformOverride.setPlatform(Platform.isIOS);
-  runApp(ExampleWidgetScreen());
+  runApp(const ExampleWidgetScreen());
 }
 
 openExample(BuildContext context) {
   Navigator.of(context)
-      .push(MaterialPageRoute(builder: (_) => ExampleWidgetScreen()));
+      .push(MaterialPageRoute(builder: (_) => const ExampleWidgetScreen()));
 }
 
 class ExampleWidgetScreen extends StatefulWidget {
+  const ExampleWidgetScreen({super.key});
+
   @override
   _ExampleWidgetScreenState createState() => _ExampleWidgetScreenState();
 }
@@ -72,13 +74,13 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
               BackButton(
                 onPressed: () => Navigator.pop(context),
               ),
-              Expanded(
+              const Expanded(
                 child: SizedBox.shrink(),
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text("is IOS"),
+                  const Text("is IOS"),
                   Switch(
                     value: isIOS,
                     onChanged: (value) {
@@ -91,7 +93,7 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text("is DarkTheme"),
+                  const Text("is DarkTheme"),
                   Switch(
                     value: isDarkTheme,
                     onChanged: (value) {
@@ -105,7 +107,7 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
           ),
           body: ListView(
             controller: scrollController,
-            children: <Widget>[
+            children: const <Widget>[
               AppCategory(),
               TextCategory(),
               FlutterCategory(),

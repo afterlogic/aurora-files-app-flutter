@@ -6,7 +6,7 @@ class ThemeSelectionDialog extends StatelessWidget {
   final bool theme;
   final Function(bool?) onItemSelected;
 
-  const ThemeSelectionDialog(this.onItemSelected, this.theme);
+  const ThemeSelectionDialog(this.onItemSelected, this.theme, {super.key});
 
   static void show(
     BuildContext context,
@@ -24,7 +24,7 @@ class ThemeSelectionDialog extends StatelessWidget {
     final s = context.l10n;
     return AMDialog(
       contentPadding: EdgeInsets.zero,
-      titlePadding: EdgeInsets.all(24.0),
+      titlePadding: const EdgeInsets.all(24.0),
       title: Text(s.app_theme),
       content: AMDialogList(
         children: [
@@ -62,8 +62,8 @@ class ThemeSelectionDialog extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(s.cancel),
           onPressed: Navigator.of(context).pop,
+          child: Text(s.cancel),
         ),
       ],
     );

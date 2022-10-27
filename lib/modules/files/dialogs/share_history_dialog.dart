@@ -99,16 +99,16 @@ class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
           ),
           actions: [
             TextButton(
-              child: Text(s.clear),
               onPressed: _onClear,
+              child: Text(s.clear),
             ),
             TextButton(
-              child: Text(s.cancel),
               onPressed: _onCancel,
+              child: Text(s.cancel),
             ),
           ],
         ),
-        if (_progress) CircularProgressIndicator(),
+        if (_progress) const CircularProgressIndicator(),
       ],
     );
   }

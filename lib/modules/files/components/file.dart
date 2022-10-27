@@ -62,7 +62,9 @@ class _FileWidgetState extends State<FileWidget> {
       final processingFile = AppStore.filesState.processedFiles
           .firstWhere((process) => process.guid == widget.file.guid);
       _subscribeToProgress(processingFile);
-    } catch (err) {}
+    } catch (err) {
+      print(err);
+    }
     _initExtendedProps();
     _initShareProps();
   }
@@ -167,6 +169,7 @@ class _FileWidgetState extends State<FileWidget> {
         return showSnack(context, msg: s.set_any_encryption_key);
       }
     }
+    if (!mounted) return;
     _openFile(context);
   }
 
@@ -188,7 +191,7 @@ class _FileWidgetState extends State<FileWidget> {
         context,
         msg: s.downloaded_successfully_into(widget.file.name, savedFile.path),
         isError: false,
-        duration: Duration(minutes: 10),
+        duration: const Duration(minutes: 10),
         action: SnackBarAction(
           label: s.oK,
           onPressed: () => hideSnack(context),
@@ -234,6 +237,7 @@ class _FileWidgetState extends State<FileWidget> {
 
   void _openFile(BuildContext context) async {
     // TODO enable opening ZIP files for Aurora
+    //ignore: dead_code
     if (false && widget.file.isOpenable) {
       Navigator.pushNamed(
         context,
@@ -249,7 +253,7 @@ class _FileWidgetState extends State<FileWidget> {
         arguments: FileViewerScreenArguments(
           file: widget.file,
           offlineFile: widget.file.localPath.isNotEmpty == true
-              ? new File(widget.file.localPath)
+              ? File(widget.file.localPath)
               : null,
           filesState: _filesState,
           filesPageState: _filesPageState,
@@ -290,14 +294,14 @@ class _FileWidgetState extends State<FileWidget> {
                     image: AssetImage(Asset.images.imagePlaceholder))),
             child: Hero(
               tag: FileUtils.getHeroTag(widget.file),
-              child: filesState.isOfflineMode && widget.file.localPath != null
-                  ? Image.file(new File(widget.file.localPath),
-                      fit: BoxFit.cover)
+              child: filesState.isOfflineMode &&
+                      widget.file.localPath.isNotEmpty
+                  ? Image.file(File(widget.file.localPath), fit: BoxFit.cover)
                   : CachedNetworkImage(
                       imageUrl: '$hostName/${widget.file.thumbnailUrl}',
                       httpHeaders: getHeader(),
                       fit: BoxFit.cover,
-                      fadeInDuration: Duration(milliseconds: 200),
+                      fadeInDuration: const Duration(milliseconds: 200),
                     ),
             ),
           ),
@@ -384,12 +388,12 @@ class _FileWidgetState extends State<FileWidget> {
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
 
-    final margin = 5.0;
+    const margin = 5.0;
     return Observer(
       builder: (_) {
         final isMenuVisible = !_filesState.isMoveModeEnabled &&
             !_filesState.isShareUpload &&
-            _filesPageState.selectedFilesIds.length <= 0 &&
+            _filesPageState.selectedFilesIds.isEmpty &&
             !_filesPageState.isInsideZip;
         return SelectableFilesItemTile(
           file: widget.file,
@@ -407,7 +411,7 @@ class _FileWidgetState extends State<FileWidget> {
                       scrollDirection: Axis.horizontal,
                       child: Text(widget.file.name),
                     ),
-                    SizedBox(height: 7.0),
+                    const SizedBox(height: 7.0),
                     Theme(
                       data: Theme.of(context).copyWith(
                         iconTheme: IconThemeData(
@@ -420,7 +424,7 @@ class _FileWidgetState extends State<FileWidget> {
                                   ProcessingType.upload
                           ? Row(children: <Widget>[
                               Expanded(flex: 1, child: Icon(_getProcessIcon())),
-                              SizedBox(width: 8.0),
+                              const SizedBox(width: 8.0),
                               Expanded(
                                 flex: 18,
                                 child: SizedBox(
@@ -440,7 +444,8 @@ class _FileWidgetState extends State<FileWidget> {
                               children: <Widget>[
                                 if (_hasShares)
                                   Padding(
-                                    padding: EdgeInsets.only(right: margin),
+                                    padding:
+                                        const EdgeInsets.only(right: margin),
                                     child: Icon(
                                       Icons.share,
                                       semanticLabel:
@@ -449,7 +454,8 @@ class _FileWidgetState extends State<FileWidget> {
                                   ),
                                 if (widget.file.published)
                                   Padding(
-                                    padding: EdgeInsets.only(right: margin),
+                                    padding:
+                                        const EdgeInsets.only(right: margin),
                                     child: Icon(
                                       Icons.link,
                                       semanticLabel: s.has_public_link,
@@ -457,7 +463,8 @@ class _FileWidgetState extends State<FileWidget> {
                                   ),
                                 if (widget.file.localId != -1)
                                   Padding(
-                                    padding: EdgeInsets.only(right: margin),
+                                    padding:
+                                        const EdgeInsets.only(right: margin),
                                     child: Icon(
                                       Icons.airplanemode_active,
                                       semanticLabel: s.available_offline,
@@ -465,16 +472,16 @@ class _FileWidgetState extends State<FileWidget> {
                                   ),
                                 Text(filesize(widget.file.size),
                                     style: Theme.of(context).textTheme.caption),
-                                SizedBox(width: margin),
+                                const SizedBox(width: margin),
                                 Text("|",
                                     style: Theme.of(context).textTheme.caption),
-                                SizedBox(width: margin),
+                                const SizedBox(width: margin),
                                 Text(
                                     DateFormatting.formatDateFromSeconds(
                                       timestamp: widget.file.lastModified,
                                     ),
                                     style: Theme.of(context).textTheme.caption),
-                                SizedBox(width: margin),
+                                const SizedBox(width: margin),
                               ],
                             ),
                     )
@@ -491,9 +498,9 @@ class _FileWidgetState extends State<FileWidget> {
                     ? _processingFile?.processingType ==
                             ProcessingType
                                 .upload // TODO VO: Implement upload cancelling
-                        ? SizedBox()
+                        ? const SizedBox()
                         : IconButton(
-                            icon: Icon(Icons.cancel),
+                            icon: const Icon(Icons.cancel),
                             color: Theme.of(context).disabledColor,
                             iconSize: 22.0,
                             onPressed: () {

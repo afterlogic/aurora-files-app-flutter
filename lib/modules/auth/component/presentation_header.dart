@@ -15,14 +15,14 @@ class PresentationHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        MailLogo(),
+        const MailLogo(),
         if (!BuildProperty.useMainLogo) ...[
-          SizedBox(height: 26.0),
+          const SizedBox(height: 26.0),
           Text(
             BuildProperty.appName,
             style: Theme.of(context).textTheme.headline4,
           ),
-          SizedBox(height: 12.0),
+          const SizedBox(height: 12.0),
           Text(
             message ?? s.login_to_continue,
             style: TextStyle(color: Theme.of(context).disabledColor),

@@ -13,13 +13,15 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class EncryptionAndroid extends StatefulWidget {
+  const EncryptionAndroid({super.key});
+
   @override
   _EncryptionAndroidState createState() => _EncryptionAndroidState();
 }
 
 class _EncryptionAndroidState extends State<EncryptionAndroid> {
   final _settingsState = AppStore.settingsState;
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _shareKey() async {
     _settingsState.onShareEncryptionKey(
@@ -33,19 +35,20 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
 
   void _downloadKey() async {
     final s = context.l10n;
-    var exportedDir;
+    String? exportedDir;
     exportedDir = await AMDialog.show(
       context: context,
       builder: (_) => ExportKeyDialog(
         settingsState: _settingsState,
       ),
     );
-    if (exportedDir is String) {
+    if (exportedDir != null) {
+      if (!mounted) return;
       showSnack(
         context,
         msg: s.key_downloaded_into(exportedDir),
         isError: false,
-        duration: Duration(minutes: 10),
+        duration: const Duration(minutes: 10),
         action: SnackBarAction(
           label: s.oK,
           onPressed: () => hideSnack(context),
@@ -56,17 +59,17 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
 
   List<Widget> _buildAddingKey() {
     final s = context.l10n;
-    final spacer = const SizedBox(height: 10.0);
+    const spacer = SizedBox(height: 10.0);
     if (_settingsState.isParanoidEncryptionEnabled &&
         _settingsState.selectedKeyName == null) {
       return [
         Text(s.encryption_keys),
-        SizedBox(height: 32.0),
+        const SizedBox(height: 32.0),
         Text(
           s.need_to_set_encryption_key,
           style: Theme.of(context).textTheme.caption,
         ),
-        SizedBox(height: 32.0),
+        const SizedBox(height: 32.0),
         AMButton(
           child: Text(s.import_key_from_text),
           onPressed: () => AMDialog.show(
@@ -105,31 +108,31 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
 
   List<Widget> _buildKeyOptions() {
     final s = context.l10n;
-    final spacer = const SizedBox(height: 10.0);
+    const spacer = SizedBox(height: 10.0);
     final theme = Theme.of(context);
     if (_settingsState.selectedKeyName != null) {
       return [
-        SizedBox(height: 26.0),
+        const SizedBox(height: 26.0),
         Text(s.encryption_keys),
         spacer,
         Text(
           _settingsState.selectedKeyName ?? '',
           style: Theme.of(context).textTheme.subtitle1,
         ),
-        Divider(height: 32.0),
+        const Divider(height: 32.0),
         Text(
           s.encryption_export_description,
           style: Theme.of(context).textTheme.caption,
         ),
-        SizedBox(height: 32.0),
-        AMButton(child: Text(s.share_key), onPressed: _shareKey),
+        const SizedBox(height: 32.0),
+        AMButton(onPressed: _shareKey, child: Text(s.share_key)),
         if (!PlatformOverride.isIOS) spacer,
         if (!PlatformOverride.isIOS)
-          AMButton(child: Text(s.download_key), onPressed: _downloadKey),
+          AMButton(onPressed: _downloadKey, child: Text(s.download_key)),
         spacer,
         AMButton(
           color: theme.errorColor,
-          shadow: BoxShadow(
+          shadow: const BoxShadow(
             color: Colors.black26,
             blurRadius: 8.0,
             offset: Offset(0.0, 3.0),

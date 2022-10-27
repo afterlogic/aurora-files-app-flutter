@@ -12,7 +12,7 @@ class ExportPgpKeyWidget extends StatefulWidget {
   final List<LocalPgpKey> _pgpKeys;
   final PgpKeyUtil _pgpKeyUtil;
 
-  const ExportPgpKeyWidget(this._pgpKeys, this._pgpKeyUtil);
+  const ExportPgpKeyWidget(this._pgpKeys, this._pgpKeyUtil, {super.key});
 
   @override
   _ExportPgpKeyWidgetState createState() => _ExportPgpKeyWidgetState();
@@ -26,7 +26,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
     final s = context.l10n;
     var keysText = "";
     for (LocalPgpKey key in widget._pgpKeys) {
-      if (key.key != null) keysText += key.key + "\n\n";
+      if (key.key.isNotEmpty) keysText += key.key + "\n\n";
     }
     final isTablet = LayoutConfig.of(context).isTablet;
     return Scaffold(
@@ -58,7 +58,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
                         ),
                       ),
                     ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   SelectableText(
                     keysText,
                   ),
@@ -76,8 +76,8 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
     final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final space = isTablet
-        ? SizedBox.shrink()
-        : SizedBox(
+        ? const SizedBox.shrink()
+        : const SizedBox(
             height: 10.0,
             width: 10,
           );
@@ -89,13 +89,13 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
       if (!PlatformOverride.isIOS) ...[
         space,
         AMButton(
-          child: Text(s.download_all),
           onPressed: download,
+          child: Text(s.download_all),
         ),
       ]
     ];
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       child: isTablet
           ? Wrap(
               spacing: 10,
@@ -124,7 +124,7 @@ class _ExportPgpKeyWidgetState extends State<ExportPgpKeyWidget> {
   download() async {
     final s = context.l10n;
     final result = await widget._pgpKeyUtil.downloadPublicKeys(widget._pgpKeys);
-
+    if (!mounted) return;
     showSnack(
       context,
       msg: s.downloading_to(result.path),

@@ -113,7 +113,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
                 },
           child: ListTile(
             contentPadding: widget.isFileViewer ? EdgeInsets.zero : null,
-            leading: Icon(Icons.link),
+            leading: const Icon(Icons.link),
             title: Text(s.public_link_access),
             trailing: Switch.adaptive(
               value: _hasPublicLink,
@@ -138,7 +138,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
             opacity: _isGettingPublicLink ? 0.4 : 1.0,
             child: ListTile(
               contentPadding: widget.isFileViewer ? EdgeInsets.zero : null,
-              leading: Icon(Icons.content_copy),
+              leading: const Icon(Icons.content_copy),
               title: Text(s.copy_public_link),
               onTap: _isGettingPublicLink
                   ? null

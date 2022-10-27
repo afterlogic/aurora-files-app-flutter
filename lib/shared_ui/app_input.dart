@@ -21,7 +21,7 @@ class AppInput extends StatelessWidget {
     this.suffix,
     this.keyboardType,
     this.prefix,
-    this.inputCase = InputCase.Default,
+    this.inputCase = InputCase.regular,
     this.validator,
     this.enabled,
   }) : super(key: key);
@@ -46,4 +46,4 @@ class AppInput extends StatelessWidget {
   }
 }
 
-enum InputCase { Default, Underline }
+enum InputCase { regular, underline }

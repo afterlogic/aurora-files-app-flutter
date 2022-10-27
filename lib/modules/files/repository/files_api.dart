@@ -18,7 +18,7 @@ import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/stream_util.dart';
 import 'package:crypto_stream/algorithm/aes.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:encrypt/encrypt.dart' as prefixEncrypt;
+import 'package:encrypt/encrypt.dart' as encrypt_lib;
 import 'package:http/http.dart' as http;
 
 class FilesApi {
@@ -29,17 +29,18 @@ class FilesApi {
     final List<LocalFile> files = [];
 
     unsortedFiles.forEach((item) {
-      if (item.isFolder)
+      if (item.isFolder) {
         folders.add(item);
-      else
+      } else {
         files.add(item);
+      }
     });
 
     return [...folders, ...files].toList();
   }
 
   Future<List<Storage>> getStorages() async {
-    final body = new ApiBody(module: "Files", method: "GetStorages");
+    final body = ApiBody(module: "Files", method: "GetStorages");
     final res = await sendRequest(body);
 
     if (res['Result'] is List) {
@@ -61,8 +62,8 @@ class FilesApi {
       "PathRequired": false,
     });
 
-    final body = new ApiBody(
-        module: "Files", method: "GetFiles", parameters: parameters);
+    final body =
+        ApiBody(module: "Files", method: "GetFiles", parameters: parameters);
 
     final res = await sendRequest(body);
 
@@ -72,7 +73,7 @@ class FilesApi {
       res['Result']['Items']
           .forEach((file) => unsortedList.add(getFileObjFromResponse(file)));
 
-      return new GetFilesResponse(_sortFiles(unsortedList),
+      return GetFilesResponse(_sortFiles(unsortedList),
           (quota.limit == null || quota.limit == 0) ? null : quota);
     } else {
       throw CustomException(getErrMsg(res));
@@ -99,7 +100,7 @@ class FilesApi {
       throw CustomException("File to download data into doesn't exist");
     }
 
-    final vectorLength = 16;
+    const vectorLength = 16;
     final String apiUrl = AppStore.authState.apiUrl;
 
     final Map<String, dynamic> params = {
@@ -116,7 +117,7 @@ class FilesApi {
           encryptionRecipientEmail;
     }
 
-    String encryptKey = prefixEncrypt.Key.fromSecureRandom(32).base16;
+    String encryptKey = encrypt_lib.Key.fromSecureRandom(32).base16;
     if (shouldEncrypt == true) {
       final vector = IV.fromSecureRandom(vectorLength);
       processingFile.ivBase64 = vector.base64;
@@ -127,18 +128,18 @@ class FilesApi {
       params["ExtendedProps"]["FirstChunk"] = true;
     }
 
-    final body = new ApiBody(
+    final body = ApiBody(
             module: "Files",
             method: "UploadFile",
             parameters: jsonEncode(params))
         .toMap();
-    final stream = new http.ByteStream(
+    final stream = http.ByteStream(
         _openFileRead(processingFile, shouldEncrypt, onError, encryptKey));
     final length = await processingFile.fileOnDevice.length();
     final lengthWithPadding =
         ((length / vectorLength) + 1).toInt() * vectorLength;
 
-    final multipartFile = new http.MultipartFile(
+    final multipartFile = http.MultipartFile(
       'file',
       stream,
       shouldEncrypt ? lengthWithPadding : length,
@@ -169,7 +170,7 @@ class FilesApi {
     Function(String) onError,
     String encryptKey,
   ) {
-    final key = shouldEncrypt ? prefixEncrypt.Key.fromBase16(encryptKey) : null;
+    final key = shouldEncrypt ? encrypt_lib.Key.fromBase16(encryptKey) : null;
     int bytesUploaded = 0;
     List<int> fileBytesBuffer = [];
     StreamSubscription<List<int>>? fileReadSub;
@@ -265,7 +266,7 @@ class FilesApi {
     final shouldDecrypt = decryptFile && file.initVector != null;
 
     final String hostName = AppStore.authState.hostName ?? '';
-    HttpClient client = new HttpClient();
+    HttpClient client = HttpClient();
 
     try {
       final HttpClientRequest request = await client
@@ -391,7 +392,7 @@ class FilesApi {
       ProcessingFile processingFile, bool isLast, String decryptKey) async {
     // if encrypted - decrypt
     if (initVector != null) {
-      final key = prefixEncrypt.Key.fromBase16(decryptKey);
+      final key = encrypt_lib.Key.fromBase16(decryptKey);
       final decrypted = await aes.decrypt(
               fileBytes, key.base64, processingFile.ivBase64 ?? '', isLast)
           as List<int>;
@@ -426,7 +427,7 @@ class FilesApi {
     });
 
     final body =
-        new ApiBody(module: "Files", method: "Rename", parameters: parameters);
+        ApiBody(module: "Files", method: "Rename", parameters: parameters);
     final res = await sendRequest(body);
 
     if (res['Result'] != null && res['Result']) {
@@ -440,7 +441,7 @@ class FilesApi {
     final parameters =
         json.encode({"Type": type, "Path": path, "FolderName": folderName});
 
-    final body = new ApiBody(
+    final body = ApiBody(
         module: "Files", method: "CreateFolder", parameters: parameters);
 
     final res = await sendRequest(body);
@@ -458,7 +459,7 @@ class FilesApi {
         json.encode({"Type": type, "Path": path, "Items": filesToDelete});
 
     final body =
-        new ApiBody(module: "Files", method: "Delete", parameters: parameters);
+        ApiBody(module: "Files", method: "Delete", parameters: parameters);
 
     final res = await sendRequest(body);
 
@@ -482,7 +483,7 @@ class FilesApi {
       "IsFolder": isFolder,
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
         module: "Files", method: "CreatePublicLink", parameters: parameters);
 
     final res = await sendRequest(body);
@@ -516,7 +517,7 @@ class FilesApi {
       "PgpEncryptionMode": isKey ? "key" : "password",
     };
 
-    final body = new ApiBody(
+    final body = ApiBody(
         module: "OpenPgpFilesWebclient",
         method: "CreatePublicLink",
         parameters: json.encode(parameters));
@@ -538,7 +539,7 @@ class FilesApi {
       "Name": name,
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
         module: "Files", method: "DeletePublicLink", parameters: parameters);
 
     final res = await sendRequest(body);
@@ -566,7 +567,7 @@ class FilesApi {
       "Files": files
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: copy ? "Copy" : "Move",
       parameters: parameters,
@@ -598,7 +599,7 @@ class FilesApi {
       }
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: "UpdateExtendedProps",
       parameters: parameters,
@@ -623,7 +624,7 @@ class FilesApi {
       }
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: "UpdateExtendedProps",
       parameters: parameters,
@@ -643,7 +644,7 @@ class FilesApi {
       "Path": file.path,
       "Name": file.name,
     });
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: "GetExtendedProps",
       parameters: parameters,

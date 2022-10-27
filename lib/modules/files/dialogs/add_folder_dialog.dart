@@ -39,8 +39,8 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
       content: isAdding
           ? Row(
               children: <Widget>[
-                CircularProgressIndicator(),
-                SizedBox(width: 20.0),
+                const CircularProgressIndicator(),
+                const SizedBox(width: 20.0),
                 Expanded(child: Text(s.adding_folder(_folderNameCtrl.text)))
               ],
             )
@@ -57,7 +57,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                     autofocus: true,
                     decoration: InputDecoration(
                       hintText: s.enter_folder_name,
-                      border: UnderlineInputBorder(),
+                      border: const UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
                       value ?? '',
@@ -78,12 +78,12 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-            child: Text(s.add),
             onPressed: isAdding
                 ? null
                 : () {
-                    if (_addFolderFormKey.currentState?.validate() == false)
+                    if (_addFolderFormKey.currentState?.validate() == false) {
                       return;
+                    }
                     errMsg = "";
                     setState(() => isAdding = true);
                     widget.filesPageState.onCreateNewFolder(
@@ -98,7 +98,8 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                         Navigator.pop(context, newNameFromServer);
                       },
                     );
-                  }),
+                  },
+            child: Text(s.add)),
       ],
     );
   }

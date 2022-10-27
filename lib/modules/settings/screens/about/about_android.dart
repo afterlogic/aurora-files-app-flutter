@@ -11,6 +11,8 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 
 class AboutAndroid extends StatefulWidget {
+  const AboutAndroid({super.key});
+
   @override
   _AboutAndroidState createState() => _AboutAndroidState();
 }
@@ -72,13 +74,13 @@ class _AboutAndroidState extends State<AboutAndroid> {
               title: Text(s.about),
             ),
       body: loading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(_appName, style: Theme.of(context).textTheme.headline6),
-                SizedBox(height: 12.0),
+                const SizedBox(height: 12.0),
                 Text(
                   s.version(_version),
                   style: Theme.of(context)
@@ -86,7 +88,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                       .caption
                       ?.copyWith(fontSize: 14.0),
                 ),
-                SizedBox(height: 22.0),
+                const SizedBox(height: 22.0),
                 Center(
                   child: SizedBox(
                     width: 120.0,
@@ -94,7 +96,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                     child: Image.asset(BuildProperty.icon),
                   ),
                 ),
-                SizedBox(height: 42.0),
+                const SizedBox(height: 42.0),
                 if (BuildProperty.termsOfService.isNotEmpty)
                   GestureDetector(
                     child: Text(
@@ -105,9 +107,11 @@ class _AboutAndroidState extends State<AboutAndroid> {
                         fontSize: 18.0,
                       ),
                     ),
-                    onTap: () => launch(BuildProperty.termsOfService),
+                    onTap: () => launchUrl(
+                      Uri.parse(BuildProperty.termsOfService),
+                    ),
                   ),
-                SizedBox(height: 22.0),
+                const SizedBox(height: 22.0),
                 if (BuildProperty.privacyPolicy.isNotEmpty)
                   GestureDetector(
                     child: Text(
@@ -122,7 +126,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
                       Uri.parse(BuildProperty.privacyPolicy),
                     ),
                   ),
-                SizedBox(height: 42.0),
+                const SizedBox(height: 42.0),
               ],
             ),
     );

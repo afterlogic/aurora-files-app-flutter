@@ -4,7 +4,7 @@ import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
 
 class KeyFromTextWidget extends StatefulWidget {
-  KeyFromTextWidget();
+  const KeyFromTextWidget({super.key});
 
   @override
   _KeyFromTextWidgetState createState() => _KeyFromTextWidgetState();

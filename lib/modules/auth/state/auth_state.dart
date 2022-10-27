@@ -178,7 +178,9 @@ abstract class _AuthState with Store {
   void onLogout([bool clearCache = false]) {
     try {
       AppStore.filesState.currentStorages = [];
-    } catch (e) {}
+    } catch (err) {
+      print(err);
+    }
     _authApi.logout();
     _authLocal.deleteTokenFromStorage();
     if (clearCache) {

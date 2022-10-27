@@ -38,7 +38,7 @@ class FilesAndroid extends StatefulWidget {
   final String path;
   final bool isZip;
 
-  FilesAndroid({
+  const FilesAndroid({
     Key? key,
     this.path = "",
     this.isZip = false,
@@ -64,12 +64,13 @@ class _FilesAndroidState extends State<FilesAndroid>
     listenShare();
     sub = Connectivity().onConnectivityChanged.listen((res) async {
       if (!_filesState.isOfflineMode && res != ConnectivityResult.none) {
-        if (_filesState.currentStorages.length <= 0) {
+        if (_filesState.currentStorages.isEmpty) {
           _filesPageState.filesLoading = FilesLoadingType.filesHidden;
           await _filesState.onGetStorages(
             onError: (String err) => showSnack(context, msg: err),
           );
         }
+        if (!mounted) return;
         _getFiles(
             context,
             _filesPageState.currentFiles.isEmpty
@@ -136,15 +137,14 @@ class _FilesAndroidState extends State<FilesAndroid>
     _filesPageState.pagePath = widget.path;
     _filesPageState.isInsideZip = widget.isZip;
 
-    if (_filesState.currentStorages.length <= 0) {
+    if (_filesState.currentStorages.isEmpty) {
       _filesPageState.filesLoading = FilesLoadingType.filesHidden;
       await _filesState.onGetStorages(
         onError: (String err) => showSnack(context, msg: err),
       );
     }
-    if (_filesState.selectedStorage != null) {
-      _getFiles(context, FilesLoadingType.filesHidden);
-    }
+    if (!mounted) return;
+    _getFiles(context, FilesLoadingType.filesHidden);
     if (!_filesState.isMoveModeEnabled) {
       _filesState.updateFilesCb = _filesPageState.onGetFiles;
     }
@@ -213,6 +213,7 @@ class _FilesAndroidState extends State<FilesAndroid>
         }
         if (shouldEncrypt == true &&
             !(await PgpKeyUtil.instance.hasUserKey())) {
+          if (!mounted) return null;
           showSnack(context,
               msg:
                   s.error_pgp_required_key(AppStore.authState.userEmail ?? ''));
@@ -243,10 +244,10 @@ class _FilesAndroidState extends State<FilesAndroid>
     final s = context.l10n;
     if (_filesPageState.filesLoading == FilesLoadingType.filesHidden) {
       return ListView.separated(
-        itemBuilder: (_, index) => SkeletonLoader(),
+        itemBuilder: (_, index) => const SkeletonLoader(),
         itemCount: 6,
-        separatorBuilder: (BuildContext context, int index) => Padding(
-          padding: const EdgeInsets.only(left: 80.0, right: 16.0),
+        separatorBuilder: (BuildContext context, int index) => const Padding(
+          padding: EdgeInsets.only(left: 80.0, right: 16.0),
           child: Divider(height: 0.0),
         ),
       );
@@ -256,9 +257,9 @@ class _FilesAndroidState extends State<FilesAndroid>
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(Icons.signal_wifi_off, size: 48.0),
+          const Icon(Icons.signal_wifi_off, size: 48.0),
           Text(s.no_internet_connection),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           TextButton(
             child: Text(s.retry),
             onPressed: () => _getFiles(context),
@@ -271,7 +272,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       );
     } else if (_filesPageState.currentFiles.isEmpty) {
       return ListView(
-        physics: AlwaysScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
           Padding(
             padding:
@@ -289,7 +290,7 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   Future<void> _refreshFilesList() async {
-    if (_filesState.currentStorages.length <= 0) {
+    if (_filesState.currentStorages.isEmpty) {
       await _filesState.onGetStorages();
     }
     _getFiles(context, FilesLoadingType.none);
@@ -315,7 +316,7 @@ class _FilesAndroidState extends State<FilesAndroid>
               right: 0.0,
               height: 6.0,
               child: AnimatedOpacity(
-                duration: Duration(milliseconds: 150),
+                duration: const Duration(milliseconds: 150),
                 opacity: _filesPageState.filesLoading ==
                         FilesLoadingType.filesVisible
                     ? 1.0
@@ -352,7 +353,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (isTablet) {
       body = Row(
         children: [
-          ClipRRect(
+          const ClipRRect(
             child: SizedBox(
               width: 304,
               child: Scaffold(
@@ -372,7 +373,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                   onDeleteFiles: _deleteSelected,
                   isAppBar: false,
                 ),
-                Divider(height: 1),
+                const Divider(height: 1),
                 Expanded(child: body),
               ],
             ),
@@ -403,7 +404,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                     _filesState.isShareUpload ||
                     isTablet)
                 ? null
-                : MainDrawer(),
+                : const MainDrawer(),
             appBar: PreferredSize(
                 preferredSize: Size.fromHeight(kToolbarHeight *
                     (_filesPageState.isSearchMode &&
@@ -427,17 +428,17 @@ class _FilesAndroidState extends State<FilesAndroid>
                       _filesPageState.isSearchMode ||
                       _filesState.selectedStorage.type == StorageType.shared ||
                       _filesPageState.isInsideZip
-                  ? SizedBox()
+                  ? const SizedBox()
                   : FloatingActionButton(
                       heroTag: widget.path,
-                      child: Icon(Icons.add),
+                      child: const Icon(Icons.add),
                       onPressed: () {
                         hideSnack(context);
                         Navigator.push(
                             context,
                             CustomSpeedDial(tag: widget.path, children: [
                               MiniFab(
-                                icon: Icon(Icons.create_new_folder),
+                                icon: const Icon(Icons.create_new_folder),
                                 onPressed: () => AMDialog.show(
                                   context: context,
                                   builder: (_) => AddFolderDialogAndroid(
@@ -447,7 +448,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                                 ),
                               ),
                               MiniFab(
-                                  icon: Icon(MdiIcons.filePlus),
+                                  icon: const Icon(MdiIcons.filePlus),
                                   onPressed: _uploadFile),
                             ]));
                       },

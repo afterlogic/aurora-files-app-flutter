@@ -23,10 +23,10 @@ class Recipient extends SharePrincipal {
   }
 
   @override
-  String getId() => this.email;
+  String getId() => email;
 
   @override
-  String getLabel() => this.email;
+  String getLabel() => email;
 
   @override
   Map<String, dynamic> toMap() {

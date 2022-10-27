@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class EncryptAskDialog extends StatefulWidget {
   final String fileName;
 
-  const EncryptAskDialog(this.fileName);
+  const EncryptAskDialog(this.fileName, {super.key});
 
   @override
   State<StatefulWidget> createState() {

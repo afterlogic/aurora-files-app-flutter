@@ -46,7 +46,7 @@ class FileViewerAndroid extends StatefulWidget {
   final FilesPageState filesPageState;
   final File? offlineFile;
 
-  FileViewerAndroid({
+  const FileViewerAndroid({
     Key? key,
     required this.immutableFile,
     required this.filesState,
@@ -230,6 +230,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         },
       );
       widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;
+      if (!mounted) return;
       Navigator.pop(context, _file);
     }
   }
@@ -252,7 +253,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       onSuccess: (File savedFile) => showSnack(context,
           msg: s.downloaded_successfully_into(_file.name, savedFile.path),
           isError: false,
-          duration: Duration(minutes: 10),
+          duration: const Duration(minutes: 10),
           action: SnackBarAction(
             label: s.oK,
             onPressed: () => hideSnack(context),
@@ -273,6 +274,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           onSuccess: () async {
             _fileViewerState.processingFile = null;
             await widget.filesPageState.onGetFiles();
+            if (!mounted) return;
             Navigator.pop(context, _file);
           },
           onError: (err) => _fileViewerState.processingFile = null);
@@ -361,6 +363,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         _onError(err);
       }
       widget.filesPageState.onGetFiles();
+      if (!mounted) return;
       Navigator.pop(context);
     }
   }
@@ -435,7 +438,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   Widget _getPreviewContent(BuildContext context) {
     final s = context.l10n;
-    final previewIconSize = 120.0;
+    const previewIconSize = 120.0;
     Widget result;
     if (_file.initVector != null && _showEncrypt == false) {
       result = Column(
@@ -543,7 +546,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     ),
                     if (!PlatformOverride.isIOS)
                       IconButton(
-                        icon: Icon(Icons.file_download),
+                        icon: const Icon(Icons.file_download),
                         tooltip: s.download,
                         onPressed: _downloadFile,
                       ),
@@ -560,14 +563,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                             : s.btn_shareable_link,
                         onPressed: _secureSharing,
                       ),
-                    if (_file.downloadUrl != null && !PlatformOverride.isIOS)
+                    if (_file.downloadUrl.isNotEmpty && !PlatformOverride.isIOS)
                       IconButton(
-                        icon: Icon(Icons.file_download),
+                        icon: const Icon(Icons.file_download),
                         tooltip: s.download,
                         onPressed: _downloadFile,
                       ),
                     IconButton(
-                      icon: Icon(Icons.delete_outline),
+                      icon: const Icon(Icons.delete_outline),
                       tooltip: s.delete_file,
                       onPressed: _deleteFile,
                     ),
@@ -587,7 +590,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           PopupMenuItem(
                             value: _shareWithTeammates,
                             child: ListTile(
-                              leading: Icon(Icons.share),
+                              leading: const Icon(Icons.share),
                               title: Text(s.label_share_with_teammates),
                             ),
                           ),
@@ -607,14 +610,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         PopupMenuItem(
                           value: _moveFile,
                           child: ListTile(
-                            leading: Icon(MdiIcons.fileMove),
+                            leading: const Icon(MdiIcons.fileMove),
                             title: Text(s.copy_or_move),
                           ),
                         ),
                         PopupMenuItem(
                           value: _renameFile,
                           child: ListTile(
-                            leading: Icon(Icons.edit),
+                            leading: const Icon(Icons.edit),
                             title: Text(s.rename),
                           ),
                         ),
@@ -648,7 +651,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           content: filesize(_file.size),
                         ),
                       ),
-                      SizedBox(width: 30),
+                      const SizedBox(width: 30),
                       Expanded(
                         child: InfoListTile(
                           label: s.created,
@@ -673,7 +676,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     onTap: _isSyncingForOffline ? null : _setFileForOffline,
-                    leading: Icon(Icons.airplanemode_active),
+                    leading: const Icon(Icons.airplanemode_active),
                     title: Text(s.offline),
                     trailing: Switch.adaptive(
                       value: _isFileOffline,

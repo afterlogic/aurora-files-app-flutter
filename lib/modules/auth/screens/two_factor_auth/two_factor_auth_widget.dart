@@ -18,7 +18,7 @@ import 'package:theme/app_theme.dart';
 class TwoFactorAuthWidget extends StatefulWidget {
   final TwoFactorAuthRouteArgs args;
 
-  const TwoFactorAuthWidget(this.args);
+  const TwoFactorAuthWidget(this.args, {super.key});
 
   @override
   _TwoFactorAuthWidgetState createState() => _TwoFactorAuthWidgetState();
@@ -52,7 +52,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
                 ?.copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             s.tfa_hint_step,
             textAlign: TextAlign.center,
@@ -103,7 +103,7 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
                         s.tfa_input_hint_code_from_app,
                         style: TextStyle(color: AppTheme.loginTextColor),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       AppInput(
                         controller: pinCtrl,
                         labelText: s.input_2fa_pin,
@@ -112,19 +112,19 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
                             validateInput(value ?? '', [ValidationTypes.empty]),
                         enabled: !loading,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
                         child: AMButton(
+                          isLoading: loading,
+                          onPressed: () => _login(),
                           child: Text(
                             s.btn_verify_pin,
                             style: TextStyle(color: AppTheme.loginTextColor),
                           ),
-                          isLoading: loading,
-                          onPressed: () => _login(),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
                         child: TextButton(

@@ -89,7 +89,7 @@ class AuthApi {
       "Password": password,
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
             module: "TwoFactorAuth",
             method: "VerifyAuthenticatorAppCode",
             parameters: parameters)
@@ -114,7 +114,7 @@ class AuthApi {
     final emails = <String>[];
 
     try {
-      final body = new ApiBody(
+      final body = ApiBody(
         module: "Mail",
         method: "GetIdentities",
       );
@@ -131,7 +131,7 @@ class AuthApi {
     }
 
     try {
-      final body = new ApiBody(
+      final body = ApiBody(
         module: "CpanelIntegrator",
         method: "GetAliases",
       );
@@ -154,7 +154,7 @@ class AuthApi {
     String login,
     String password,
   ) async {
-    final request = new ApiBody(
+    final request = ApiBody(
         module: "TwoFactorAuth",
         method: "VerifySecurityKeyBegin",
         parameters: jsonEncode({
@@ -187,7 +187,7 @@ class AuthApi {
     String password,
     Map attestation,
   ) async {
-    final request = new ApiBody(
+    final request = ApiBody(
         module: "TwoFactorAuth",
         method: "VerifySecurityKeyFinish",
         parameters: jsonEncode({
@@ -224,7 +224,7 @@ class AuthApi {
       "Password": password,
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
             module: "TwoFactorAuth",
             method: "VerifyBackupCode",
             parameters: parameters)
@@ -255,7 +255,7 @@ class AuthApi {
       "DeviceName": deviceName,
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
             module: "TwoFactorAuth",
             method: "SaveDevice",
             parameters: parameters)
@@ -286,7 +286,7 @@ class AuthApi {
       "Password": password,
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
             module: "TwoFactorAuth",
             method: "TrustDevice",
             parameters: parameters)
@@ -300,7 +300,7 @@ class AuthApi {
   }
 
   Future<int> getTwoFactorSettings() async {
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "TwoFactorAuth",
       method: "GetSettings",
     ).toMap();
@@ -313,7 +313,7 @@ class AuthApi {
   }
 
   void logout() async {
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Core",
       method: "Logout",
     ).toMap();

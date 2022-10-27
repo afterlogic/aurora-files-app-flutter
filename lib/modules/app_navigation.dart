@@ -49,6 +49,7 @@ class AppNavigation {
   static Route onGenerateRoute(RouteSettings settings) {
     if (settings.name?.startsWith(FilesRoute.name) == true) {
       final args = settings.arguments as FilesScreenArguments?;
+      //ignore: dead_code
       if (PlatformOverride.isIOS && false) {
         return CupertinoPageRoute(
             settings: RouteSettings(
@@ -59,7 +60,7 @@ class AppNavigation {
                     path: args.path,
                     isZip: args.isZip,
                   )
-                : FilesAndroid());
+                : const FilesAndroid());
       } else {
         return FadeRoute(
           page: args != null
@@ -67,7 +68,7 @@ class AppNavigation {
                   path: args.path,
                   isZip: args.isZip,
                 )
-              : FilesAndroid(),
+              : const FilesAndroid(),
           settings: RouteSettings(
             name: FilesRoute.name + (args == null ? "" : args.path),
           ),
@@ -81,10 +82,11 @@ class AppNavigation {
             settings: RouteSettings(
               name: settings.name,
             ),
-            builder: (context) => AuthAndroid());
+            builder: (context) => const AuthAndroid());
 
       case FileViewerRoute.name:
         final args = settings.arguments as FileViewerScreenArguments;
+        //ignore: dead_code
         if (PlatformOverride.isIOS && false) {
           return CupertinoPageRoute(
               settings: RouteSettings(
@@ -108,7 +110,6 @@ class AppNavigation {
                 filesPageState: args.filesPageState,
               ));
         }
-        break;
 
       case UpgradeRoute.name:
         final args = settings.arguments as UpgradeArg?;
@@ -118,15 +119,15 @@ class AppNavigation {
           ),
           page: UpgradeAndroid(args?.message ?? ''),
         );
-        break;
+
       case LoggerRoute.name:
         return FadeRoute(
           settings: RouteSettings(
             name: settings.name,
           ),
-          page: LoggerScreen(),
+          page: const LoggerScreen(),
         );
-        break;
+
       case FidoAuthRoute.name:
         final args = settings.arguments as FidoAuthRouteArgs;
         return FadeRoute(
@@ -135,7 +136,7 @@ class AppNavigation {
           ),
           page: FidoAuthWidget(args),
         );
-        break;
+
       case SelectTwoFactorRoute.name:
         final args = settings.arguments as SelectTwoFactorRouteArgs;
         return FadeRoute(
@@ -144,7 +145,7 @@ class AppNavigation {
           ),
           page: SelectTwoFactorWidget(args),
         );
-        break;
+
       case TrustDeviceRoute.name:
         final args = settings.arguments as TrustDeviceRouteArgs;
         return FadeRoute(
@@ -153,7 +154,7 @@ class AppNavigation {
           ),
           page: TrustDeviceWidget(args: args),
         );
-        break;
+
       case BackupCodeAuthRoute.name:
         final args = settings.arguments as BackupCodeAuthRouteArgs;
         return FadeRoute(
@@ -162,7 +163,7 @@ class AppNavigation {
           ),
           page: BackupCodeAuthWidget(args),
         );
-        break;
+
       case TwoFactorAuthRoute.name:
         final args = settings.arguments as TwoFactorAuthRouteArgs;
         return FadeRoute(
@@ -171,23 +172,22 @@ class AppNavigation {
           ),
           page: TwoFactorAuthWidget(args),
         );
-        break;
+
       case SettingsRoute.name:
         if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              builder: (context) => SettingsAndroid());
+              builder: (context) => const SettingsAndroid());
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              page: SettingsAndroid(),
+              page: const SettingsAndroid(),
               duration: 150);
         }
-        break;
 
       case EncryptionRoute.name:
         if (PlatformOverride.isIOS) {
@@ -195,64 +195,64 @@ class AppNavigation {
               settings: RouteSettings(
                 name: settings.name,
               ),
-              builder: (context) => EncryptionAndroid());
+              builder: (context) => const EncryptionAndroid());
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              page: EncryptionAndroid(),
+              page: const EncryptionAndroid(),
               duration: 150);
         }
-        break;
+
       case PgpSettingsRoute.name:
         if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              builder: (context) => PgpSettingWidget());
+              builder: (context) => const PgpSettingWidget());
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              page: PgpSettingWidget(),
+              page: const PgpSettingWidget(),
               duration: 150);
         }
-        break;
+
       case EncryptionServerRoute.name:
         if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              builder: (context) => EncryptionServer());
+              builder: (context) => const EncryptionServer());
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              page: EncryptionServer(),
+              page: const EncryptionServer(),
               duration: 150);
         }
-        break;
+
       case StorageInfoRoute.name:
         if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              builder: (context) => StorageInfoWidget());
+              builder: (context) => const StorageInfoWidget());
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              page: StorageInfoWidget(),
+              page: const StorageInfoWidget(),
               duration: 150);
         }
-        break;
+
       case PgpKeyModelRoute.name:
         final arguments = settings.arguments as List;
         if (PlatformOverride.isIOS) {
@@ -270,7 +270,7 @@ class AppNavigation {
               page: PgpKeyModelWidget(arguments[0], arguments[1], arguments[2]),
               duration: 150);
         }
-        break;
+
       case PgpKeyExportRoute.name:
         final arguments = settings.arguments as List;
         if (PlatformOverride.isIOS) {
@@ -288,23 +288,22 @@ class AppNavigation {
               page: ExportPgpKeyWidget(arguments.first, arguments.last),
               duration: 150);
         }
-        break;
+
       case CommonSettingsRoute.name:
         if (PlatformOverride.isIOS) {
           return CupertinoPageRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              builder: (context) => CommonSettingsAndroid());
+              builder: (context) => const CommonSettingsAndroid());
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              page: CommonSettingsAndroid(),
+              page: const CommonSettingsAndroid(),
               duration: 150);
         }
-        break;
 
       case AboutRoute.name:
         if (PlatformOverride.isIOS) {
@@ -312,16 +311,16 @@ class AppNavigation {
               settings: RouteSettings(
                 name: settings.name,
               ),
-              builder: (context) => AboutAndroid());
+              builder: (context) => const AboutAndroid());
         } else {
           return FadeRoute(
               settings: RouteSettings(
                 name: settings.name,
               ),
-              page: AboutAndroid(),
+              page: const AboutAndroid(),
               duration: 150);
         }
-        break;
+
       default:
         return MaterialPageRoute(
             settings: RouteSettings(

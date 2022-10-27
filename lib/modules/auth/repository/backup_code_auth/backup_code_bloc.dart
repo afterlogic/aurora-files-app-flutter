@@ -20,7 +20,7 @@ class BackupCodeBloc extends Bloc<BackupCodeEvent, BackupCodeState> {
     try {
       final result = await AppStore.authState.backupCodeAuth(state.code);
       if (!result) {
-        yield ErrorState("Invalid backup code");
+        yield const ErrorState("Invalid backup code");
         return;
       }
       await AppStore.authState.successLogin();

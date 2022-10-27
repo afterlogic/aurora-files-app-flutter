@@ -40,7 +40,7 @@ void main() async {
   runZonedGuarded<void>(
     () {
       runApp(
-        LoggerControllerWidget.wrap(App()),
+        LoggerControllerWidget.wrap(const App()),
       );
     },
     (error, stack) {

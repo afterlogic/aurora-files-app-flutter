@@ -20,7 +20,7 @@ class PgpKeyUtil {
   static PgpKeyUtil get instance =>
       _instance ??= PgpKeyUtil._(DI.get(), DI.get());
 
-  final Utf8Codec utf8 = Utf8Codec(allowMalformed: true);
+  final Utf8Codec utf8 = const Utf8Codec(allowMalformed: true);
   final Pgp pgp;
 
   final PgpKeyDao pgpKeyDao;

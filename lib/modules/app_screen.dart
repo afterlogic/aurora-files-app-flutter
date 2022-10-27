@@ -5,6 +5,7 @@ import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/http/interceptor.dart';
 import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -14,6 +15,8 @@ import 'auth/auth_route.dart';
 import 'files/files_route.dart';
 
 class App extends StatefulWidget {
+  const App({super.key});
+
   @override
   _AppState createState() => _AppState();
 }
@@ -23,12 +26,14 @@ class _AppState extends State<App> {
   final _settingsState = AppStore.settingsState;
   late Future<List<bool>> _localStorageInitialization;
   final navigatorKey = GlobalKey<NavigatorState>();
+  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
     super.initState();
     WebMailApi.onLogout = onLogout;
     _initLocalStorage();
+    AuroraSnackBar.init(scaffoldMessengerKey);
   }
 
   @override
@@ -57,12 +62,13 @@ class _AppState extends State<App> {
   }
 
   ThemeData? _getTheme(bool? isDarkTheme) {
-    if (isDarkTheme == false)
+    if (isDarkTheme == false) {
       return AppTheme.light;
-    else if (isDarkTheme == true)
+    } else if (isDarkTheme == true) {
       return AppTheme.dark;
-    else
+    } else {
       return null;
+    }
   }
 
   bool _canEnterMainApp(List<bool?>? localStorageInitializationResults) {
@@ -87,6 +93,7 @@ class _AppState extends State<App> {
                 final theme = _getTheme(_settingsState.isDarkTheme);
                 return MaterialApp(
                   navigatorKey: navigatorKey,
+                  scaffoldMessengerKey: scaffoldMessengerKey,
                   debugShowCheckedModeBanner: false,
                   title: BuildProperty.appName,
                   theme: theme ?? AppTheme.light,
@@ -108,7 +115,7 @@ class _AppState extends State<App> {
                     child: SelectableText(
                         "Could not start the app, please make a screenshot of the error and send it to support@afterlogic.com and we'll fix it!\nERROR: $err")));
           } else {
-            return Material(
+            return const Material(
               child: LoginGradient(),
             );
           }

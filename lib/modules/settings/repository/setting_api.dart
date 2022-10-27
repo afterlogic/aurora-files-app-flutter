@@ -15,10 +15,14 @@ class SettingApi {
     final resBody = await sendRequest(body);
 
     if (resBody['Result'] != null) {
-      return EncryptionSetting(
-        resBody['Result']["EnableModule"] ?? false,
-        resBody['Result']["EnableInPersonalStorage"] ?? false,
-      );
+      if (resBody['Result'] is Map) {
+        return EncryptionSetting(
+          resBody['Result']["EnableModule"] ?? false,
+          resBody['Result']["EnableInPersonalStorage"] ?? false,
+        );
+      } else {
+        return EncryptionSetting(false, false);
+      }
     } else {
       throw CustomException(getErrMsg(resBody));
     }

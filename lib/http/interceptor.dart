@@ -8,16 +8,20 @@ class WebMailApi {
   static Function(String)? onError;
   static Function? onLogout;
 
-  static Future<http.Response> request(String url,
-      [dynamic body, Map<String, String>? headers, String? token]) async {
+  static Future<http.Response> request(
+    String url, [
+    dynamic body,
+    Map<String, String>? headers,
+    String? token,
+  ]) async {
     if (onRequest != null) onRequest!("URL:$url\nBODY:$body");
-    Map<String, String> headers =
+    Map<String, String> _headers =
         token == null ? {} : {'Authorization': 'Bearer $token'};
-    headers.forEach((key, value) {
-      headers[key] = value;
+    headers?.forEach((key, value) {
+      _headers[key] = value;
     });
     final rawResponse =
-        await http.post(Uri.parse(url), body: body, headers: headers);
+        await http.post(Uri.parse(url), body: body, headers: _headers);
     final res = json.decode(rawResponse.body);
     // invalidEmailPassword || accessDenied
     if (res["ErrorCode"] == 102 || res["ErrorCode"] == 108) {

@@ -50,7 +50,7 @@ class PgpSettingPresenter {
 
   Future<void> _initContactKeys() async {
     externalKeys = await _pgpKeyApi.getKeyFromContacts();
-    if (_view.keysState.value is KeysState) {
+    if (_view.keysState.hasValue) {
       storePassword = await encryptionStorage.getStorePasswordStorage();
       _view.keysState.add(
         KeysState(
@@ -154,14 +154,14 @@ class PgpSettingPresenter {
   Future<void> addPrivateKey(CreateKeyResult result) async {
     var privateKey = LocalPgpKey(
         id: -1,
-        key: 'null',
+        key: '',
         email: result.email,
         isPrivate: true,
         length: result.length,
         name: result.name);
     var publicKey = LocalPgpKey(
         id: -1,
-        key: 'null',
+        key: '',
         email: result.email,
         isPrivate: false,
         length: result.length,

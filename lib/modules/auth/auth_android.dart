@@ -6,7 +6,6 @@ import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/screens/fido_auth/fido_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
-import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
@@ -34,6 +33,7 @@ class AuthAndroid extends StatefulWidget {
 class _AuthAndroidState extends State<AuthAndroid> {
   final _authFormKey = GlobalKey<FormState>();
   final _authState = AppStore.authState;
+  late NavigatorState _navigator;
   bool _showHostField = false;
   bool _obscureText = true;
 
@@ -41,9 +41,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
   void initState() {
     super.initState();
     _authState.isLoggingIn = false;
-    _authState.emailCtrl.text = _authState.userEmail ?? '';
-    _authState.passwordCtrl.text = "";
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _authState.emailCtrl.text = _authState.userEmail ?? '';
+      _authState.passwordCtrl.text = "";
+    });
     _authState.lastEmail.then((value) {
       if (value != null) {
         _authState.emailCtrl.text = value;
@@ -61,6 +62,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         DeviceOrientation.portraitDown,
       ]);
     }
+    _navigator = Navigator.of(context);
   }
 
   @override
@@ -91,8 +93,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         isFormValid: _authFormKey.currentState?.validate() ?? false,
         onTwoFactorAuth: (request) {
           if (request.hasSecurityKey == true && BuildProperty.useYubiKit) {
-            Navigator.pushNamed(
-              context,
+            _navigator.pushNamed(
               FidoAuthRoute.name,
               arguments: FidoAuthRouteArgs(
                 false,
@@ -100,8 +101,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
               ),
             );
           } else if (request.hasAuthenticatorApp == true) {
-            Navigator.pushNamed(
-              context,
+            _navigator.pushNamed(
               TwoFactorAuthRoute.name,
               arguments: TwoFactorAuthRouteArgs(
                 false,
@@ -111,11 +111,12 @@ class _AuthAndroidState extends State<AuthAndroid> {
           }
         },
         onSuccess: () async {
-          Navigator.pushReplacementNamed(context, FilesRoute.name,
-              arguments: FilesScreenArguments(path: ""));
+          _navigator.pushReplacementNamed(
+            FilesRoute.name,
+            arguments: FilesScreenArguments(path: ""),
+          );
         },
-        onShowUpgrade: (message) => Navigator.pushNamed(
-          context,
+        onShowUpgrade: (message) => _navigator.pushNamed(
           UpgradeRoute.name,
           arguments: UpgradeArg(message),
         ),
@@ -249,12 +250,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
   Widget _debugRouteToTwoFactor(Widget child) {
     if (kDebugMode) {
       return GestureDetector(
-        onLongPress: () => Navigator.pushNamed(
-          context,
+        onLongPress: () => _navigator.pushNamed(
           UpgradeRoute.name,
         ),
-        onDoubleTap: () => Navigator.pushNamed(
-          context,
+        onDoubleTap: () => _navigator.pushNamed(
           TwoFactorAuthRoute.name,
           arguments:
               TwoFactorAuthRouteArgs(false, RequestTwoFactor(true, true, true)),

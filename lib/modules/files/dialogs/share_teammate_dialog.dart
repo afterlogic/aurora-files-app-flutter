@@ -119,7 +119,6 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
   }
 
   void _changeShareRight(ShareAccessEntry share, ShareAccessRight access) {
-    if (share == null || access == null) return;
     _lastSelectedRight = access;
     final index = _fileShares.indexOf(share);
     setState(() {

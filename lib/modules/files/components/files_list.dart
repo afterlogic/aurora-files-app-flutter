@@ -32,9 +32,7 @@ class _FilesListState extends State<FilesList> {
           return const SizedBox.shrink();
         }
         final item = widget._filesPageState.currentFiles[index];
-        if (item == null) {
-          return const SizedBox.shrink();
-        } else if (item.isFolder) {
+        if (item.isFolder) {
           return FolderWidget(key: Key(item.guid ?? ''), folder: item);
         } else {
           return FileWidget(key: Key(item.guid ?? ''), file: item);

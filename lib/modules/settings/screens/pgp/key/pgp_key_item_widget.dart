@@ -34,7 +34,7 @@ class KeyWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: pgpKey.key == null
+                  child: pgpKey.key.isEmpty
                       ? const SizedBox(
                           width: 24,
                           height: 24,

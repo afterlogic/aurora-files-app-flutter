@@ -44,89 +44,84 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     final isTablet = LayoutConfig.of(context).isTablet;
     final theme = Theme.of(context);
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: isTablet
-            ? null
-            : AMAppBar(
-                title: Text(s.openPGP),
-              ),
-        body: StreamWidget<KeysState>(
-          keysState,
-          (_, state) {
-            if (state.isProgress) {
-              return const SizedBox.shrink();
-            }
-
-            final publicKeys =
-                state.public.map((item) => KeyWidget(item, openKey)).toList();
-            final externalKeys =
-                state.external.map((item) => KeyWidget(item, openKey)).toList();
-            final privateKeys =
-                state.private.map((item) => KeyWidget(item, openKey)).toList();
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    children: <Widget>[
-                      CheckboxListTile(
-                        value: state.storePassword,
-                        title: Text(s.label_store_password_in_session),
-                        onChanged: (bool? value) {
-                          if (value != null) _presenter.setStorePassword(value);
-                        },
-                      ),
-                      if (publicKeys.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10, top: 25),
-                          child: Text(
-                            s.public_keys,
-                            style: theme.textTheme.subtitle1,
-                          ),
-                        ),
-                      if (publicKeys.isNotEmpty) Column(children: publicKeys),
-                      if (privateKeys.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10, top: 25),
-                          child: Text(
-                            s.private_keys,
-                            style: theme.textTheme.subtitle1,
-                          ),
-                        ),
-                      if (privateKeys.isNotEmpty) Column(children: privateKeys),
-                      if (externalKeys.isNotEmpty == true)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: 10, top: 25),
-                              child: Text(
-                                s.label_pgp_contact_public_keys,
-                                style: theme.textTheme.subtitle1,
-                              ),
-                            ),
-                            ...externalKeys,
-                          ],
-                        ),
-                      if (externalKeys == null)
-                        const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                buttons(context, state, externalKeys),
-              ],
+      key: _scaffoldKey,
+      appBar: isTablet
+          ? null
+          : AMAppBar(
+              title: Text(s.openPGP),
+            ),
+      body: StreamWidget<KeysState>(
+        keysState,
+        (context, state) {
+          if (state.isProgress) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          },
-          initialData: KeysState([], [], [], null, true),
-        ));
+          }
+
+          final publicKeys =
+              state.public.map((item) => KeyWidget(item, openKey)).toList();
+          final externalKeys =
+              state.external.map((item) => KeyWidget(item, openKey)).toList();
+          final privateKeys =
+              state.private.map((item) => KeyWidget(item, openKey)).toList();
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  children: <Widget>[
+                    CheckboxListTile(
+                      value: state.storePassword,
+                      title: Text(s.label_store_password_in_session),
+                      onChanged: (bool? value) {
+                        if (value != null) _presenter.setStorePassword(value);
+                      },
+                    ),
+                    if (publicKeys.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10, top: 25),
+                        child: Text(
+                          s.public_keys,
+                          style: theme.textTheme.subtitle1,
+                        ),
+                      ),
+                    if (publicKeys.isNotEmpty) Column(children: publicKeys),
+                    if (privateKeys.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10, top: 25),
+                        child: Text(
+                          s.private_keys,
+                          style: theme.textTheme.subtitle1,
+                        ),
+                      ),
+                    if (privateKeys.isNotEmpty) Column(children: privateKeys),
+                    if (externalKeys.isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10, top: 25),
+                            child: Text(
+                              s.label_pgp_contact_public_keys,
+                              style: theme.textTheme.subtitle1,
+                            ),
+                          ),
+                          ...externalKeys,
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              buttons(context, state, externalKeys),
+            ],
+          );
+        },
+        initialData: KeysState([], [], [], null, true),
+      ),
+    );
   }
 
   Widget buttons(
@@ -140,14 +135,14 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
             width: 10,
           );
     final children = <Widget>[
-      if (externalKeys.isNotEmpty == true)
+      if (externalKeys.isNotEmpty)
         AMButton(
           child: Text(s.export_all_public_keys),
           onPressed: () {
             exportAll(state.external);
           },
         ),
-      if (externalKeys.isNotEmpty == true) space,
+      if (externalKeys.isNotEmpty) space,
       AMButton(
         onPressed: importKeyDialog,
         child: Text(s.import_keys_from_text),
@@ -181,7 +176,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
   }
 
   Future<void> openKey(LocalPgpKey pgpKey) async {
-    if (pgpKey.key == null) return;
+    if (pgpKey.key.isEmpty) return;
     if (pgpKey.isPrivate) {
       final password = await KeyRequestDialog.request(context);
       if (password == null) {

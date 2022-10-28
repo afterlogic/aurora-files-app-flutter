@@ -190,11 +190,13 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     try {
       final newShares =
           await widget.fileState.shareFileToTeammate(widget.file, _fileShares);
-      final map = widget.file.extendedProps == null
+      final map = widget.file.extendedProps.isEmpty
           ? {}
           : json.decode(widget.file.extendedProps);
       map["Shares"] = newShares;
-      final file = widget.file.copyWith(extendedProps: json.encode(map));
+      final file = widget.file.copyWith(
+        extendedProps: json.encode(map),
+      );
       if (!mounted) return;
       Navigator.pop(context, file);
     } catch (err) {

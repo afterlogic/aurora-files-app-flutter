@@ -226,7 +226,7 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
     hash: rawFile["Hash"] ?? '',
     extendedProps: rawFile["ExtendedProps"] != null
         ? jsonEncode(rawFile["ExtendedProps"])
-        : "[]",
+        : '',
     initVector: props != null ? props["InitializationVector"] : null,
     encryptedDecryptionKey: props != null ? props["ParanoidKey"] : null,
   );

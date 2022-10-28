@@ -117,7 +117,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _initExtendedProps() {
-    if (_file.extendedProps != null) {
+    if (_file.extendedProps.isNotEmpty) {
       try {
         _extendedProps = jsonDecode(_file.extendedProps);
       } catch (err) {

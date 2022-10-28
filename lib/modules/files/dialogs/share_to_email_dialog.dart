@@ -74,7 +74,6 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
     setState(() {});
     try {
       await widget.fileState.addDecryptedKey(context, widget.file, addedPgpKey);
-
       await widget.fileState.shareFileToContact(widget.file, canEdit, canSee);
       List shares = [];
       for (var item in canEdit) {
@@ -83,11 +82,13 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
       for (var item in canSee) {
         shares.add({"PublicId": item, "Access": 1});
       }
-      final map = widget.file.extendedProps == null
-          ? null
+      final map = widget.file.extendedProps.isEmpty
+          ? {}
           : json.decode(widget.file.extendedProps);
       map["Shares"] = shares;
-      final file = widget.file.copyWith(extendedProps: json.encode(map));
+      final file = widget.file.copyWith(
+        extendedProps: json.encode(map),
+      );
       if (!mounted) return;
       Navigator.pop(context, file);
     } catch (e) {
@@ -105,7 +106,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   }
 
   initShares() async {
-    if (widget.file.extendedProps == null) return;
+    if (widget.file.extendedProps.isEmpty) return;
     final map = json.decode(widget.file.extendedProps);
     if (map["Shares"] != null) {
       final shares = map["Shares"] as List;

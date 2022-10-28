@@ -486,7 +486,7 @@ abstract class _FilesState with Store {
       downloadUrl: '',
       thumbnailUrl: null,
       hash: '',
-      extendedProps: "[]",
+      extendedProps: '',
       isExternal: false,
       initVector: null,
     );

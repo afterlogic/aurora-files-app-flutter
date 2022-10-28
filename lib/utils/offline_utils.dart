@@ -74,7 +74,7 @@ LocalFile getFolderFromName(String name, String path) {
     viewUrl: '',
     downloadUrl: '',
     hash: '',
-    extendedProps: "[]",
+    extendedProps: '',
     isExternal: false,
   );
 }

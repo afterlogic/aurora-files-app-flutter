@@ -1,10 +1,17 @@
+import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:flutter/material.dart';
+import 'package:theme/app_theme.dart';
 
 class AuroraSnackBar {
   static late GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey;
+  static late SettingsState _settingsState;
 
-  static void init(GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey) {
+  static void init({
+    required GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey,
+    required SettingsState settingsState,
+  }) {
     _scaffoldMessengerKey = scaffoldMessengerKey;
+    _settingsState = settingsState;
   }
 
   static void showSnack({
@@ -18,9 +25,10 @@ class AuroraSnackBar {
       return;
     }
 
-    final theme = Theme.of(scaffoldMessenger.context);
-    final textColor = !isError ? theme.scaffoldBackgroundColor : Colors.white;
-    final backgroundColor = isError ? theme.errorColor : null;
+    final theme =
+        _settingsState.isDarkTheme == true ? AppTheme.dark : AppTheme.light;
+    final backgroundColor = isError ? theme.colorScheme.error : null;
+    final textColor = isError ? theme.colorScheme.onError : null;
     final snack = SnackBar(
       duration: duration,
       content: Text(

@@ -25,15 +25,15 @@ class _AppState extends State<App> {
   final _authState = AppStore.authState;
   final _settingsState = AppStore.settingsState;
   late Future<List<bool>> _localStorageInitialization;
-  final navigatorKey = GlobalKey<NavigatorState>();
-  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
     super.initState();
     WebMailApi.onLogout = onLogout;
     _initLocalStorage();
-    AuroraSnackBar.init(scaffoldMessengerKey);
+    _initSnackBar();
   }
 
   @override
@@ -46,10 +46,10 @@ class _AppState extends State<App> {
 
   onLogout() {
     _authState.onLogout();
-    navigatorKey.currentState?.pushReplacementNamed(AuthRoute.name);
+    _navigatorKey.currentState?.pushReplacementNamed(AuthRoute.name);
   }
 
-  Future _initLocalStorage() async {
+  Future<void> _initLocalStorage() async {
     _localStorageInitialization = Future.wait([
       _authState.getAuthSharedPrefs(),
       _settingsState.getUserEncryptionKeys(),
@@ -57,7 +57,14 @@ class _AppState extends State<App> {
     ]);
   }
 
-  Future _updateAppSettings() async {
+  void _initSnackBar() {
+    AuroraSnackBar.init(
+      scaffoldMessengerKey: _scaffoldMessengerKey,
+      settingsState: _settingsState,
+    );
+  }
+
+  Future<void> _updateAppSettings() async {
     _settingsState.updateAppData();
   }
 
@@ -92,8 +99,8 @@ class _AppState extends State<App> {
               builder: (_) {
                 final theme = _getTheme(_settingsState.isDarkTheme);
                 return MaterialApp(
-                  navigatorKey: navigatorKey,
-                  scaffoldMessengerKey: scaffoldMessengerKey,
+                  navigatorKey: _navigatorKey,
+                  scaffoldMessengerKey: _scaffoldMessengerKey,
                   debugShowCheckedModeBanner: false,
                   title: BuildProperty.appName,
                   theme: theme ?? AppTheme.light,

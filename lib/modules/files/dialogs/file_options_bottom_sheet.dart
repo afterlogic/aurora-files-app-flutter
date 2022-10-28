@@ -294,6 +294,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         _onError(err);
       }
       widget.filesPageState.onGetFiles();
+      if (!mounted) return;
       Navigator.pop(context);
     }
   }

@@ -55,9 +55,9 @@ class _FolderWidgetState extends State<FolderWidget> {
   }
 
   void _initShareProps() {
-    if (_extendedProps.containsKey("Shares")) {
-      final list = _extendedProps["Shares"] as List;
-    }
+    // if (_extendedProps.containsKey("Shares")) {
+    //   final list = _extendedProps["Shares"] as List;
+    // }
     if (_extendedProps.containsKey("SharedWithMeAccess")) {
       final code = _extendedProps["SharedWithMeAccess"] as int;
       _sharedWithMeAccess = ShareAccessRightHelper.fromCode(code);

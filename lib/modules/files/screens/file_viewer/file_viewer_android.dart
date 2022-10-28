@@ -399,6 +399,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
+    if (!mounted) return;
     await secureSharing.sharing(
       context,
       widget.filesState,
@@ -415,6 +416,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
+    if (!mounted) return;
     secureSharing.encryptSharing(
       context,
       widget.filesState,

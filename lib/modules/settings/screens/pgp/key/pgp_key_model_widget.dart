@@ -213,6 +213,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
       } else {
         widget.presenter.deleteKey(widget._pgpKey.email);
       }
+      if (!mounted) return;
       Navigator.pop(context, true);
     }
   }

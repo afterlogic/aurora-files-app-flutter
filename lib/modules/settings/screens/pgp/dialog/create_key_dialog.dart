@@ -22,7 +22,6 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
   final _lengthController = TextEditingController(text: lengths[1].toString());
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String? _error;
   bool _obscure = true;
   static const lengths = [1024, 2048, 3072, 4096, 8192];
   var length = lengths[1];
@@ -125,21 +124,21 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
     );
   }
 
-  String? _validateInput() {
-    _error = null;
-    _error = validateInput(_emailController.text, [ValidationTypes.email]);
-    if (_error != null) return _error;
-    _error = _validatePassword(_passwordController.text);
-    return _error;
-  }
+  // String? _validateInput() {
+  //   _error = null;
+  //   _error = validateInput(_emailController.text, [ValidationTypes.email]);
+  //   if (_error != null) return _error;
+  //   _error = _validatePassword(_passwordController.text);
+  //   return _error;
+  // }
 
-  String? _validatePassword(String text) {
-    final s = context.l10n;
-    if (text.isEmpty) {
-      return s.password_is_empty;
-    }
-    return null;
-  }
+  // String? _validatePassword(String text) {
+  //   final s = context.l10n;
+  //   if (text.isEmpty) {
+  //     return s.password_is_empty;
+  //   }
+  //   return null;
+  // }
 
   _generate() async {
     final s = context.l10n;

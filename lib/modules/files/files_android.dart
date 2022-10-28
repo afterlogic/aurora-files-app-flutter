@@ -292,6 +292,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (_filesState.currentStorages.isEmpty) {
       await _filesState.onGetStorages();
     }
+    if (!mounted) return;
     _getFiles(context, FilesLoadingType.none);
   }
 

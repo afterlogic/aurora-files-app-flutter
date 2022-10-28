@@ -34,8 +34,8 @@ _iosDeveloperId: ""
 _appleGroupId: ""
 _build: 165
 _version: ""
-_version_android: "{{_version}}+{{_build}}"
-version_ios: "{{_version}}+{{_build}}"
+_versionAndroid: "{{_version}}+{{_build}}"
+versionIos: "{{_version}}+{{_build}}"
 
 #android sign
 _jksName: "key.jks"
@@ -61,7 +61,7 @@ splashGradientBottom: ""
 #url
 privacyPolicy: ""
 termsOfService: ""
-autodiscover_url: ""
+autodiscoverUrl: ""
 
 #module
 canUpgradePlan: false
@@ -74,6 +74,6 @@ useMainLogo: true
 
 # fido
 useYubiKit: false
-yubico_flutter_lib: "path: module/mocks/yubico_flutter"
+yubicoFlutterLib: "path: module/mocks/yubico_flutter"
 #useYubiKit: true
-#yubico_flutter_lib: "git: https://github.com/afterlogic/yubico_flutter"
+#yubicoFlutterLib: "git: https://github.com/afterlogic/yubico_flutter"

@@ -18,7 +18,7 @@ splashGradientBottomDark: "#000000"
 
 privacyPolicy: ""
 termsOfService: ""
-autodiscover_url: "https://{domain}/aurora-autodiscover.json?email={email}"
+autodiscoverUrl: "https://{domain}/aurora-autodiscover.json?email={email}"
 
 canUpgradePlan: false
 legacyPgpKey: false
@@ -31,6 +31,6 @@ teamSharingEnable: false
 
 # fido
 useYubiKit: false
-yubico_flutter_lib: "path: module/mocks/yubico_flutter"
+yubicoFlutterLib: "path: module/mocks/yubico_flutter"
 #useYubiKit: true
-#yubico_flutter_lib: "git: https://github.com/afterlogic/yubico_flutter"
+#yubicoFlutterLib: "git: https://github.com/afterlogic/yubico_flutter"

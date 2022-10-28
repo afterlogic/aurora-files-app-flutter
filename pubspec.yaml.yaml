@@ -2,7 +2,7 @@ name: aurorafiles
 description: File management system for ...
 publish_to: none
 
-version: {{version_ios}}
+version: {{versionIos}}
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -93,7 +93,7 @@ dependencies:
 
   # fido
   yubico_flutter:
-    {{yubico_flutter_lib}}
+    {{yubicoFlutterLib}}
 
   # logger
   aurora_logger:

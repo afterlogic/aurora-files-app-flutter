@@ -22,7 +22,7 @@ class AuthApi {
 
       final domain = email.substring(dogIndex);
 
-      final url = BuildProperty.autodiscover_url
+      final url = BuildProperty.autodiscoverUrl
           .replaceFirst("{domain}", domain)
           .replaceFirst("{email}", email);
 

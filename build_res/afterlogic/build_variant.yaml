@@ -13,7 +13,7 @@ splashGradientTopDark: "#000000"
 splashGradientBottomDark: "#000000"
 
 privacyPolicy: "https://afterlogic.com/privacy-policy"
-autodiscover_url: "https://{domain}/aurora-autodiscover.json?email={email}"
+autodiscoverUrl: "https://{domain}/aurora-autodiscover.json?email={email}"
 
 pgpEnable: true
 secureSharingEnable: true

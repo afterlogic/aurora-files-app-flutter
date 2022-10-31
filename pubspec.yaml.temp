@@ -80,6 +80,7 @@ dependencies:
 
   #crashlytics
   firebase_core:
+  firebase_core_platform_interface: 4.5.1
   firebase_crashlytics: ^2.8.6
 
   theme:

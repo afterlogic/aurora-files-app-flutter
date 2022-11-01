@@ -5,13 +5,10 @@ import 'two_factor_event.dart';
 import 'two_factor_state.dart';
 
 class TwoFactorBloc extends Bloc<TwoFactorEvent, TwoFactorState> {
-  @override
-  TwoFactorState get initialState => InitialState();
+  TwoFactorBloc() : super(InitialState());
 
   @override
-  Stream<TwoFactorState> mapEventToState(
-    TwoFactorEvent event,
-  ) async* {
+  Stream<TwoFactorState> mapEventToState(TwoFactorEvent event,) async* {
     if (event is Verify) yield* _logIn(event);
   }
 
@@ -21,13 +18,13 @@ class TwoFactorBloc extends Bloc<TwoFactorEvent, TwoFactorState> {
     try {
       final result = await AppStore.authState.twoFactorAuth(state.pin);
       if (!result) {
-        yield ErrorState("Invalid pin");
+        yield const ErrorState("Invalid pin");
         return;
       }
       await AppStore.authState.successLogin();
       final daysCount = await AppStore.authState.getTrustDevicesForDays();
       yield CompleteState(daysCount);
-    } catch (err, s) {
+    } catch (err) {
       yield ErrorState(err.toString());
     }
   }

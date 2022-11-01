@@ -16,7 +16,7 @@ class MailTemplate {
     bool useKey,
     String file,
     String link,
-    String password,
+    String? password,
     String recipient,
     String sender,
   ) {
@@ -36,7 +36,7 @@ class MailTemplate {
     bool encryptedFile,
     bool useKey,
     String link,
-    String password,
+    String? password,
     String recipient,
     String sender,
   ) {

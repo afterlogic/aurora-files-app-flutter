@@ -1,14 +1,9 @@
-import 'dart:io';
-
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RenameDialog extends StatefulWidget {
@@ -17,10 +12,10 @@ class RenameDialog extends StatefulWidget {
   final FilesPageState filesPageState;
 
   const RenameDialog({
-    Key key,
-    @required this.file,
-    @required this.filesPageState,
-    @required this.filesState,
+    Key? key,
+    required this.file,
+    required this.filesPageState,
+    required this.filesState,
   }) : super(key: key);
 
   @override
@@ -30,7 +25,6 @@ class RenameDialog extends StatefulWidget {
 class _RenameDialogState extends State<RenameDialog> {
   final _fileNameCtrl = TextEditingController();
   final _renameFormKey = GlobalKey<FormState>();
-  S s;
   bool isRenaming = false;
   String errMsg = "";
 
@@ -60,7 +54,7 @@ class _RenameDialogState extends State<RenameDialog> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
       title: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -69,11 +63,11 @@ class _RenameDialogState extends State<RenameDialog> {
         child: isRenaming
             ? Row(
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: CircularProgressIndicator(),
                   ),
-                  SizedBox(width: 20.0),
+                  const SizedBox(width: 20.0),
                   Expanded(child: Text(s.renaming_to(_fileNameCtrl.text))),
                 ],
               )
@@ -83,12 +77,12 @@ class _RenameDialogState extends State<RenameDialog> {
                   controller: _fileNameCtrl,
                   autofocus: true,
                   decoration: InputDecoration(
-                    errorText: errMsg?.isEmpty == true ? null : errMsg,
+                    errorText: errMsg.isEmpty == true ? null : errMsg,
                     hintText: s.enter_new_name,
-                    border: UnderlineInputBorder(),
+                    border: const UnderlineInputBorder(),
                   ),
                   validator: (value) => validateInput(
-                    value,
+                    value ?? '',
                     [
                       ValidationTypes.empty,
                       ValidationTypes.uniqueName,
@@ -100,16 +94,15 @@ class _RenameDialogState extends State<RenameDialog> {
               ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.cancel),
           onPressed: () => Navigator.pop(context),
         ),
-        FlatButton(
-            child: Text(s.rename),
+        TextButton(
             onPressed: isRenaming
                 ? null
                 : () {
-                    if (!_renameFormKey.currentState.validate()) return;
+                    if (_renameFormKey.currentState?.validate() != true) return;
                     errMsg = "";
                     setState(() => isRenaming = true);
                     widget.filesState.onRename(
@@ -122,10 +115,12 @@ class _RenameDialogState extends State<RenameDialog> {
                       onSuccess: (String newNameFromServer) async {
                         await widget.filesPageState
                             .onGetFiles(path: widget.file.path);
+                        if (!mounted) return;
                         Navigator.pop(context, newNameFromServer);
                       },
                     );
-                  }),
+                  },
+            child: Text(s.rename)),
       ],
     );
   }

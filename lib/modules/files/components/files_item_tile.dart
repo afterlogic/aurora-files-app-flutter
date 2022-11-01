@@ -7,32 +7,30 @@ import 'package:provider/provider.dart';
 // wrapper for file items
 class SelectableFilesItemTile extends StatelessWidget {
   final Widget child;
-  final LocalFile file;
+  final LocalFile? file;
   final bool isSelected;
-  final Function onTap;
+  final void Function()? onTap;
 
-  const SelectableFilesItemTile(
-      {Key key,
-      @required this.child,
-      this.isSelected = false,
-      this.file,
-      this.onTap})
-      : super(key: key);
+  const SelectableFilesItemTile({
+    Key? key,
+    required this.child,
+    this.file,
+    this.isSelected = false,
+    this.onTap,
+  }) : super(key: key);
 
-  Function _getOnTapCb(FilesState filesState, FilesPageState filesPageState) {
-    if ((file != null &&
-            file.isFolder &&
-            filesState.filesToMoveCopy.contains(file)) ||
+  void Function()? _getOnTapCb(FilesState filesState, FilesPageState filesPageState) {
+    if ((file?.isFolder == true && filesState.filesToMoveCopy.contains(file)) ||
         file?.extendedProps == "fake") {
       return null;
     }
     if (filesPageState.filesLoading == FilesLoadingType.filesHidden ||
-        filesState.isMoveModeEnabled && file != null && !file.isFolder) {
+        filesState.isMoveModeEnabled && file?.isFolder == false) {
       return null;
-    } else if (filesPageState.selectedFilesIds.length > 0) {
+    } else if (filesPageState.selectedFilesIds.isNotEmpty) {
       return () => filesPageState.selectFile(file);
     } else {
-      return () => onTap();
+      return onTap;
     }
   }
 
@@ -42,15 +40,15 @@ class SelectableFilesItemTile extends StatelessWidget {
       color: Theme.of(context).selectedRowColor.withOpacity(0.5),
       child: Column(
         children: <Widget>[
-          SizedBox(height: 6.0),
+          const SizedBox(height: 6.0),
           ListTile(
             leading: SizedBox(
               width: thumbnailSize,
               height: thumbnailSize,
-              child: Icon(Icons.check_circle, color: Colors.white),
+              child: const Icon(Icons.check_circle, color: Colors.white),
             ),
           ),
-          SizedBox(height: 6.0),
+          const SizedBox(height: 6.0),
         ],
       ),
     );
@@ -66,17 +64,17 @@ class SelectableFilesItemTile extends StatelessWidget {
       onLongPress: filesState.isOfflineMode ||
               filesState.isMoveModeEnabled ||
               file == null ||
-              file.extendedProps == "fake" ||
-              filesPageState.selectedFilesIds.length > 0
+              file?.extendedProps == "fake" ||
+              filesPageState.selectedFilesIds.isNotEmpty
           ? null
           : () => filesPageState.selectFile(file),
       child: Stack(
         children: <Widget>[
           Column(
             children: <Widget>[
-              SizedBox(height: 6.0),
+              const SizedBox(height: 6.0),
               child,
-              SizedBox(height: 6.0),
+              const SizedBox(height: 6.0),
             ],
           ),
           if (isSelected) _buildSelectionOverlay(context),

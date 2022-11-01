@@ -1,11 +1,10 @@
 name: theme
 description: A new Flutter package.
-version: 0.0.1
-author:
-homepage:
+publish_to: none
+version: 0.0.3
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.18.2 <3.0.0'
 
 dependencies:
   flutter:
@@ -14,5 +13,3 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-flutter:

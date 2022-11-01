@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 
 class GroupLabel extends StatelessWidget {
   final String name;
-  final String description;
   final List<Widget> children;
+  final String? description;
   final EdgeInsets padding;
-  final Color background;
+  final Color? background;
 
   const GroupLabel({
-    this.name,
+    super.key,
+    required this.name,
+    required this.children,
     this.description,
-    this.children,
     this.padding = const EdgeInsets.all(20),
     this.background,
   });

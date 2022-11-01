@@ -1,8 +1,8 @@
 class ShareAccessHistoryItem {
-  final DateTime createdAt;
-  final String ipAddress;
-  final String action;
-  final String guestPublicId;
+  final DateTime? createdAt;
+  final String? ipAddress;
+  final String? action;
+  final String? guestPublicId;
 
   ShareAccessHistoryItem({
     this.createdAt,
@@ -13,7 +13,7 @@ class ShareAccessHistoryItem {
 
   factory ShareAccessHistoryItem.fromJson(Map<String, dynamic> json) {
     return ShareAccessHistoryItem(
-      createdAt: DateTime.tryParse(json["CreatedAt"]).toLocal(),
+      createdAt: DateTime.tryParse(json["CreatedAt"])?.toLocal(),
       ipAddress: json["IpAddress"],
       action: json["Action"],
       guestPublicId: json["GuestPublicId"],

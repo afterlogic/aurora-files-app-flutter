@@ -6,7 +6,7 @@ import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/models/storage.dart';
@@ -30,11 +30,10 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/asset_icon.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:filesize/filesize.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -43,16 +42,16 @@ import 'package:secure_sharing/secure_sharing.dart';
 
 class FileViewerAndroid extends StatefulWidget {
   final LocalFile immutableFile;
-  final File offlineFile;
   final FilesState filesState;
   final FilesPageState filesPageState;
+  final File? offlineFile;
 
-  FileViewerAndroid({
-    Key key,
-    @required this.immutableFile,
-    @required this.offlineFile,
-    @required this.filesState,
-    @required this.filesPageState,
+  const FileViewerAndroid({
+    Key? key,
+    required this.immutableFile,
+    required this.filesState,
+    required this.filesPageState,
+    this.offlineFile,
   }) : super(key: key);
 
   @override
@@ -63,18 +62,17 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   final _fileViewerScaffoldKey = GlobalKey<ScaffoldState>();
   SecureSharing secureSharing = DI.get();
   final _fileViewerState = FileViewerState();
-  S s;
-  LocalFile _file;
-  FileType _fileType;
+  late LocalFile _file;
+  late FileType _fileType;
   bool _showEncrypt = false;
   bool _isFileOffline = false;
   bool _isSyncingForOffline = false;
-  String password;
-  StorageType storageType;
-  bool isFolder;
+  String? password;
+  late StorageType storageType;
+  late bool isFolder;
   Map<String, dynamic> _extendedProps = {};
   bool _hasShares = false;
-  ShareAccessRight _sharedWithMeAccess;
+  ShareAccessRight? _sharedWithMeAccess;
 
   bool get _sharedWithMe => _sharedWithMeAccess != null;
 
@@ -96,7 +94,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     super.initState();
     _fileViewerState.fileState = widget.filesState;
     _file = widget.immutableFile;
-    _isFileOffline = _file.localId != null;
+    _isFileOffline = _file.localId != -1;
     _fileViewerState.file = widget.immutableFile;
     if (widget.offlineFile != null) {
       _fileViewerState.fileWithContents = widget.offlineFile;
@@ -113,13 +111,13 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     super.dispose();
     // delete files that did not finish their caching
     if (_fileViewerState.processingFile != null) {
-      _fileViewerState.processingFile.subscription?.cancel();
-      _fileViewerState.processingFile.fileOnDevice?.delete();
+      _fileViewerState.processingFile?.subscription?.cancel();
+      _fileViewerState.processingFile?.fileOnDevice.delete();
     }
   }
 
   void _initExtendedProps() {
-    if (_file.extendedProps != null) {
+    if (_file.extendedProps.isNotEmpty) {
       try {
         _extendedProps = jsonDecode(_file.extendedProps);
       } catch (err) {
@@ -166,17 +164,18 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _prepareShareFile(Function(PreparedForShare) complete) async {
+    final s = context.l10n;
     if (_fileViewerState.fileWithContents != null) {
       widget.filesState.prepareForShare(
         _file,
         context,
         storedFile: _fileViewerState.fileWithContents,
+        onStart: (_) {},
         onSuccess: complete,
         onError: _onError,
       );
     } else if (_fileViewerState.downloadProgress != null) {
-      showSnack(
-        context,
+      AuroraSnackBar.showSnack(
         msg: s.please_wait_until_loading,
         isError: false,
       );
@@ -211,12 +210,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
 
   void _deleteFile() async {
     final shouldDelete = await AMDialog.show<bool>(
-            context: context,
-            builder: (_) => DeleteConfirmationDialog(
-              itemsNumber: 1,
-              isFolder: _file.isFolder,
-            ),
-          );
+      context: context,
+      builder: (_) => DeleteConfirmationDialog(
+        itemsNumber: 1,
+        isFolder: _file.isFolder,
+      ),
+    );
     if (shouldDelete == true) {
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [_file],
@@ -227,15 +226,16 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         onError: (String err) {
           widget.filesPageState.filesLoading = FilesLoadingType.none;
           _onError(err);
-          ;
         },
       );
       widget.filesPageState.filesLoading = FilesLoadingType.filesVisible;
+      if (!mounted) return;
       Navigator.pop(context, _file);
     }
   }
 
   void _downloadFile() {
+    final s = context.l10n;
     widget.filesState.onDownloadFile(
       context,
       file: _file,
@@ -243,25 +243,26 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         // TODO VO: update ui without refreshing files
         widget.filesPageState
             .onGetFiles(showLoading: FilesLoadingType.filesHidden);
-        showSnack(
-          context,
+        AuroraSnackBar.showSnack(
           msg: s.downloading(_file.name),
           isError: false,
         );
       },
-      onSuccess: (File savedFile) => showSnack(context,
-          msg: s.downloaded_successfully_into(_file.name, savedFile.path),
-          isError: false,
-          duration: Duration(minutes: 10),
-          action: SnackBarAction(
-            label: s.oK,
-            onPressed: () => hideSnack(context),
-          )),
+      onSuccess: (File savedFile) => AuroraSnackBar.showSnack(
+        msg: s.downloaded_successfully_into(_file.name, savedFile.path),
+        isError: false,
+        duration: const Duration(minutes: 10),
+        action: SnackBarAction(
+          label: s.oK,
+          onPressed: () => AuroraSnackBar.hideSnack(),
+        ),
+      ),
       onError: _onError,
     );
   }
 
   Future<void> _setFileForOffline() async {
+    final s = context.l10n;
     if (widget.filesState.isOfflineMode) {
       widget.filesState.onSetFileOffline(_file, context,
           onStart: (process) {
@@ -272,6 +273,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           onSuccess: () async {
             _fileViewerState.processingFile = null;
             await widget.filesPageState.onGetFiles();
+            if (!mounted) return;
             Navigator.pop(context, _file);
           },
           onError: (err) => _fileViewerState.processingFile = null);
@@ -281,9 +283,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
           _isSyncingForOffline = true;
           _isFileOffline = !_isFileOffline;
         });
-        if (_file.localId == null) {
-          showSnack(
-            context,
+        if (_file.localId == -1) {
+          AuroraSnackBar.showSnack(
             msg: s.synch_file_progress,
             isError: false,
           );
@@ -296,9 +297,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             },
             onSuccess: () async {
               _fileViewerState.processingFile = null;
-              if (_file.localId == null) {
-                showSnack(
-                  context,
+              if (_file.localId == -1) {
+                AuroraSnackBar.showSnack(
                   msg: s.synched_successfully,
                   isError: false,
                 );
@@ -319,6 +319,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   Future<void> _shareWithTeammates() async {
+    final s = context.l10n;
     if (widget.immutableFile.initVector != null &&
         widget.immutableFile.encryptedDecryptionKey == null) {
       return AMDialog.show(
@@ -359,6 +360,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         _onError(err);
       }
       widget.filesPageState.onGetFiles();
+      if (!mounted) return;
       Navigator.pop(context);
     }
   }
@@ -375,6 +377,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   Future<void> _secureSharing() async {
+    final s = context.l10n;
     if (_file.published == false && widget.immutableFile.initVector != null) {
       if (widget.immutableFile.encryptedDecryptionKey == null) {
         return AMDialog.show(
@@ -396,6 +399,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
+    if (!mounted) return;
     await secureSharing.sharing(
       context,
       widget.filesState,
@@ -403,7 +407,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
       userPublicKey,
       pgpKeyUtil,
       preparedForShare,
-      s,
     );
     _file = preparedForShare.localFile;
     setState(() {});
@@ -413,6 +416,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
+    if (!mounted) return;
     secureSharing.encryptSharing(
       context,
       widget.filesState,
@@ -426,14 +430,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         );
       },
       DI.get(),
-      s,
     );
     _file = preparedForShare.localFile;
     setState(() {});
   }
 
   Widget _getPreviewContent(BuildContext context) {
-    final previewIconSize = 120.0;
+    final s = context.l10n;
+    const previewIconSize = 120.0;
     Widget result;
     if (_file.initVector != null && _showEncrypt == false) {
       result = Column(
@@ -499,12 +503,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _onError(dynamic error) {
-    showSnack(context, msg: '$error');
+    AuroraSnackBar.showSnack(msg: '$error');
   }
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, _file);
@@ -541,7 +545,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     ),
                     if (!PlatformOverride.isIOS)
                       IconButton(
-                        icon: Icon(Icons.file_download),
+                        icon: const Icon(Icons.file_download),
                         tooltip: s.download,
                         onPressed: _downloadFile,
                       ),
@@ -558,14 +562,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                             : s.btn_shareable_link,
                         onPressed: _secureSharing,
                       ),
-                    if (_file.downloadUrl != null && !PlatformOverride.isIOS)
+                    if (_file.downloadUrl.isNotEmpty && !PlatformOverride.isIOS)
                       IconButton(
-                        icon: Icon(Icons.file_download),
+                        icon: const Icon(Icons.file_download),
                         tooltip: s.download,
                         onPressed: _downloadFile,
                       ),
                     IconButton(
-                      icon: Icon(Icons.delete_outline),
+                      icon: const Icon(Icons.delete_outline),
                       tooltip: s.delete_file,
                       onPressed: _deleteFile,
                     ),
@@ -585,7 +589,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           PopupMenuItem(
                             value: _shareWithTeammates,
                             child: ListTile(
-                              leading: Icon(Icons.share),
+                              leading: const Icon(Icons.share),
                               title: Text(s.label_share_with_teammates),
                             ),
                           ),
@@ -605,14 +609,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         PopupMenuItem(
                           value: _moveFile,
                           child: ListTile(
-                            leading: Icon(MdiIcons.fileMove),
+                            leading: const Icon(MdiIcons.fileMove),
                             title: Text(s.copy_or_move),
                           ),
                         ),
                         PopupMenuItem(
                           value: _renameFile,
                           child: ListTile(
-                            leading: Icon(Icons.edit),
+                            leading: const Icon(Icons.edit),
                             title: Text(s.rename),
                           ),
                         ),
@@ -635,7 +639,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     content: _file.name,
                     isPublic: _file.published,
                     isShared: _hasShares,
-                    isOffline: _file.localId != null,
+                    isOffline: _file.localId != -1,
                     isEncrypted: _file.initVector != null,
                   ),
                   Row(
@@ -646,7 +650,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           content: filesize(_file.size),
                         ),
                       ),
-                      SizedBox(width: 30),
+                      const SizedBox(width: 30),
                       Expanded(
                         child: InfoListTile(
                           label: s.created,
@@ -671,11 +675,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     onTap: _isSyncingForOffline ? null : _setFileForOffline,
-                    leading: Icon(Icons.airplanemode_active),
+                    leading: const Icon(Icons.airplanemode_active),
                     title: Text(s.offline),
                     trailing: Switch.adaptive(
                       value: _isFileOffline,
-                      activeColor: Theme.of(context).accentColor,
+                      activeColor: Theme.of(context).colorScheme.secondary,
                       onChanged: _isSyncingForOffline
                           ? null
                           : (bool val) => _setFileForOffline(),

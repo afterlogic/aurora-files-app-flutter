@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
@@ -19,9 +19,9 @@ class FilesAppBar extends StatefulWidget {
   final Function(BuildContext) onDeleteFiles;
   final bool isAppBar;
 
-  FilesAppBar({
-    Key key,
-    @required this.onDeleteFiles,
+  const FilesAppBar({
+    Key? key,
+    required this.onDeleteFiles,
     this.isAppBar = true,
   }) : super(key: key);
 
@@ -31,10 +31,9 @@ class FilesAppBar extends StatefulWidget {
 
 class _FilesAppBarState extends State<FilesAppBar>
     with TickerProviderStateMixin {
-  FilesState _filesState;
-  S s;
-  FilesPageState _filesPageState;
-  AnimationController _appBarIconAnimCtrl;
+  late FilesState _filesState;
+  late FilesPageState _filesPageState;
+  late AnimationController _appBarIconAnimCtrl;
   final _searchInputCtrl = TextEditingController();
 
   @override
@@ -42,7 +41,7 @@ class _FilesAppBarState extends State<FilesAppBar>
     super.initState();
     _appBarIconAnimCtrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
   }
 
@@ -62,20 +61,21 @@ class _FilesAppBarState extends State<FilesAppBar>
   }
 
   void _search() {
-    FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).requestFocus(FocusNode());
     _filesPageState.onGetFiles(
       searchPattern: _searchInputCtrl.text,
     );
   }
 
   AMAppBar _getAppBar(BuildContext context) {
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     if (widget.isAppBar && isTablet) {
       return AMAppBar(
-        key: Key("default"),
-        leading: _filesPageState.pagePath.length > 0
+        key: const Key("default"),
+        leading: _filesPageState.pagePath.isNotEmpty
             ? IconButton(
-                icon: Icon(Icons.arrow_back_ios),
+                icon: const Icon(Icons.arrow_back_ios),
                 onPressed: Navigator.of(context).pop,
               )
             : null,
@@ -84,6 +84,14 @@ class _FilesAppBarState extends State<FilesAppBar>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             PopupMenuButton<String>(
+              enabled: _filesPageState.pagePath.isNotEmpty,
+              onSelected: (String folder) {
+                Navigator.popUntil(
+                  context,
+                  ModalRoute.withName(FilesRoute.name + folder),
+                );
+              },
+              itemBuilder: _getFolderPopupMenu,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -93,79 +101,30 @@ class _FilesAppBarState extends State<FilesAppBar>
                   children: <Widget>[
                     Text(_getFolderName()),
                     if (_filesPageState.pagePath.isNotEmpty)
-                      Icon(Icons.arrow_drop_down),
+                      const Icon(Icons.arrow_drop_down),
                   ],
                 ),
               ),
-              enabled: _filesPageState.pagePath.isNotEmpty,
-              onSelected: (String folder) {
-                Navigator.popUntil(
-                  context,
-                  ModalRoute.withName(FilesRoute.name + folder),
-                );
-              },
-              itemBuilder: (BuildContext context) {
-                return <PopupMenuEntry<String>>[
-                  ..._filesState.folderNavStack.map((String path) {
-                    if (_filesState.folderNavStack.indexOf(path) ==
-                        _filesState.folderNavStack.length - 1) {
-                      return null;
-                    } else if (path.isNotEmpty && (path.endsWith(".zip"))) {
-                      return PopupMenuItem<String>(
-                        value: path,
-                        child: ListTile(
-                          leading: Icon(MdiIcons.zipBoxOutline),
-                          title: Text(
-                            path.split("/").last,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      );
-                    } else if (path.isNotEmpty) {
-                      return PopupMenuItem<String>(
-                        value: path,
-                        child: ListTile(
-                          leading: Icon(Icons.folder),
-                          title: Text(
-                            path.split("/").last,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      );
-                    } else {
-                      return PopupMenuItem<String>(
-                        value: "",
-                        child: ListTile(
-                          leading: Icon(Icons.storage),
-                          title: Text(_filesState.selectedStorage.displayName),
-                        ),
-                      );
-                    }
-                  }),
-                ];
-              },
             ),
-            if (_filesState.selectedStorage.displayName.length > 0)
-              SizedBox(height: 2),
-            if (_filesState.selectedStorage.displayName.length > 0)
+            if (_filesState.selectedStorage.displayName.isNotEmpty)
+              const SizedBox(height: 2),
+            if (_filesState.selectedStorage.displayName.isNotEmpty)
               Text(
                 _filesState.selectedStorage.displayName,
-                style: TextStyle(fontSize: 10.0),
+                style: const TextStyle(fontSize: 10.0),
               )
           ],
         ),
       );
     }
 
-    if (_filesPageState.selectedFilesIds.length > 0) {
+    if (_filesPageState.selectedFilesIds.isNotEmpty) {
       return AMAppBar(
-        key: Key("select"),
+        key: const Key("select"),
         backgroundColor:
             widget.isAppBar ? Theme.of(context).primaryColorDark : null,
         leading: IconButton(
-          icon: Icon(Icons.clear),
+          icon: const Icon(Icons.clear),
           onPressed: () => _filesPageState.quitSelectMode(),
         ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
@@ -179,7 +138,7 @@ class _FilesAppBarState extends State<FilesAppBar>
               ]
             : [
                 IconButton(
-                  icon: Icon(MdiIcons.fileMove),
+                  icon: const Icon(MdiIcons.fileMove),
                   tooltip: "Move/Copy files",
                   onPressed: () {
                     _filesState.updateFilesCb = _filesPageState.onGetFiles;
@@ -191,7 +150,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete_outline),
+                  icon: const Icon(Icons.delete_outline),
                   tooltip: "Delete files",
                   onPressed: () => widget.onDeleteFiles(context),
                 ),
@@ -200,10 +159,10 @@ class _FilesAppBarState extends State<FilesAppBar>
     } else if (_filesState.isMoveModeEnabled || _filesState.isShareUpload) {
       if (!widget.isAppBar) {
         return AMAppBar(
-          key: Key("move"),
-          backgroundColor: Theme.of(context).accentColor,
+          key: const Key("move"),
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           leading: IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: _filesState.isMoveModeEnabled
                 ? _filesState.disableMoveMode
                 : _filesState.disableUploadShared,
@@ -216,7 +175,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   : s.upload_file),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.create_new_folder),
+              icon: const Icon(Icons.create_new_folder),
               tooltip: s.add_folder,
               onPressed: () => AMDialog.show(
                 context: context,
@@ -230,15 +189,15 @@ class _FilesAppBarState extends State<FilesAppBar>
         );
       }
       return AMAppBar(
-        key: Key("move"),
-        backgroundColor: Theme.of(context).accentColor,
-        leading: _filesPageState.pagePath.length > 0
+        key: const Key("move"),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        leading: _filesPageState.pagePath.isNotEmpty
             ? IconButton(
-                icon: Icon(Icons.arrow_back_ios),
+                icon: const Icon(Icons.arrow_back_ios),
                 onPressed: Navigator.of(context).pop,
               )
             : IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: _filesState.isMoveModeEnabled
                     ? _filesState.disableMoveMode
                     : _filesState.disableUploadShared,
@@ -253,20 +212,20 @@ class _FilesAppBarState extends State<FilesAppBar>
                     ? s.upload_files(
                         _filesState.filesToShareUpload.length.toString())
                     : s.upload_file),
-            SizedBox(height: 2),
+            const SizedBox(height: 2),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Text(
                 _filesState.selectedStorage.displayName +
                     _filesPageState.pagePath,
-                style: TextStyle(fontSize: 10.0),
+                style: const TextStyle(fontSize: 10.0),
               ),
             )
           ],
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.create_new_folder),
+            icon: const Icon(Icons.create_new_folder),
             tooltip: s.add_folder,
             onPressed: () => AMDialog.show(
               context: context,
@@ -278,7 +237,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           ),
           if (_filesState.currentStorages.length > 1)
             PopupMenuButton<Storage>(
-              icon: Icon(Icons.storage),
+              icon: const Icon(Icons.storage),
               onSelected: (Storage storage) async {
                 Navigator.of(context).popUntil((Route<dynamic> route) {
                   return route.isFirst;
@@ -292,43 +251,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   ),
                 );
               },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<Storage>>[
-                ..._filesState.currentStorages.map((Storage storage) {
-                  bool enable = true;
-                  if (_filesState.isMoveModeEnabled ||
-                      _filesState.isShareUpload) {
-                    if (storage.type == StorageType.shared) {
-                      enable = false;
-                    }
-                  }
-                  if (_filesState.isMoveModeEnabled) {
-                    final copyFromEncrypted = StorageTypeHelper.toEnum(
-                            _filesState.filesToMoveCopy.first.type) ==
-                        StorageType.encrypted;
-                    if (copyFromEncrypted) {
-                      if (storage.type != StorageType.encrypted) {
-                        enable = false;
-                      }
-                    } else {
-                      if (storage.type == StorageType.encrypted) {
-                        enable = false;
-                      }
-                    }
-                  }
-                  if (enable) {
-                    return PopupMenuItem<Storage>(
-                      enabled: storage.type != _filesState.selectedStorage.type,
-                      value: storage,
-                      child: ListTile(
-                        leading: Icon(Icons.storage),
-                        title: Text(storage.displayName),
-                      ),
-                    );
-                  } else {
-                    return null;
-                  }
-                }),
-              ],
+              itemBuilder: _getStoragePopupMenu,
             )
         ],
       );
@@ -336,12 +259,12 @@ class _FilesAppBarState extends State<FilesAppBar>
       if (!widget.isAppBar) {
         return AMAppBar(
           leading: IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: _search,
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 _searchInputCtrl.text = "";
                 _filesPageState.isSearchMode = false;
@@ -358,7 +281,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   controller: _searchInputCtrl,
                   placeholder: s.search,
                   suffix: IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
                       _searchInputCtrl.text = "";
                       _filesPageState.isSearchMode = false;
@@ -371,20 +294,20 @@ class _FilesAppBarState extends State<FilesAppBar>
               : TextField(
                   autofocus: true,
                   onSubmitted: (_) => _search(),
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                   controller: _searchInputCtrl,
                   decoration: InputDecoration.collapsed(
                     border: InputBorder.none,
-                    hintStyle: TextStyle(color: Colors.black38),
+                    hintStyle: const TextStyle(color: Colors.black38),
                     hintText: s.search,
                   ),
                 ),
         );
       }
       return AMAppBar(
-        key: Key("search"),
+        key: const Key("search"),
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () {
             _searchInputCtrl.text = "";
             _filesPageState.isSearchMode = false;
@@ -398,21 +321,21 @@ class _FilesAppBarState extends State<FilesAppBar>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(s.search),
-            if (_filesState.selectedStorage.displayName.length > 0)
-              SizedBox(height: 2),
-            if (_filesState.selectedStorage.displayName.length > 0)
+            if (_filesState.selectedStorage.displayName.isNotEmpty)
+              const SizedBox(height: 2),
+            if (_filesState.selectedStorage.displayName.isNotEmpty)
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
                   _filesState.selectedStorage.displayName +
                       _filesPageState.pagePath,
-                  style: TextStyle(fontSize: 10.0),
+                  style: const TextStyle(fontSize: 10.0),
                 ),
               )
           ],
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
+          preferredSize: const Size.fromHeight(kToolbarHeight),
           child: Container(
             padding: const EdgeInsets.all(12.0),
             child: PlatformOverride.isIOS
@@ -422,12 +345,12 @@ class _FilesAppBarState extends State<FilesAppBar>
                     controller: _searchInputCtrl,
                     placeholder: s.search,
                     suffix: IconButton(
-                        icon: Icon(Icons.search),
+                        icon: const Icon(Icons.search),
                         color: Colors.white,
                         onPressed: _search),
                   )
                 : ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                     child: Container(
                       color: Colors.white54,
                       child: Padding(
@@ -435,14 +358,14 @@ class _FilesAppBarState extends State<FilesAppBar>
                         child: TextField(
                           autofocus: true,
                           onSubmitted: (_) => _search(),
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                           controller: _searchInputCtrl,
                           decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintStyle: TextStyle(color: Colors.black38),
+                              hintStyle: const TextStyle(color: Colors.black38),
                               hintText: s.search,
                               suffixIcon: IconButton(
-                                icon: Icon(Icons.search),
+                                icon: const Icon(Icons.search),
                                 color: Colors.black,
                                 onPressed: _search,
                               )),
@@ -456,21 +379,21 @@ class _FilesAppBarState extends State<FilesAppBar>
     } else {
       if (!widget.isAppBar) {
         return AMAppBar(
-          key: Key("default"),
+          key: const Key("default"),
           leading: IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             tooltip: s.search,
             onPressed: () => _filesPageState.isSearchMode = true,
           ),
         );
       }
       return AMAppBar(
-        key: Key("default"),
+        key: const Key("default"),
         leading: !widget.isAppBar
-            ? SizedBox.shrink()
-            : (_filesPageState.pagePath.length > 0
+            ? const SizedBox.shrink()
+            : (_filesPageState.pagePath.isNotEmpty
                 ? IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
+                    icon: const Icon(Icons.arrow_back_ios),
                     onPressed: Navigator.of(context).pop,
                   )
                 : null),
@@ -481,6 +404,14 @@ class _FilesAppBarState extends State<FilesAppBar>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   PopupMenuButton<String>(
+                    enabled: _filesPageState.pagePath.isNotEmpty,
+                    onSelected: (String folder) {
+                      Navigator.popUntil(
+                        context,
+                        ModalRoute.withName(FilesRoute.name + folder),
+                      );
+                    },
+                    itemBuilder: _getFolderPopupMenu,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -490,74 +421,23 @@ class _FilesAppBarState extends State<FilesAppBar>
                         children: <Widget>[
                           Text(_getFolderName()),
                           if (_filesPageState.pagePath.isNotEmpty)
-                            Icon(Icons.arrow_drop_down),
+                            const Icon(Icons.arrow_drop_down),
                         ],
                       ),
                     ),
-                    enabled: _filesPageState.pagePath.isNotEmpty,
-                    onSelected: (String folder) {
-                      Navigator.popUntil(
-                        context,
-                        ModalRoute.withName(FilesRoute.name + folder),
-                      );
-                    },
-                    itemBuilder: (BuildContext context) {
-                      return <PopupMenuEntry<String>>[
-                        ..._filesState.folderNavStack.map((String path) {
-                          if (_filesState.folderNavStack.indexOf(path) ==
-                              _filesState.folderNavStack.length - 1) {
-                            return null;
-                          } else if (path.isNotEmpty &&
-                              (path.endsWith(".zip"))) {
-                            return PopupMenuItem<String>(
-                              value: path,
-                              child: ListTile(
-                                leading: Icon(MdiIcons.zipBoxOutline),
-                                title: Text(
-                                  path.split("/").last,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            );
-                          } else if (path.isNotEmpty) {
-                            return PopupMenuItem<String>(
-                              value: path,
-                              child: ListTile(
-                                leading: Icon(Icons.folder),
-                                title: Text(
-                                  path.split("/").last,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            );
-                          } else {
-                            return PopupMenuItem<String>(
-                              value: "",
-                              child: ListTile(
-                                leading: Icon(Icons.storage),
-                                title: Text(
-                                    _filesState.selectedStorage.displayName),
-                              ),
-                            );
-                          }
-                        }),
-                      ];
-                    },
                   ),
-                  if (_filesState.selectedStorage.displayName.length > 0)
-                    SizedBox(height: 2),
-                  if (_filesState.selectedStorage.displayName.length > 0)
+                  if (_filesState.selectedStorage.displayName.isNotEmpty)
+                    const SizedBox(height: 2),
+                  if (_filesState.selectedStorage.displayName.isNotEmpty)
                     Text(
                       _filesState.selectedStorage.displayName,
-                      style: TextStyle(fontSize: 10.0),
+                      style: const TextStyle(fontSize: 10.0),
                     )
                 ],
               ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             tooltip: s.search,
             onPressed: () => _filesPageState.isSearchMode = true,
           ),
@@ -571,11 +451,94 @@ class _FilesAppBarState extends State<FilesAppBar>
     }
   }
 
+  List<PopupMenuEntry<String>> _getFolderPopupMenu(BuildContext context) {
+    final result = <PopupMenuEntry<String>>[];
+    for (int i = 0; i < _filesState.folderNavStack.length; i++) {
+      if (i == _filesState.folderNavStack.length - 1) {
+        continue;
+      }
+      final path = _filesState.folderNavStack[i];
+      PopupMenuEntry<String> menuItem;
+      if (path.isNotEmpty && (path.endsWith(".zip"))) {
+        menuItem = PopupMenuItem<String>(
+          value: path,
+          child: ListTile(
+            leading: const Icon(MdiIcons.zipBoxOutline),
+            title: Text(
+              path.split("/").last,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
+      } else if (path.isNotEmpty) {
+        menuItem = PopupMenuItem<String>(
+          value: path,
+          child: ListTile(
+            leading: const Icon(Icons.folder),
+            title: Text(
+              path.split("/").last,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
+      } else {
+        menuItem = PopupMenuItem<String>(
+          value: "",
+          child: ListTile(
+            leading: const Icon(Icons.storage),
+            title: Text(_filesState.selectedStorage.displayName),
+          ),
+        );
+      }
+      result.add(menuItem);
+    }
+    return result;
+  }
+
+  List<PopupMenuEntry<Storage>> _getStoragePopupMenu(BuildContext context) {
+    final result = <PopupMenuEntry<Storage>>[];
+    for (int i = 0; i < _filesState.currentStorages.length; i++) {
+      final storage = _filesState.currentStorages[i];
+      bool enable = true;
+      if (_filesState.isMoveModeEnabled || _filesState.isShareUpload) {
+        if (storage.type == StorageType.shared) {
+          enable = false;
+        }
+      }
+      if (_filesState.isMoveModeEnabled) {
+        final copyFromEncrypted =
+            StorageTypeHelper.toEnum(_filesState.filesToMoveCopy.first.type) ==
+                StorageType.encrypted;
+        if (copyFromEncrypted) {
+          if (storage.type != StorageType.encrypted) {
+            enable = false;
+          }
+        } else {
+          if (storage.type == StorageType.encrypted) {
+            enable = false;
+          }
+        }
+      }
+      if (enable) {
+        result.add(PopupMenuItem<Storage>(
+          enabled: storage.type != _filesState.selectedStorage.type,
+          value: storage,
+          child: ListTile(
+            leading: const Icon(Icons.storage),
+            title: Text(storage.displayName),
+          ),
+        ));
+      }
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
-    s = Str.of(context);
     return Observer(
       builder: (_) {
         final appBar = _getAppBar(context);
@@ -585,12 +548,12 @@ class _FilesAppBarState extends State<FilesAppBar>
           return ListTile(
             leading: appBar.leading,
             title: appBar.title,
-            trailing: appBar.actions == null
-                ? null
-                : Row(
+            trailing: appBar.actions?.isNotEmpty == true
+                ? Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: appBar.actions,
-                  ),
+                    children: appBar.actions ?? [],
+                  )
+                : null,
           );
         }
       },

@@ -18,8 +18,7 @@ import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/stream_util.dart';
 import 'package:crypto_stream/algorithm/aes.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:encrypt/encrypt.dart' as prefixEncrypt;
-import 'package:flutter/widgets.dart';
+import 'package:encrypt/encrypt.dart' as encrypt_lib;
 import 'package:http/http.dart' as http;
 
 class FilesApi {
@@ -30,17 +29,18 @@ class FilesApi {
     final List<LocalFile> files = [];
 
     unsortedFiles.forEach((item) {
-      if (item.isFolder)
+      if (item.isFolder) {
         folders.add(item);
-      else
+      } else {
         files.add(item);
+      }
     });
 
     return [...folders, ...files].toList();
   }
 
   Future<List<Storage>> getStorages() async {
-    final body = new ApiBody(module: "Files", method: "GetStorages");
+    final body = ApiBody(module: "Files", method: "GetStorages");
     final res = await sendRequest(body);
 
     if (res['Result'] is List) {
@@ -62,8 +62,8 @@ class FilesApi {
       "PathRequired": false,
     });
 
-    final body = new ApiBody(
-        module: "Files", method: "GetFiles", parameters: parameters);
+    final body =
+        ApiBody(module: "Files", method: "GetFiles", parameters: parameters);
 
     final res = await sendRequest(body);
 
@@ -73,8 +73,8 @@ class FilesApi {
       res['Result']['Items']
           .forEach((file) => unsortedList.add(getFileObjFromResponse(file)));
 
-      return new GetFilesResponse(
-          _sortFiles(unsortedList), quota?.limit == 0 ? null : quota);
+      return GetFilesResponse(_sortFiles(unsortedList),
+          (quota.limit == null || quota.limit == 0) ? null : quota);
     } else {
       throw CustomException(getErrMsg(res));
     }
@@ -83,24 +83,24 @@ class FilesApi {
   Future<void> uploadFile(
     ProcessingFile processingFile,
     bool shouldEncrypt, {
-    String url,
-    String name,
-    bool passwordEncryption,
-    String encryptionRecipientEmail,
-    List<LocalPgpKey> addedPgpKey,
-    @required String storageType,
-    @required String path,
-    Function(int) updateProgress,
-    @required Function() onSuccess,
-    @required Function(String) onError,
-    String password,
+    String? url,
+    String? name,
+    bool? passwordEncryption,
+    String? encryptionRecipientEmail,
+    List<LocalPgpKey>? addedPgpKey,
+    required String storageType,
+    required String path,
+    Function(int)? updateProgress,
+    required Function() onSuccess,
+    required Function(String) onError,
+    String? password,
   }) async {
     final bool fileExists = await processingFile.fileOnDevice.exists();
     if (!fileExists) {
       throw CustomException("File to download data into doesn't exist");
     }
 
-    final vectorLength = 16;
+    const vectorLength = 16;
     final String apiUrl = AppStore.authState.apiUrl;
 
     final Map<String, dynamic> params = {
@@ -117,7 +117,7 @@ class FilesApi {
           encryptionRecipientEmail;
     }
 
-    String encryptKey = prefixEncrypt.Key.fromSecureRandom(32).base16;
+    String encryptKey = encrypt_lib.Key.fromSecureRandom(32).base16;
     if (shouldEncrypt == true) {
       final vector = IV.fromSecureRandom(vectorLength);
       processingFile.ivBase64 = vector.base64;
@@ -128,18 +128,18 @@ class FilesApi {
       params["ExtendedProps"]["FirstChunk"] = true;
     }
 
-    final body = new ApiBody(
+    final body = ApiBody(
             module: "Files",
             method: "UploadFile",
             parameters: jsonEncode(params))
         .toMap();
-    final stream = new http.ByteStream(
+    final stream = http.ByteStream(
         _openFileRead(processingFile, shouldEncrypt, onError, encryptKey));
     final length = await processingFile.fileOnDevice.length();
     final lengthWithPadding =
         ((length / vectorLength) + 1).toInt() * vectorLength;
 
-    final multipartFile = new http.MultipartFile(
+    final multipartFile = http.MultipartFile(
       'file',
       stream,
       shouldEncrypt ? lengthWithPadding : length,
@@ -164,16 +164,19 @@ class FilesApi {
     }
   }
 
-  Stream<List<int>> _openFileRead(ProcessingFile processingFile,
-      bool shouldEncrypt, Function(String) onError, String encryptKey) {
-    StreamController<List<int>> controller;
-    StreamSubscription<List<int>> fileReadSub;
-    final key = shouldEncrypt ? prefixEncrypt.Key.fromBase16(encryptKey) : null;
-
+  Stream<List<int>> _openFileRead(
+    ProcessingFile processingFile,
+    bool shouldEncrypt,
+    Function(String) onError,
+    String encryptKey,
+  ) {
+    final key = shouldEncrypt ? encrypt_lib.Key.fromBase16(encryptKey) : null;
     int bytesUploaded = 0;
-
     List<int> fileBytesBuffer = [];
-    controller = StreamController<List<int>>(onListen: () {
+    StreamSubscription<List<int>>? fileReadSub;
+    final controller = StreamController<List<int>>();
+
+    controller.onListen = () {
       fileReadSub =
           processingFile.fileOnDevice.openRead().listen((contents) async {
         bytesUploaded += contents.length;
@@ -201,14 +204,14 @@ class FilesApi {
 
             fileBytesBuffer.addAll(contentsForCurrent);
 
-            fileReadSub.pause();
-            final encrypted = await aes.encrypt(
-                fileBytesBuffer, key.base64, processingFile.ivBase64, false);
+            fileReadSub?.pause();
+            final encrypted = await aes.encrypt(fileBytesBuffer,
+                key?.base64 ?? '', processingFile.ivBase64 ?? '', false);
             processingFile.ivBase64 = IV(Uint8List.fromList(
                     encrypted.sublist(encrypted.length - 16, encrypted.length)))
                 .base64;
             controller.add(encrypted);
-            fileReadSub.resume();
+            fileReadSub?.resume();
             // flush the buffer
             fileBytesBuffer = [];
           }
@@ -216,24 +219,25 @@ class FilesApi {
         }
       }, onDone: () async {
         if (shouldEncrypt) {
-          final encrypted = await aes.encrypt(
-              fileBytesBuffer, key.base64, processingFile.ivBase64, true);
+          final encrypted = await aes.encrypt(fileBytesBuffer,
+              key?.base64 ?? '', processingFile.ivBase64 ?? '', true);
           controller.add(encrypted);
         }
-        fileReadSub.cancel();
+        fileReadSub?.cancel();
         controller.close();
       }, onError: (err, stack) {
         print("_openFileRead err: $err");
         print("_openFileRead stack: $stack");
         onError("Error occurred, could not upload file.");
       }, cancelOnError: true);
-    },
+    };
+    controller.onCancel = () {
+      fileReadSub?.cancel();
+      controller.close();
+    };
 //        onPause: fileReadSub.pause,
 //        onResume: fileReadSub.resume,
-        onCancel: () {
-      fileReadSub.cancel();
-      controller.close();
-    });
+
     processingFile.subscription = fileReadSub;
 
     return controller.stream;
@@ -247,10 +251,10 @@ class FilesApi {
     LocalFile file,
     ProcessingFile processingFile,
     bool decryptFile,
-    String keyPassword, {
-    Function(String) onError,
-    Function(double) updateViewerProgress,
-    @required Function(File) onSuccess,
+    String? keyPassword, {
+    required Function(String) onError,
+    Function(double)? updateViewerProgress,
+    required Function(File) onSuccess,
     bool isRedirect = false,
   }) async {
     // getFileContentsFromServer function assumes that fileToWriteInto exists
@@ -261,8 +265,8 @@ class FilesApi {
 
     final shouldDecrypt = decryptFile && file.initVector != null;
 
-    final String hostName = AppStore.authState.hostName;
-    HttpClient client = new HttpClient();
+    final String hostName = AppStore.authState.hostName ?? '';
+    HttpClient client = HttpClient();
 
     try {
       final HttpClientRequest request = await client
@@ -279,7 +283,7 @@ class FilesApi {
       if (response.isRedirect) {
         // redirect manually with different headers
         return await getFileContentsFromServer(
-          response.headers.value("location"),
+          response.headers.value("location") ?? '',
           file,
           processingFile,
           shouldDecrypt,
@@ -294,9 +298,9 @@ class FilesApi {
       List<int> fileBytesBuffer = [];
 
       // set initial vector that comes with the LocalFile object that we get from our api
-      String decryptKey;
+      String decryptKey = '';
       if (shouldDecrypt) {
-        IV iv = IV.fromBase16(file.initVector);
+        IV iv = IV.fromBase16(file.initVector ?? '');
         processingFile.ivBase64 = iv.base64;
         if (file.encryptedDecryptionKey != null) {
           decryptKey = await PgpKeyUtil.instance.userDecrypt(
@@ -305,13 +309,13 @@ class FilesApi {
                   : file.encryptedDecryptionKey,
               keyPassword);
         } else {
-          decryptKey = AppStore.settingsState.currentKey;
+          decryptKey = AppStore.settingsState.currentKey ?? '';
         }
       }
 
       int progress = 0;
 
-      StreamSubscription downloadSubscription;
+      StreamSubscription? downloadSubscription;
       // average size of contents ~3000 bytes
       downloadSubscription = listener<List<int>>(
         response,
@@ -334,7 +338,7 @@ class FilesApi {
 
             fileBytesBuffer.addAll(contentsForCurrent);
 
-            downloadSubscription.pause();
+            downloadSubscription?.pause();
             await _writeChunkToFile(
               fileBytesBuffer,
               shouldDecrypt ? file.initVector : null,
@@ -344,7 +348,7 @@ class FilesApi {
             );
             // flush the buffer
             fileBytesBuffer = [];
-            downloadSubscription.resume();
+            downloadSubscription?.resume();
           }
           fileBytesBuffer.addAll(contentsForNext);
           // the callback to update the UI download progress
@@ -384,13 +388,14 @@ class FilesApi {
     }
   }
 
-  Future<void> _writeChunkToFile(List<int> fileBytes, String initVector,
+  Future<void> _writeChunkToFile(List<int> fileBytes, String? initVector,
       ProcessingFile processingFile, bool isLast, String decryptKey) async {
     // if encrypted - decrypt
     if (initVector != null) {
-      final key = prefixEncrypt.Key.fromBase16(decryptKey);
+      final key = encrypt_lib.Key.fromBase16(decryptKey);
       final decrypted = await aes.decrypt(
-          fileBytes, key.base64, processingFile.ivBase64, isLast);
+              fileBytes, key.base64, processingFile.ivBase64 ?? '', isLast)
+          as List<int>;
       await processingFile.fileOnDevice
           .writeAsBytes(decrypted, mode: FileMode.append);
 
@@ -405,12 +410,12 @@ class FilesApi {
   }
 
   Future<String> renameFile({
-    @required String type,
-    @required String path,
-    @required String name,
-    @required String newName,
-    @required bool isLink,
-    @required bool isFolder,
+    required String type,
+    required String path,
+    required String name,
+    required String newName,
+    required bool isLink,
+    required bool isFolder,
   }) async {
     final parameters = json.encode({
       "Type": type,
@@ -422,7 +427,7 @@ class FilesApi {
     });
 
     final body =
-        new ApiBody(module: "Files", method: "Rename", parameters: parameters);
+        ApiBody(module: "Files", method: "Rename", parameters: parameters);
     final res = await sendRequest(body);
 
     if (res['Result'] != null && res['Result']) {
@@ -436,7 +441,7 @@ class FilesApi {
     final parameters =
         json.encode({"Type": type, "Path": path, "FolderName": folderName});
 
-    final body = new ApiBody(
+    final body = ApiBody(
         module: "Files", method: "CreateFolder", parameters: parameters);
 
     final res = await sendRequest(body);
@@ -454,7 +459,7 @@ class FilesApi {
         json.encode({"Type": type, "Path": path, "Items": filesToDelete});
 
     final body =
-        new ApiBody(module: "Files", method: "Delete", parameters: parameters);
+        ApiBody(module: "Files", method: "Delete", parameters: parameters);
 
     final res = await sendRequest(body);
 
@@ -467,8 +472,8 @@ class FilesApi {
 
   Future<String> createPublicLink(
       String type, String path, String name, int size, bool isFolder) async {
-    final int userId = AppStore.authState.userId;
-    final String hostName = AppStore.authState.hostName;
+    final int? userId = AppStore.authState.userId;
+    final String? hostName = AppStore.authState.hostName;
     final parameters = json.encode({
       "UserId": userId,
       "Type": type,
@@ -478,7 +483,7 @@ class FilesApi {
       "IsFolder": isFolder,
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
         module: "Files", method: "CreatePublicLink", parameters: parameters);
 
     final res = await sendRequest(body);
@@ -500,7 +505,7 @@ class FilesApi {
     bool isKey,
     String email,
   ) async {
-    final String hostName = AppStore.authState.hostName;
+    final String hostName = AppStore.authState.hostName ?? '';
     final parameters = {
       "Type": type,
       "Path": path,
@@ -512,7 +517,7 @@ class FilesApi {
       "PgpEncryptionMode": isKey ? "key" : "password",
     };
 
-    final body = new ApiBody(
+    final body = ApiBody(
         module: "OpenPgpFilesWebclient",
         method: "CreatePublicLink",
         parameters: json.encode(parameters));
@@ -534,7 +539,7 @@ class FilesApi {
       "Name": name,
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
         module: "Files", method: "DeletePublicLink", parameters: parameters);
 
     final res = await sendRequest(body);
@@ -547,12 +552,12 @@ class FilesApi {
   }
 
   Future copyMoveFiles({
-    @required bool copy,
-    @required String fromType,
-    @required String toType,
-    @required String fromPath,
-    @required String toPath,
-    @required List<Map<String, dynamic>> files,
+    required bool copy,
+    required String fromType,
+    required String toType,
+    required String fromPath,
+    required String toPath,
+    required List<Map<String, dynamic>> files,
   }) async {
     final parameters = json.encode({
       "FromType": fromType,
@@ -562,7 +567,7 @@ class FilesApi {
       "Files": files
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: copy ? "Copy" : "Move",
       parameters: parameters,
@@ -576,8 +581,8 @@ class FilesApi {
     }
   }
 
-  Future updateKeyShared(LocalFile file, String encryptionKey,
-      List<String> contactKey, String password) async {
+  Future updateKeyShared(LocalFile file, String? encryptionKey,
+      List<String> contactKey, String? password) async {
     final parameters = json.encode({
       "Type": file.type,
       "Path": file.path,
@@ -594,7 +599,7 @@ class FilesApi {
       }
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: "UpdateExtendedProps",
       parameters: parameters,
@@ -619,7 +624,7 @@ class FilesApi {
       }
     });
 
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: "UpdateExtendedProps",
       parameters: parameters,
@@ -639,7 +644,7 @@ class FilesApi {
       "Path": file.path,
       "Name": file.name,
     });
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: "GetExtendedProps",
       parameters: parameters,
@@ -655,7 +660,7 @@ class FilesApi {
 
 class GetFilesResponse {
   final List<LocalFile> items;
-  final Quota quota;
+  final Quota? quota;
 
   GetFilesResponse(this.items, this.quota);
 }

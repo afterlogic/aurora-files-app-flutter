@@ -14,7 +14,7 @@ Map<String, String> getHeader() {
   return {'Authorization': 'Bearer ${AppStore.authState.authToken}'};
 }
 
-Future sendRequest(ApiBody body, [Map<String, dynamic> addedBody]) async {
+Future sendRequest(ApiBody body, [Map<String, dynamic>? addedBody]) async {
   final authState = AppStore.authState;
   final map = body.toMap();
   addedBody?.forEach((key, value) {
@@ -35,11 +35,11 @@ LocalFile getFakeLocalFileForUploadProgress(
     ProcessingFile processingFile, String path) {
   final fileName =
       FileUtils.getFileNameFromPath(processingFile.fileOnDevice.path);
-  return new LocalFile(
-    localId: null,
+  return LocalFile(
+    localId: -1,
     id: fileName,
     guid: processingFile.guid,
-    type: null,
+    type: '',
     path: path,
     fullPath: path + fileName,
     localPath: processingFile.fileOnDevice.path,
@@ -48,18 +48,18 @@ LocalFile getFakeLocalFileForUploadProgress(
     isFolder: false,
     isOpenable: false,
     isLink: false,
-    linkType: null,
-    linkUrl: null,
+    linkType: '',
+    linkUrl: '',
     lastModified: DateTime.now().millisecondsSinceEpoch ~/ 1000,
     contentType: "",
-    oEmbedHtml: null,
+    oEmbedHtml: '',
     published: false,
-    owner: AppStore.authState.userEmail,
-    content: null,
-    viewUrl: null,
-    downloadUrl: null,
+    owner: AppStore.authState.userEmail ?? '',
+    content: '',
+    viewUrl: '',
+    downloadUrl: '',
     thumbnailUrl: null,
-    hash: null,
+    hash: '',
     extendedProps: "fake",
     isExternal: false,
     initVector: null,
@@ -190,44 +190,46 @@ LocalFile getFileObjFromResponse(Map<String, dynamic> rawFile) {
       rawFile["ExtendedProps"] is Map ? rawFile["ExtendedProps"] as Map : null;
   var publicLink = props != null ? props["PublicLink"] : null;
   if (publicLink != null) {
-    publicLink = AppStore.authState.hostName + "/" + publicLink;
+    publicLink = (AppStore.authState.hostName ?? '') + "/" + publicLink;
   }
   final linkPassword = props != null ? props["PasswordForSharing"] : null;
   return LocalFile(
-    localId: null,
-    id: rawFile["Id"],
-    guid: props != null ? (props["GUID"] ?? Uuid().v4()) : Uuid().v4(),
-    type: rawFile["Type"],
-    localPath: null,
-    path: rawFile["Path"],
-    fullPath: rawFile["FullPath"],
-    name: rawFile["Name"],
-    size: rawFile["Size"],
-    isFolder: rawFile["IsFolder"],
+    localId: -1,
+    id: rawFile["Id"] ?? '',
+    guid: props != null
+        ? (props["GUID"] ?? const Uuid().v4())
+        : const Uuid().v4(),
+    type: rawFile["Type"] ?? '',
+    localPath: '',
+    path: rawFile["Path"] ?? '',
+    fullPath: rawFile["FullPath"] ?? '',
+    name: rawFile["Name"] ?? '',
+    size: rawFile["Size"] ?? 0,
+    isFolder: rawFile["IsFolder"] ?? false,
     isOpenable:
         rawFile["Actions"] != null && rawFile["Actions"]["list"] != null,
-    isLink: rawFile["IsLink"],
-    linkType: rawFile["LinkType"],
-    linkUrl: publicLink ?? rawFile["LinkUrl"],
+    isLink: rawFile["IsLink"] ?? false,
+    linkType: rawFile["LinkType"] ?? '',
+    linkUrl: publicLink ?? rawFile["LinkUrl"] ?? '',
     linkPassword: linkPassword,
-    lastModified: rawFile["LastModified"],
-    contentType: rawFile["ContentType"],
-    oEmbedHtml: rawFile["OembedHtml"],
+    lastModified: rawFile["LastModified"] ?? 0,
+    contentType: rawFile["ContentType"] ?? '',
+    oEmbedHtml: rawFile["OembedHtml"] ?? '',
     published: publicLink != null || rawFile["Published"] == true,
-    owner: rawFile["Owner"],
-    content: rawFile["Content"],
-    isExternal: rawFile["IsExternal"],
+    owner: rawFile["Owner"] ?? '',
+    content: rawFile["Content"] ?? '',
+    isExternal: rawFile["IsExternal"] ?? false,
     thumbnailUrl: rawFile["ThumbnailUrl"],
     downloadUrl: rawFile["Actions"]["download"] != null
-        ? rawFile["Actions"]["download"]["url"]
-        : null,
+        ? rawFile["Actions"]["download"]["url"] ?? ''
+        : '',
     viewUrl: rawFile["Actions"]["view"] != null
-        ? rawFile["Actions"]["view"]["url"]
-        : null,
-    hash: rawFile["Hash"],
+        ? rawFile["Actions"]["view"]["url"] ?? ''
+        : '',
+    hash: rawFile["Hash"] ?? '',
     extendedProps: rawFile["ExtendedProps"] != null
         ? jsonEncode(rawFile["ExtendedProps"])
-        : null,
+        : '',
     initVector: props != null ? props["InitializationVector"] : null,
     encryptedDecryptionKey: props != null ? props["ParanoidKey"] : null,
   );

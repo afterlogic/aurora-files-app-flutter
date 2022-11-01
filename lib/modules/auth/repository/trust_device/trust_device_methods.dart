@@ -3,7 +3,7 @@ import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/device_id_storage.dart';
 
 class TrustDeviceMethods {
-  final _authApi = new AuthApi();
+  final _authApi = AuthApi();
 
   Future trustDevice(
     String login,

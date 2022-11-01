@@ -1,5 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class LeaveShareDialog extends StatelessWidget {
@@ -7,14 +7,14 @@ class LeaveShareDialog extends StatelessWidget {
   final bool isFolder;
 
   const LeaveShareDialog({
-    Key key,
-    @required this.name,
-    @required this.isFolder,
+    Key? key,
+    required this.name,
+    required this.isFolder,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final textStyle = Theme.of(context).textTheme.subtitle1;
     final text = RichText(
       text: TextSpan(
@@ -25,7 +25,7 @@ class LeaveShareDialog extends StatelessWidget {
           ),
           TextSpan(
             text: name,
-            style: textStyle.copyWith(
+            style: textStyle?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),

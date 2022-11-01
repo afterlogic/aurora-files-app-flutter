@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/localization_string_widget.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/http/interceptor.dart';
 import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:theme/app_theme.dart';
 
@@ -17,6 +16,8 @@ import 'auth/auth_route.dart';
 import 'files/files_route.dart';
 
 class App extends StatefulWidget {
+  const App({super.key});
+
   @override
   _AppState createState() => _AppState();
 }
@@ -24,8 +25,9 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final _authState = AppStore.authState;
   final _settingsState = AppStore.settingsState;
-  Future<List<bool>> _localStorageInitialization;
-  final navigatorKey = GlobalKey<NavigatorState>();
+  late Future<List<bool>> _localStorageInitialization;
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
@@ -33,21 +35,23 @@ class _AppState extends State<App> {
     WebMailApi.onLogout = onLogout;
     WebMailApi.isMethodEnable = _settingsState.isMethodEnable;
     _initLocalStorage();
+    _initSnackBar();
   }
 
   @override
   void dispose() {
-    WebMailApi.onLogout = null;
-    WebMailApi.isMethodEnable = null;
+    if (WebMailApi.onLogout == onLogout) {
+      WebMailApi.onLogout = null;
+    }
     super.dispose();
   }
 
   void onLogout() {
     _authState.onLogout();
-    navigatorKey.currentState.pushReplacementNamed(AuthRoute.name);
+    _navigatorKey.currentState?.pushReplacementNamed(AuthRoute.name);
   }
 
-  void _initLocalStorage() {
+  Future<void> _initLocalStorage() async {
     _localStorageInitialization = Future.wait([
       _authState.getAuthSharedPrefs(),
       _settingsState.getUserEncryptionKeys(),
@@ -55,21 +59,28 @@ class _AppState extends State<App> {
     ]);
   }
 
-  void _updateAppSettings() {
-    _settingsState.updateEncryptionSettings();
+  void _initSnackBar() {
+    AuroraSnackBar.init(
+      scaffoldMessengerKey: _scaffoldMessengerKey,
+      settingsState: _settingsState,
+    );
+  }
+
+  Future<void> _updateAppSettings() async {
     _settingsState.updateAppData();
   }
 
-  ThemeData _getTheme(bool isDarkTheme) {
-    if (isDarkTheme == false)
+  ThemeData? _getTheme(bool? isDarkTheme) {
+    if (isDarkTheme == false) {
       return AppTheme.light;
-    else if (isDarkTheme == true)
+    } else if (isDarkTheme == true) {
       return AppTheme.dark;
-    else
+    } else {
       return null;
+    }
   }
 
-  bool _canEnterMainApp(List<bool> localStorageInitializationResults) {
+  bool _canEnterMainApp(List<bool?>? localStorageInitializationResults) {
     if (localStorageInitializationResults == null) return false;
     bool canEnterMailApp = true;
     localStorageInitializationResults.forEach((result) {
@@ -87,33 +98,26 @@ class _AppState extends State<App> {
               snapshot.hasData) {
             _updateAppSettings();
             return LoggerControllerWidget.wrap(
-              Observer(
-                builder: (_) {
-                  final theme = _getTheme(_settingsState.isDarkTheme);
-                  return MaterialApp(
-                    navigatorKey: navigatorKey,
-                    debugShowCheckedModeBanner: false,
-                    title: BuildProperty.appName,
-                    theme: theme ?? AppTheme.light,
-                    darkTheme: theme ?? AppTheme.dark,
-                    onGenerateRoute: AppNavigation.onGenerateRoute,
-                    localizationsDelegates: [
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                      LocalizationStringWidget.delegate,
-                    ],
-                    supportedLocales:
-                        LocalizationStringWidget.delegate.supportedLocales,
-                    localeResolutionCallback: LocalizationStringWidget.delegate
-                        .resolution(
-                            fallback: new Locale("en", ""), withCountry: false),
-                    initialRoute: _canEnterMainApp(snapshot.data)
-                        ? FilesRoute.name
-                        : AuthRoute.name,
-                  );
-                },
-              ),
+                Observer(
+              builder: (_) {
+                final theme = _getTheme(_settingsState.isDarkTheme);
+                return MaterialApp(
+                  navigatorKey: _navigatorKey,
+                  scaffoldMessengerKey: _scaffoldMessengerKey,
+                  debugShowCheckedModeBanner: false,
+                  title: BuildProperty.appName,
+                  theme: theme ?? AppTheme.light,
+                  darkTheme: theme ?? AppTheme.dark,
+                  onGenerateRoute: AppNavigation.onGenerateRoute,
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  initialRoute: _canEnterMainApp(snapshot.data)
+                      ? FilesRoute.name
+                      : AuthRoute.name,
+                );
+              },
+                ),
             );
           } else if (snapshot.hasError) {
             final err = snapshot.error.toString();
@@ -122,7 +126,9 @@ class _AppState extends State<App> {
                     child: SelectableText(
                         "Could not start the app, please make a screenshot of the error and send it to support@afterlogic.com and we'll fix it!\nERROR: $err")));
           } else {
-            return Material(child: LoginGradient());
+            return const Material(
+              child: LoginGradient(),
+            );
           }
         });
   }

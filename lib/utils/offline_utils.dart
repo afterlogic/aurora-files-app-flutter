@@ -4,7 +4,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
 Storage getStorageFromName(String name) {
-  return new Storage(
+  return Storage(
     type: StorageTypeHelper.toEnum(name),
     displayName: name[0].toUpperCase() + name.substring(1),
     isExternal: false,
@@ -13,14 +13,14 @@ Storage getStorageFromName(String name) {
   );
 }
 
-FilesCompanion getCompanionFromLocalFile(LocalFile file, [String pathToFile]) {
-  return new FilesCompanion(
+FilesCompanion getCompanionFromLocalFile(LocalFile file, [String? pathToFile]) {
+  return FilesCompanion(
     id: Value(file.id),
     guid: Value(file.guid),
     type: Value(file.type),
     path: Value(file.path),
     fullPath: Value(file.fullPath),
-    localPath: Value(pathToFile ?? file.localPath ?? ""),
+    localPath: Value(pathToFile ?? file.localPath),
     name: Value(file.name),
     size: Value(file.size),
     isFolder: Value(file.isFolder),
@@ -49,15 +49,15 @@ LocalFile getFolderFromName(String name, String path) {
   String storageType = StorageTypeHelper.toName(
     AppStore.filesState.selectedStorage.type,
   );
-  String userEmail = AppStore.authState.userEmail;
-  return new LocalFile(
-    localId: null,
+  String userEmail = AppStore.authState.userEmail ?? '';
+  return LocalFile(
+    localId: -1,
     id: name,
     guid: null,
     type: storageType,
     path: path,
     fullPath: path.isEmpty ? "/" + name : "$path/$name",
-    localPath: null,
+    localPath: '',
     name: name,
     size: 0,
     isFolder: true,
@@ -71,10 +71,10 @@ LocalFile getFolderFromName(String name, String path) {
     published: false,
     owner: userEmail,
     content: "",
-    viewUrl: null,
-    downloadUrl: null,
-    hash: null,
-    extendedProps: "[]",
+    viewUrl: '',
+    downloadUrl: '',
+    hash: '',
+    extendedProps: '',
     isExternal: false,
   );
 }

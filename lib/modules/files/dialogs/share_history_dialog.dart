@@ -1,10 +1,10 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/share_access_history.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 
 class ShareHistoryDialog extends StatefulWidget {
@@ -12,9 +12,9 @@ class ShareHistoryDialog extends StatefulWidget {
   final LocalFile file;
 
   const ShareHistoryDialog({
-    Key key,
-    @required this.fileState,
-    @required this.file,
+    Key? key,
+    required this.fileState,
+    required this.file,
   }) : super(key: key);
 
   @override
@@ -22,7 +22,7 @@ class ShareHistoryDialog extends StatefulWidget {
 }
 
 class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
-  ShareAccessHistory _history;
+  ShareAccessHistory? _history;
   // int _currentPage = 0;
   bool _progress = true;
 
@@ -74,12 +74,12 @@ class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
   }
 
   void _onError(dynamic error) {
-    showSnack(context, msg: '$error');
+    AuroraSnackBar.showSnack(msg: '$error');
   }
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Stack(
@@ -99,27 +99,27 @@ class _ShareHistoryDialogState extends State<ShareHistoryDialog> {
           ),
           actions: [
             TextButton(
-              child: Text(s.clear),
               onPressed: _onClear,
+              child: Text(s.clear),
             ),
             TextButton(
-              child: Text(s.cancel),
               onPressed: _onCancel,
+              child: Text(s.cancel),
             ),
           ],
         ),
-        if (_progress) CircularProgressIndicator(),
+        if (_progress) const CircularProgressIndicator(),
       ],
     );
   }
 }
 
 class _HistoryPaginatedDataTable extends StatefulWidget {
-  final ShareAccessHistory history;
+  final ShareAccessHistory? history;
 
   const _HistoryPaginatedDataTable({
-    Key key,
-    @required this.history,
+    Key? key,
+    required this.history,
   }) : super(key: key);
 
   @override
@@ -133,9 +133,9 @@ class _HistoryPaginatedDataTableState
 
   int _rowPerPage = 5;
 
-  void _onRowsPerPageChanged(int value) {
+  void _onRowsPerPageChanged(int? value) {
     setState(() {
-      _rowPerPage = value;
+      _rowPerPage = value ?? 0;
     });
   }
 
@@ -147,7 +147,7 @@ class _HistoryPaginatedDataTableState
 
     final theme = Theme.of(context);
     final bodyTextStyle = theme.textTheme.bodyText2;
-    final headTextStyle = bodyTextStyle.copyWith(
+    final headTextStyle = bodyTextStyle?.copyWith(
       fontWeight: FontWeight.bold,
     );
     final columns = headline
@@ -160,7 +160,7 @@ class _HistoryPaginatedDataTableState
       child: PaginatedDataTable(
         columns: columns,
         source: _HistoryDTS(
-          history: widget.history,
+          history: widget.history!,
           textStyle: bodyTextStyle,
         ),
         rowsPerPage: _rowPerPage,
@@ -175,11 +175,11 @@ class _HistoryPaginatedDataTableState
 
 class _HistoryDTS extends DataTableSource {
   final ShareAccessHistory history;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   _HistoryDTS({
-    @required this.history,
-    @required this.textStyle,
+    required this.history,
+    required this.textStyle,
   });
 
   @override
@@ -191,13 +191,13 @@ class _HistoryDTS extends DataTableSource {
           Text(DateFormatting.shortDateTime(item.createdAt), style: textStyle),
         ),
         DataCell(
-          Text(item.action, style: textStyle),
+          Text(item.action ?? '', style: textStyle),
         ),
         DataCell(
-          Text(item.ipAddress, style: textStyle),
+          Text(item.ipAddress ?? '', style: textStyle),
         ),
         DataCell(
-          Text(item.guestPublicId, style: textStyle),
+          Text(item.guestPublicId ?? '', style: textStyle),
         ),
       ],
     );
@@ -217,8 +217,8 @@ class _HistoryDTS extends DataTableSource {
 //   final ShareAccessHistory history;
 //
 //   const _HistoryDataTable({
-//     Key key,
-//     @required this.history,
+//     Key? key,
+//     required this.history,
 //   }) : super(key: key);
 //
 //   @override
@@ -273,8 +273,8 @@ class _HistoryDTS extends DataTableSource {
 //   final ShareAccessHistory history;
 //
 //   const _HistoryTable({
-//     Key key,
-//     @required this.history,
+//     Key? key,
+//     required this.history,
 //   }) : super(key: key);
 //
 //   @override

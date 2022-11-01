@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
@@ -17,18 +17,17 @@ import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'encrypted_share_link.dart';
 import 'select_recipient.dart';
 
 class ShareLink extends StatefulWidget {
-  final LocalPgpKey userPrivateKey;
-  final LocalPgpKey userPublicKey;
+  final LocalPgpKey? userPrivateKey;
+  final LocalPgpKey? userPublicKey;
   final bool usePassword;
   final PreparedForShare file;
-  final RecipientWithKey selectRecipientResult;
+  final RecipientWithKey? selectRecipientResult;
   final FilesState filesState;
   final PgpKeyUtil pgpKeyUtil;
 
@@ -48,11 +47,10 @@ class ShareLink extends StatefulWidget {
 
 class _ShareLinkState extends State<ShareLink> {
   Pgp pgp = DI.get();
-  S s;
   bool progress = false;
   bool sendProgress = false;
-  bool useSign;
-  String error;
+  late bool useSign;
+  String? error;
   final toastKey = GlobalKey<ToastWidgetState>();
   final signKey = GlobalKey<SignCheckBoxState>();
 
@@ -88,7 +86,7 @@ class _ShareLinkState extends State<ShareLink> {
           setState(() {});
         },
         onError: onError,
-        password: widget.file.localFile.linkPassword,
+        password: widget.file.localFile.linkPassword ?? '',
       );
     } else {
       widget.filesState.createPublicLink(
@@ -124,15 +122,16 @@ class _ShareLinkState extends State<ShareLink> {
   }
 
   Future<bool> checkSign(String password) async {
+    final s = context.l10n;
     if (useSign && widget.userPrivateKey != null) {
       if (password.isEmpty) {
-        toastKey.currentState.show(s.password_is_empty);
+        toastKey.currentState?.show(s.password_is_empty);
         return false;
       }
       final isValidPassword = await widget.pgpKeyUtil
-          .checkPrivateKey(password, widget.userPrivateKey.key);
+          .checkPrivateKey(password, widget.userPrivateKey?.key ?? '');
       if (!isValidPassword) {
-        toastKey.currentState.show(s.invalid_password);
+        toastKey.currentState?.show(s.invalid_password);
         return false;
       }
     }
@@ -140,40 +139,47 @@ class _ShareLinkState extends State<ShareLink> {
   }
 
   void _sendTo() async {
+    final s = context.l10n;
     sendProgress = true;
-    toastKey.currentState.show(s.sending);
+    toastKey.currentState?.show(s.sending);
     setState(() {});
-    final password = useSign ? await KeyRequestDialog.request(context) : null;
+    final password =
+        useSign ? await KeyRequestDialog.request(context) ?? '' : '';
     if (!await checkSign(password)) {
       sendProgress = false;
       setState(() {});
       return;
     }
 
-    final recipient = widget.selectRecipientResult.recipient?.fullName ??
-        widget.selectRecipientResult.recipient?.email ??
-        widget.selectRecipientResult.pgpKey?.email;
+    final recipient = widget.selectRecipientResult?.recipient?.fullName ??
+        widget.selectRecipientResult?.recipient?.email ??
+        widget.selectRecipientResult?.pgpKey?.email;
 
     var template = MailTemplate.getTemplate(
       false,
       false,
       widget.file.localFile.name,
       widget.file.localFile.linkUrl,
-      widget.selectRecipientResult.pgpKey != null
+      widget.selectRecipientResult?.pgpKey != null
           ? widget.file.localFile.linkPassword
           : null,
-      recipient,
-      AppStore.authState.userEmail,
+      recipient ?? '',
+      AppStore.authState.userEmail ?? '',
     );
 
-    if (widget.selectRecipientResult.pgpKey != null) {
+    if (widget.selectRecipientResult?.pgpKey != null) {
+      final List<String> publicKeys = [];
+      if (widget.selectRecipientResult?.pgpKey?.key != null) {
+        publicKeys.add(widget.selectRecipientResult?.pgpKey?.key ?? '');
+      }
+      if (widget.userPublicKey?.key != null) {
+        publicKeys.add(widget.userPublicKey?.key ?? '');
+      }
       final encrypt = await pgp.bufferPlatformSink(
         template.body,
         pgp.encrypt(
-          useSign ? widget.userPrivateKey.key : null,
-          [widget.selectRecipientResult.pgpKey.key, widget.userPublicKey?.key]
-              .where((item) => item != null)
-              .toList(),
+          useSign ? widget.userPrivateKey?.key : null,
+          publicKeys,
           password,
         ),
       );
@@ -184,14 +190,15 @@ class _ShareLinkState extends State<ShareLink> {
     widget.filesState
         .sendViaEmail(
             template,
-            widget.selectRecipientResult.recipient?.email ??
-                widget.selectRecipientResult.pgpKey?.email)
+            widget.selectRecipientResult?.recipient?.email ??
+                widget.selectRecipientResult?.pgpKey?.email ??
+                '')
         .then(
       (_) {
-        toastKey.currentState.show(s.sending_complete);
+        toastKey.currentState?.show(s.sending_complete);
       },
       onError: (e) {
-        toastKey.currentState.show(s.failed);
+        toastKey.currentState?.show(s.failed);
       },
     ).whenComplete(() {
       sendProgress = false;
@@ -201,20 +208,20 @@ class _ShareLinkState extends State<ShareLink> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(s.btn_shareable_link);
 
     final actions = <Widget>[
       widget.selectRecipientResult == null
-          ? FlatButton(
+          ? TextButton(
               child: Text(s.send_to),
               onPressed: () {
                 Navigator.pop(context, true);
               },
             )
-          : FlatButton(
+          : TextButton(
               child: Text(widget.selectRecipientResult?.pgpKey != null
                   ? s.send_encrypted
                   : s.send),
@@ -224,13 +231,13 @@ class _ShareLinkState extends State<ShareLink> {
                       _sendTo();
                     },
             ),
-      FlatButton(
+      TextButton(
         child: Text(s.remove_link),
         onPressed: () {
           _deleteLink();
         },
       ),
-      FlatButton(
+      TextButton(
         child: Text(widget.selectRecipientResult != null ? s.cancel : s.close),
         onPressed: () {
           Navigator.pop(context);
@@ -251,7 +258,7 @@ class _ShareLinkState extends State<ShareLink> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(error),
+                      Text(error ?? ''),
                       AMButton(
                         child: Text(s.try_again),
                         onPressed: _createLink,
@@ -271,29 +278,29 @@ class _ShareLinkState extends State<ShareLink> {
                                 ClipboardLabel(widget.file.localFile.linkUrl,
                                     s.public_link, () {
                                   toastKey.currentState
-                                      .show(s.link_coppied_to_clipboard);
+                                      ?.show(s.link_coppied_to_clipboard);
                                 }),
                                 if (widget.file.localFile.linkPassword
                                         ?.isNotEmpty ==
                                     true)
                                   ClipboardLabel(
-                                      widget.file.localFile.linkPassword,
+                                      widget.file.localFile.linkPassword ?? '',
                                       s.password, () {
                                     toastKey.currentState
-                                        .show(s.link_coppied_to_clipboard);
+                                        ?.show(s.link_coppied_to_clipboard);
                                   }),
                                 if (widget.selectRecipientResult != null) ...[
                                   Text(s.recipient),
                                   SizedBox(height: 10),
                                   RecipientWidget(
-                                    widget.selectRecipientResult,
+                                    widget.selectRecipientResult!,
                                     (_) {
                                       Navigator.pop(context, true);
                                     },
                                   ),
                                   SizedBox(height: 10),
                                   Divider(color: Colors.grey),
-                                  if (widget.selectRecipientResult.pgpKey !=
+                                  if (widget.selectRecipientResult?.pgpKey !=
                                       null)
                                     SignCheckBox(
                                       key: signKey,
@@ -309,7 +316,7 @@ class _ShareLinkState extends State<ShareLink> {
                                     ),
                                   SizedBox(height: 10),
                                   Text(
-                                    widget.selectRecipientResult.pgpKey == null
+                                    widget.selectRecipientResult?.pgpKey == null
                                         ? widget.usePassword
                                             ? s.copy_password
                                             : s.send_email

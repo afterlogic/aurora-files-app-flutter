@@ -1,23 +1,19 @@
-import 'package:aurorafiles/override_platform.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppInput extends StatelessWidget {
-  final bool withBorder;
-  final TextStyle style;
-  final TextEditingController controller;
+  final TextStyle? style;
+  final TextEditingController? controller;
   final bool obscureText;
-  final String labelText;
-  final Widget suffix;
-  final TextInputType keyboardType;
-  final Widget prefix;
-  final bool enabled;
-  final String Function(String) validator;
+  final String? labelText;
+  final Widget? suffix;
+  final TextInputType? keyboardType;
+  final Widget? prefix;
+  final bool? enabled;
+  final String? Function(String?)? validator;
   final InputCase inputCase;
 
   const AppInput({
-    Key key,
-    this.withBorder,
+    Key? key,
     this.style,
     this.controller,
     this.obscureText = false,
@@ -25,20 +21,17 @@ class AppInput extends StatelessWidget {
     this.suffix,
     this.keyboardType,
     this.prefix,
-    this.inputCase = InputCase.Default,
+    this.inputCase = InputCase.regular,
     this.validator,
     this.enabled,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return TextFormField(
       style: style,
       validator: validator,
       keyboardType: keyboardType,
-      cursorColor: theme.accentColor,
       controller: controller,
       obscureText: obscureText,
       autocorrect: keyboardType != null ? false : true,
@@ -53,4 +46,4 @@ class AppInput extends StatelessWidget {
   }
 }
 
-enum InputCase { Default, Underline }
+enum InputCase { regular, underline }

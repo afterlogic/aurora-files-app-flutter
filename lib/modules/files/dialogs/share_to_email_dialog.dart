@@ -4,7 +4,7 @@ import 'package:aurora_ui_kit/components/dialogs/am_dialog.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/components/emails_input.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -16,18 +16,18 @@ class ShareToEmailDialog extends StatefulWidget {
   final FilesState fileState;
   final LocalFile file;
 
-  ShareToEmailDialog(
+  const ShareToEmailDialog(
     this.fileState,
     this.file,
-    this.context,
-  );
+    this.context, {
+    super.key,
+  });
 
   @override
   _ShareToEmailDialogState createState() => _ShareToEmailDialogState();
 }
 
 class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
-  S s;
   Set<String> canSee = {};
   Set<String> canEdit = {};
   bool progress = false;
@@ -38,26 +38,29 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   final _pgpKeyApi = PgpKeyApi();
   final Set<LocalPgpKey> pgpKeys = {};
   Set<String> pgpKeysEmail = {};
-  String error;
+  String? error;
 
   Future<List<Recipient>> searchContact(String pattern) async {
     final principals =
         await widget.fileState.searchContact(pattern.replaceAll(" ", ""));
     final List<Recipient> recipients =
-        principals.where((e) => e is Recipient).toList();
+        principals.whereType<Recipient>().toList();
     return recipients;
   }
 
   share() async {
+    final s = context.l10n;
     error = null;
-    canSeeKey.currentState.addEmail();
-    canEditKey.currentState.addEmail();
+    canSeeKey.currentState?.addEmail();
+    canEditKey.currentState?.addEmail();
     canEdit.forEach((element) => canSee.remove(element));
     final addedPgpKey = <String>[];
     if (widget.file.encryptedDecryptionKey != null) {
       for (var email in [...canSee, ...canEdit]) {
-        final key = pgpKeys.firstWhere((element) => element.email == email,
-            orElse: () => null);
+        LocalPgpKey? key;
+        try {
+          key = pgpKeys.firstWhere((element) => element.email == email);
+        } catch (_) {}
         if (key != null) {
           addedPgpKey.add(key.key);
         } else {
@@ -71,7 +74,6 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
     setState(() {});
     try {
       await widget.fileState.addDecryptedKey(context, widget.file, addedPgpKey);
-
       await widget.fileState.shareFileToContact(widget.file, canEdit, canSee);
       List shares = [];
       for (var item in canEdit) {
@@ -80,11 +82,14 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
       for (var item in canSee) {
         shares.add({"PublicId": item, "Access": 1});
       }
-      final map = widget.file.extendedProps == null
-          ? null
+      final map = widget.file.extendedProps.isEmpty
+          ? {}
           : json.decode(widget.file.extendedProps);
       map["Shares"] = shares;
-      final file = widget.file.copyWith(extendedProps: json.encode(map));
+      final file = widget.file.copyWith(
+        extendedProps: json.encode(map),
+      );
+      if (!mounted) return;
       Navigator.pop(context, file);
     } catch (e) {
       error = e.toString();
@@ -101,7 +106,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
   }
 
   initShares() async {
-    if (widget.file.extendedProps == null) return;
+    if (widget.file.extendedProps.isEmpty) return;
     final map = json.decode(widget.file.extendedProps);
     if (map["Shares"] != null) {
       final shares = map["Shares"] as List;
@@ -123,7 +128,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
       title: Text(s.label_share_with_teammates),
       content: SizedBox(
@@ -140,7 +145,7 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
                 pgpKeysEmail,
                 s.input_who_cas_see,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               EmailsInput(
                 searchContact,
                 canEdit,
@@ -149,16 +154,16 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
                 pgpKeysEmail,
                 s.input_who_cas_edit,
               ),
-              if (widget.file.isFolder) SizedBox(height: 20),
+              if (widget.file.isFolder) const SizedBox(height: 20),
               if (widget.file.isFolder)
                 Text(
                   s.hint_share_folder,
                 ),
-              if (error != null) SizedBox(height: 20),
+              if (error != null) const SizedBox(height: 20),
               if (error != null)
                 Text(
-                  error,
-                  style: TextStyle(color: Colors.red),
+                  error ?? '',
+                  style: const TextStyle(color: Colors.red),
                 ),
             ],
           ),
@@ -167,8 +172,8 @@ class _ShareToEmailDialogState extends State<ShareToEmailDialog> {
       actions: [
         TextButton(
           focusNode: btnFocus,
-          child: Text(s.label_save),
           onPressed: progress ? null : share,
+          child: Text(s.label_save),
         ),
         TextButton(
           child: Text(s.cancel),

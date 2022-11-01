@@ -7,13 +7,13 @@ enum ValidationTypes {
   uniqueName,
 }
 
-String validateInput(
+String? validateInput(
   String value,
   List<ValidationTypes> types, [
-  List otherItems,
-  String fileExtension,
+  List<dynamic>? otherItems,
+  String? fileExtension,
 ]) {
-  if (types.contains(ValidationTypes.uniqueName) && otherItems is! List) {
+  if (types.contains(ValidationTypes.uniqueName) && otherItems == null) {
     throw Exception(
         "In order to check if a name is unique the list must be provided");
   }
@@ -26,13 +26,13 @@ String validateInput(
   if (types.contains(ValidationTypes.fileName) && !_isFileNameValid(value)) {
     return 'Name cannot contain "/\\*?<>|:';
   }
-  if (otherItems is List && types.contains(ValidationTypes.uniqueName)) {
+  if (otherItems != null && types.contains(ValidationTypes.uniqueName)) {
     bool exists = false;
     final valueToCheck =
         fileExtension != null ? "$value.$fileExtension" : value;
     otherItems.forEach((item) {
       if (item is LocalFile) {
-        if (item?.name == valueToCheck) exists = true;
+        if (item.name == valueToCheck) exists = true;
       }
     });
 
@@ -44,13 +44,13 @@ String validateInput(
 }
 
 bool _isFileNameValid(String fileName) {
-  final regExp = new RegExp(r'["\/\\*?<>|:]');
+  final regExp = RegExp(r'["\/\\*?<>|:]');
 
   return !regExp.hasMatch(fileName);
 }
 
 bool isEmailValid(String email) {
-  final regExp = new RegExp(
+  final regExp = RegExp(
       r'^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
 
   return regExp.hasMatch(email);

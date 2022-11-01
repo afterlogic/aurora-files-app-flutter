@@ -12,22 +12,23 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsLocalStorage {
-  final secureStorage = new FlutterSecureStorage();
+  final secureStorage = const FlutterSecureStorage();
 
   String _getNameWithOwner([String keyName = ""]) =>
       "${AppStore.authState.userEmail}_$keyName";
 
   Key generateKey() => Key.fromSecureRandom(32);
 
-  Future<String> exportKey(String keyName, String encryptionKey) async {
+  Future<String?> exportKey(String keyName, String encryptionKey) async {
     if (Platform.isIOS) {
       return null;
     }
     await getStoragePermissions();
     Directory dir = await getDownloadDirectory();
     if (!dir.existsSync()) dir = await getApplicationDocumentsDirectory();
-    if (!dir.existsSync())
+    if (!dir.existsSync()) {
       throw CustomException("Could not resolve save directory");
+    }
 
     final formattedKeyName = keyName.replaceAll("/", "").replaceAll(" ", "_");
 
@@ -35,7 +36,7 @@ class SettingsLocalStorage {
         (dir.path.endsWith("/") ? "" : "/") +
         "$formattedKeyName key.txt";
 
-    final exportedTextFile = new File(filePath);
+    final exportedTextFile = File(filePath);
     await exportedTextFile.create(recursive: true);
     await exportedTextFile.writeAsString(encryptionKey);
 
@@ -48,17 +49,18 @@ class SettingsLocalStorage {
     return secureStorage.write(key: nameWithOwner, value: key);
   }
 
-  Future<Map<String, String>> importKeyFromFile() async {
+  Future<Map<String, String>?> importKeyFromFile() async {
     final result = await FilePicker.platform.pickFiles();
     if (result == null) return null;
-    final File fileWithKey = File(result.files.first.path);
-    if (fileWithKey == null) return null;
+    final path = result.files.first.path;
+    if (path == null) return null;
+    final fileWithKey = File(path);
     final String contents = await fileWithKey.readAsString();
     final fileName = FileUtils.getFileNameFromPath(fileWithKey.path);
     return {fileName: contents};
   }
 
-  Future<String> getKey(String keyName) {
+  Future<String?> getKey(String keyName) {
     final nameWithOwner = _getNameWithOwner(keyName);
     return secureStorage.read(key: nameWithOwner);
   }
@@ -67,14 +69,14 @@ class SettingsLocalStorage {
   Future<Map<String, String>> getAllUserKeys() async {
     final encryptionKeys = await secureStorage.readAll();
     // return key names without owner's prefix
-    final Map<String, String> userKeys = new Map();
+    final Map<String, String> userKeys = {};
     encryptionKeys.keys.forEach((nameWithOwner) {
       if (nameWithOwner.startsWith(_getNameWithOwner()) &&
           !nameWithOwner.endsWith("false") &&
           !nameWithOwner.endsWith("true")) {
         // remove owner's email
         final keyName = nameWithOwner.substring(_getNameWithOwner().length);
-        userKeys[keyName] = encryptionKeys[nameWithOwner];
+        userKeys[keyName] = encryptionKeys[nameWithOwner] ?? '';
       }
     });
 

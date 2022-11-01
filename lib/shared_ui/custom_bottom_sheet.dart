@@ -5,10 +5,10 @@ import 'package:aurorafiles/shared_ui/layout_config.dart';
 class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
   final Widget child;
 
-  CustomBottomSheet({@required this.child});
+  CustomBottomSheet({required this.child});
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 200);
+  Duration get transitionDuration => const Duration(milliseconds: 200);
 
   @override
   bool get opaque => false;
@@ -20,7 +20,7 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
   Color get barrierColor => Colors.black.withOpacity(0.4);
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   bool get maintainState => true;
@@ -42,7 +42,7 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
   Widget _buildOverlayContent(BuildContext context) {
     final isTablet = LayoutConfig.of(context).isTablet;
     Widget content = ClipRRect(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
       child: Container(
         width: MediaQuery.of(context).size.width,
         color: Theme.of(context).cardColor,
@@ -52,7 +52,7 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
     if (isTablet) {
       content = Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             maxWidth: LayoutConfig.formWidth,
           ),
           child: content,
@@ -84,10 +84,10 @@ class CustomBottomSheet extends ModalRoute<FileOptionsBottomSheetResult> {
       Animation<double> secondaryAnimation, Widget child) {
     // You can add your own animations for the overlay content
     return SlideTransition(
-      position:
-          Tween<Offset>(begin: Offset(0.0, 0.5), end: Offset.zero).animate(
+      position: Tween<Offset>(begin: const Offset(0.0, 0.5), end: Offset.zero)
+          .animate(
         CurvedAnimation(
-          parent: controller,
+          parent: animation,
           curve: Curves.easeOutCubic,
           reverseCurve: Curves.easeOut,
         ),

@@ -10,17 +10,18 @@ import 'package:secure_sharing_impl/secure_sharing.dart';
 // end : if
 
 class DI {
-  static GetIt instance;
+  static late GetIt instance;
 
-  static T get<T>() {
+  static T get<T extends Object>() {
     try {
       return instance.get<T>();
     } catch (e) {
-      return null;
+      rethrow;
+      // return null;
     }
   }
 
-  static T _get<T>() => instance.get<T>();
+  static T _get<T extends Object>() => instance.get<T>();
 
   static init() {
     instance = GetIt.instance;
@@ -34,5 +35,3 @@ class DI {
     instance.registerSingleton<SecureSharing>(SecureSharingImpl());
   }
 }
-
-

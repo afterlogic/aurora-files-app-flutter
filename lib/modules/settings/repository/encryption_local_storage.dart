@@ -5,16 +5,16 @@ class EncryptionLocalStorage {
 
   static final instance = EncryptionLocalStorage._();
   static const storePassword = "storePassword";
-  static String _memoryPassword;
-  static int _lastAccess;
-  static int _accessDuration = Duration(hours: 1).inMilliseconds;
+  static String? _memoryPassword;
+  static int? _lastAccess;
+  static final _accessDuration = const Duration(hours: 1).inMilliseconds;
 
   static set memoryPassword(v) {
     _lastAccess = DateTime.now().millisecondsSinceEpoch;
     _memoryPassword = v;
   }
 
-  static String get memoryPassword {
+  static String? get memoryPassword {
     final now = DateTime.now().millisecondsSinceEpoch;
     if (now - (_lastAccess ?? now) > _accessDuration) {
       _memoryPassword = null;

@@ -5,7 +5,7 @@ abstract class TrustDeviceEvent extends Equatable {
   const TrustDeviceEvent();
 
   @override
-  List<Object> get props => null;
+  List<Object> get props => [];
 }
 
 class TrustThisDevice extends TrustDeviceEvent with AlwaysNonEqualObject {

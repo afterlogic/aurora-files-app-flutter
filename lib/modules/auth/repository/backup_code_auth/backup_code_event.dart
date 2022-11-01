@@ -6,7 +6,7 @@ abstract class BackupCodeEvent extends Equatable {
   const BackupCodeEvent();
 
   @override
-  List<Object> get props => null;
+  List<Object> get props => [];
 }
 
 class Verify extends BackupCodeEvent with AlwaysNonEqualObject {

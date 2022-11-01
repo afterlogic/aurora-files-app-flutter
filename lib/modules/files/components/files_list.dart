@@ -6,8 +6,8 @@ import 'folder.dart';
 
 class FilesList extends StatefulWidget {
   const FilesList({
-    Key key,
-    @required FilesPageState filesPageState,
+    Key? key,
+    required FilesPageState filesPageState,
   })  : _filesPageState = filesPageState,
         super(key: key);
 
@@ -28,18 +28,18 @@ class _FilesListState extends State<FilesList> {
       padding: EdgeInsets.only(bottom: mq.padding.bottom + 70.0),
       itemCount: widget._filesPageState.currentFiles.length,
       itemBuilder: (BuildContext context, int index) {
-        if (widget._filesPageState.currentFiles.isEmpty) return SizedBox.shrink();
+        if (widget._filesPageState.currentFiles.isEmpty) {
+          return const SizedBox.shrink();
+        }
         final item = widget._filesPageState.currentFiles[index];
-        if (item == null) {
-          return SizedBox.shrink();
-        } else if (item.isFolder) {
-          return FolderWidget(key: Key(item.guid), folder: item);
+        if (item.isFolder) {
+          return FolderWidget(key: Key(item.guid ?? ''), folder: item);
         } else {
-          return FileWidget(key: Key(item.guid), file: item);
+          return FileWidget(key: Key(item.guid ?? ''), file: item);
         }
       },
-      separatorBuilder: (BuildContext context, int index) => Padding(
-        padding: const EdgeInsets.only(left: 80.0, right: 16.0),
+      separatorBuilder: (BuildContext context, int index) => const Padding(
+        padding: EdgeInsets.only(left: 80.0, right: 16.0),
         child: Divider(height: 0.0),
       ),
     );

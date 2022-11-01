@@ -9,7 +9,6 @@ import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../app_store.dart';
@@ -30,7 +29,7 @@ abstract class _FilesPageState with Store {
   final FilesDao _filesDao = DI.get();
   final _filesLocal = FilesLocalStorage();
 
-  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String pagePath = "";
   List<LocalFile> currentFiles = [];
@@ -46,7 +45,8 @@ abstract class _FilesPageState with Store {
   @observable
   FilesLoadingType filesLoading = FilesLoadingType.none;
 
-  void selectFile(LocalFile file) {
+  void selectFile(LocalFile? file) {
+    if (file == null) return;
     // reassigning to update the observable
     final selectedIds = selectedFilesIds;
     if (selectedFilesIds[file.id] != null) {
@@ -62,10 +62,10 @@ abstract class _FilesPageState with Store {
   }
 
   Future<void> onGetFiles({
-    String path,
+    String? path,
     FilesLoadingType showLoading = FilesLoadingType.filesVisible,
     String searchPattern = "",
-    Function(String) onError,
+    Function(String)? onError,
   }) async {
     if (AppStore.filesState.isOfflineMode) {
       return _getOfflineFiles(showLoading, path, searchPattern, onError);
@@ -76,9 +76,9 @@ abstract class _FilesPageState with Store {
 
   Future _getOnlineFiles(
     FilesLoadingType showLoading,
-    String path,
+    String? path,
     String searchPattern,
-    Function(String) onError,
+    Function(String)? onError,
   ) async {
     try {
       filesLoading = showLoading;
@@ -119,7 +119,8 @@ abstract class _FilesPageState with Store {
     } catch (err) {
       if (!AppStore.filesState.isOfflineMode &&
           AppStore.settingsState.internetConnection !=
-              ConnectivityResult.none) {
+              ConnectivityResult.none &&
+          onError != null) {
         onError(err.toString());
       }
     } finally {
@@ -129,14 +130,14 @@ abstract class _FilesPageState with Store {
 
   Future<void> _getOfflineFiles(
     FilesLoadingType showLoading,
-    String path,
+    String? path,
     String searchPattern,
-    Function(String) onError,
+    Function(String)? onError,
   ) async {
     AppStore.filesState.quota = null;
     try {
       filesLoading = showLoading;
-      if (searchPattern != null && searchPattern.isNotEmpty) {
+      if (searchPattern.isNotEmpty) {
         currentFiles = await _filesDao.searchFiles(pagePath, searchPattern);
       } else {
         currentFiles = await _filesDao.getFilesAtPath(pagePath);
@@ -149,7 +150,7 @@ abstract class _FilesPageState with Store {
   }
 
   List<LocalFile> _sortFiles(List<LocalFile> list) {
-    List<LocalFile> filesToSort = new List.from(list);
+    List<LocalFile> filesToSort = List.from(list);
     filesToSort.sort((a, b) {
       return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
@@ -157,15 +158,19 @@ abstract class _FilesPageState with Store {
     List<LocalFile> files = [];
     try {
       folders = filesToSort.where((file) => file.isFolder).toList();
-    } catch (err) {}
+    } catch (err) {
+      print(err);
+    }
     try {
       files = filesToSort.where((file) => !file.isFolder).toList();
-    } catch (err) {}
+    } catch (err) {
+      print(err);
+    }
     return [...folders, ...files];
   }
 
   List<LocalFile> _addFakeUploadFiles(List<LocalFile> list) {
-    List<LocalFile> filesFromServer = new List.from(list);
+    List<LocalFile> filesFromServer = List.from(list);
     try {
       final uploadingFiles = AppStore.filesState.processedFiles
           .where((process) => process.processingType == ProcessingType.upload);
@@ -181,19 +186,19 @@ abstract class _FilesPageState with Store {
 
   // supports both extracting files from selected ids and passing file(s) directly
   Future<void> onDeleteFiles({
-    List<LocalFile> filesToDelete,
-    @required Storage storage,
-    @required Function onSuccess,
-    @required Function(String) onError,
+    List<LocalFile>? filesToDelete,
+    required Storage storage,
+    required Function onSuccess,
+    required Function(String) onError,
   }) async {
     final List<Map<String, dynamic>> mappedFilesToDelete = [];
     // files, that are deleted from direct mode are automatically deleted from offline
     final List<LocalFile> filesToDeleteLocally = [];
     final List<LocalFile> filesToDeleteFromCache = [];
 
-    if (filesToDelete is List) {
-      filesToDelete.forEach((file) {
-        if (file.localPath != null) filesToDeleteLocally.add(file);
+    if (filesToDelete?.isNotEmpty == true) {
+      filesToDelete?.forEach((file) {
+        if (file.localPath.isNotEmpty) filesToDeleteLocally.add(file);
         filesToDeleteFromCache.add(file);
         mappedFilesToDelete.add(FileToDelete(
                 path: file.path, name: file.name, isFolder: file.isFolder)
@@ -203,7 +208,7 @@ abstract class _FilesPageState with Store {
       // find selected files by their id
       currentFiles.forEach((file) {
         if (selectedFilesIds[file.id] != null) {
-          if (file.localPath != null) filesToDeleteLocally.add(file);
+          if (file.localPath.isNotEmpty) filesToDeleteLocally.add(file);
           filesToDeleteFromCache.add(file);
           mappedFilesToDelete.add(FileToDelete(
                   path: file.path, name: file.name, isFolder: file.isFolder)
@@ -229,10 +234,10 @@ abstract class _FilesPageState with Store {
   }
 
   void onCreateNewFolder({
-    @required String folderName,
-    @required Storage storage,
-    Function(String) onSuccess,
-    Function(String) onError,
+    required String folderName,
+    required Storage storage,
+    required Function(String) onSuccess,
+    required Function(String) onError,
   }) async {
     try {
       final String newFolderNameFromServer = await _filesApi.createFolder(

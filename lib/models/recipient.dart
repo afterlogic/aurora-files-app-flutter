@@ -2,11 +2,16 @@ import 'package:aurorafiles/models/share_principal.dart';
 
 class Recipient extends SharePrincipal {
   final String email;
-  final int idUser;
-  final String fullName;
-  final String pgpPublicKey;
+  final int? idUser;
+  final String? fullName;
+  final String? pgpPublicKey;
 
-  Recipient({this.email, this.idUser, this.fullName, this.pgpPublicKey});
+  Recipient({
+    required this.email,
+    this.idUser,
+    this.fullName,
+    this.pgpPublicKey,
+  });
 
   static Recipient fromJson(Map<String, dynamic> map) {
     return Recipient(
@@ -18,10 +23,10 @@ class Recipient extends SharePrincipal {
   }
 
   @override
-  String getId() => this.email;
+  String getId() => email;
 
   @override
-  String getLabel() => this.email;
+  String getLabel() => email;
 
   @override
   Map<String, dynamic> toMap() {

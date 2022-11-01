@@ -1,5 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_dialog.dart';
@@ -7,6 +7,7 @@ import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_k
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/export_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EncryptionServer extends StatefulWidget {
+  const EncryptionServer({super.key});
+
   @override
   _EncryptionServerState createState() => _EncryptionServerState();
 }
@@ -22,12 +25,12 @@ class _EncryptionServerState extends State<EncryptionServer> {
   final _settingsState = AppStore.settingsState;
   final _filesState = AppStore.filesState;
   bool showBackwardCompatibility = false;
-  S s;
   bool progress = false;
   bool isInit = true;
   bool encryptionExist;
-  bool encryptionEnable;
-  bool encryptionInPersonalStorage;
+  bool? encryptionEnable;
+  bool? encryptionInPersonalStorage;
+  EncryptionSetting? encryptionSetting;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -38,7 +41,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     return Provider<SettingsState>(
       create: (_) => _settingsState,
@@ -46,7 +49,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
         key: scaffoldKey,
         appBar: isTablet ? null : AMAppBar(title: Text(s.encryption)),
         body: isInit
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : !encryptionExist
@@ -66,7 +69,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
                       CheckboxListTile(
                         value: encryptionEnable,
                         title: Text(s.btn_encryption_enable),
-                        onChanged: (bool value) {
+                        onChanged: (bool? value) {
                           setState(() {
                             encryptionEnable = value;
                           });
@@ -83,13 +86,13 @@ class _EncryptionServerState extends State<EncryptionServer> {
                               }
                             : null,
                       ),
-                      SizedBox(height: 48),
+                      const  SizedBox(height: 48),
                       AMButton(
                         isLoading: progress,
                         child: Text(s.label_save),
                         onPressed: progress ? null : () => _onSave(context),
                       ),
-                      SizedBox(height: 20),
+                      const  SizedBox(height: 20),
                       if (!showBackwardCompatibility && encryptionEnable)
                         AMButton(
                           child: Text(s.btn_enable_backward_compatibility),
@@ -123,6 +126,10 @@ class _EncryptionServerState extends State<EncryptionServer> {
     _setProgress(true);
     try {
       await _settingsState.setEncryptionSetting(
+        // EncryptionSetting(
+        //   encryptionEnable ?? false,
+        //   encryptionInPersonalStorage ?? false,
+        // ),
         EncryptionSetting(
           exist: encryptionExist,
           enable: encryptionEnable,
@@ -133,7 +140,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
       Navigator.pop(context);
     } catch (err) {
       _setProgress(false);
-      showSnack(context, msg: err.toString());
+      AuroraSnackBar.showSnack(msg: e.toString());
     }
   }
 
@@ -164,38 +171,41 @@ class _EncryptionServerState extends State<EncryptionServer> {
   }
 
   void _downloadKey() async {
-    var exportedDir;
+    final s = context.l10n;
+    String? exportedDir;
     exportedDir = await AMDialog.show(
       context: context,
       builder: (_) => ExportKeyDialog(
         settingsState: _settingsState,
-        scaffoldState: scaffoldKey.currentState,
       ),
     );
-    if (exportedDir is String) {
-      showSnack(context,
-          msg: s.key_downloaded_into(exportedDir),
-          isError: false,
-          duration: Duration(minutes: 10),
-          action: SnackBarAction(
-            label: s.oK,
-            onPressed: () => hideSnack(context),
-          ));
+    if (exportedDir != null) {
+      if (!mounted) return;
+      AuroraSnackBar.showSnack(
+        msg: s.key_downloaded_into(exportedDir),
+        isError: false,
+        duration: const Duration(minutes: 10),
+        action: SnackBarAction(
+          label: s.oK,
+          onPressed: () => AuroraSnackBar.hideSnack(),
+        ),
+      );
     }
   }
 
   List<Widget> _buildAddingKey() {
-    final spacer = const SizedBox(height: 10.0);
+    final s = context.l10n;
+    const spacer = SizedBox(height: 10.0);
     if (_settingsState.isParanoidEncryptionEnabled &&
         _settingsState.selectedKeyName == null) {
       return [
         Text(s.encryption_keys),
-        SizedBox(height: 32.0),
+        const SizedBox(height: 32.0),
         Text(
           s.need_to_set_encryption_key,
           style: Theme.of(context).textTheme.caption,
         ),
-        SizedBox(height: 32.0),
+        const SizedBox(height: 32.0),
         AMButton(
           child: Text(s.import_key_from_text),
           onPressed: () => AMDialog.show(
@@ -210,12 +220,12 @@ class _EncryptionServerState extends State<EncryptionServer> {
         AMButton(
           child: Text(s.import_key_from_file),
           onPressed: () => _settingsState.onImportKeyFromFile(
-            onSuccess: () => showSnack(
-              context,
+            onSuccess: () => AuroraSnackBar.showSnack(
               msg: s.import_encryption_key_success,
               isError: false,
             ),
-            onError: (err) => showSnack(context, msg: s.key_not_found_in_file),
+            onError: (_) =>
+                AuroraSnackBar.showSnack(msg: s.key_not_found_in_file),
           ),
         ),
         spacer,
@@ -226,31 +236,32 @@ class _EncryptionServerState extends State<EncryptionServer> {
   }
 
   List<Widget> _buildKeyOptions() {
-    final spacer = const SizedBox(height: 10.0);
+    final s = context.l10n;
+    const spacer = SizedBox(height: 10.0);
     final theme = Theme.of(context);
     if (_settingsState.selectedKeyName != null) {
       return [
-        SizedBox(height: 26.0),
+        const SizedBox(height: 26.0),
         Text(s.encryption_keys),
         spacer,
         Text(
-          _settingsState.selectedKeyName,
-          style: Theme.of(context).textTheme.subhead,
+          _settingsState.selectedKeyName ?? '',
+          style: Theme.of(context).textTheme.subtitle1,
         ),
-        Divider(height: 32.0),
+        const Divider(height: 32.0),
         Text(
           s.encryption_export_description,
           style: Theme.of(context).textTheme.caption,
         ),
-        SizedBox(height: 32.0),
-        AMButton(child: Text(s.share_key), onPressed: _shareKey),
+        const SizedBox(height: 32.0),
+        AMButton(onPressed: _shareKey, child: Text(s.share_key)),
         if (!PlatformOverride.isIOS) spacer,
         if (!PlatformOverride.isIOS)
-          AMButton(child: Text(s.download_key), onPressed: _downloadKey),
+          AMButton(onPressed: _downloadKey, child: Text(s.download_key)),
         spacer,
         AMButton(
           color: theme.errorColor,
-          shadow: BoxShadow(
+          shadow: const BoxShadow(
             color: Colors.black26,
             blurRadius: 8.0,
             offset: Offset(0.0, 3.0),
@@ -264,8 +275,8 @@ class _EncryptionServerState extends State<EncryptionServer> {
               ),
             );
             if (result == DeleteKeyConfirmationDialogResult.delete) {
-              showSnack(
-                context,
+              if (!mounted) return;
+              AuroraSnackBar.showSnack(
                 msg: s.delete_encryption_key_success,
                 isError: false,
               );

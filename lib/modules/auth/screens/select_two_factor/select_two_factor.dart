@@ -1,13 +1,12 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/backup_code_auth/backup_code_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/component/two_factor_screen.dart';
 import 'package:aurorafiles/modules/auth/screens/fido_auth/fido_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/select_two_factor/select_two_factor_route.dart';
 import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:aurora_ui_kit/components/am_button.dart';
@@ -16,23 +15,16 @@ import 'package:theme/app_theme.dart';
 class SelectTwoFactorWidget extends StatefulWidget {
   final SelectTwoFactorRouteArgs args;
 
-  const SelectTwoFactorWidget(this.args);
+  const SelectTwoFactorWidget(this.args, {super.key});
 
   @override
   _SelectTwoFactorWidgetState createState() => _SelectTwoFactorWidgetState();
 }
 
 class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
-  S s;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    s = Str.of(context);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     return TwoFactorScene(
       logoHint: "",
       isDialog: widget.args.isDialog,
@@ -43,11 +35,11 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
             s.tfa_label,
             style: Theme.of(context)
                 .textTheme
-                .title
-                .copyWith(color: AppTheme.loginTextColor),
+                .headline6
+                ?.copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             s.tfa_hint_step,
             textAlign: TextAlign.center,
@@ -55,12 +47,12 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
           ),
         ],
       ),
-      button: [
+      buttons: [
         Text(
           s.tfa_label_hint_security_options,
           style: TextStyle(color: AppTheme.loginTextColor),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         if (widget.args.state.hasSecurityKey && BuildProperty.useYubiKit) ...[
           SizedBox(
             width: double.infinity,
@@ -80,7 +72,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
               },
             ),
           ),
-          SizedBox(height: 20)
+          const SizedBox(height: 20)
         ],
         if (widget.args.state.hasAuthenticatorApp) ...[
           SizedBox(
@@ -101,7 +93,7 @@ class _SelectTwoFactorWidgetState extends State<SelectTwoFactorWidget> {
               },
             ),
           ),
-          SizedBox(height: 20)
+          const SizedBox(height: 20)
         ],
         if (widget.args.state.hasBackupCodes) ...[
           SizedBox(

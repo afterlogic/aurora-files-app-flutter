@@ -4,7 +4,6 @@ import 'package:aurorafiles/models/api_body.dart';
 import 'package:aurorafiles/models/server_settings.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:flutter/foundation.dart';
 
 class SettingApi {
   Future<EncryptionSetting> getEncryptSetting() async {
@@ -17,12 +16,14 @@ class SettingApi {
     final resBody = await sendRequest(body);
 
     if (resBody['Result'] != null) {
-      return EncryptionSetting(
-        exist: true,
-        enable: resBody['Result']["EnableModule"] ?? false,
-        enableInPersonalStorage:
-            resBody['Result']["EnableInPersonalStorage"] ?? false,
-      );
+      if (resBody['Result'] is Map) {
+        return EncryptionSetting(
+          resBody['Result']["EnableModule"] ?? false,
+          resBody['Result']["EnableInPersonalStorage"] ?? false,
+        );
+      } else {
+        return EncryptionSetting(false, false);
+      }
     } else {
       throw CustomException(getErrMsg(resBody));
     }
@@ -87,8 +88,8 @@ class EncryptionSetting {
   final bool enableInPersonalStorage;
 
   EncryptionSetting({
-    @required this.exist,
-    @required this.enable,
-    @required this.enableInPersonalStorage,
+    required this.exist,
+    required this.enable,
+    required this.enableInPersonalStorage,
   });
 }

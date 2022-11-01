@@ -1,36 +1,34 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class KeyFromTextWidget extends StatefulWidget {
-  KeyFromTextWidget();
+  const KeyFromTextWidget({super.key});
 
   @override
   _KeyFromTextWidgetState createState() => _KeyFromTextWidgetState();
 }
 
 class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
-  TextEditingController _textController;
+  final _textController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    _textController = TextEditingController();
-    super.initState();
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
 
     return AMDialog(
       title: Text(
         s.import_key,
-        style: theme.textTheme.title,
+        style: theme.textTheme.headline6,
       ),
       content: SingleChildScrollView(
         child: Column(
@@ -42,9 +40,8 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
               child: Form(
                 key: formKey,
                 child: TextFormField(
-                  validator: (v) => validateInput(v, [
-                    ValidationTypes.empty,
-                  ]),
+                  validator: (v) =>
+                      validateInput(v ?? '', [ValidationTypes.empty]),
                   controller: _textController,
                   expands: true,
                   keyboardType: TextInputType.multiline,
@@ -56,14 +53,14 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.close),
           onPressed: () => Navigator.pop(context),
         ),
-        FlatButton(
+        TextButton(
             child: Text(s.check_keys),
             onPressed: () {
-              if (formKey.currentState.validate()) {
+              if (formKey.currentState?.validate() == true) {
                 Navigator.pop(context, _textController.text);
               }
             }),

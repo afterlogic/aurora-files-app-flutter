@@ -5,17 +5,41 @@
   "calendar": "Calendar",
   "tasks": "Tasks",
   "cancel": "Cancel",
-  "quota_using": "You are using $progress% of your $limit",
+  "quota_using": "You are using {progress}% of your {limit}",
+  "@quota_using": {
+    "placeholders": {
+      "progress": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
   "offline_mode": "Offline mode",
   "settings": "Settings",
   "log_out": "Log out",
-  "no_route": "No route defined for $name",
+  "no_route": "No route defined for {name}",
+  "@no_route": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "common": "Common",
   "encryption": "Encryption",
   "openPGP": "OpenPGP",
   "storage_info": "Storage info",
   "about": "About",
-  "version": "Version $version",
+  "version": "Version {version}",
+  "@version": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "terms": "Terms of Service",
   "privacy_policy": "Privacy policy",
   "clear_cache": "Clear cache",
@@ -40,7 +64,14 @@
   "import_key_from_text": "Import key from text",
   "need_to_set_encryption_key": "To start using encryption of uploaded files your need to set an encryption key.",
   "oK": "OK",
-  "key_downloaded_into": "The key was downloaded into: $dir",
+  "key_downloaded_into": "The key was downloaded into: {dir}",
+  "@key_downloaded_into": {
+    "placeholders": {
+      "dir": {
+        "type": "String"
+      }
+    }
+  },
   "import_key": "Import key",
   "generate_key": "Generate key",
   "add_key_progress": "Adding encryption key...",
@@ -65,12 +96,26 @@
   "all_public_keys": "All public keys",
   "send_all": "Send all",
   "download_all": "Download all",
-  "downloading_to": "Downloading $path",
+  "downloading_to": "Downloading {path}",
+  "@downloading_to": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
   "private_key": "Private key",
   "public_key": "Public key",
   "share": "Share",
   "download": "Download",
-  "confirm_delete_pgp_key": "Are you sure you want to delete OpenPGP key for $email?",
+  "confirm_delete_pgp_key": "Are you sure you want to delete OpenPGP key for {email}?",
+  "@confirm_delete_pgp_key": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "public_keys": "Public keys",
   "private_keys": "Private keys",
   "export_all_public_keys": "Export all public keys",
@@ -78,15 +123,49 @@
   "import_keys_from_file": "Import keys from file",
   "offline_information_is_not_available": "This information is not available when you're offline.",
   "information_is_not_available": "This information is not available at the moment.",
-  "available_space": "Available space: $format",
-  "used_space": "Used space: $used out of $limit",
+  "available_space": "Available space: {format}",
+  "@available_space": {
+    "placeholders": {
+      "format": {
+        "type": "String"
+      }
+    }
+  },
+  "used_space": "Used space: {used} out of {limit}",
+  "@used_space": {
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
   "upgrade_now": "Upgrade now",
   "has_public_link": "Has public link",
   "available_offline": "Available offline",
   "synched_successfully": "File synched successfully",
   "synch_file_progress": "Synching file...",
-  "downloaded_successfully_into": "$name downloaded successfully into: $path",
-  "downloading": "Downloading $name",
+  "downloaded_successfully_into": "{name} downloaded successfully into: {path}",
+  "@downloaded_successfully_into": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "Downloading {name}",
+  "@downloading": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "set_any_encryption_key": "You have enabled encryption of uploaded files but haven't set any encryption key.",
   "need_an_encryption_to_share": "You need an encryption key to share files.",
   "need_an_encryption_to_download": "You need an encryption key to download files.",
@@ -113,23 +192,65 @@
   "cant_load_recipients": "Can't load recipients:",
   "try_again": "Try again",
   "no_name": "No name",
-  "encrypted_using_key": "The file is encrypted using $user's PGP public key. You can send the link via encrypted email.",
+  "encrypted_using_key": "The file is encrypted using {user}'s PGP public key. You can send the link via encrypted email.",
+  "@encrypted_using_key": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
   "encrypted_using_password": "If you don't send email now, store the password somewhere. You will not be able to recover it otherwise.",
   "add_new_folder": "Add new folder",
-  "adding_folder": "Adding $name folder",
+  "adding_folder": "Adding {name} folder",
+  "@adding_folder": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "enter_folder_name": "Enter folder name",
   "add": "Add",
   "file": "file",
   "folder": "folder",
   "delete_files": "Delete files",
   "delete_file": "Delete file",
-  "confirm_delete_file": "Are you sure you want to delete $file",
-  "these_files": "these $count files/folders ",
-  "this_file": "this $name?",
+  "confirm_delete_file": "Are you sure you want to delete {file}",
+  "@confirm_delete_file": {
+    "placeholders": {
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "these_files": "these {count} files/folders ",
+  "@these_files": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "this_file": "this {name}?",
+  "@this_file": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "offline": "Offline",
   "copy_or_move": "Copy/Move",
   "rename": "Rename",
-  "renaming_to": "Renaming to $name",
+  "renaming_to": "Renaming to {name}",
+  "@renaming_to": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "enter_new_name": "Enter new name",
   "share_file": "Share file",
   "getting_file_progress": "Getting file for sharing...",
@@ -179,35 +300,84 @@
   "sending_complete": "Sending complete",
   "failed": "Failed",
   "keys_not_found": "Keys not found",
-  "sign_with_not_key": "$data can't be signed because the private key has not been added.",
+  "sign_with_not_key": "{data} can't be signed because the private key has not been added.",
+  "@sign_with_not_key": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
   "invalid_password": "Invalid password",
   "sign_email": "Add digital signature",
   "sign_file_email": "Sign the file and email",
   "data": "data",
-  "sign_data_with_not_key": "Will not sign the $data because you don’t have PGP private key.",
-  "sign_mail_with_not_key": "The $data will not be signed because you don’t have PGP private key.",
+  "sign_data_with_not_key": "Will not sign the {data} because you don’t have PGP private key.",
+  "@sign_data_with_not_key": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "sign_mail_with_not_key": "The {data} will not be signed because you don’t have PGP private key.",
+  "@sign_mail_with_not_key": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
   "password_sign": "For password-based encryption the PGP-signing is not supported.",
   "email_signed": "The email will be signed using your private key.",
   "data_signed": "Will sign the data with your private key.",
-  "data_not_signed": "The $data will not be signed.",
+  "data_not_signed": "The {data} will not be signed.",
+  "@data_not_signed": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
   "protected_public_link": "Protected public link",
   "send_public_link_to": "Send public link to",
   "copy_password": "You can send the link via email. The password must be sent using a different channel.\n\nYou will be able to retrieve the password when needed.",
   "copy_encrypted_password": "You can send the link via email. The password must be sent using a different channel.\n\n  Store the password somewhere. You will not be able to recover it otherwise.",
-  "encrypted_sign_using_key": "The file is encrypted using $user's PGP public key. You can send the link via digitally signed encrypted email.",
+  "encrypted_sign_using_key": "The file is encrypted using {user}'s PGP public key. You can send the link via digitally signed encrypted email.",
+  "@encrypted_sign_using_key": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
   "email_not_signed": "The email will not be signed.",
   "two_factor_auth": "Your account is protected with\nTwo Factor Authentication.\nPlease provide the PIN code.",
   "pin": "PIN",
   "verify_pin": "Verify pin",
   "invalid_pin": "Invalid PIN",
   "upload_file": "Upload file",
-  "upload_files": "Upload $count files",
+  "upload_files": "Upload {count} files",
+  "@upload_files": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "login_to_continue": "Log in to continue",
   "confirm_exit": "Are you sure want to exit?",
   "exit": "Exit",
   "error_required_pgp_key": "Required PGP key",
   "label_required_pgp_key": "Required PGP key",
-  "hint_upload_encrypt_ask": "Encrypt '$name'?",
+  "hint_upload_encrypt_ask": "Encrypt '{name}'?",
+  "@hint_upload_encrypt_ask": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "btn_do_not_encrypt": "Do not encrypt",
   "label_encryption_always_in_encryption_folder": "Always in Encrypted folder",
   "label_encryption_always": "Always",
@@ -224,7 +394,14 @@
   "hint_pgp_keys_will_be_import_to_contacts": "The keys will be imported to contacts",
   "btn_pgp_import_selected_key": "Import selected keys",
   "label_pgp_contact_public_keys": "External public keys",
-  "error_pgp_required_key": "No private key found for $user user.",
+  "error_pgp_required_key": "No private key found for {user} user.",
+  "@error_pgp_required_key": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
   "label_share_with_teammates": "Share with teammates",
   "hint_pgp_share_warning": "You are going to share you private PGP key. The key must be kept from the 3rd parties. Do you want to continue?",
   "label_pgp_share_warning": "Warning",
@@ -261,7 +438,14 @@
   "tfa_label_enter_backup_code": "Enter one of your 8-character backup codes",
   "tfa_input_backup_code": "Backup code",
   "tfa_label_trust_device": "You're all set",
-  "tfa_check_box_trust_device": "Don't ask again on this device for $daysCount days",
+  "tfa_check_box_trust_device": "Don't ask again on this device for {daysCount} days",
+  "@tfa_check_box_trust_device": {
+    "placeholders": {
+      "daysCount": {
+        "type": "String"
+      }
+    }
+  },
   "tfa_button_continue": "Continue",
   "logger_label_show_debug_view": "Show debug view",
   "logger_btn_delete_all": "Delete all",

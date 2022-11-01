@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -13,18 +13,16 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:receive_sharing/recive_sharing.dart';
-import 'package:theme/app_theme.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'components/files_app_bar.dart';
 import 'components/files_list.dart';
@@ -40,8 +38,8 @@ class FilesAndroid extends StatefulWidget {
   final String path;
   final bool isZip;
 
-  FilesAndroid({
-    Key key,
+  const FilesAndroid({
+    Key? key,
     this.path = "",
     this.isZip = false,
   }) : super(key: key);
@@ -53,10 +51,9 @@ class FilesAndroid extends StatefulWidget {
 class _FilesAndroidState extends State<FilesAndroid>
     with TickerProviderStateMixin {
   FilesState _filesState = AppStore.filesState;
-  FilesPageState _filesPageState;
-  SettingsState _settingsState;
-  StreamSubscription sub;
-  S s;
+  late FilesPageState _filesPageState;
+  late SettingsState _settingsState;
+  late StreamSubscription sub;
 
   @override
   void initState() {
@@ -67,12 +64,13 @@ class _FilesAndroidState extends State<FilesAndroid>
     listenShare();
     sub = Connectivity().onConnectivityChanged.listen((res) async {
       if (!_filesState.isOfflineMode && res != ConnectivityResult.none) {
-        if (_filesState.currentStorages.length <= 0) {
+        if (_filesState.currentStorages.isEmpty) {
           _filesPageState.filesLoading = FilesLoadingType.filesHidden;
           await _filesState.onGetStorages(
-            onError: (String err) => showSnack(context, msg: err),
+            onError: (String err) => AuroraSnackBar.showSnack(msg: err),
           );
         }
+        if (!mounted) return;
         _getFiles(
             context,
             _filesPageState.currentFiles.isEmpty
@@ -82,24 +80,47 @@ class _FilesAndroidState extends State<FilesAndroid>
     });
   }
 
-  listenShare() {
-    ReceiveSharing.getInitialMedia().then((List<SharedMediaFile> files) {
-      if (files == null) {
-        return;
-      }
-      ReceiveSharing.reset();
-      if (files.isNotEmpty) {
-        Navigator.popUntil(
-            context, (item) => item.settings.name == FilesRoute.name);
-        _filesState.onUploadShared(files);
-      }
+  void listenShare() {
+    // For sharing files coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> files) {
+      if (files.isEmpty) return;
+      ReceiveSharingIntent.reset();
+      Navigator.popUntil(
+          context, (item) => item.settings.name == FilesRoute.name);
+      _filesState.onUploadShared(files);
     });
-    ReceiveSharing.getMediaStream().listen((List<SharedMediaFile> files) {
+
+    // For sharing files coming from outside the app while the app is in the memory
+    ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> files) {
       if (files.isNotEmpty) {
         Navigator.popUntil(
             context, (item) => item.settings.name == FilesRoute.name);
         _filesState.onUploadShared(files);
       }
+    }, onError: (err) {
+      print("getMediaStream error: $err");
+    });
+
+    // For sharing or opening urls/text coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialText().then((String? text) {
+      if (text == null) return;
+      ReceiveSharingIntent.reset();
+      Navigator.popUntil(
+          context, (item) => item.settings.name == FilesRoute.name);
+      final textFile =
+          SharedMediaFile('text', text, null, SharedMediaType.FILE);
+      _filesState.onUploadShared([textFile]);
+    });
+
+    // For sharing or opening urls/text coming from outside the app while the app is in the memory
+    ReceiveSharingIntent.getTextStream().listen((String text) {
+      Navigator.popUntil(
+          context, (item) => item.settings.name == FilesRoute.name);
+      final textFile =
+          SharedMediaFile('text', text, null, SharedMediaType.FILE);
+      _filesState.onUploadShared([textFile]);
+    }, onError: (err) {
+      print("getTextStream error: $err");
     });
   }
 
@@ -116,15 +137,14 @@ class _FilesAndroidState extends State<FilesAndroid>
     _filesPageState.pagePath = widget.path;
     _filesPageState.isInsideZip = widget.isZip;
 
-    if (_filesState.currentStorages.length <= 0) {
+    if (_filesState.currentStorages.isEmpty) {
       _filesPageState.filesLoading = FilesLoadingType.filesHidden;
       await _filesState.onGetStorages(
-        onError: (String err) => showSnack(context, msg: err),
+        onError: (String err) => AuroraSnackBar.showSnack(msg: err),
       );
     }
-    if (_filesState.selectedStorage != null) {
-      _getFiles(context, FilesLoadingType.filesHidden);
-    }
+    if (!mounted) return;
+    _getFiles(context, FilesLoadingType.filesHidden);
     if (!_filesState.isMoveModeEnabled) {
       _filesState.updateFilesCb = _filesPageState.onGetFiles;
     }
@@ -134,7 +154,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) async {
     return _filesPageState.onGetFiles(
       showLoading: showLoading,
-      onError: (String err) => showSnack(context, msg: err),
+      onError: (String err) => AuroraSnackBar.showSnack(msg: err),
     );
   }
 
@@ -166,12 +186,13 @@ class _FilesAndroidState extends State<FilesAndroid>
           _filesPageState.quitSelectMode();
           _getFiles(context);
         },
-        onError: (String err) => showSnack(context, msg: err),
+        onError: (String err) => AuroraSnackBar.showSnack(msg: err),
       );
     }
   }
 
   void _uploadFile() async {
+    final s = context.l10n;
     _filesState.onUploadFile(
       context,
       (file) async {
@@ -183,27 +204,30 @@ class _FilesAndroidState extends State<FilesAndroid>
         }
         if (encryptionSettings.enableInPersonalStorage &&
             _filesState.selectedStorage.type == StorageType.personal) {
-          shouldEncrypt = await AMDialog.show<bool>(
-              builder: (_) => EncryptAskDialog(
-                  file.path.split(Platform.pathSeparator).last),
-              context: context);
+          shouldEncrypt = await AMDialog.show<bool?>(
+                context: context,
+                builder: (_) => EncryptAskDialog(
+                    file.path.split(Platform.pathSeparator).last),
+              ) ??
+              false;
         }
         if (shouldEncrypt == true &&
             !(await PgpKeyUtil.instance.hasUserKey())) {
-          showSnack(context,
-              msg: s.error_pgp_required_key(AppStore.authState.userEmail));
+          if (!mounted) return null;
+          AuroraSnackBar.showSnack(
+            msg: s.error_pgp_required_key(AppStore.authState.userEmail ?? ''),
+          );
           return null;
         }
         return shouldEncrypt;
       },
       path: widget.path,
       onUploadStart: _addUploadingFileToFiles,
-      onSuccess: () => showSnack(
-        context,
+      onSuccess: () => AuroraSnackBar.showSnack(
         msg: s.successfully_uploaded,
         isError: false,
       ),
-      onError: (String err) => showSnack(context, msg: err),
+      onError: (String err) => AuroraSnackBar.showSnack(msg: err),
     );
   }
 
@@ -216,12 +240,13 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   Widget _buildFiles(BuildContext context) {
+    final s = context.l10n;
     if (_filesPageState.filesLoading == FilesLoadingType.filesHidden) {
       return ListView.separated(
-        itemBuilder: (_, index) => SkeletonLoader(),
+        itemBuilder: (_, index) => const SkeletonLoader(),
         itemCount: 6,
-        separatorBuilder: (BuildContext context, int index) => Padding(
-          padding: const EdgeInsets.only(left: 80.0, right: 16.0),
+        separatorBuilder: (BuildContext context, int index) => const Padding(
+          padding: EdgeInsets.only(left: 80.0, right: 16.0),
           child: Divider(height: 0.0),
         ),
       );
@@ -231,9 +256,9 @@ class _FilesAndroidState extends State<FilesAndroid>
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(Icons.signal_wifi_off, size: 48.0),
+          const Icon(Icons.signal_wifi_off, size: 48.0),
           Text(s.no_internet_connection),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           TextButton(
             child: Text(s.retry),
             onPressed: () => _getFiles(context),
@@ -244,10 +269,9 @@ class _FilesAndroidState extends State<FilesAndroid>
           ),
         ],
       );
-    } else if (_filesPageState.currentFiles == null ||
-        _filesPageState.currentFiles.length <= 0) {
+    } else if (_filesPageState.currentFiles.isEmpty) {
       return ListView(
-        physics: AlwaysScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
           Padding(
             padding:
@@ -265,16 +289,15 @@ class _FilesAndroidState extends State<FilesAndroid>
   }
 
   Future<void> _refreshFilesList() async {
-    if (_filesState.currentStorages.length <= 0) {
+    if (_filesState.currentStorages.isEmpty) {
       await _filesState.onGetStorages();
     }
+    if (!mounted) return;
     _getFiles(context, FilesLoadingType.none);
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    s = Str.of(context);
     final isTablet = LayoutConfig.of(context).isTablet;
 
     Widget body = Observer(
@@ -293,7 +316,7 @@ class _FilesAndroidState extends State<FilesAndroid>
               right: 0.0,
               height: 6.0,
               child: AnimatedOpacity(
-                duration: Duration(milliseconds: 150),
+                duration: const Duration(milliseconds: 150),
                 opacity: _filesPageState.filesLoading ==
                         FilesLoadingType.filesVisible
                     ? 1.0
@@ -330,7 +353,7 @@ class _FilesAndroidState extends State<FilesAndroid>
     if (isTablet) {
       body = Row(
         children: [
-          ClipRRect(
+          const ClipRRect(
             child: SizedBox(
               width: 304,
               child: Scaffold(
@@ -350,7 +373,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                   onDeleteFiles: _deleteSelected,
                   isAppBar: false,
                 ),
-                Divider(height: 1),
+                const Divider(height: 1),
                 Expanded(child: body),
               ],
             ),
@@ -381,7 +404,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                     _filesState.isShareUpload ||
                     isTablet)
                 ? null
-                : MainDrawer(),
+                : const MainDrawer(),
             appBar: PreferredSize(
                 preferredSize: Size.fromHeight(kToolbarHeight *
                     (_filesPageState.isSearchMode &&
@@ -405,23 +428,17 @@ class _FilesAndroidState extends State<FilesAndroid>
                       _filesPageState.isSearchMode ||
                       _filesState.selectedStorage.type == StorageType.shared ||
                       _filesPageState.isInsideZip
-                  ? SizedBox()
+                  ? const SizedBox()
                   : FloatingActionButton(
-                      backgroundColor: theme.accentColor,
                       heroTag: widget.path,
-                      child: IconTheme(
-                        data: AppTheme.floatIconTheme,
-                        child: Icon(
-                          Icons.add,
-                        ),
-                      ),
+                      child: const Icon(Icons.add),
                       onPressed: () {
-                        hideSnack(context);
+                        AuroraSnackBar.hideSnack();
                         Navigator.push(
                             context,
                             CustomSpeedDial(tag: widget.path, children: [
                               MiniFab(
-                                icon: Icon(Icons.create_new_folder),
+                                icon: const Icon(Icons.create_new_folder),
                                 onPressed: () => AMDialog.show(
                                   context: context,
                                   builder: (_) => AddFolderDialogAndroid(
@@ -431,7 +448,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                                 ),
                               ),
                               MiniFab(
-                                  icon: Icon(MdiIcons.filePlus),
+                                  icon: const Icon(MdiIcons.filePlus),
                                   onPressed: _uploadFile),
                             ]));
                       },

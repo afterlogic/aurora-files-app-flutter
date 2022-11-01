@@ -1,11 +1,10 @@
 import 'package:aurorafiles/build_property.dart';
-import 'package:theme/app_color.dart';
 import 'package:flutter/material.dart';
 
 class LoginGradient extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
-  const LoginGradient({Key key, this.child}) : super(key: key);
+  const LoginGradient({Key? key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +15,7 @@ class LoginGradient extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          stops: [0, 1],
+          stops: const [0, 1],
           colors: [
             _fromHex(
               theme.brightness == Brightness.light

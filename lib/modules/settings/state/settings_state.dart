@@ -9,7 +9,6 @@ import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-import 'package:moor_flutter/moor_flutter.dart';
 import 'package:share/share.dart';
 
 part 'settings_state.g.dart';
@@ -19,11 +18,12 @@ class SettingsState = _SettingsState with _$SettingsState;
 abstract class _SettingsState with Store {
   final _settingsLocal = SettingsLocalStorage();
   final settingApi = SettingApi();
-  @observable
-  ConnectivityResult internetConnection;
 
   @observable
-  bool isDarkTheme;
+  ConnectivityResult? internetConnection;
+
+  @observable
+  bool? isDarkTheme;
 
   @observable
   bool isParanoidEncryptionEnabled = true;
@@ -32,7 +32,7 @@ abstract class _SettingsState with Store {
   Map<String, String> encryptionKeys = {};
 
   @observable
-  String selectedKeyName;
+  String? selectedKeyName;
 
   ServerSettings _serverSettings = ServerSettings();
 
@@ -40,12 +40,12 @@ abstract class _SettingsState with Store {
       BuildProperty.teamSharingEnable &&
       _serverSettings.isModuleEnable("SharedFiles");
 
-  String get currentKey => encryptionKeys[selectedKeyName];
+  String? get currentKey => encryptionKeys[selectedKeyName];
 
   Future<bool> getUserEncryptionKeys() async {
     try {
       encryptionKeys = await _settingsLocal.getAllUserKeys();
-      if (encryptionKeys.length > 0) {
+      if (encryptionKeys.isNotEmpty) {
         final keyNames = encryptionKeys.keys.toList();
         selectedKeyName = keyNames[0];
       } else {
@@ -70,8 +70,8 @@ abstract class _SettingsState with Store {
       _settingsLocal.getDarkThemeFromStorage(),
       connectivity.checkConnectivity(),
     ]);
-    isDarkTheme = result[0];
-    internetConnection = result[1];
+    isDarkTheme = result[0] as bool;
+    internetConnection = result[1] as ConnectivityResult;
     return true;
   }
 
@@ -82,9 +82,9 @@ abstract class _SettingsState with Store {
 
   // for both generating and importing from text
   Future<void> onAddKey({
-    @required String name,
-    String encryptionKey,
-    Function(String) onError,
+    required String name,
+    String? encryptionKey,
+    required Function(String) onError,
   }) async {
     // if encryptionKey is provided - import as text, else generate new key
     final newKey = encryptionKey == null
@@ -97,11 +97,12 @@ abstract class _SettingsState with Store {
     }
   }
 
-  Future<void> onImportKeyFromFile(
-      {Function() onSuccess, Function(String) onError}) async {
+  Future<void> onImportKeyFromFile({
+    required Function() onSuccess,
+    required Function(String) onError,
+  }) async {
     try {
-      final Map<String, String> encryptionKeyFromFile =
-          await _settingsLocal.importKeyFromFile();
+      final encryptionKeyFromFile = await _settingsLocal.importKeyFromFile();
       if (encryptionKeyFromFile == null) return;
       String keyName = encryptionKeyFromFile.keys.toList()[0];
       String keyValue = encryptionKeyFromFile.values.toList()[0];
@@ -121,21 +122,23 @@ abstract class _SettingsState with Store {
 
   void onShareEncryptionKey(Rect rect) {
     Share.share(
-      encryptionKeys[selectedKeyName],
+      encryptionKeys[selectedKeyName] ?? '',
       subject: selectedKeyName,
       sharePositionOrigin: rect,
     );
   }
 
   Future<void> onExportEncryptionKey({
-    Function(String) onSuccess,
-    Function(String) onError,
+    required Function(String?) onSuccess,
+    required Function(String) onError,
   }) async {
-    String exportedFileDir;
+    String? exportedFileDir;
     try {
       final keyName = selectedKeyName;
-      exportedFileDir =
-          await _settingsLocal.exportKey(keyName, encryptionKeys[keyName]);
+      exportedFileDir = await _settingsLocal.exportKey(
+        keyName ?? '',
+        encryptionKeys[keyName] ?? '',
+      );
       if (exportedFileDir == null) {
         throw CustomException("Unresolved directory");
       } else {
@@ -147,19 +150,19 @@ abstract class _SettingsState with Store {
   }
 
   Future<void> onDeleteEncryptionKey({
-    String name,
-    Function(String) onError,
+    String? name,
+    Function(String)? onError,
   }) async {
     try {
       final keyName = name == null ? selectedKeyName : name;
       return await _settingsLocal.deleteKey(keyName);
     } catch (err) {
-      onError(err.toString());
+      if (onError != null) onError('$err');
     }
   }
 
   Future<void> updateEncryptionSettings() async {
-    EncryptionSetting setting;
+    EncryptionSetting? setting;
     try {
       setting = await settingApi.getEncryptSetting();
       await _settingsLocal.setEncryptExist(setting.exist);

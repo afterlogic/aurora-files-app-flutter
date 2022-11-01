@@ -1,22 +1,21 @@
 import 'dart:math';
 
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/components/sign_check_box.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'select_recipient.dart';
 
 class SelectEncryptMethod extends StatefulWidget {
-  final LocalPgpKey userPgpKey;
-  final Recipient recipient;
-  final LocalPgpKey pgpKey;
+  final LocalPgpKey? userPgpKey;
+  final Recipient? recipient;
+  final LocalPgpKey? pgpKey;
   final PgpKeyUtil pgpUtil;
 
   const SelectEncryptMethod(
@@ -28,20 +27,19 @@ class SelectEncryptMethod extends StatefulWidget {
 
 class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   final toastKey = GlobalKey<ToastWidgetState>();
-  bool useKey;
-  bool useSign;
-  S s;
+  late bool useKey;
+  late bool useSign;
 
   @override
   void initState() {
+    super.initState();
     useKey = widget.pgpKey != null;
     useSign = useKey && widget.userPgpKey != null && widget.pgpKey != null;
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(s.btn_encrypted_shareable_link);
@@ -69,7 +67,7 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
               ),
               Text(
                 s.encryption_type,
-                style: theme.textTheme.subtitle,
+                style: theme.textTheme.subtitle2,
               ),
               RadioEncryptMethod(widget.pgpKey != null, useKey, (v) {
                 useKey = v;
@@ -140,12 +138,13 @@ class _SelectEncryptMethodState extends State<SelectEncryptMethod> {
   }
 
   checkSign() async {
-    String password;
+    final s = context.l10n;
+    String password = '';
     if (useSign && widget.userPgpKey != null) {
       try {
-        password = await KeyRequestDialog.request(context);
+        password = await KeyRequestDialog.request(context) ?? '';
       } catch (e) {
-        toastKey.currentState.show(s.invalid_password);
+        toastKey.currentState?.show(s.invalid_password);
         return;
       }
     }
@@ -169,7 +168,7 @@ class RadioEncryptMethod extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +188,7 @@ class RadioEncryptMethod extends StatelessWidget {
               RadioAnalog(value),
               Text(
                 s.key_based,
-                style: theme.textTheme.body1,
+                style: theme.textTheme.bodyText2,
               ),
             ]),
           ),
@@ -208,7 +207,7 @@ class RadioEncryptMethod extends StatelessWidget {
             RadioAnalog(!value),
             Text(
               s.password_based,
-              style: theme.textTheme.body1,
+              style: theme.textTheme.bodyText2,
             ),
           ]),
         ),

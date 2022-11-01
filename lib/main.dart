@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aurora_logger/aurora_logger.dart';
+import 'package:aurorafiles/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'dart:io';
@@ -15,7 +16,9 @@ import 'override_platform.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   if (!kDebugMode) {
     // FirebaseCrashlytics.instance.enableInDevMode = true;
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
@@ -35,7 +38,13 @@ void main() async {
   DI.init();
 
   runZonedGuarded<void>(
-    () => runApp(App()),
-    FirebaseCrashlytics.instance.recordError,
+    () {
+      runApp(
+        LoggerControllerWidget.wrap(const App()),
+      );
+    },
+    (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    },
   );
 }

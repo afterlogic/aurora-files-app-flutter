@@ -45,7 +45,7 @@ class ShareAccessRightHelper {
     }
   }
 
-  static ShareAccessRight fromCode(int code) {
+  static ShareAccessRight? fromCode(int code) {
     switch (code) {
       case 2:
         return ShareAccessRight.read;

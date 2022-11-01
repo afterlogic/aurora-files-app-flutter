@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -15,10 +15,11 @@ import 'package:aurorafiles/modules/files/screens/file_viewer/file_viewer_route.
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
@@ -29,12 +30,10 @@ import 'package:provider/provider.dart';
 
 class FileWidget extends StatefulWidget {
   final LocalFile file;
-  final Function onOpen;
 
   const FileWidget({
-    Key key,
-    @required this.file,
-    this.onOpen,
+    Key? key,
+    required this.file,
   }) : super(key: key);
 
   @override
@@ -42,14 +41,13 @@ class FileWidget extends StatefulWidget {
 }
 
 class _FileWidgetState extends State<FileWidget> {
-  FilesState _filesState;
-  FilesPageState _filesPageState;
-  double _progress;
-  ProcessingFile _processingFile;
-  S s;
+  late FilesState _filesState;
+  late FilesPageState _filesPageState;
+  double? _progress;
+  ProcessingFile? _processingFile;
   Map<String, dynamic> _extendedProps = {};
   bool _hasShares = false;
-  ShareAccessRight _sharedWithMeAccess;
+  ShareAccessRight? _sharedWithMeAccess;
 
   bool get _sharedWithMe => _sharedWithMeAccess != null;
 
@@ -64,13 +62,15 @@ class _FileWidgetState extends State<FileWidget> {
       final processingFile = AppStore.filesState.processedFiles
           .firstWhere((process) => process.guid == widget.file.guid);
       _subscribeToProgress(processingFile);
-    } catch (err) {}
+    } catch (err) {
+      print(err);
+    }
     _initExtendedProps();
     _initShareProps();
   }
 
   void _initExtendedProps() {
-    if (widget.file.extendedProps != null) {
+    if (widget.file.extendedProps.isNotEmpty) {
       try {
         _extendedProps = jsonDecode(widget.file.extendedProps);
       } catch (err) {
@@ -96,17 +96,21 @@ class _FileWidgetState extends State<FileWidget> {
       _updateProcess,
       onDone: () {
         _updateProcess(null);
-        final type = _processingFile.processingType;
+        final type = _processingFile?.processingType;
         if (type == ProcessingType.upload || type == ProcessingType.offline) {
           _filesPageState.onGetFiles();
         }
-        _filesState.deleteFromProcessing(_processingFile.guid,
-            deleteLocally: true);
+        _filesState.deleteFromProcessing(
+          _processingFile?.guid,
+          deleteLocally: true,
+        );
         _processingFile = null;
       },
       onError: (err, s) {
-        _filesState.deleteFromProcessing(_processingFile.guid,
-            deleteLocally: true);
+        _filesState.deleteFromProcessing(
+          _processingFile?.guid,
+          deleteLocally: true,
+        );
         _processingFile = null;
       },
       cancelOnError: true,
@@ -114,7 +118,7 @@ class _FileWidgetState extends State<FileWidget> {
     _updateProcess(processingFile.currentProgress);
   }
 
-  void _updateProcess(double num) {
+  void _updateProcess(double? num) {
     if (mounted) setState(() => _progress = num);
   }
 
@@ -145,61 +149,64 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _cantDownloadMessage() {
-    showSnack(context, msg: s.need_an_encryption_to_download);
+    final s = context.l10n;
+    AuroraSnackBar.showSnack(msg: s.need_an_encryption_to_download);
   }
 
   void _cantShareMessage() {
-    showSnack(context, msg: s.need_an_encryption_to_share);
+    final s = context.l10n;
+    AuroraSnackBar.showSnack(msg: s.need_an_encryption_to_share);
   }
 
   void _openEncryptedFile(BuildContext context) async {
+    final s = context.l10n;
     if (widget.file.encryptedDecryptionKey == null) {
       if (AppStore.settingsState.selectedKeyName == null) {
-        return showSnack(context, msg: s.set_any_encryption_key);
+        return AuroraSnackBar.showSnack(msg: s.set_any_encryption_key);
       }
     } else {
       if (!await PgpKeyUtil.instance.hasUserKey()) {
-        return showSnack(context, msg: s.set_any_encryption_key);
+        return AuroraSnackBar.showSnack(msg: s.set_any_encryption_key);
       }
     }
+    if (!mounted) return;
     _openFile(context);
   }
 
   void _downloadFile() {
+    final s = context.l10n;
     final filesState = _filesState;
     filesState.onDownloadFile(
       context,
       file: widget.file,
       onStart: (ProcessingFile process) {
         _subscribeToProgress(process);
-        showSnack(
-          context,
+        AuroraSnackBar.showSnack(
           msg: s.downloading(widget.file.name),
           isError: false,
         );
       },
-      onSuccess: (File savedFile) => showSnack(
-        context,
+      onSuccess: (File savedFile) => AuroraSnackBar.showSnack(
         msg: s.downloaded_successfully_into(widget.file.name, savedFile.path),
         isError: false,
-        duration: Duration(minutes: 10),
+        duration: const Duration(minutes: 10),
         action: SnackBarAction(
           label: s.oK,
-          onPressed: () => hideSnack(context),
+          onPressed: () => AuroraSnackBar.hideSnack(),
         ),
       ),
       onError: (String err) =>
-          err.isNotEmpty == true ? showSnack(context, msg: err) : null,
+          err.isNotEmpty == true ? AuroraSnackBar.showSnack(msg: err) : null,
     );
   }
 
   Future _setFileForOffline() async {
+    final s = context.l10n;
     final filesState = _filesState;
     final filesPageState = _filesPageState;
     try {
-      if (widget.file.localId == null) {
-        showSnack(
-          context,
+      if (widget.file.localId == -1) {
+        AuroraSnackBar.showSnack(
           msg: s.synch_file_progress,
           isError: false,
         );
@@ -209,24 +216,24 @@ class _FileWidgetState extends State<FileWidget> {
         context,
         onStart: _subscribeToProgress,
         onSuccess: () {
-          if (widget.file.localId == null) {
-            showSnack(
-              context,
+          if (widget.file.localId == -1) {
+            AuroraSnackBar.showSnack(
               msg: s.synched_successfully,
               isError: false,
             );
           }
           filesPageState.onGetFiles();
         },
-        onError: (err) => showSnack(context, msg: err.toString()),
+        onError: (err) => AuroraSnackBar.showSnack(msg: err.toString()),
       );
     } catch (err) {
-      showSnack(context, msg: err.toString());
+      AuroraSnackBar.showSnack(msg: err.toString());
     }
   }
 
   void _openFile(BuildContext context) async {
     // TODO enable opening ZIP files for Aurora
+    //ignore: dead_code
     if (false && widget.file.isOpenable) {
       Navigator.pushNamed(
         context,
@@ -241,8 +248,8 @@ class _FileWidgetState extends State<FileWidget> {
         FileViewerRoute.name,
         arguments: FileViewerScreenArguments(
           file: widget.file,
-          offlineFile: widget.file.localPath?.isNotEmpty == true
-              ? new File(widget.file.localPath)
+          offlineFile: widget.file.localPath.isNotEmpty == true
+              ? File(widget.file.localPath)
               : null,
           filesState: _filesState,
           filesPageState: _filesPageState,
@@ -282,15 +289,15 @@ class _FileWidgetState extends State<FileWidget> {
                     fit: BoxFit.cover,
                     image: AssetImage(Asset.images.imagePlaceholder))),
             child: Hero(
-              tag: widget.file.localId ?? widget.file.guid ?? widget.file.hash,
-              child: filesState.isOfflineMode && widget.file.localPath != null
-                  ? Image.file(new File(widget.file.localPath),
-                      fit: BoxFit.cover)
+              tag: FileUtils.getHeroTag(widget.file),
+              child: filesState.isOfflineMode &&
+                      widget.file.localPath.isNotEmpty
+                  ? Image.file(File(widget.file.localPath), fit: BoxFit.cover)
                   : CachedNetworkImage(
                       imageUrl: '$hostName/${widget.file.thumbnailUrl}',
                       httpHeaders: getHeader(),
                       fit: BoxFit.cover,
-                      fadeInDuration: Duration(milliseconds: 200),
+                      fadeInDuration: const Duration(milliseconds: 200),
                     ),
             ),
           ),
@@ -349,7 +356,7 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   IconData _getProcessIcon() {
-    switch (_processingFile.processingType) {
+    switch (_processingFile?.processingType) {
       case ProcessingType.upload:
         return Icons.file_upload;
       case ProcessingType.download:
@@ -366,7 +373,7 @@ class _FileWidgetState extends State<FileWidget> {
   }
 
   void _onItemTap(BuildContext context) {
-    hideSnack(context);
+    AuroraSnackBar.hideSnack();
     widget.file.initVector != null
         ? _openEncryptedFile(context)
         : _openFile(context);
@@ -374,16 +381,16 @@ class _FileWidgetState extends State<FileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
 
-    final margin = 5.0;
+    const margin = 5.0;
     return Observer(
       builder: (_) {
         final isMenuVisible = !_filesState.isMoveModeEnabled &&
             !_filesState.isShareUpload &&
-            _filesPageState.selectedFilesIds.length <= 0 &&
+            _filesPageState.selectedFilesIds.isEmpty &&
             !_filesPageState.isInsideZip;
         return SelectableFilesItemTile(
           file: widget.file,
@@ -401,7 +408,7 @@ class _FileWidgetState extends State<FileWidget> {
                       scrollDirection: Axis.horizontal,
                       child: Text(widget.file.name),
                     ),
-                    SizedBox(height: 7.0),
+                    const SizedBox(height: 7.0),
                     Theme(
                       data: Theme.of(context).copyWith(
                         iconTheme: IconThemeData(
@@ -414,7 +421,7 @@ class _FileWidgetState extends State<FileWidget> {
                                   ProcessingType.upload
                           ? Row(children: <Widget>[
                               Expanded(flex: 1, child: Icon(_getProcessIcon())),
-                              SizedBox(width: 8.0),
+                              const SizedBox(width: 8.0),
                               Expanded(
                                 flex: 18,
                                 child: SizedBox(
@@ -433,37 +440,45 @@ class _FileWidgetState extends State<FileWidget> {
                           : Row(
                               children: <Widget>[
                                 if (_hasShares)
-                                  Icon(
-                                    Icons.share,
-                                    semanticLabel: s.label_share_with_teammates,
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(right: margin),
+                                    child: Icon(
+                                      Icons.share,
+                                      semanticLabel:
+                                          s.label_share_with_teammates,
+                                    ),
                                   ),
-                                if (_hasShares) SizedBox(width: margin),
                                 if (widget.file.published)
-                                  Icon(
-                                    Icons.link,
-                                    semanticLabel: s.has_public_link,
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(right: margin),
+                                    child: Icon(
+                                      Icons.link,
+                                      semanticLabel: s.has_public_link,
+                                    ),
                                   ),
-                                if (widget.file.published)
-                                  SizedBox(width: margin),
-                                if (widget.file.localId != null)
-                                  Icon(
-                                    Icons.airplanemode_active,
-                                    semanticLabel: s.available_offline,
+                                if (widget.file.localId != -1)
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(right: margin),
+                                    child: Icon(
+                                      Icons.airplanemode_active,
+                                      semanticLabel: s.available_offline,
+                                    ),
                                   ),
-                                if (widget.file.localId != null)
-                                  SizedBox(width: margin),
                                 Text(filesize(widget.file.size),
                                     style: Theme.of(context).textTheme.caption),
-                                SizedBox(width: margin),
+                                const SizedBox(width: margin),
                                 Text("|",
                                     style: Theme.of(context).textTheme.caption),
-                                SizedBox(width: margin),
+                                const SizedBox(width: margin),
                                 Text(
                                     DateFormatting.formatDateFromSeconds(
                                       timestamp: widget.file.lastModified,
                                     ),
                                     style: Theme.of(context).textTheme.caption),
-                                SizedBox(width: margin),
+                                const SizedBox(width: margin),
                               ],
                             ),
                     )
@@ -480,14 +495,14 @@ class _FileWidgetState extends State<FileWidget> {
                     ? _processingFile?.processingType ==
                             ProcessingType
                                 .upload // TODO VO: Implement upload cancelling
-                        ? SizedBox()
+                        ? const SizedBox()
                         : IconButton(
-                            icon: Icon(Icons.cancel),
+                            icon: const Icon(Icons.cancel),
                             color: Theme.of(context).disabledColor,
                             iconSize: 22.0,
                             onPressed: () {
                               _filesState.deleteFromProcessing(
-                                  _processingFile.guid,
+                                  _processingFile?.guid,
                                   deleteLocally: true);
                             },
                           )

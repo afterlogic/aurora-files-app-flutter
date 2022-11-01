@@ -5,10 +5,10 @@ import 'package:aurorafiles/modules/settings/repository/settings_local_storage.d
 import 'package:http/http.dart' as http;
 
 class WebMailApi {
-  static Function(String) onResponse;
-  static Function(String) onRequest;
-  static Function(String) onError;
-  static Function onLogout;
+  static Function(String)? onResponse;
+  static Function(String)? onRequest;
+  static Function(String)? onError;
+  static Function? onLogout;
   static bool Function(String, String) isMethodEnable;
 
   static Future<http.Response> request(
@@ -38,7 +38,8 @@ class WebMailApi {
       _headers[key] = value;
     });
 
-    final rawResponse = await http.post(url, body: body, headers: _headers);
+    final rawResponse =
+        await http.post(Uri.parse(url), body: body, headers: _headers);
     final res = json.decode(rawResponse.body);
     _logResponse(logId, rawResponse.statusCode, rawResponse.body);
 

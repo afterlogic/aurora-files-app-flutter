@@ -7,23 +7,23 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 class TextViewer extends StatefulWidget {
   const TextViewer({
-    Key key,
-    @required this.scaffoldState,
-    @required this.fileViewerState,
+    Key? key,
+    required this.fileViewerState,
     this.password,
+    this.scaffoldState,
   }) : super(key: key);
 
-  final ScaffoldState scaffoldState;
   final FileViewerState fileViewerState;
-  final String password;
+  final String? password;
+  final ScaffoldState? scaffoldState;
 
   @override
   _TextViewerState createState() => _TextViewerState();
 }
 
 class _TextViewerState extends State<TextViewer> {
-  String previewText;
-  LocalFile file;
+  String? previewText;
+  late LocalFile file;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _TextViewerState extends State<TextViewer> {
       setState(() => previewText = fileText);
     } else {
       widget.fileViewerState.getPreviewText(
-        widget.password,
+        widget.password ?? '',
         (String fileText) {
           setState(() => previewText = fileText);
         },
@@ -83,13 +83,14 @@ class _TextViewerState extends State<TextViewer> {
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: SingleChildScrollView(
-                    child: SelectableText(
-                  previewText,
-                  style: TextStyle(
-                      fontFamily: getFileType(file) == FileType.code
-                          ? "monospace"
-                          : "sans-serif"),
-                )),
+                  child: SelectableText(
+                    previewText ?? '',
+                    style: TextStyle(
+                        fontFamily: getFileType(file) == FileType.code
+                            ? "monospace"
+                            : "sans-serif"),
+                  ),
+                ),
               ),
             ),
           );

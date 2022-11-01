@@ -38,10 +38,10 @@ class SettingsNavigatorWidget extends StatefulWidget {
   final Function onUpdate;
 
   const SettingsNavigatorWidget({
-    Key key,
-    this.initialRoute,
-    this.routeFactory,
-    this.onUpdate,
+    Key? key,
+    required this.initialRoute,
+    required this.routeFactory,
+    required this.onUpdate,
   }) : super(key: key);
 
   @override
@@ -84,11 +84,11 @@ class SettingsNavigatorState extends State<SettingsNavigatorWidget>
       final child = route.buildPage(
         context,
         AnimationController(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           vsync: this,
         ),
         AnimationController(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           vsync: this,
         ),
       );
@@ -97,16 +97,18 @@ class SettingsNavigatorState extends State<SettingsNavigatorWidget>
       _stack.add(settingsRoute);
       return settingsRoute.completer;
     }
-    return null;
+    return Completer()..complete();
   }
 
-  Future pushNamed(String name, {dynamic arguments}) {
-    final future = _add(name, arguments)?.future;
+  @override
+  Future<dynamic> pushNamed(String name, {dynamic arguments}) {
+    final future = _add(name, arguments).future;
     setState(() {});
     widget.onUpdate();
     return future;
   }
 
+  @override
   bool pop() {
     if (_stack.length == 1) {
       return true;
@@ -126,7 +128,7 @@ class SettingsNavigatorState extends State<SettingsNavigatorWidget>
         return pop();
       },
       child: _stack.isEmpty
-          ? SizedBox.shrink()
+          ? const SizedBox.shrink()
           : Provider<SettingsNavigator>.value(
               value: this,
               child: current.widget,

@@ -17,8 +17,8 @@ class IdentityView {
     String validEmail = "";
     String name = "";
     if (groups?.groupCount == 2) {
-      name = groups.group(1);
-      validEmail = groups.group(2);
+      name = groups?.group(1) ?? '';
+      validEmail = groups?.group(2) ?? '';
     } else {
       validEmail = string;
     }
@@ -26,6 +26,6 @@ class IdentityView {
   }
 
   static String solid(String name, String mail) {
-    return (name?.isNotEmpty == true ? "$name " : "") + "<$mail>";
+    return (name.isNotEmpty ? "$name " : "") + "<$mail>";
   }
 }

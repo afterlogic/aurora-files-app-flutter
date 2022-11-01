@@ -12,7 +12,6 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
-import 'package:flutter/cupertino.dart';
 
 class MailApi {
   Future<List<Recipient>> getRecipient() async {
@@ -24,7 +23,7 @@ class MailApi {
       "WithGroups": false,
       "WithoutTeamContactsDuplicates": true
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Contacts",
       method: "GetContacts",
       parameters: json.encode(parameters),
@@ -43,7 +42,7 @@ class MailApi {
 
   Future<List<Account>> getAccounts() async {
     final parameters = {"UserId": AppStore.authState.userId};
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Mail",
       method: "GetAccounts",
       parameters: json.encode(parameters),
@@ -64,7 +63,7 @@ class MailApi {
     final parameters = {
       "AccountID": accountID,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Mail",
       method: "GetFolders",
       parameters: json.encode(parameters),
@@ -91,7 +90,7 @@ class MailApi {
       "IdentityId": 677,
       "Method": "SendMessage"
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Mail",
       method: "SendMessage",
       parameters: json.encode(parameters),
@@ -116,7 +115,7 @@ class MailApi {
       "WithUserGroups": true,
       "WithoutTeamContactsDuplicates": true,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Contacts",
       method: "GetContactSuggestions",
       parameters: json.encode(parameters),
@@ -127,7 +126,7 @@ class MailApi {
     if (res.containsKey("Result")) {
       final List<SharePrincipal> principals = [];
       final list = res["Result"]["List"] as List;
-      if (list?.isNotEmpty == true) {
+      if (list.isNotEmpty) {
         list.forEach((map) {
           if (map["IsGroup"] != null) {
             final group = ContactGroup.fromJson(map);
@@ -156,7 +155,7 @@ class MailApi {
       "Shares": shareList,
       "IsDir": localFile.isFolder,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "SharedFiles",
       method: "UpdateShare",
       parameters: json.encode(parameters),
@@ -190,7 +189,7 @@ class MailApi {
       "Shares": contact,
       "IsDir": false
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "SharedFiles",
       method: "UpdateShare",
       parameters: json.encode(parameters),
@@ -206,7 +205,7 @@ class MailApi {
   }
 
   Future<ShareAccessHistory> getFileShareHistory({
-    @required LocalFile file,
+    required LocalFile file,
     int offset = 0,
     int limit = 5,
   }) async {
@@ -216,7 +215,7 @@ class MailApi {
       "Offset": offset,
       "Limit": limit,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "ActivityHistory",
       method: "GetList",
       parameters: json.encode(parameters),
@@ -232,13 +231,13 @@ class MailApi {
   }
 
   Future<bool> deleteFileShareHistory({
-    @required LocalFile file,
+    required LocalFile file,
   }) async {
     final parameters = {
       "ResourceType": "file",
       "ResourceId": file.type + file.fullPath,
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "ActivityHistory",
       method: "Delete",
       parameters: json.encode(parameters),
@@ -254,7 +253,7 @@ class MailApi {
   }
 
   Future<bool> leaveFileShare({
-    @required LocalFile file,
+    required LocalFile file,
   }) async {
     final parameters = {
       "Type": file.type,
@@ -263,7 +262,7 @@ class MailApi {
         {"Path": file.path, "Name": file.name, "IsFolder": file.isFolder}
       ],
     };
-    final body = new ApiBody(
+    final body = ApiBody(
       module: "Files",
       method: "LeaveShare",
       parameters: json.encode(parameters),

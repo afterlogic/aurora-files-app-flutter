@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/screens/fido_auth/fido_auth_route.dart';
@@ -12,8 +12,7 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,14 +25,16 @@ import 'component/presentation_header.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 
 class AuthAndroid extends StatefulWidget {
+  const AuthAndroid({super.key});
+
   @override
   _AuthAndroidState createState() => _AuthAndroidState();
 }
 
 class _AuthAndroidState extends State<AuthAndroid> {
   final _authFormKey = GlobalKey<FormState>();
-  S s;
-  AuthState _authState = AppStore.authState;
+  final _authState = AppStore.authState;
+  late NavigatorState _navigator;
   bool _showHostField = false;
   bool _obscureText = true;
 
@@ -41,9 +42,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
   void initState() {
     super.initState();
     _authState.isLoggingIn = false;
-    _authState.emailCtrl.text = _authState.userEmail;
-    _authState.passwordCtrl.text = "";
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _authState.emailCtrl.text = _authState.userEmail ?? '';
+      _authState.passwordCtrl.text = "";
+    });
     _authState.lastEmail.then((value) {
       if (value != null) {
         _authState.emailCtrl.text = value;
@@ -61,6 +63,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         DeviceOrientation.portraitDown,
       ]);
     }
+    _navigator = Navigator.of(context);
   }
 
   @override
@@ -75,6 +78,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
   }
 
   Future _login(BuildContext context) async {
+    final s = context.l10n;
     // autodiscover field if it's hidden
 //    if (!_showHostField) _authState.hostCtrl.clear();
     String errMsg = "";
@@ -87,12 +91,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
     }
     if (errMsg.isEmpty) {
       final showHost = await _authState.onLogin(
-        context: context,
-        isFormValid: _authFormKey.currentState.validate(),
+        isFormValid: _authFormKey.currentState?.validate() ?? false,
         onTwoFactorAuth: (request) {
           if (request.hasSecurityKey == true && BuildProperty.useYubiKit) {
-            Navigator.pushNamed(
-              context,
+            _navigator.pushNamed(
               FidoAuthRoute.name,
               arguments: FidoAuthRouteArgs(
                 false,
@@ -100,8 +102,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
               ),
             );
           } else if (request.hasAuthenticatorApp == true) {
-            Navigator.pushNamed(
-              context,
+            _navigator.pushNamed(
               TwoFactorAuthRoute.name,
               arguments: TwoFactorAuthRouteArgs(
                 false,
@@ -111,54 +112,56 @@ class _AuthAndroidState extends State<AuthAndroid> {
           }
         },
         onSuccess: () async {
-          Navigator.pushReplacementNamed(context, FilesRoute.name,
-              arguments: FilesScreenArguments(path: ""));
+          _navigator.pushReplacementNamed(
+            FilesRoute.name,
+            arguments: FilesScreenArguments(path: ""),
+          );
         },
-        onShowUpgrade: (message) => Navigator.pushNamed(
-          context,
+        onShowUpgrade: (message) => _navigator.pushNamed(
           UpgradeRoute.name,
           arguments: UpgradeArg(message),
         ),
-        onError: (String err) => showSnack(context, msg: err),
+        onError: (String err) => AuroraSnackBar.showSnack(msg: err),
       );
-      if (showHost == true) {
+      if (showHost) {
+        if (!mounted) return;
 //        _authState.hostCtrl.text = _authState.hostName;
         setState(() => _showHostField = true);
-        showSnack(
-          context,
+        AuroraSnackBar.showSnack(
           msg: s.enter_host,
-          duration: Duration(seconds: 6),
+          duration: const Duration(seconds: 6),
         );
       }
     } else {
-      showSnack(context, msg: errMsg);
+      AuroraSnackBar.showSnack(msg: errMsg);
     }
   }
 
   List<Widget> _buildTextFields() {
-    final isIOS = PlatformOverride.isIOS;
+    final s = context.l10n;
     return [
       if (_showHostField)
         AppInput(
-          inputCase: InputCase.Underline,
+          inputCase: InputCase.underline,
           controller: _authState.hostCtrl,
           keyboardType: TextInputType.url,
           labelText: s.host,
         ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       AppInput(
         controller: _authState.emailCtrl,
         keyboardType: TextInputType.emailAddress,
         validator: (value) => validateInput(
-            value, [ValidationTypes.empty, ValidationTypes.email]),
+            value ?? '', [ValidationTypes.empty, ValidationTypes.email]),
         labelText: s.email,
-        inputCase: InputCase.Underline,
+        inputCase: InputCase.underline,
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       AppInput(
-        inputCase: InputCase.Underline,
+        inputCase: InputCase.underline,
         controller: _authState.passwordCtrl,
-        validator: (value) => validateInput(value, [ValidationTypes.empty]),
+        validator: (value) =>
+            validateInput(value ?? '', [ValidationTypes.empty]),
         obscureText: _obscureText,
         labelText: s.password,
         suffix: GestureDetector(
@@ -177,7 +180,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
   Widget theme(Widget widget) {
     if (AppTheme.login != null) {
       return Theme(
-        data: AppTheme.login,
+        data: AppTheme.login!,
         child: widget,
       );
     }
@@ -186,7 +189,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return Provider(
       create: (_) => _authState,
       child: theme(
@@ -195,25 +198,25 @@ class _AuthAndroidState extends State<AuthAndroid> {
             child: Stack(
               children: <Widget>[
                 if (!BuildProperty.useMainLogo)
-                  Positioned(
+                  const Positioned(
                     top: -70.0,
                     left: -70.0,
                     child: MailLogo(isBackground: true),
                   ),
                 Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(
+                    constraints: const BoxConstraints(
                       maxWidth: LayoutConfig.formWidth,
                     ),
                     child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 22.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 22.0),
                       child: Form(
                         key: _authFormKey,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            PresentationHeader(),
+                            const PresentationHeader(),
                             Column(
                               children: _buildTextFields(),
                             ),
@@ -247,12 +250,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
   Widget _debugRouteToTwoFactor(Widget child) {
     if (kDebugMode) {
       return GestureDetector(
-        onLongPress: () => Navigator.pushNamed(
-          context,
+        onLongPress: () => _navigator.pushNamed(
           UpgradeRoute.name,
         ),
-        onDoubleTap: () => Navigator.pushNamed(
-          context,
+        onDoubleTap: () => _navigator.pushNamed(
           TwoFactorAuthRoute.name,
           arguments:
               TwoFactorAuthRouteArgs(false, RequestTwoFactor(true, true, true)),

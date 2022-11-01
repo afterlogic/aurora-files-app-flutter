@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aurorafiles/modules/app_store.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'trust_device_event.dart';
 import 'trust_device_methods.dart';
@@ -11,10 +10,7 @@ class TrustDeviceBloc extends Bloc<TrustDeviceEvent, TrustDeviceState> {
   final String login;
   final String password;
 
-  TrustDeviceBloc(this.login, this.password);
-
-  @override
-  TrustDeviceState get initialState => InitialState();
+  TrustDeviceBloc(this.login, this.password) : super(InitialState());
 
   @override
   Stream<TrustDeviceState> mapEventToState(
@@ -30,7 +26,7 @@ class TrustDeviceBloc extends Bloc<TrustDeviceEvent, TrustDeviceState> {
       if (state.trust) {
         await _methods.trustDevice(login, password);
       }
-      yield CompleteState();
+      yield const CompleteState();
     } catch (err, s) {
       yield ErrorState(s.toString());
     }

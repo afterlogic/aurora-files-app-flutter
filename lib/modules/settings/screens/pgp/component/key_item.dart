@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 
 class KeyItem extends StatefulWidget {
   final LocalPgpKey pgpKey;
-  final bool selected;
+  final bool? selected;
   final bool external;
-  final Function(bool) onSelect;
+  final Function(bool)? onSelect;
 
   const KeyItem({
-    this.pgpKey,
+    super.key,
+    required this.pgpKey,
     this.selected,
     this.external = false,
     this.onSelect,
@@ -25,9 +26,8 @@ class _KeyItemState extends State<KeyItem> {
     final theme = Theme.of(context);
     var textTheme = theme.textTheme;
 
-    final length = widget.pgpKey.key?.length != null
-        ? "(${widget.pgpKey.length}-bit,"
-        : "(";
+    final length =
+        widget.pgpKey.key.isNotEmpty ? "(${widget.pgpKey.length}-bit," : "(";
 
     final description =
         '$length ${widget.pgpKey.isPrivate ? "private" : "public"})'
@@ -43,7 +43,7 @@ class _KeyItemState extends State<KeyItem> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Divider(
+        const Divider(
           color: Colors.transparent,
         ),
         Row(
@@ -73,12 +73,14 @@ class _KeyItemState extends State<KeyItem> {
               Checkbox(
                 value: widget.selected,
                 onChanged: (isSelected) {
-                  widget.onSelect(isSelected);
+                  if (widget.onSelect != null && isSelected != null) {
+                    widget.onSelect!(isSelected);
+                  }
                 },
               )
           ],
         ),
-        Divider(
+        const Divider(
           color: Colors.grey,
         ),
       ],

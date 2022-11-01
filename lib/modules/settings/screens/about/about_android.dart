@@ -1,5 +1,5 @@
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
@@ -9,14 +9,16 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 
 class AboutAndroid extends StatefulWidget {
+  const AboutAndroid({super.key});
+
   @override
   _AboutAndroidState createState() => _AboutAndroidState();
 }
 
 class _AboutAndroidState extends State<AboutAndroid> {
   bool loading = false;
-  String _appName;
-  String _version;
+  String _appName = '';
+  String _version = '';
 
   @override
   void initState() {
@@ -57,7 +59,7 @@ class _AboutAndroidState extends State<AboutAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     return Scaffold(
       appBar: isTablet
@@ -66,21 +68,21 @@ class _AboutAndroidState extends State<AboutAndroid> {
               title: Text(s.about),
             ),
       body: loading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(_appName, style: Theme.of(context).textTheme.headline6),
-                SizedBox(height: 12.0),
+                const SizedBox(height: 12.0),
                 Text(
                   s.version(_version),
                   style: Theme.of(context)
                       .textTheme
                       .caption
-                      .copyWith(fontSize: 14.0),
+                      ?.copyWith(fontSize: 14.0),
                 ),
-                SizedBox(height: 22.0),
+                const SizedBox(height: 22.0),
                 Center(
                   child: SizedBox(
                     width: 120.0,
@@ -88,33 +90,37 @@ class _AboutAndroidState extends State<AboutAndroid> {
                     child: Image.asset(BuildProperty.icon),
                   ),
                 ),
-                SizedBox(height: 42.0),
+                const SizedBox(height: 42.0),
                 if (BuildProperty.termsOfService.isNotEmpty)
                   GestureDetector(
                     child: Text(
                       s.terms,
                       style: TextStyle(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         decoration: TextDecoration.underline,
                         fontSize: 18.0,
                       ),
                     ),
-                    onTap: () => launch(BuildProperty.termsOfService),
+                    onTap: () => launchUrl(
+                      Uri.parse(BuildProperty.termsOfService),
+                    ),
                   ),
-                SizedBox(height: 22.0),
+                const SizedBox(height: 22.0),
                 if (BuildProperty.privacyPolicy.isNotEmpty)
                   GestureDetector(
                     child: Text(
                       s.privacy_policy,
                       style: TextStyle(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         decoration: TextDecoration.underline,
                         fontSize: 18.0,
                       ),
                     ),
-                    onTap: () => launch(BuildProperty.privacyPolicy),
+                    onTap: () => launchUrl(
+                      Uri.parse(BuildProperty.privacyPolicy),
+                    ),
                   ),
-                SizedBox(height: 42.0),
+                const SizedBox(height: 42.0),
               ],
             ),
     );

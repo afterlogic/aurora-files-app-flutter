@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/string/s.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/repository/files_local_storage.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
@@ -18,13 +18,13 @@ class SecureSharingImpl extends SecureSharing {
   Future sharing(
     BuildContext context,
     FilesState filesState,
-    LocalPgpKey userPrivateKey,
-    LocalPgpKey userPublicKey,
+    LocalPgpKey? userPrivateKey,
+    LocalPgpKey? userPublicKey,
     PgpKeyUtil pgpKeyUtil,
     PreparedForShare preparedForShare,
-    S s,
   ) async {
-    bool usePassword = true;
+    final s = context.l10n;
+    bool? usePassword = true;
 
     if (!preparedForShare.localFile.published) {
       usePassword = await AMDialog.show(
@@ -33,7 +33,7 @@ class SecureSharingImpl extends SecureSharing {
       );
     }
 
-    RecipientWithKey selectRecipientResult;
+    RecipientWithKey? selectRecipientResult;
     if (usePassword != null) {
       while (true) {
         final needRecipient = await AMDialog.show(
@@ -41,7 +41,7 @@ class SecureSharingImpl extends SecureSharing {
           builder: (context) => ShareLink(
             userPrivateKey,
             userPublicKey,
-            usePassword,
+            usePassword ?? false,
             preparedForShare,
             selectRecipientResult,
             filesState,
@@ -68,18 +68,18 @@ class SecureSharingImpl extends SecureSharing {
   Future encryptSharing(
     BuildContext context,
     FilesState filesState,
-    LocalPgpKey userPrivateKey,
-    LocalPgpKey userPublicKey,
+    LocalPgpKey? userPrivateKey,
+    LocalPgpKey? userPublicKey,
     PgpKeyUtil pgpKeyUtil,
     PreparedForShare preparedForShare,
     Function onUpdate,
     Pgp pgp,
-    S s,
   ) async {
-
+    final s = context.l10n;
     final selectRecipientResult = await AMDialog.show(
       context: context,
-      builder: (context) => SelectRecipient(filesState, s.btn_encrypted_shareable_link),
+      builder: (context) =>
+          SelectRecipient(filesState, s.btn_encrypted_shareable_link),
     );
 
     if (selectRecipientResult is RecipientWithKey) {

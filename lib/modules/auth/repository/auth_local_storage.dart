@@ -1,112 +1,136 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthLocalStorage {
-  // Token
-  Future<String> getHostFromStorage() async {
+
+  final _hostKey = "host";
+
+  Future<String?> getHostFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString("host");
+    return prefs.getString(_hostKey);
   }
 
-  Future<bool> setHostToStorage(String value) async {
+  Future<bool> setHostToStorage(String? value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString("host", value);
+    return value == null
+        ? prefs.remove(_hostKey)
+        : prefs.setString(_hostKey, value);
   }
 
   Future<bool> deleteHostFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove("host");
+    return prefs.remove(_hostKey);
   }
 
-  // Token
-  Future<String> getTokenFromStorage() async {
+  final _authTokenKey = "authToken";
+
+  Future<String?> getTokenFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString("authToken");
+    return prefs.getString(_authTokenKey);
   }
 
-  Future<bool> setTokenToStorage(String value) async {
+  Future<bool> setTokenToStorage(String? value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString("authToken", value);
+    return value == null
+        ? prefs.remove(_authTokenKey)
+        : prefs.setString(_authTokenKey, value);
   }
 
   Future<bool> deleteTokenFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove("authToken");
+    return prefs.remove(_authTokenKey);
   }
 
-  // User Email
-  Future<String> getUserEmailFromStorage() async {
+  final _userEmailKey = "userEmail";
+
+  Future<String?> getUserEmailFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString("userEmail");
+    return prefs.getString(_userEmailKey);
   }
 
-  Future<bool> setUserEmailToStorage(String value) async {
+  Future<bool> setUserEmailToStorage(String? value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString("userEmail", value);
+    return value == null
+        ? prefs.remove(_userEmailKey)
+        : prefs.setString(_userEmailKey, value);
   }
 
   Future<bool> deleteUserEmailFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove("userEmail");
+    return prefs.remove(_userEmailKey);
   }
 
-  // User Id
-  Future<int> getUserIdFromStorage() async {
+  final _userIdKey = "userId";
+
+  Future<int?> getUserIdFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt("userId");
+    return prefs.getInt(_userIdKey);
   }
 
-  Future<bool> setUserIdToStorage(int value) async {
+  Future<bool> setUserIdToStorage(int? value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setInt("userId", value);
+    return value == null
+        ? prefs.remove(_userIdKey)
+        : prefs.setInt(_userIdKey, value);
   }
 
   Future<bool> deleteUserIdFromStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove("userId");
+    return prefs.remove(_userIdKey);
   }
 
-  Future<String> getFriendlyName() async {
+  final _friendlyNameKey = "friendlyName";
+
+  Future<String?> getFriendlyName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString("friendlyName");
+    return prefs.getString(_friendlyNameKey);
   }
 
-  Future<bool> setFriendlyName(String value) async {
+  Future<bool> setFriendlyName(String? value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString("friendlyName", value);
+    return value == null
+        ? prefs.remove(_friendlyNameKey)
+        : prefs.setString(_friendlyNameKey, value);
   }
 
-  Future setIdentity(List<String> identity) async {
+  final _identityKey = "identity";
+
+  Future<List<String>?> getIdentity() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setStringList("identity", identity);
+    return prefs.getStringList(_identityKey);
   }
 
-  Future<List<String>> getIdentity() async {
+  Future setIdentity(List<String>? value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList("identity");
+    return value == null
+        ? prefs.remove(_identityKey)
+        : prefs.setStringList(_identityKey, value);
   }
 
   final _lastEmailKey = "lastEmail";
 
-  // User Id
-  Future<String> getLastEmail() async {
+  Future<String?> getLastEmail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_lastEmailKey);
   }
 
-  Future<bool> setLastEmail(String value) async {
+  Future<bool> setLastEmail(String? value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString(_lastEmailKey, value);
+    return value == null
+        ? prefs.remove(_lastEmailKey)
+        : prefs.setString(_lastEmailKey, value);
   }
 
   final _lastHostKey = "lastHost";
 
-  Future<String> getLastHost() async {
+  Future<String?> getLastHost() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_lastHostKey);
   }
 
-  Future<bool> setLastHost(String value) async {
+  Future<bool> setLastHost(String? value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString(_lastHostKey, value);
+    return value == null
+        ? prefs.remove(_lastHostKey)
+        : prefs.setString(_lastHostKey, value);
   }
 }

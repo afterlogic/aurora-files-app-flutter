@@ -3,8 +3,7 @@ import 'dart:math';
 
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:aurorafiles/models/processing_file.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/dialogs/key_request_dialog.dart';
@@ -15,7 +14,6 @@ import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,10 +23,10 @@ import 'select_recipient.dart';
 
 class EncryptedShareLink extends StatefulWidget {
   final FilesState filesState;
-  final Recipient recipient;
-  final LocalPgpKey pgpKey;
-  final LocalPgpKey userPrivateKey;
-  final LocalPgpKey userPublicKey;
+  final Recipient? recipient;
+  final LocalPgpKey? pgpKey;
+  final LocalPgpKey? userPrivateKey;
+  final LocalPgpKey? userPublicKey;
   final bool useKey;
   final bool useSign;
   final bool useEncrypt;
@@ -57,21 +55,20 @@ class EncryptedShareLink extends StatefulWidget {
 }
 
 class _EncryptedShareLinkState extends State<EncryptedShareLink> {
-  ProcessingFile _processingFile;
-  LegacyPgpApi legacyPgpApi;
+  late LegacyPgpApi legacyPgpApi;
   double progress = 0;
   bool isDownload = false;
   bool sendProgress = false;
-  String link;
-  S s;
-  String error;
-  String password = null;
+  String? link;
+  String? error;
+  String password = '';
   final toastKey = GlobalKey<ToastWidgetState>();
 
-  encrypt() async {
+  Future<void> encrypt(BuildContext context) async {
+    final s = context.l10n;
     if (widget.useKey) {
       widget.filesState.addDecryptedPublicKey(
-          context, widget.file.localFile, [widget.pgpKey.key]).then((_) {
+          context, widget.file.localFile, [widget.pgpKey?.key ?? '']).then((_) {
         upload();
       }, onError: (e) {
         error = s.encrypt_error;
@@ -102,19 +99,19 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     }
   }
 
-  upload() {
+  void upload() {
     isDownload = true;
     widget.onLoad();
     createPublicLink();
   }
 
-  createPublicLink() {
+  void createPublicLink() {
     isDownload = true;
     setState(() {});
 
     widget.filesState.createSecureLink(
       file: widget.file.localFile,
-      email: widget.recipient.email,
+      email: widget.recipient?.email ?? '',
       isKey: widget.useKey,
       password: widget.useEncrypt ? "" : password,
       onError: (e) {
@@ -128,12 +125,12 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     );
   }
 
-  share() async {
+  Future<void> share(BuildContext context) async {
     if (widget.useEncrypt) {
       if (isDownload) {
         upload();
       } else {
-        encrypt();
+        encrypt(context);
       }
     } else {
       createPublicLink();
@@ -142,9 +139,9 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
 
   @override
   void initState() {
-    prepare();
+    _prepare();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      share();
+      share(context);
     });
     super.initState();
   }
@@ -156,33 +153,39 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     return file;
   }
 
-  prepare() async {
-    legacyPgpApi = LegacyPgpApi(widget.pgp);
-    legacyPgpApi.temp = await tempFile;
-    if (widget.pgpKey != null) {
-      legacyPgpApi.publicKeys = [widget.pgpKey.key, widget.userPublicKey?.key]
-          .where((item) => item != null)
-          .toList();
+  Future<void> _prepare() async {
+    final publicKeys = <String>[];
+    if (widget.pgpKey?.key != null) {
+      publicKeys.add(widget.pgpKey?.key ?? '');
     }
+    if (widget.userPublicKey?.key != null) {
+      publicKeys.add(widget.userPublicKey?.key ?? '');
+    }
+    String? privateKey;
     if (widget.useSign == true) {
-      legacyPgpApi.privateKey = widget.userPrivateKey.key;
+      privateKey = widget.userPrivateKey?.key;
     }
+    legacyPgpApi = LegacyPgpApi(
+      pgp: widget.pgp,
+      temp: await tempFile,
+      publicKeys: publicKeys,
+      privateKey: privateKey,
+    );
   }
 
   @override
   void dispose() {
-    _processingFile?.endProcess();
     legacyPgpApi.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final size = MediaQuery.of(context).size;
     final actions = <Widget>[
       if (link != null)
-        FlatButton(
+        TextButton(
           child: Text(widget.pgpKey != null ? s.send_encrypted : s.send),
           onPressed: sendProgress
               ? null
@@ -190,7 +193,7 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
                   sendEmail();
                 },
         ),
-      FlatButton(
+      TextButton(
         child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);
@@ -232,9 +235,10 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   }
 
   sendEmail() async {
+    final s = context.l10n;
     sendProgress = true;
     setState(() {});
-    toastKey.currentState.show(s.sending);
+    toastKey.currentState?.show(s.sending);
     final recipient = widget.recipient?.fullName ??
         widget.recipient?.email ??
         widget.pgpKey?.email;
@@ -243,10 +247,10 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       widget.useEncrypt,
       widget.useKey,
       widget.file.localFile.name,
-      link,
+      link ?? '',
       widget.pgpKey != null ? password : null,
-      recipient,
-      AppStore.authState.userEmail,
+      recipient ?? '',
+      AppStore.authState.userEmail ?? '',
     );
 
     if (widget.pgpKey != null) {
@@ -259,13 +263,14 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     }
 
     widget.filesState
-        .sendViaEmail(template, widget.recipient?.email ?? widget.pgpKey?.email)
+        .sendViaEmail(
+            template, widget.recipient?.email ?? widget.pgpKey?.email ?? '')
         .then(
       (_) {
-        toastKey.currentState.show(s.sending_complete);
+        toastKey.currentState?.show(s.sending_complete);
       },
       onError: (e) {
-        toastKey.currentState.show(s.failed);
+        toastKey.currentState?.show(s.failed);
       },
     ).whenComplete(() {
       sendProgress = false;
@@ -274,8 +279,9 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
   }
 
   List<Widget> progressLabel() {
+    final s = context.l10n;
     final theme = Theme.of(context);
-    String recipient = widget.recipient?.fullName;
+    String? recipient = widget.recipient?.fullName;
     if (recipient?.isNotEmpty != true) {
       recipient = widget.recipient?.email;
     }
@@ -284,19 +290,14 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
     }
     if (error != null) {
       return [
-        SizedBox(
-          height: 10,
-        ),
-        Text(error),
-        SizedBox(
-          height: 10,
-        ),
+        SizedBox(height: 10),
+        Text(error ?? ''),
+        SizedBox(height: 10),
         Center(
           child: AMButton(
             onPressed: () {
               error = null;
-
-              share();
+              share(context);
             },
             child: Text(s.try_again),
           ),
@@ -314,22 +315,22 @@ class _EncryptedShareLinkState extends State<EncryptedShareLink> {
       ];
     }
     return [
-      ClipboardLabel(link, s.encrypted_file_link, () {
-        toastKey.currentState.show(s.link_coppied_to_clipboard);
+      ClipboardLabel(link ?? '', s.encrypted_file_link, () {
+        toastKey.currentState?.show(s.link_coppied_to_clipboard);
       }),
       SizedBox(
         height: 10,
       ),
       if (!widget.useKey)
         ClipboardLabel(password, s.encrypted_file_password, () {
-          toastKey.currentState.show(s.link_coppied_to_clipboard);
+          toastKey.currentState?.show(s.link_coppied_to_clipboard);
         }),
       if (!widget.useKey) SizedBox(height: 10),
       Text(
         widget.useKey
             ? widget.useSign
-                ? s.encrypted_sign_using_key(recipient)
-                : s.encrypted_using_key(recipient)
+                ? s.encrypted_sign_using_key(recipient ?? '')
+                : s.encrypted_using_key(recipient ?? '')
             : widget.pgpKey != null
                 ? s.encrypted_using_password
                 : s.copy_encrypted_password,

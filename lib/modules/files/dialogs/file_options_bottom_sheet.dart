@@ -3,7 +3,7 @@ import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/public_link_switch.dart';
@@ -15,10 +15,10 @@ import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/asset_icon.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/utils/offline_utils.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -44,21 +44,21 @@ class FileOptionsBottomSheet extends StatefulWidget {
   final bool sharedWithMe;
 
   const FileOptionsBottomSheet._({
-    Key key,
-    @required this.file,
-    @required this.filesState,
-    @required this.filesPageState,
-    @required this.canShare,
-    @required this.sharedWithMe,
+    Key? key,
+    required this.file,
+    required this.filesState,
+    required this.filesPageState,
+    required this.canShare,
+    required this.sharedWithMe,
   }) : super(key: key);
 
   static Future show({
-    @required BuildContext context,
-    @required LocalFile file,
-    @required FilesState filesState,
-    @required FilesPageState filesPageState,
-    @required bool canShare,
-    @required bool sharedWithMe,
+    required BuildContext context,
+    required LocalFile file,
+    required FilesState filesState,
+    required FilesPageState filesPageState,
+    required bool canShare,
+    required bool sharedWithMe,
   }) {
     final isTablet = LayoutConfig.of(context).isTablet;
     if (isTablet) {
@@ -100,10 +100,9 @@ class FileOptionsBottomSheet extends StatefulWidget {
 
 class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     with TickerProviderStateMixin {
-  S s;
   SecureSharing secureSharing = DI.get();
-  StorageType storageType;
-  bool isFolder;
+  late StorageType storageType;
+  late bool isFolder;
 
   bool get _enableSecureLink => isFolder
       ? [StorageType.corporate, StorageType.personal].contains(storageType)
@@ -148,6 +147,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       }
     }
     if (canDownload) {
+      if (!mounted) return;
       Navigator.pop(context);
       final result = await AMDialog.show(
         context: context,
@@ -177,12 +177,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
 
   void _deleteFile() async {
     final shouldDelete = await AMDialog.show<bool>(
-            context: context,
-            builder: (_) => DeleteConfirmationDialog(
-              itemsNumber: 1,
-              isFolder: widget.file.isFolder,
-            ),
-          );
+      context: context,
+      builder: (_) => DeleteConfirmationDialog(
+        itemsNumber: 1,
+        isFolder: widget.file.isFolder,
+      ),
+    );
     if (shouldDelete == true) {
       widget.filesPageState.onDeleteFiles(
         filesToDelete: [widget.file],
@@ -194,6 +194,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
   }
 
   Future<void> _secureSharing() async {
+    final s = context.l10n;
     if (widget.file.published == false && widget.file.initVector != null) {
       if (widget.file.encryptedDecryptionKey == null) {
         return AMDialog.show(
@@ -215,6 +216,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
+    if (!mounted) return;
     await secureSharing.sharing(
       context,
       widget.filesState,
@@ -222,7 +224,6 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       userPublicKey,
       pgpKeyUtil,
       preparedForShare,
-      s,
     );
     setState(() {});
   }
@@ -231,6 +232,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
+    if (!mounted) return;
     secureSharing.encryptSharing(
       context,
       widget.filesState,
@@ -238,18 +240,18 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       userPublicKey,
       pgpKeyUtil,
       preparedForShare,
-          () {
+      () {
         widget.filesPageState.onGetFiles(
           showLoading: FilesLoadingType.filesVisible,
         );
       },
       DI.get(),
-      s,
     );
     setState(() {});
   }
 
   Future<void> _shareWithTeammates(BuildContext context) async {
+    final s = context.l10n;
     Navigator.pop(context);
     if (widget.file.initVector != null &&
         widget.file.encryptedDecryptionKey == null) {
@@ -289,6 +291,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         _onError(err);
       }
       widget.filesPageState.onGetFiles();
+      if (!mounted) return;
       Navigator.pop(context);
     }
   }
@@ -305,12 +308,12 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
   }
 
   void _onError(dynamic error) {
-    showSnack(context, msg: '$error');
+    AuroraSnackBar.showSnack(msg: '$error');
   }
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final offline = widget.filesState.isOfflineMode;
     final isTablet = LayoutConfig.of(context).isTablet;
     Widget content = SingleChildScrollView(
@@ -328,21 +331,20 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               filesState: widget.filesState,
               filesPageState: widget.filesPageState,
             ),
-          if (!isFolder && !offline) Divider(height: 0),
+          if (!isFolder && !offline) const Divider(height: 0),
           if (!isFolder)
             ListTile(
               onTap: () =>
                   onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
-              leading: Icon(Icons.airplanemode_active),
+              leading: const Icon(Icons.airplanemode_active),
               title: Text(s.offline),
               trailing: Switch.adaptive(
-                value: widget.file.localId != null,
-                activeColor: Theme.of(context).accentColor,
+                value: widget.file.localId != -1,
                 onChanged: (bool val) =>
                     onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
               ),
             ),
-          Divider(height: 0),
+          const Divider(height: 0),
           if (!offline)
             ListTile(
               leading: Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove),
@@ -369,7 +371,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!offline && _enableTeamShare)
             ListTile(
-              leading: Icon(Icons.share),
+              leading: const Icon(Icons.share),
               title: Text(s.label_share_with_teammates),
               onTap: () => _shareWithTeammates(context),
             ),
@@ -394,17 +396,17 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!PlatformOverride.isIOS && !isFolder)
             ListTile(
-              leading: Icon(Icons.file_download),
+              leading: const Icon(Icons.file_download),
               title: Text(s.download),
               onTap: _download,
             ),
           if (!offline)
             ListTile(
-              leading: Icon(Icons.edit),
+              leading: const Icon(Icons.edit),
               title: Text(s.rename),
               onTap: () async {
                 Navigator.pop(context);
-                final result = await AMDialog.show(
+                await AMDialog.show(
                   context: context,
                   builder: (_) => RenameDialog(
                     file: widget.file,
@@ -416,7 +418,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!offline)
             ListTile(
-              leading: Icon(Icons.delete_outline),
+              leading: const Icon(Icons.delete_outline),
               title: Text(s.delete),
               onTap: () {
                 Navigator.pop(context);
@@ -445,11 +447,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             style: Theme.of(context).textTheme.headline6,
           ),
         ),
-        Divider(height: 0),
+        const Divider(height: 0),
         content,
       ],
     );
   }
-
-
 }

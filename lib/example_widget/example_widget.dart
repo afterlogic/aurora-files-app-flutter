@@ -3,25 +3,26 @@ import 'dart:io';
 import 'package:aurorafiles/example_widget/category/app_category.dart';
 import 'package:aurorafiles/example_widget/category/text_category.dart';
 import 'package:aurorafiles/example_widget/test_widget/category_widget.dart';
-import 'package:aurorafiles/generated/localization_string_widget.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:theme/app_theme.dart';
 import 'category/flutter_category.dart';
 
 main() {
   PlatformOverride.setPlatform(Platform.isIOS);
-  runApp(ExampleWidgetScreen());
+  runApp(const ExampleWidgetScreen());
 }
 
 openExample(BuildContext context) {
   Navigator.of(context)
-      .push(MaterialPageRoute(builder: (_) => ExampleWidgetScreen()));
+      .push(MaterialPageRoute(builder: (_) => const ExampleWidgetScreen()));
 }
 
 class ExampleWidgetScreen extends StatefulWidget {
+  const ExampleWidgetScreen({super.key});
+
   @override
   _ExampleWidgetScreenState createState() => _ExampleWidgetScreenState();
 }
@@ -29,9 +30,9 @@ class ExampleWidgetScreen extends StatefulWidget {
 class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
   final categoryStateHolder = CategoryStateHolder();
   var scrollController = ScrollController();
-  bool isDarkTheme;
+  bool isDarkTheme = false;
   bool isIOS = PlatformOverride.isIOS;
-  ThemeData theme;
+  late ThemeData theme;
 
   TextTheme get textTheme => theme.textTheme;
 
@@ -45,15 +46,8 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
     return MaterialApp(
       theme: theme,
       home: wrap,
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        LocalizationStringWidget.delegate,
-      ],
-      supportedLocales: LocalizationStringWidget.delegate.supportedLocales,
-      localeResolutionCallback: LocalizationStringWidget.delegate
-          .resolution(fallback: new Locale("en", ""), withCountry: false),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 
@@ -80,13 +74,13 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
               BackButton(
                 onPressed: () => Navigator.pop(context),
               ),
-              Expanded(
+              const Expanded(
                 child: SizedBox.shrink(),
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text("is IOS"),
+                  const Text("is IOS"),
                   Switch(
                     value: isIOS,
                     onChanged: (value) {
@@ -99,7 +93,7 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text("is DarkTheme"),
+                  const Text("is DarkTheme"),
                   Switch(
                     value: isDarkTheme,
                     onChanged: (value) {
@@ -113,7 +107,7 @@ class _ExampleWidgetScreenState extends State<ExampleWidgetScreen> {
           ),
           body: ListView(
             controller: scrollController,
-            children: <Widget>[
+            children: const <Widget>[
               AppCategory(),
               TextCategory(),
               FlutterCategory(),

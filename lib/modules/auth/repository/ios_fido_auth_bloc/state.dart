@@ -11,7 +11,7 @@ abstract class FidoAuthState extends Equatable {
 class InitState extends FidoAuthState {}
 
 class ErrorState extends FidoAuthState with AlwaysNonEqualObject {
-  final String errorToShow;
+  final String? errorToShow;
 
   ErrorState(this.errorToShow);
 }

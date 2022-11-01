@@ -2,7 +2,7 @@ class FidoAuthRequest {
   final String domainUrl;
   final double timeout;
   final String challenge;
-  final String requestId;
+  final String? requestId;
   final String rpId;
   final List<String> credentials;
 
@@ -20,7 +20,7 @@ class FidoAuthRequest {
     throw 'Mock Not Implemented';
   }
 
-  Future<Map<dynamic, dynamic>> start() {
+  Future<Map<dynamic, dynamic>?> start() {
     throw 'Mock Not Implemented';
   }
 

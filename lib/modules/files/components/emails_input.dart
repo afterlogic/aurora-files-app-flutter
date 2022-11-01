@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/models/recipient.dart';
+import 'package:aurorafiles/modules/files/components/compose_type_ahead.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
-
-import 'compose_type_ahead.dart';
 
 class EmailsInput extends StatefulWidget {
   final String label;
@@ -14,11 +12,11 @@ class EmailsInput extends StatefulWidget {
   final bool enable;
   final Set<String> pgpKeys;
 
-  EmailsInput(
+  const EmailsInput(
     this.searchContact,
     this.emails,
     this.enable,
-    Key key,
+    Key? key,
     this.pgpKeys,
     this.label,
   ) : super(key: key);
@@ -32,11 +30,11 @@ class EmailsInputState extends State<EmailsInput> {
   final composeTypeAheadFieldKey = GlobalKey<ComposeTypeAheadFieldState>();
   final focusNode = FocusNode();
 
-  Timer debounce;
-  List<Recipient> lastSuggestions;
-  ThemeData theme;
-  String _search;
-  Completer<List<Recipient>> completer;
+  Timer? debounce;
+  List<Recipient> lastSuggestions = [];
+  late ThemeData theme;
+  String? _search;
+  late Completer<List<Recipient>> completer;
 
   addEmail() {
     _addEmail(textCtrl.text);
@@ -53,14 +51,14 @@ class EmailsInputState extends State<EmailsInput> {
     var _completer = completer;
     debounce?.cancel();
     print(pattern);
-    debounce = Timer(Duration(milliseconds: 500), () async {
+    debounce = Timer(const Duration(milliseconds: 500), () async {
       if (pattern == textCtrl.text) {
         lastSuggestions = await widget.searchContact(pattern);
         if (_completer == completer && pattern == textCtrl.text) {
           return _completer.complete(lastSuggestions);
         }
       }
-      return _completer.complete();
+      return _completer.complete([]);
     });
     return completer.future;
   }
@@ -86,14 +84,15 @@ class EmailsInputState extends State<EmailsInput> {
   }
 
   TextSpan _searchMatch(String match) {
-    final color = theme.textTheme.body1.color;
+    final color = theme.textTheme.bodyText2?.color;
     final posRes = TextStyle(fontWeight: FontWeight.w700, color: color);
     final negRes = TextStyle(fontWeight: FontWeight.w400, color: color);
 
-    if (_search == null || _search == "")
+    if (_search == null || _search == "") {
       return TextSpan(text: match, style: negRes);
+    }
     var refinedMatch = match.toLowerCase();
-    var refinedSearch = _search.toLowerCase();
+    var refinedSearch = _search?.toLowerCase() ?? '';
     if (refinedMatch.contains(refinedSearch)) {
       if (refinedMatch.substring(0, refinedSearch.length) == refinedSearch) {
         return TextSpan(
@@ -145,9 +144,9 @@ class EmailsInputState extends State<EmailsInput> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (contact.fullName.isNotEmpty)
+              if (contact.fullName?.isNotEmpty == true)
                 RichText(
-                  text: _searchMatch(contact.fullName),
+                  text: _searchMatch(contact.fullName ?? ''),
                   maxLines: 1,
                 ),
               if (contact.email.isNotEmpty)
@@ -158,8 +157,8 @@ class EmailsInputState extends State<EmailsInput> {
             ],
           ),
         ),
-        if (widget.pgpKeys.contains(contact.email)) Icon(Icons.vpn_key),
-        SizedBox(
+        if (widget.pgpKeys.contains(contact.email)) const Icon(Icons.vpn_key),
+        const SizedBox(
           width: 10,
         )
       ],
@@ -168,20 +167,20 @@ class EmailsInputState extends State<EmailsInput> {
 
   void _deleteEmail(String email) {
     setState(() => widget.emails.remove(email));
-    composeTypeAheadFieldKey.currentState.resize();
+    composeTypeAheadFieldKey.currentState?.resize();
   }
 
-  Future _addEmail(String _email) async {
+  void _addEmail(String _email) {
     final email = _email.replaceAll(" ", "");
     textCtrl.text = " ";
-    textCtrl.selection = TextSelection.collapsed(offset: 1);
+    textCtrl.selection = const TextSelection.collapsed(offset: 1);
     lastSuggestions = [];
     final error =
         validateInput(email, [ValidationTypes.email, ValidationTypes.empty]);
     if (error == null) {
       setState(() => widget.emails.add(email));
     }
-    composeTypeAheadFieldKey.currentState.resize();
+    composeTypeAheadFieldKey.currentState?.resize();
   }
 
   @override
@@ -190,14 +189,14 @@ class EmailsInputState extends State<EmailsInput> {
     final dropDownWidth = screenWidth / 1.25;
 
     return Padding(
-      padding: EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.only(top: 4),
       child: GestureDetector(
         onTap: focusNode.requestFocus,
         child: InputDecorator(
           decoration: InputDecoration(
             labelText: widget.label,
-            contentPadding: EdgeInsets.all(8),
-            border: OutlineInputBorder(gapPadding: 0),
+            contentPadding: const EdgeInsets.all(8),
+            border: const OutlineInputBorder(gapPadding: 0),
           ),
           expands: false,
           child: Wrap(
@@ -209,7 +208,7 @@ class EmailsInputState extends State<EmailsInput> {
                   onDelete: (e) => setState(() => widget.emails.remove(e)),
                 );
               }),
-              if (widget.emails.isNotEmpty) SizedBox(height: 8),
+              if (widget.emails.isNotEmpty) const SizedBox(height: 8),
               ComposeTypeAheadField<Recipient>(
                 key: composeTypeAheadFieldKey,
                 textFieldConfiguration: TextFieldConfiguration(
@@ -226,13 +225,13 @@ class EmailsInputState extends State<EmailsInput> {
                   ),
                 ),
                 suggestionsBoxVerticalOffset: 0.0,
-                suggestionsBoxHorizontalOffset:
-                    screenWidth - dropDownWidth - 16 * 2,
+                // suggestionsBoxHorizontalOffset:
+                //     screenWidth - dropDownWidth - 16 * 2,
                 autoFlipDirection: true,
                 hideOnLoading: true,
                 keepSuggestionsOnLoading: true,
                 getImmediateSuggestions: true,
-                noItemsFoundBuilder: (_) => SizedBox(),
+                noItemsFoundBuilder: (_) => const SizedBox(),
                 suggestionsCallback: (pattern) async => search(pattern),
                 itemBuilder: (_, c) {
                   return Padding(
@@ -250,7 +249,8 @@ class EmailsInputState extends State<EmailsInput> {
                   onChanged: (value) {
                     if (widget.emails.isNotEmpty && value.isEmpty) {
                       textCtrl.text = " ";
-                      textCtrl.selection = TextSelection.collapsed(offset: 1);
+                      textCtrl.selection =
+                          const TextSelection.collapsed(offset: 1);
                       _deleteEmail(widget.emails.last);
                     } else if (value.length > 1 && value.endsWith(" ")) {
                       onSubmit();
@@ -273,11 +273,11 @@ class EmailsInputState extends State<EmailsInput> {
     if (lastSuggestions.isEmpty) {
       if (isEmailValid(textCtrl.text.replaceAll(" ", ""))) {
         _addEmail(textCtrl.text.replaceAll(" ", ""));
-        composeTypeAheadFieldKey.currentState.clear();
+        composeTypeAheadFieldKey.currentState?.clear();
       }
     } else {
       _addEmail(lastSuggestions.first.email);
-      composeTypeAheadFieldKey.currentState.clear();
+      composeTypeAheadFieldKey.currentState?.clear();
     }
   }
 }
@@ -286,7 +286,11 @@ class EmailItem extends StatefulWidget {
   final String email;
   final Function(String) onDelete;
 
-  const EmailItem({Key key, this.email, this.onDelete}) : super(key: key);
+  const EmailItem({
+    Key? key,
+    required this.email,
+    required this.onDelete,
+  }) : super(key: key);
 
   @override
   _EmailItemState createState() => _EmailItemState();
@@ -308,7 +312,7 @@ class _EmailItemState extends State<EmailItem> {
           avatar: CircleAvatar(
             child: Text(
               widget.email[0],
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
           label: Text(widget.email),

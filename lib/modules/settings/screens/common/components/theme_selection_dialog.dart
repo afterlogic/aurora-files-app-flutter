@@ -1,18 +1,17 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class ThemeSelectionDialog extends StatelessWidget {
   final bool theme;
-  final Function(bool) onItemSelected;
+  final Function(bool?) onItemSelected;
 
-  const ThemeSelectionDialog(this.onItemSelected, this.theme);
+  const ThemeSelectionDialog(this.onItemSelected, this.theme, {super.key});
 
   static void show(
     BuildContext context,
     bool selected,
-    Function(bool) onItemSelected,
+    Function(bool?) onItemSelected,
   ) {
     AMDialog.show(
       context: context,
@@ -22,15 +21,15 @@ class ThemeSelectionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
       contentPadding: EdgeInsets.zero,
-      titlePadding: EdgeInsets.all(24.0),
+      titlePadding: const EdgeInsets.all(24.0),
       title: Text(s.app_theme),
       content: AMDialogList(
         children: [
-          RadioListTile<bool>(
-            activeColor: Theme.of(context).accentColor,
+          RadioListTile<bool?>(
+            activeColor: Theme.of(context).colorScheme.secondary,
             title: Text(s.system_theme),
             value: null,
             groupValue: theme,
@@ -40,7 +39,7 @@ class ThemeSelectionDialog extends StatelessWidget {
             },
           ),
           RadioListTile<bool>(
-            activeColor: Theme.of(context).accentColor,
+            activeColor: Theme.of(context).colorScheme.secondary,
             title: Text(s.dark_theme),
             value: true,
             groupValue: theme,
@@ -50,7 +49,7 @@ class ThemeSelectionDialog extends StatelessWidget {
             },
           ),
           RadioListTile<bool>(
-            activeColor: Theme.of(context).accentColor,
+            activeColor: Theme.of(context).colorScheme.secondary,
             title: Text(s.light_theme),
             value: false,
             groupValue: theme,
@@ -62,9 +61,9 @@ class ThemeSelectionDialog extends StatelessWidget {
         ],
       ),
       actions: <Widget>[
-        FlatButton(
-          child: Text(s.cancel),
+        TextButton(
           onPressed: Navigator.of(context).pop,
+          child: Text(s.cancel),
         ),
       ],
     );

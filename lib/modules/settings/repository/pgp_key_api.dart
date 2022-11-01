@@ -23,9 +23,7 @@ class PgpKeyApi {
             .toList(),
       }),
     );
-
-    final result = await sendRequest(body);
-    return result["Result"] as List;
+    await sendRequest(body);
   }
 
   Future<List<LocalPgpKey>> getKeyFromContacts() async {
@@ -43,7 +41,7 @@ class PgpKeyApi {
             key: item["PublicPgpKey"],
             isPrivate: false,
             name: "",
-            id: null,
+            id: -1,
           );
         }).toList();
       } else {

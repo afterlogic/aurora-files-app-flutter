@@ -1,18 +1,13 @@
-import 'dart:io';
-
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class ExportKeyDialog extends StatefulWidget {
   final SettingsState settingsState;
-  final ScaffoldState scaffoldState;
 
-  const ExportKeyDialog(
-      {Key key, @required this.settingsState, @required this.scaffoldState})
+  const ExportKeyDialog({Key? key, required this.settingsState})
       : super(key: key);
 
   @override
@@ -24,35 +19,35 @@ class _ExportKeyDialogState extends State<ExportKeyDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
-      title: Text(widget.settingsState.selectedKeyName),
+      title: Text(widget.settingsState.selectedKeyName ?? ''),
       content: _isExporting
           ? Row(
               children: <Widget>[
-                CircularProgressIndicator(),
-                SizedBox(width: 20.0),
+                const CircularProgressIndicator(),
+                const SizedBox(width: 20.0),
                 Text(s.download_key_progress)
               ],
             )
           : Text(s.download_confirm),
       actions: <Widget>[
-        TextButton(child: Text(s.cancel), onPressed: Navigator.of(context).pop),
+        TextButton(onPressed: Navigator.of(context).pop, child: Text(s.cancel)),
         TextButton(
-          child: Text(s.download),
           onPressed: _isExporting
               ? null
               : () {
                   setState(() => _isExporting = true);
                   widget.settingsState.onExportEncryptionKey(
-                    onSuccess: (String exportedDir) =>
+                    onSuccess: (String? exportedDir) =>
                         Navigator.pop(context, exportedDir),
                     onError: (String err) {
                       Navigator.pop(context);
-                      showSnack(context, msg: err);
+                      AuroraSnackBar.showSnack(msg: err);
                     },
                   );
                 },
+          child: Text(s.download),
         )
       ],
     );

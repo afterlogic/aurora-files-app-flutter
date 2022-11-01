@@ -14,12 +14,12 @@ class ProgressState extends TrustDeviceState {}
 class ErrorState extends TrustDeviceState {
   final String errorMsg;
 
-  ErrorState(this.errorMsg);
+  const ErrorState(this.errorMsg);
 
   @override
   List<Object> get props => [errorMsg];
 }
 
 class CompleteState extends TrustDeviceState {
-  CompleteState();
+  const CompleteState();
 }

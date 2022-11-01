@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
-
 enum ProcessingType {
   upload,
   download,
@@ -18,20 +16,20 @@ class ProcessingFile {
   final File fileOnDevice;
   final int size;
   final ProcessingType processingType;
-  StreamSubscription subscription; // lateInit
-  String ivBase64; // in case of encryption/decryption, otherwise leave null
+  StreamSubscription? subscription; // lateInit
+  String? ivBase64; // in case of encryption/decryption, otherwise leave null
 
-  double _currentProgress;
+  double _currentProgress = 0;
   final _controller = StreamController<double>.broadcast();
   double get currentProgress => _currentProgress;
   Stream<double> get progressStream => _controller.stream.asBroadcastStream();
 
   ProcessingFile({
-    @required this.guid,
-    @required this.name,
-    @required this.fileOnDevice,
-    @required this.size,
-    @required this.processingType,
+    required this.guid,
+    required this.name,
+    required this.fileOnDevice,
+    required this.size,
+    required this.processingType,
     this.ivBase64,
   });
 

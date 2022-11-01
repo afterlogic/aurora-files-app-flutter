@@ -4,7 +4,7 @@ class CustomSpeedDial extends ModalRoute<void> {
   final String tag;
   final List<Widget> children;
 
-  CustomSpeedDial({@required this.tag, @required this.children});
+  CustomSpeedDial({required this.tag, required this.children});
 
   @override
   Duration get transitionDuration =>
@@ -20,7 +20,7 @@ class CustomSpeedDial extends ModalRoute<void> {
   Color get barrierColor => Colors.black.withOpacity(0.4);
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   bool get maintainState => true;
@@ -44,13 +44,12 @@ class CustomSpeedDial extends ModalRoute<void> {
   Widget _buildOverlayContent(
       BuildContext context, Animation<double> animation) {
     final double part = 1.0 / children.length;
-    final theme = Theme.of(context);
     final fabAnimation = Tween<double>(
       begin: 0.0,
       end: 0.62,
     ).animate(
       CurvedAnimation(
-        parent: controller,
+        parent: animation,
         curve: Curves.easeInOutSine,
       ),
     );
@@ -72,7 +71,7 @@ class CustomSpeedDial extends ModalRoute<void> {
                   end: 1.0,
                 ).animate(
                   CurvedAnimation(
-                    parent: controller,
+                    parent: animation,
                     curve: Interval(
                       1.0 - (part * index + part - 0.1),
                       1.0 - (part * index - index / 10),
@@ -86,22 +85,21 @@ class CustomSpeedDial extends ModalRoute<void> {
                   child: FadeTransition(
                     opacity: miniFabsAnimation,
                     child: Padding(
-                      padding: EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.all(4.0),
                       child: child,
                     ),
                   ),
                 );
               }),
-              SizedBox(height: 14.0),
+              const SizedBox(height: 14.0),
               FloatingActionButton(
-                backgroundColor: theme.accentColor,
                 heroTag: tag,
                 elevation: 0.0,
+                onPressed: Navigator.of(context).pop,
                 child: RotationTransition(
                   turns: fabAnimation,
-                  child: Icon(Icons.add),
+                  child: const Icon(Icons.add),
                 ),
-                onPressed: Navigator.of(context).pop,
               ),
             ],
           ),
@@ -117,7 +115,7 @@ class CustomSpeedDial extends ModalRoute<void> {
     return SlideTransition(
       position: Tween<Offset>(begin: Offset.zero, end: Offset.zero).animate(
         CurvedAnimation(
-          parent: controller,
+          parent: animation,
           curve: Curves.easeOutCubic,
           reverseCurve: Curves.easeOut,
         ),
@@ -129,27 +127,27 @@ class CustomSpeedDial extends ModalRoute<void> {
 
 class MiniFab extends StatelessWidget {
   final Icon icon;
-  final Function onPressed;
+  final Function? onPressed;
 
   const MiniFab({
-    Key key,
-    @required this.icon,
-    @required this.onPressed,
+    Key? key,
+    required this.icon,
+    this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      child: icon,
       backgroundColor: Theme.of(context).cardColor,
-      foregroundColor: Theme.of(context).iconTheme.color.withOpacity(0.5),
+      foregroundColor: Theme.of(context).iconTheme.color?.withOpacity(0.5),
       mini: true,
       onPressed: onPressed == null
           ? null
           : () {
               Navigator.pop(context);
-              onPressed();
+              onPressed!.call();
             },
+      child: icon,
     );
   }
 }

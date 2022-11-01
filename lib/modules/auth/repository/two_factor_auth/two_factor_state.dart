@@ -14,7 +14,7 @@ class ProgressState extends TwoFactorState {}
 class ErrorState extends TwoFactorState {
   final String errorMsg;
 
-  ErrorState(this.errorMsg);
+  const ErrorState(this.errorMsg);
 
   @override
   List<Object> get props => [errorMsg];
@@ -23,5 +23,5 @@ class ErrorState extends TwoFactorState {
 class CompleteState extends TwoFactorState {
   final int daysCount;
 
-  CompleteState(this.daysCount);
+  const CompleteState(this.daysCount);
 }

@@ -6,6 +6,8 @@ import 'package:shimmer/shimmer.dart';
 import 'files_item_tile.dart';
 
 class SkeletonLoader extends StatelessWidget {
+  const SkeletonLoader({super.key});
+
   @override
   Widget build(BuildContext context) {
     final thumbnailSize = Provider.of<FilesState>(context).filesTileLeadingSize;
@@ -38,7 +40,7 @@ class SkeletonLoader extends StatelessWidget {
                   color: Colors.grey,
                 ),
               ),
-              SizedBox(height: 11.0),
+              const SizedBox(height: 11.0),
               ClipRRect(
                 borderRadius: BorderRadius.circular(50.0),
                 child: Container(

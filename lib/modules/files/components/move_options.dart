@@ -1,7 +1,7 @@
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class MoveOptions extends StatefulWidget {
@@ -9,9 +9,9 @@ class MoveOptions extends StatefulWidget {
   final FilesPageState filesPageState;
 
   const MoveOptions({
-    Key key,
-    @required this.filesState,
-    @required this.filesPageState,
+    Key? key,
+    required this.filesState,
+    required this.filesPageState,
   }) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class _MoveOptionsState extends State<MoveOptions> {
         copy: copy,
         onSuccess: () async {
           await widget.filesPageState.onGetFiles(
-            onError: (String err) => showSnack(context, msg: err),
+            onError: (String err) => AuroraSnackBar.showSnack(msg: err),
           );
           setState(() => _buttonsDisabled = false);
           widget.filesState.disableMoveMode();
@@ -37,22 +37,22 @@ class _MoveOptionsState extends State<MoveOptions> {
         onError: (err) {
           setState(() => _buttonsDisabled = false);
           widget.filesPageState.filesLoading = FilesLoadingType.none;
-          showSnack(context, msg: err);
+          AuroraSnackBar.showSnack(msg: err);
         });
   }
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final textColor = Theme.of(context).iconTheme.color;
     return Container(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey)),
+        border: const Border(top: BorderSide(color: Colors.grey)),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(top: 3.0, bottom: 6.0),
+          padding: const EdgeInsets.only(top: 3.0, bottom: 6.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -66,20 +66,20 @@ class _MoveOptionsState extends State<MoveOptions> {
                 },
               ),
               TextButton(
+                onPressed:
+                    _buttonsDisabled ? null : () => _moveFiles(context, true),
                 child: Text(
                   s.copy,
                   style: TextStyle(color: textColor),
                 ),
-                onPressed:
-                    _buttonsDisabled ? null : () => _moveFiles(context, true),
               ),
               TextButton(
+                onPressed:
+                    _buttonsDisabled ? null : () => _moveFiles(context, false),
                 child: Text(
                   s.move,
                   style: TextStyle(color: textColor),
                 ),
-                onPressed:
-                    _buttonsDisabled ? null : () => _moveFiles(context, false),
               ),
             ],
           ),

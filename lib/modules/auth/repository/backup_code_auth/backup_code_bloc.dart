@@ -5,8 +5,7 @@ import 'backup_code_event.dart';
 import 'backup_code_state.dart';
 
 class BackupCodeBloc extends Bloc<BackupCodeEvent, BackupCodeState> {
-  @override
-  BackupCodeState get initialState => InitialState();
+  BackupCodeBloc() : super(InitialState());
 
   @override
   Stream<BackupCodeState> mapEventToState(
@@ -21,13 +20,13 @@ class BackupCodeBloc extends Bloc<BackupCodeEvent, BackupCodeState> {
     try {
       final result = await AppStore.authState.backupCodeAuth(state.code);
       if (!result) {
-        yield ErrorState("Invalid backup code");
+        yield const ErrorState("Invalid backup code");
         return;
       }
       await AppStore.authState.successLogin();
       final daysCount = await AppStore.authState.getTrustDevicesForDays();
       yield CompleteState(daysCount);
-    } catch (err, s) {
+    } catch (err) {
       yield ErrorState(err.toString());
     }
   }

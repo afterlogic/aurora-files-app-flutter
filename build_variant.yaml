@@ -1,14 +1,15 @@
 #config
 _files:
-  - pubspec.yaml.yaml
+  - pubspec.yaml.temp
   - lib/di/di.dart.temp
-  - android/app/src/main/res/values/.build_res.xml.temp
   - android/build_variable.properties.temp
-  - ios/AppShareExtension/AppShareExtension.entitlements.temp
+  - android/app/src/main/res/values/.build_res.xml.temp
   - ios/BuildVariable.xcconfig.temp
   - ios/ExportOptions.plist.temp
   - ios/Runner/Info.plist.temp
   - ios/Runner/Runner.entitlements.temp
+  - ios/AppShareExtension/AppShareExtension.entitlements.temp
+  - ios/AppShareExtension/ShareViewController.swift.temp
   - sh/build_apk.sh.temp
   - sh/build_appbundle.sh.temp
 
@@ -18,6 +19,8 @@ _copy:
   "{{_dir}}/sign/{{_jksName}}": "android/app/key.jks"
   "{{_dir}}/crashlytics/{{_androidGoogleService}}": "android/app/google-services.json"
   "{{_dir}}/crashlytics/{{_iosGoogleService}}": "ios/GoogleService-Info.plist"
+  "{{_dir}}/crashlytics/firebase_app_id_file.json": "ios/firebase_app_id_file.json"
+  "{{_dir}}/crashlytics/firebase_options.dart": "lib/firebase_options.dart"
 
 _buildPropertyPath: lib/build_property.dart
 
@@ -58,7 +61,7 @@ splashGradientBottom: ""
 #url
 privacyPolicy: ""
 termsOfService: ""
-autodiscover_url: ""
+autodiscoverUrl: ""
 
 #module
 canUpgradePlan: false
@@ -71,6 +74,6 @@ useMainLogo: true
 
 # fido
 useYubiKit: false
-yubico_flutter_lib: "path: module/mocks/yubico_flutter"
+yubicoFlutterLib: "path: module/mocks/yubico_flutter"
 #useYubiKit: true
-#yubico_flutter_lib: "git: https://github.com/afterlogic/yubico_flutter"
+#yubicoFlutterLib: "git: https://github.com/afterlogic/yubico_flutter"

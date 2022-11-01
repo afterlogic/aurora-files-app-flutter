@@ -1,6 +1,6 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurora_ui_kit/components/am_button.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/auth/repository/two_factor_auth/bloc.dart';
 import 'package:aurorafiles/modules/auth/screens/component/two_factor_screen.dart';
@@ -9,8 +9,8 @@ import 'package:aurorafiles/modules/auth/screens/trust_device/trust_device_route
 import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:theme/app_theme.dart';
@@ -18,7 +18,7 @@ import 'package:theme/app_theme.dart';
 class TwoFactorAuthWidget extends StatefulWidget {
   final TwoFactorAuthRouteArgs args;
 
-  const TwoFactorAuthWidget(this.args);
+  const TwoFactorAuthWidget(this.args, {super.key});
 
   @override
   _TwoFactorAuthWidgetState createState() => _TwoFactorAuthWidgetState();
@@ -28,16 +28,16 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
   final pinCtrl = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final bloc = TwoFactorBloc();
-  S s;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    s = Str.of(context);
+  void dispose() {
+    pinCtrl.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     return TwoFactorScene(
       logoHint: "",
       isDialog: widget.args.isDialog,
@@ -49,10 +49,10 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
             style: Theme.of(context)
                 .textTheme
                 .headline6
-                .copyWith(color: AppTheme.loginTextColor),
+                ?.copyWith(color: AppTheme.loginTextColor),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             s.tfa_hint_step,
             textAlign: TextAlign.center,
@@ -60,16 +60,13 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
           ),
         ],
       ),
-      button: [
+      buttons: [
         BlocListener<TwoFactorBloc, TwoFactorState>(
           bloc: bloc,
           listener: (BuildContext context, state) {
             if (state is ErrorState) {
               pinCtrl.clear();
-              _showError(
-                context,
-                state.errorMsg,
-              );
+              _showError(state.errorMsg);
             } else if (state is CompleteState) {
               if (state.daysCount == 0) {
                 Navigator.pushReplacementNamed(
@@ -103,28 +100,28 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
                         s.tfa_input_hint_code_from_app,
                         style: TextStyle(color: AppTheme.loginTextColor),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       AppInput(
                         controller: pinCtrl,
                         labelText: s.input_2fa_pin,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) =>
-                            validateInput(value, [ValidationTypes.empty]),
+                            validateInput(value ?? '', [ValidationTypes.empty]),
                         enabled: !loading,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
                         child: AMButton(
+                          isLoading: loading,
+                          onPressed: () => _login(),
                           child: Text(
                             s.btn_verify_pin,
                             style: TextStyle(color: AppTheme.loginTextColor),
                           ),
-                          isLoading: loading,
-                          onPressed: () => _login(),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
                         child: TextButton(
@@ -152,13 +149,12 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
     );
   }
 
-  void _showError(BuildContext context, String error) {
-    showSnack(context, msg: error);
+  void _showError(String error) {
+    AuroraSnackBar.showSnack(msg: error);
   }
 
   _login() {
-    if (formKey.currentState.validate()) {
-      final args = widget.args;
+    if (formKey.currentState?.validate() == true) {
       bloc.add(
         Verify(
           pinCtrl.text,

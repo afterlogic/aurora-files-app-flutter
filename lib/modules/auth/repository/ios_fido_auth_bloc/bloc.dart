@@ -20,18 +20,19 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
   final String password;
   final authApi = AuthApi();
   final authState = AppStore.authState;
-  FidoAuthRequest fidoRequest;
-  StreamSubscription sub;
+  FidoAuthRequest? fidoRequest;
+  StreamSubscription? sub;
 
-  FidoAuthBloc(this.host, this.login, this.password) {
-    sub = getLinksStream().listen((event) {
+  FidoAuthBloc(this.host, this.login, this.password) : super(InitState()) {
+    sub = linkStream.listen((event) {
+      if (event == null || event.isEmpty) return;
       final uri = Uri.parse(event);
       if (uri.host == "u2f") {
         final query = Uri.parse(event).queryParameters;
         if (query.containsKey("error")) {
           add(Cancel());
         } else if (query.containsKey("attestation")) {
-          final json = jsonDecode(query["attestation"]) as Map;
+          final json = jsonDecode(query["attestation"] ?? '') as Map;
           add(KeyResult(json));
         }
       }
@@ -40,12 +41,9 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
 
   @override
   Future<void> close() {
-    sub.cancel();
+    sub?.cancel();
     return super.close();
   }
-
-  @override
-  FidoAuthState get initialState => InitState();
 
   @override
   Stream<FidoAuthState> mapEventToState(FidoAuthEvent event) async* {
@@ -92,12 +90,13 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
   Stream<FidoAuthState> _startAuth(StartAuth event) async* {
     try {
       yield SendingBeginAuthRequestState();
+      //ignore: dead_code
       if (Platform.isAndroid && false) {
         final uri = Uri.parse(
             "${AppStore.authState.hostName}/?verify-security-key&login=$login&password=$password&package_name=${BuildProperty.deepLink}");
 
         tab.launch(uri.toString(),
-            customTabsOption: tab.CustomTabsOption(
+            customTabsOption: const tab.CustomTabsOption(
               enableUrlBarHiding: true,
               enableInstantApps: true,
               extraCustomTabs: <String>[
@@ -112,7 +111,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
       yield WaitKeyState();
       final domainUrl = Uri.parse(request.host).origin;
       fidoRequest = FidoAuthRequest(
-        Duration(seconds: 30),
+        const Duration(seconds: 30),
         domainUrl,
         request.timeout,
         request.challenge,
@@ -121,14 +120,14 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
         request.allowCredentials,
       );
       final isNFC =
-          await fidoRequest.waitConnection(event.message, event.success);
+          await fidoRequest?.waitConnection(event.message, event.success);
 
       if (isNFC == false) {
         yield TouchKeyState();
       }
       fidoRequest
-          .start()
-          .then((value) => add(KeyResult(value)))
+          ?.start()
+          .then((value) => add(KeyResult(value ?? {})))
           .catchError((e) => add(Cancel(e)));
     } catch (e) {
       yield mapError(e);
@@ -142,7 +141,7 @@ class FidoAuthBloc extends Bloc<FidoAuthEvent, FidoAuthState> {
     if (e is FidoError) {
       if (e.errorCase == FidoErrorCase.Canceled) {
         return ErrorState(null);
-      } else if (e.message?.isNotEmpty == true) {
+      } else if (e.message.isNotEmpty == true) {
         return ErrorState(e.message);
       } else {
         return ErrorState("The system misconfigured");

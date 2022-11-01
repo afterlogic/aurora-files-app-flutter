@@ -7,5 +7,5 @@ part of 'pgp_key_dao.dart';
 // **************************************************************************
 
 mixin _$PgpKeyDaoMixin on DatabaseAccessor<AppDatabase> {
-  $PgpKeyTable get pgpKey => db.pgpKey;
+  $PgpKeyTable get pgpKey => attachedDatabase.pgpKey;
 }

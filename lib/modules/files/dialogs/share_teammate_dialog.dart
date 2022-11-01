@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:aurora_ui_kit/components/dialogs/am_dialog.dart';
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/contact_group.dart';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/models/share_principal.dart';
@@ -13,7 +13,7 @@ import 'package:aurorafiles/modules/files/dialogs/share_teammate_dialog_item.dar
 import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -23,9 +23,9 @@ class ShareTeammateDialog extends StatefulWidget {
   final LocalFile file;
 
   const ShareTeammateDialog({
-    Key key,
-    @required this.fileState,
-    @required this.file,
+    Key? key,
+    required this.fileState,
+    required this.file,
   }) : super(key: key);
 
   @override
@@ -33,13 +33,13 @@ class ShareTeammateDialog extends StatefulWidget {
 }
 
 class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
-  List<SharePrincipal> _sharePrincipals = [];
-  List<ShareAccessEntry> _fileShares = [];
+  final List<SharePrincipal> _sharePrincipals = [];
+  final List<ShareAccessEntry> _fileShares = [];
   ShareAccessRight _lastSelectedRight = ShareAccessRight.read;
   bool _rebuildingDropdown = false;
   bool _progress = true;
 
-  String get _userEmail => AppStore.authState.userEmail;
+  String get _userEmail => AppStore.authState.userEmail ?? '';
 
   @override
   void initState() {
@@ -94,8 +94,8 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
   }
 
   void _addShare(
-    SharePrincipal principal, [
-    ShareAccessRight access,
+    SharePrincipal? principal, [
+    ShareAccessRight? access,
   ]) {
     if (principal == null) return;
     final actualRight = access ?? _lastSelectedRight;
@@ -119,7 +119,6 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
   }
 
   void _changeShareRight(ShareAccessEntry share, ShareAccessRight access) {
-    if (share == null || access == null) return;
     _lastSelectedRight = access;
     final index = _fileShares.indexOf(share);
     setState(() {
@@ -160,7 +159,8 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     return result == true;
   }
 
-  bool _itemNotInShares(SharePrincipal item) {
+  bool _itemNotInShares(SharePrincipal? item) {
+    if (item == null) return false;
     final index = _fileShares.indexWhere((e) {
       return e.principal.runtimeType == item.runtimeType &&
           e.principal.getId() == item.getId();
@@ -189,11 +189,14 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     try {
       final newShares =
           await widget.fileState.shareFileToTeammate(widget.file, _fileShares);
-      final map = widget.file.extendedProps == null
+      final map = widget.file.extendedProps.isEmpty
           ? {}
           : json.decode(widget.file.extendedProps);
       map["Shares"] = newShares;
-      final file = widget.file.copyWith(extendedProps: json.encode(map));
+      final file = widget.file.copyWith(
+        extendedProps: json.encode(map),
+      );
+      if (!mounted) return;
       Navigator.pop(context, file);
     } catch (err) {
       _onError(err);
@@ -206,12 +209,12 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
   }
 
   void _onError(dynamic error) {
-    showSnack(context, msg: '$error');
+    AuroraSnackBar.showSnack(msg: '$error');
   }
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -229,15 +232,18 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
             items: _sharePrincipals,
             onChanged: _addShare,
             filterFn: (item, _) => _itemNotInShares(item),
-            itemAsString: (item) => item.getLabel(),
+            itemAsString: (item) => item?.getLabel() ?? '',
             maxHeight: screenHeight / 3,
             dropdownSearchDecoration: InputDecoration(
               hintText: s.hint_select_teammate,
-              contentPadding: EdgeInsets.only(left: 8),
+              contentPadding: const EdgeInsets.only(left: 8),
               border: OutlineInputBorder(
                 borderSide: BorderSide(color: theme.disabledColor),
                 borderRadius: const BorderRadius.all(Radius.circular(4.0)),
               ),
+            ),
+            dropdownSearchBaseStyle: TextStyle(
+              color: theme.colorScheme.onSurface,
             ),
           );
 
@@ -259,15 +265,15 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
                 ),
                 Container(
                   height: screenHeight / 4,
-                  margin: EdgeInsets.symmetric(vertical: 16),
+                  margin: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: theme.disabledColor,
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                    borderRadius: const BorderRadius.all(Radius.circular(7)),
                     child: _fileShares.isEmpty
                         ? Align(
                             alignment: Alignment.topCenter,
@@ -308,20 +314,20 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
           ),
           actions: [
             TextButton(
-              child: Text(s.label_show_history),
               onPressed: _onShowHistory,
+              child: Text(s.label_show_history),
             ),
             TextButton(
-              child: Text(s.label_save),
               onPressed: _onSave,
+              child: Text(s.label_save),
             ),
             TextButton(
-              child: Text(s.cancel),
               onPressed: _onCancel,
+              child: Text(s.cancel),
             ),
           ],
         ),
-        if (_progress) CircularProgressIndicator(),
+        if (_progress) const CircularProgressIndicator(),
       ],
     );
   }

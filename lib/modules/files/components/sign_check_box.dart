@@ -1,4 +1,4 @@
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class SignCheckBox extends StatefulWidget {
@@ -7,10 +7,10 @@ class SignCheckBox extends StatefulWidget {
   final Function(bool check) onCheck;
 
   const SignCheckBox({
-    Key key,
-    @required this.checked,
-    @required this.enable,
-    @required this.onCheck,
+    Key? key,
+    required this.checked,
+    required this.enable,
+    required this.onCheck,
   }) : super(key: key);
 
   @override
@@ -18,10 +18,9 @@ class SignCheckBox extends StatefulWidget {
 }
 
 class SignCheckBoxState extends State<SignCheckBox> {
-
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -30,11 +29,10 @@ class SignCheckBoxState extends State<SignCheckBox> {
           onTap: widget.enable ? () => widget.onCheck(!widget.checked) : null,
           title: Text(
             s.sign_email,
-            style: !widget.enable ? TextStyle(color: Colors.grey) : null,
+            style: !widget.enable ? const TextStyle(color: Colors.grey) : null,
           ),
           trailing: Switch.adaptive(
             value: widget.checked,
-            activeColor: Theme.of(context).accentColor,
             onChanged: widget.enable ? widget.onCheck : null,
           ),
         ),

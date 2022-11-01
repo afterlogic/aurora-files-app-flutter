@@ -7,5 +7,5 @@ part of 'files_dao.dart';
 // **************************************************************************
 
 mixin _$FilesDaoMixin on DatabaseAccessor<AppDatabase> {
-  $FilesTable get files => db.files;
+  $FilesTable get files => attachedDatabase.files;
 }

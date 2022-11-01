@@ -1,13 +1,8 @@
-import 'dart:io';
-
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/ios/alert_input_ios.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddFolderDialogAndroid extends StatefulWidget {
@@ -15,9 +10,9 @@ class AddFolderDialogAndroid extends StatefulWidget {
   final FilesPageState filesPageState;
 
   const AddFolderDialogAndroid({
-    Key key,
-    @required this.filesState,
-    @required this.filesPageState,
+    Key? key,
+    required this.filesState,
+    required this.filesPageState,
   }) : super(key: key);
 
   @override
@@ -27,7 +22,6 @@ class AddFolderDialogAndroid extends StatefulWidget {
 class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
   final _folderNameCtrl = TextEditingController();
   final _addFolderFormKey = GlobalKey<FormState>();
-  S s;
   bool isAdding = false;
   String errMsg = "";
 
@@ -39,14 +33,14 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     return AMDialog(
       title: Text(s.add_new_folder),
       content: isAdding
           ? Row(
               children: <Widget>[
-                CircularProgressIndicator(),
-                SizedBox(width: 20.0),
+                const CircularProgressIndicator(),
+                const SizedBox(width: 20.0),
                 Expanded(child: Text(s.adding_folder(_folderNameCtrl.text)))
               ],
             )
@@ -55,7 +49,7 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (errMsg is String && errMsg.length > 0)
+                  if (errMsg.isNotEmpty)
                     Text(errMsg,
                         style: TextStyle(color: Theme.of(context).errorColor)),
                   TextFormField(
@@ -63,10 +57,10 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                     autofocus: true,
                     decoration: InputDecoration(
                       hintText: s.enter_folder_name,
-                      border: UnderlineInputBorder(),
+                      border: const UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
-                      value,
+                      value ?? '',
                       [
                         ValidationTypes.empty,
                         ValidationTypes.fileName,
@@ -79,16 +73,17 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
               ),
             ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(s.cancel),
           onPressed: () => Navigator.pop(context),
         ),
-        FlatButton(
-            child: Text(s.add),
+        TextButton(
             onPressed: isAdding
                 ? null
                 : () {
-                    if (!_addFolderFormKey.currentState.validate()) return;
+                    if (_addFolderFormKey.currentState?.validate() == false) {
+                      return;
+                    }
                     errMsg = "";
                     setState(() => isAdding = true);
                     widget.filesPageState.onCreateNewFolder(
@@ -103,7 +98,8 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                         Navigator.pop(context, newNameFromServer);
                       },
                     );
-                  }),
+                  },
+            child: Text(s.add)),
       ],
     );
   }

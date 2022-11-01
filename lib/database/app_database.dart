@@ -11,7 +11,7 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(onCreate: (Migrator m) {
-        return m.createAllTables();
+        return m.createAll();
       }, onUpgrade: (Migrator m, int from, int to) async {
         for (int current = from; current < to; current++) {
           switch (current) {
@@ -27,7 +27,7 @@ class AppDatabase extends _$AppDatabase {
               }
             case 2:
               {
-                await m.deleteTable(pgpKey.tableName);
+                await m.deleteTable(pgpKey.actualTableName);
                 await m.createTable(pgpKey);
                 break;
               }
@@ -36,7 +36,7 @@ class AppDatabase extends _$AppDatabase {
                 await m.addColumn(files, files.linkPassword);
                 break;
               }
-            case 3:
+            case 4:
               {
                 await m.addColumn(pgpKey, pgpKey.name);
                 break;

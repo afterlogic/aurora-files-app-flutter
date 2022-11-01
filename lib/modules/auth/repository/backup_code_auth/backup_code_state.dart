@@ -14,7 +14,7 @@ class ProgressState extends BackupCodeState {}
 class ErrorState extends BackupCodeState {
   final String errorMsg;
 
-  ErrorState(this.errorMsg);
+  const ErrorState(this.errorMsg);
 
   @override
   List<Object> get props => [errorMsg];
@@ -23,5 +23,5 @@ class ErrorState extends BackupCodeState {
 class CompleteState extends BackupCodeState {
   final int daysCount;
 
-  CompleteState(this.daysCount);
+  const CompleteState(this.daysCount);
 }

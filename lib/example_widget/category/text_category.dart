@@ -3,7 +3,7 @@ import 'package:aurorafiles/example_widget/test_widget/group_label.dart';
 import 'package:flutter/material.dart';
 
 class TextCategory extends StatelessWidget {
-
+  const TextCategory({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,27 +17,27 @@ class TextCategory extends StatelessWidget {
           children: <Widget>[
             Text(
               "Title",
-              style: textTheme.title,
+              style: textTheme.headline6,
             ),
             Text(
               "Subtitle",
-              style: textTheme.subtitle,
+              style: textTheme.subtitle2,
             ),
             Text(
               "Headline",
-              style: textTheme.headline,
+              style: textTheme.headline5,
             ),
             Text(
               "Subhead",
-              style: textTheme.subhead,
+              style: textTheme.subtitle1,
             ),
             Text(
               "Body1",
-              style: textTheme.body1,
+              style: textTheme.bodyText2,
             ),
             Text(
               "Body2",
-              style: textTheme.body2,
+              style: textTheme.bodyText1,
             ),
             Text(
               "Button",
@@ -49,19 +49,19 @@ class TextCategory extends StatelessWidget {
             ),
             Text(
               "Display1",
-              style: textTheme.display1,
+              style: textTheme.headline4,
             ),
             Text(
               "Display2",
-              style: textTheme.display2,
+              style: textTheme.headline3,
             ),
             Text(
               "Display3",
-              style: textTheme.display3,
+              style: textTheme.headline2,
             ),
             Text(
               "Display4",
-              style: textTheme.display4,
+              style: textTheme.headline1,
             ),
             Text(
               "Overline",

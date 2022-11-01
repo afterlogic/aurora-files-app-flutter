@@ -6,7 +6,7 @@ abstract class TwoFactorEvent extends Equatable {
   const TwoFactorEvent();
 
   @override
-  List<Object> get props => null;
+  List<Object> get props => [];
 }
 
 class Verify extends TwoFactorEvent with AlwaysNonEqualObject {

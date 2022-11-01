@@ -5,12 +5,18 @@ import 'package:crypto_stream/algorithm/pgp.dart';
 class LegacyPgpApi {
   Pgp pgp;
   File temp;
-  String privateKey;
   List<String> publicKeys;
-  Sink<List<int>> _sink;
-  double progress;
+  String? privateKey;
 
-  LegacyPgpApi(this.pgp);
+  LegacyPgpApi({
+    required this.pgp,
+    required this.temp,
+    required this.publicKeys,
+    this.privateKey,
+  });
+
+  double progress = 0;
+  Sink<List<int>>? _sink;
 
   Future encryptFile(
     File input,
@@ -33,9 +39,9 @@ class LegacyPgpApi {
 
     _sink = pgp.platformSink();
     await input.openRead().asyncMap((data) async {
-      await (_sink.add(data) as Future);
+      await (_sink?.add(data) as Future);
     }).last;
-    await (_sink.close() as Future);
+    await (_sink?.close() as Future);
     await writeStream.last;
   }
 
@@ -43,7 +49,7 @@ class LegacyPgpApi {
     return _sink?.close() as Future;
   }
 
-  encryptSymmetric( String content, String password) {
+  encryptSymmetric(String content, String password) {
     return pgp.bufferPlatformSink(
       content,
       pgp.symmetricallyEncrypt(

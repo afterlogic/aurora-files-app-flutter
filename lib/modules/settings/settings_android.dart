@@ -1,7 +1,7 @@
 import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
@@ -20,6 +20,8 @@ import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/modules/app_navigation.dart';
 
 class SettingsAndroid extends StatefulWidget {
+  const SettingsAndroid({super.key});
+
   @override
   _SettingsAndroidState createState() => _SettingsAndroidState();
 }
@@ -50,45 +52,43 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
     final current = isTablet
-        ? (navigatorKey?.currentState?.current?.name ??
-            CommonSettingsRoute.name)
+        ? (navigatorKey.currentState?.current.name ?? CommonSettingsRoute.name)
         : null;
-    final s = Str.of(context);
     Widget body = ListView(
       children: <Widget>[
         ListTile(
           selected: current == CommonSettingsRoute.name,
           title: Text(s.common),
-          leading: AMCircleIcon(Icons.tune),
-          onTap: () => navigator(context).setRoot(CommonSettingsRoute.name),
+          leading: const AMCircleIcon(Icons.tune),
+          onTap: () => navigator().setRoot(CommonSettingsRoute.name),
         ),
-        if (showEncryption)
-          ListTile(
-            selected: current == EncryptionServerRoute.name,
-            title: Text(s.encryption),
-            leading: AMCircleIcon(MdiIcons.alien),
-            onTap: () => navigator(context).setRoot(EncryptionServerRoute.name),
-          ),
+        ListTile(
+          selected: current == EncryptionServerRoute.name,
+          title: Text(s.encryption),
+          leading: const AMCircleIcon(MdiIcons.alien),
+          onTap: () => navigator().setRoot(EncryptionServerRoute.name),
+        ),
         if (BuildProperty.pgpEnable)
           ListTile(
             selected: current == PgpSettingsRoute.name,
             title: Text(s.openPGP),
-            leading: AMCircleIcon(MdiIcons.key),
-            onTap: () => navigator(context).setRoot(PgpSettingsRoute.name),
+            leading: const AMCircleIcon(MdiIcons.key),
+            onTap: () => navigator().setRoot(PgpSettingsRoute.name),
           ),
         ListTile(
           selected: current == StorageInfoRoute.name,
           title: Text(s.storage_info),
-          leading: AMCircleIcon(Icons.storage),
-          onTap: () => navigator(context).setRoot(StorageInfoRoute.name),
+          leading: const AMCircleIcon(Icons.storage),
+          onTap: () => navigator().setRoot(StorageInfoRoute.name),
         ),
         ListTile(
           selected: current == AboutRoute.name,
           title: Text(s.about),
-          leading: AMCircleIcon(Icons.info_outline),
-          onTap: () => navigator(context).setRoot(AboutRoute.name),
+          leading: const AMCircleIcon(Icons.info_outline),
+          onTap: () => navigator().setRoot(AboutRoute.name),
           onLongPress: BuildProperty.logger
               ? () {
                   loggerStorage.setDebugEnable(true);
@@ -99,13 +99,13 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
         if (showDebug)
           ListTile(
             selected: current == LoggerRoute.name,
-            leading: AMCircleIcon(Icons.perm_device_information),
-            title: Text("Debug"),
-            onTap: () => navigator(context).setRoot(LoggerRoute.name),
+            leading: const AMCircleIcon(Icons.perm_device_information),
+            title: const Text("Debug"),
+            onTap: () => navigator().setRoot(LoggerRoute.name),
           ),
         ListTile(
           selected: current == AuthRoute.name,
-          leading: AMCircleIcon(Icons.exit_to_app),
+          leading: const AMCircleIcon(Icons.exit_to_app),
           title: Text(s.log_out),
           onTap: _exit,
         ),
@@ -124,12 +124,12 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
                 child: Scaffold(
                   body: DecoratedBox(
                     position: DecorationPosition.foreground,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         border: Border(right: BorderSide(width: 0.2))),
                     child: Drawer(
                       child: ListTileTheme(
                         style: ListTileStyle.drawer,
-                        selectedColor: Theme.of(context).accentColor,
+                        selectedColor: Theme.of(context).colorScheme.secondary,
                         child: SafeArea(child: body),
                       ),
                     ),
@@ -138,6 +138,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               ),
             ),
             Flexible(
+              flex: 3,
               child: ClipRRect(
                 child: Scaffold(
                   body: SettingsNavigatorWidget(
@@ -150,7 +151,6 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
                   ),
                 ),
               ),
-              flex: 3,
             ),
           ],
         ),
@@ -169,15 +169,12 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
   }
 
   SettingsNavigator navigator(BuildContext context) {
-    if (navigatorKey.currentState != null) {
-      return navigatorKey.currentState;
-    } else {
-      return SettingsNavigatorMock(Navigator.of(context));
-    }
+    final navigator = navigatorKey.currentState;
+    return navigator ?? SettingsNavigatorMock(Navigator.of(context));
   }
 
   Future<void> _exit() async {
-    final s = Str.of(context);
+    final s = context.l10n;
     final authState = AppStore.authState;
     final clearCacheText = s.clear_cache_during_logout;
 
@@ -189,8 +186,9 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
       cancelText: s.cancel,
     );
     if (result is OptionalResult && result.generalResult == true) {
-      final clearCache = result.options[clearCacheText];
+      final clearCache = result.options?[clearCacheText] ?? false;
       authState.onLogout(clearCache);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, AuthRoute.name);
     }
   }

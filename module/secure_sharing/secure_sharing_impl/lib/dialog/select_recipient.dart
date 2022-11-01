@@ -1,15 +1,12 @@
-import 'dart:io';
 import 'dart:math';
+
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_api.dart';
-import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/models/recipient.dart';
-import 'package:aurorafiles/modules/files/state/file_viewer_state.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SelectRecipient extends StatefulWidget {
@@ -25,21 +22,27 @@ class SelectRecipient extends StatefulWidget {
 class _SelectRecipientState extends State<SelectRecipient> {
   final PgpKeyDao _pgpKeyDao = DI.get();
   final pgpApi = PgpKeyApi();
-  S s;
-  bool hasError = false;
-  List<RecipientWithKey> recipients = [];
-  Map<String, LocalPgpKey> keys;
+  final List<RecipientWithKey> recipients = [];
 
-  loadRecipients() {
-    if (mounted) setState(() {});
+  Map<String, LocalPgpKey> keys = {};
+  bool hasError = false;
+  bool inProgress = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecipients();
+  }
+
+  void _loadRecipients() {
     hasError = false;
-    recipients = null;
+    _setProgress(true);
+    recipients.clear();
     widget.filesState.getRecipient().then(
       (result) async {
-        recipients = [];
-        await loadKeys();
+        await _loadKeys();
         final filterRecipients =
-            result.where((item) => item.email?.isNotEmpty == true);
+            result.where((item) => item.email.isNotEmpty == true);
         for (Recipient recipient in filterRecipients) {
           final key = keys.remove(recipient.email);
           recipients.add(RecipientWithKey(recipient, key));
@@ -47,17 +50,16 @@ class _SelectRecipientState extends State<SelectRecipient> {
         keys.forEach((key, value) {
           recipients.add(RecipientWithKey(null, value));
         });
-
-        setState(() {});
+        _setProgress(false);
       },
       onError: (e) {
         hasError = true;
-        setState(() {});
+        _setProgress(false);
       },
     );
   }
 
-  loadKeys() async {
+  Future<void> _loadKeys() async {
     final localKeys = await _pgpKeyDao.getPublicKeys();
     final userKey = await pgpApi.getKeyFromContacts();
     localKeys.addAll(userKey);
@@ -68,15 +70,14 @@ class _SelectRecipientState extends State<SelectRecipient> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    loadRecipients();
+  void _setProgress(bool value) {
+    inProgress = value;
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final title = Text(widget.title);
@@ -90,7 +91,7 @@ class _SelectRecipientState extends State<SelectRecipient> {
       ),
     );
     final actions = <Widget>[
-      FlatButton(
+      TextButton(
         child: Text(s.cancel),
         onPressed: () {
           Navigator.pop(context);
@@ -106,28 +107,46 @@ class _SelectRecipientState extends State<SelectRecipient> {
   }
 
   List<Widget> body(ThemeData theme) {
-    if (recipients != null) {
-      if (recipients.isEmpty) {
-        return [
-          Expanded(
-            child: Center(
-              child: Text(s.not_have_recipiens),
+    final s = context.l10n;
+    if (inProgress) {
+      return [
+        Expanded(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ];
+    }
+    if (hasError) {
+      return [
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  s.cant_load_recipients,
+                  style: theme.textTheme.headline6,
+                ),
+                TextButton(
+                  child: Text(s.try_again),
+                  onPressed: _loadRecipients,
+                ),
+              ],
             ),
-          )
-        ];
-      }
-
+          ),
+        ),
+      ];
+    }
+    if (recipients.isNotEmpty) {
       return [
         Text(
           s.select_recipient,
-          style: theme.textTheme.subtitle,
+          style: theme.textTheme.subtitle2,
         ),
-        SizedBox(
-          height: 2,
-        ),
+        SizedBox(height: 2),
         Expanded(
           child: ListView.separated(
-
             padding: EdgeInsets.all(0),
             itemBuilder: (_, i) {
               final recipient = recipients[i];
@@ -141,53 +160,33 @@ class _SelectRecipientState extends State<SelectRecipient> {
         )
       ];
     }
-    if (hasError) {
-      return [
-        Expanded(
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  s.cant_load_recipients,
-                  style: theme.textTheme.title,
-                ),
-                FlatButton(
-                  child: Text(s.try_again),
-                  onPressed: loadRecipients,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ];
-    }
+
     return [
       Expanded(
         child: Center(
-          child: CircularProgressIndicator(),
+          child: Text(s.not_have_recipiens),
         ),
-      ),
+      )
     ];
   }
 }
 
 class RecipientWithKey {
-  final Recipient recipient;
-  final LocalPgpKey pgpKey;
+  final Recipient? recipient;
+  final LocalPgpKey? pgpKey;
 
   RecipientWithKey(this.recipient, this.pgpKey);
 }
 
 class RecipientWidget extends StatelessWidget {
   final RecipientWithKey recipient;
-  final Function(RecipientWithKey) onTap;
+  final Function(RecipientWithKey)? onTap;
 
   RecipientWidget(this.recipient, [this.onTap]);
 
   @override
   Widget build(BuildContext context) {
-    final s = Str.of(context);
+    final s = context.l10n;
     final theme = Theme.of(context);
     var name = recipient.recipient?.fullName;
     final hasName = !(name?.isNotEmpty != true);
@@ -197,7 +196,7 @@ class RecipientWidget extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        if (onTap != null) onTap(recipient);
+        if (onTap != null) onTap!(recipient);
       },
       child: Flex(
         direction: Axis.horizontal,
@@ -209,14 +208,14 @@ class RecipientWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  name,
+                  name ?? '',
                   maxLines: 1,
                   style: hasName
-                      ? theme.textTheme.body2
-                      : theme.textTheme.body2.apply(color: Colors.grey),
+                      ? theme.textTheme.bodyText1
+                      : theme.textTheme.bodyText1?.apply(color: Colors.grey),
                 ),
                 Text(
-                  recipient.recipient?.email ?? recipient.pgpKey.email,
+                  recipient.recipient?.email ?? recipient.pgpKey?.email ?? '',
                   maxLines: 1,
                   style: theme.textTheme.caption,
                 ),

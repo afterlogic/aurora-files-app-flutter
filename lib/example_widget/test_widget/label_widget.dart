@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class LabelWidget extends StatelessWidget {
   final Widget widget;
-  final String name;
-  final String description;
+  final String? name;
+  final String? description;
 
-  const LabelWidget(this.widget, {this.name, this.description});
+  const LabelWidget(this.widget, {super.key, this.name, this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class LabelWidget extends StatelessWidget {
         Container(
           width: double.infinity,
           color: Colors.black12,
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Text(
             "Widget: " + name + (description != null ? "\n$description" : ""),
             textAlign: TextAlign.center,

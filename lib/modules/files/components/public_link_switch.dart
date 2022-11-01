@@ -1,23 +1,23 @@
 import 'package:aurorafiles/database/app_database.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class PublicLinkSwitch extends StatefulWidget {
   final LocalFile file;
-  final FilesState filesState;
-  final FilesPageState filesPageState;
+  final FilesState? filesState;
+  final FilesPageState? filesPageState;
   final bool isFileViewer;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final Function(String) updateFile;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final Function(String)? updateFile;
 
   const PublicLinkSwitch({
-    Key key,
-    @required this.file,
+    Key? key,
+    required this.file,
     this.filesState,
     this.filesPageState,
     // default snacks are shown on files screen, in order to show it on other screens, pass scaffoldState
@@ -31,9 +31,8 @@ class PublicLinkSwitch extends StatefulWidget {
 }
 
 class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
-  FilesState filesState;
-  FilesPageState filesPageState;
-  S s;
+  late FilesState filesState;
+  late FilesPageState filesPageState;
   bool _isGettingPublicLink = false;
   bool _hasPublicLink = false;
 
@@ -44,6 +43,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
   }
 
   void _getLink() {
+    final s = context.l10n;
     filesState.onGetPublicLink(
       path: filesPageState.pagePath,
       name: widget.file.name,
@@ -52,8 +52,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       onSuccess: (link) async {
         Clipboard.setData(ClipboardData(text: link));
         setState(() => _isGettingPublicLink = false);
-        showSnack(
-          context,
+        AuroraSnackBar.showSnack(
           msg: s.link_coppied_to_clipboard,
           isError: false,
         );
@@ -61,12 +60,12 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
           Navigator.pop(context);
         }
         await filesPageState.onGetFiles();
-        if (widget.updateFile != null) widget.updateFile(widget.file.id);
+        if (widget.updateFile != null) widget.updateFile!(widget.file.id);
       },
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = false;
-        showSnack(context, msg: err);
+        AuroraSnackBar.showSnack(msg: err);
       }),
     );
   }
@@ -78,22 +77,23 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
       onSuccess: () async {
         setState(() => _isGettingPublicLink = false);
         await filesPageState.onGetFiles();
-        if (widget.updateFile != null) widget.updateFile(widget.file.id);
+        if (widget.updateFile != null) widget.updateFile!(widget.file.id);
       },
       onError: (String err) => setState(() {
         _isGettingPublicLink = false;
         _hasPublicLink = true;
-        showSnack(context, msg: err);
+        AuroraSnackBar.showSnack(msg: err);
       }),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final s = context.l10n;
     filesState = widget.filesState ?? Provider.of<FilesState>(context);
     filesPageState =
         widget.filesPageState ?? Provider.of<FilesPageState>(context);
-    s = Str.of(context);
+
     return Column(
       children: <Widget>[
         InkWell(
@@ -112,11 +112,10 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
                 },
           child: ListTile(
             contentPadding: widget.isFileViewer ? EdgeInsets.zero : null,
-            leading: Icon(Icons.link),
+            leading: const Icon(Icons.link),
             title: Text(s.public_link_access),
             trailing: Switch.adaptive(
               value: _hasPublicLink,
-              activeColor: Theme.of(context).accentColor,
               onChanged: _isGettingPublicLink
                   ? null
                   : (bool val) {
@@ -138,7 +137,7 @@ class _PublicLinkSwitchState extends State<PublicLinkSwitch> {
             opacity: _isGettingPublicLink ? 0.4 : 1.0,
             child: ListTile(
               contentPadding: widget.isFileViewer ? EdgeInsets.zero : null,
-              leading: Icon(Icons.content_copy),
+              leading: const Icon(Icons.content_copy),
               title: Text(s.copy_public_link),
               onTap: _isGettingPublicLink
                   ? null

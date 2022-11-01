@@ -1,28 +1,34 @@
 import 'dart:async';
 
-StreamSubscription<T> listener<T>(Stream<T> stream, onData(T event),
-    {Function onError, onDone(), bool cancelOnError}) {
+StreamSubscription<T> listener<T>(
+  Stream<T> stream,
+  Function(T) onData, {
+  Function? onError,
+  Function? onDone,
+  bool? cancelOnError,
+}) {
   return stream.listen(
-    (v) async {
+    (value) async {
       try {
-        if (onDone is Future Function()) {
-          await onData(v);
+        if (onData is Future Function()) {
+          await onData(value);
         } else {
-          onData(v);
+          onData(value);
         }
-      } catch (e) {
-        onError(e);
+      } catch (err) {
+        if (onError != null) onError(err);
       }
     },
     onDone: () async {
+      if (onDone == null) return;
       try {
         if (onDone is Future Function()) {
           await onDone();
         } else {
           onDone();
         }
-      } catch (e) {
-        onError(e);
+      } catch (err) {
+        if (onError != null) onError(err);
       }
     },
     onError: onError,

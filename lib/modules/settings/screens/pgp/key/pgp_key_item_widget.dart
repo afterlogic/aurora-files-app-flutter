@@ -5,7 +5,7 @@ class KeyWidget extends StatelessWidget {
   final LocalPgpKey pgpKey;
   final Function(LocalPgpKey pgpKey) openKey;
 
-  const KeyWidget(this.pgpKey, this.openKey);
+  const KeyWidget(this.pgpKey, this.openKey, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class KeyWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Divider(
+            const Divider(
               color: Colors.transparent,
             ),
             Row(
@@ -30,20 +30,20 @@ class KeyWidget extends StatelessWidget {
                 Text(
                   pgpKey.email,
                   maxLines: 1,
-                  style: theme.textTheme.subhead,
+                  style: theme.textTheme.subtitle1,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: pgpKey.key == null
-                      ? SizedBox(
+                  child: pgpKey.key.isEmpty
+                      ? const SizedBox(
                           width: 24,
                           height: 24,
                           child: CircularProgressIndicator())
-                      : Icon(Icons.arrow_forward_ios),
+                      : const Icon(Icons.arrow_forward_ios),
                 ),
               ],
             ),
-            Divider(
+            const Divider(
               color: Colors.grey,
             ),
           ],

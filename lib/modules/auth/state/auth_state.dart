@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:aurora_ui_kit/components/dialogs/am_confirmation_dialog.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
-import 'package:aurorafiles/generated/s_of_context.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_local_storage.dart';
@@ -25,16 +24,16 @@ abstract class _AuthState with Store {
   final _authLocal = AuthLocalStorage();
   final _filesLocal = FilesLocalStorage();
 
-  String hostName;
+  String? hostName;
 
   String get apiUrl => '$hostName/?Api/';
 
-  String authToken;
-  int userId;
-  String userEmail;
-  String friendlyName;
+  String? authToken;
+  int? userId;
+  String? userEmail;
+  String? friendlyName;
 
-  Future<String> get lastEmail => _authLocal.getLastEmail();
+  Future<String?> get lastEmail => _authLocal.getLastEmail();
   @observable
   bool isLoggingIn = false;
 
@@ -56,10 +55,10 @@ abstract class _AuthState with Store {
   }
 
   Future<void> _setAuthSharedPrefs({
-    @required String host,
-    @required String token,
-    @required String email,
-    @required int id,
+    required String? host,
+    required String? token,
+    required String? email,
+    required int? id,
   }) async {
     await Future.wait([
       _authLocal.setHostToStorage(host),
@@ -100,7 +99,7 @@ abstract class _AuthState with Store {
     await _authLocal.setIdentity(identity);
   }
 
-  Future<List<String>> getIdentity() {
+  Future<List<String>?> getIdentity() {
     return _authLocal.getIdentity();
   }
 
@@ -118,14 +117,12 @@ abstract class _AuthState with Store {
 
   // returns true the host field needs to be revealed because auto discover was unsuccessful
   Future<bool> onLogin({
-    @required BuildContext context,
-    bool isFormValid,
-    Function() onSuccess,
-    Function(RequestTwoFactor) onTwoFactorAuth,
-    Function(String message) onShowUpgrade,
-    Function(String) onError,
+    required bool isFormValid,
+    required Function() onSuccess,
+    required Function(RequestTwoFactor) onTwoFactorAuth,
+    required Function(String? message) onShowUpgrade,
+    required Function(String) onError,
   }) async {
-    final s = Str.of(context);
     if (isFormValid) {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
       String email = emailCtrl.text;
@@ -135,7 +132,8 @@ abstract class _AuthState with Store {
       isLoggingIn = true;
       if (host.isEmpty) {
         if (email == await lastEmail) {
-          host = await _authLocal.getLastHost();
+          final lastHost = await _authLocal.getLastHost();
+          if (lastHost != null) host = lastHost;
         }
       }
 
@@ -181,7 +179,7 @@ abstract class _AuthState with Store {
         isLoggingIn = false;
         if (err is RequestTwoFactor) {
           onTwoFactorAuth(err);
-        } else if (err is SocketException && err.osError.errorCode == 7) {
+        } else if (err is SocketException && err.osError?.errorCode == 7) {
           onError("\"$host\" is not a valid hostname");
         } else if (err is AllowAccess) {
           onShowUpgrade(null);
@@ -197,7 +195,9 @@ abstract class _AuthState with Store {
   void onLogout([bool clearCache = false]) {
     try {
       AppStore.filesState.currentStorages = [];
-    } catch (e) {}
+    } catch (err) {
+      print(err);
+    }
     _authApi.logout();
     _authLocal.deleteTokenFromStorage();
     if (clearCache) {
@@ -234,7 +234,7 @@ abstract class _AuthState with Store {
       return false;
     }
     final userId = map['AuthenticatedUserId'];
-    final token = map["Result"]["AuthToken"];
+    final String? token = map["Result"]["AuthToken"];
 
     await _setAuthSharedPrefs(
       host: hostName,

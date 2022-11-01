@@ -29,16 +29,16 @@ class KeysState {
   final List<LocalPgpKey> private;
   final List<LocalPgpKey> external;
   final bool isProgress;
-  final bool storePassword;
+  final bool? storePassword;
 
   KeysState(this.public, this.private, this.external, this.storePassword,
       [this.isProgress = false]);
 }
 
 class PgpKeyMap {
-  final Map<LocalPgpKey, bool> userKeys;
-  final Map<LocalPgpKey, bool> contactKeys;
-  final Map<LocalPgpKey, bool> alienKeys;
+  final Map<LocalPgpKey, bool?> userKeys;
+  final Map<LocalPgpKey, bool?> contactKeys;
+  final Map<LocalPgpKey, bool?> alienKeys;
 
   PgpKeyMap(this.userKeys, this.contactKeys, this.alienKeys);
 }

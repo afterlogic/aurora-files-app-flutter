@@ -3,12 +3,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'custom_exception.dart';
 
 Future getStoragePermissions() async {
-  PermissionStatus permission =
-      await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+  PermissionStatus permission = await Permission.storage.status;
   if (permission != PermissionStatus.granted) {
-    Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-    if (permissions.values.last != PermissionStatus.granted) {
+    permission = await Permission.storage.request();
+    if (permission != PermissionStatus.granted) {
       throw CustomException("Access denied");
     }
   }

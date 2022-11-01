@@ -9,7 +9,7 @@
    
    1.2. For development on Windows or Linux please install [Android Studio](https://developer.android.com/studio)
    
-   1.3. Install Flutter according to [instructions](https://flutter.dev/docs/get-started/install) (Flutter v2.2.3)
+   1.3. Install Flutter according to [instructions](https://flutter.dev/docs/get-started/install) (Flutter v3.3.6)
    
    1.4. Install Java JDK. Since Aurora Files uses gradle build tool, it has impact on the version of Java to be installed. You can check related requirements at https://gradle.org/install/. At the time of writing it's Java 8
    

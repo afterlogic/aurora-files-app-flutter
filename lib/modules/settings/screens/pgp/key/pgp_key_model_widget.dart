@@ -27,7 +27,6 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
     with WidgetsBindingObserver {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isPoped = false;
-  S s;
 
   @override
   void initState() {
@@ -122,19 +121,19 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
           );
     final children = <Widget>[
       AMButton(
-        onPressed: share,
+        onPressed: () => share(context),
         child: Text(s.share),
       ),
       space,
       if (!PlatformOverride.isIOS) ...[
         AMButton(
-          onPressed: download,
+          onPressed: () => download(context),
           child: Text(s.download),
         ),
         space,
       ],
       AMButton(
-        onPressed: delete,
+        onPressed: () => delete(context),
         child: Text(s.delete),
       ),
     ];
@@ -216,7 +215,7 @@ class _PgpKeyModelWidgetState extends State<PgpKeyModelWidget>
         widget.presenter.deleteKey(widget._pgpKey.email);
       }
       if (!mounted) return;
-      SettingsNavigatorWidget.of(context).pop(true);
+      SettingsNavigatorWidget.of(context).pop();
     }
   }
 }

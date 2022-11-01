@@ -107,7 +107,7 @@ class SettingsLocalStorage {
     return prefs.getBool(_encryptEnable) ?? false;
   }
 
-  Future<void> setEncryptEnable(bool value) async {
+  Future<bool> setEncryptEnable(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.setBool(_encryptEnable, value);
   }
@@ -119,7 +119,7 @@ class SettingsLocalStorage {
     return prefs.getBool(_encryptPersonalStorage) ?? false;
   }
 
-  Future<void> setEncryptInPersonalStorage(bool value) async {
+  Future<bool> setEncryptInPersonalStorage(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.setBool(_encryptPersonalStorage, value);
   }
@@ -131,7 +131,7 @@ class SettingsLocalStorage {
     return prefs.getBool(_encryptExist) ?? false;
   }
 
-  Future<void> setEncryptExist(bool value) async {
+  Future<bool> setEncryptExist(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.setBool(_encryptExist, value);
   }

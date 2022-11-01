@@ -9,18 +9,19 @@ class WebMailApi {
   static Function(String)? onRequest;
   static Function(String)? onError;
   static Function? onLogout;
-  static bool Function(String, String) isMethodEnable;
+  static bool Function(String, String)? isMethodEnable;
 
   static Future<http.Response> request(
     String url, [
     dynamic body,
-    Map<String, String> headers,
-    String token,
+    Map<String, String>? headers,
+    String? token,
   ]) async {
     final logId = "MODULE: ${body['Module']}\nMETHOD: ${body['Method']}";
     _logRequest(logId, url, body);
 
-    final enableOnServer = isMethodEnable(body['Module'], body['Method']);
+    final enableOnServer =
+        isMethodEnable?.call(body['Module'], body['Method']) ?? true;
     if (enableOnServer == false) {
       return http.Response(
         '{"ErrorMessage": "Method ${body['Module']} -> ${body['Method']} is not available on the server",'
@@ -59,7 +60,7 @@ class WebMailApi {
 
   static void _logRequest(String id, String url, dynamic body) {
     if (onRequest != null) {
-      onRequest("$id\nURL: $url\nBODY: $body}");
+      onRequest?.call("$id\nURL: $url\nBODY: $body}");
     }
   }
 
@@ -68,27 +69,27 @@ class WebMailApi {
     if (onResponse != null) {
       final showResponseBody =
           await SettingsLocalStorage().getShowResponseBody();
-      onResponse(
+      onResponse?.call(
           "$id\nSTATUS: $statusCode ${showResponseBody ? '\nBODY: $body' : ''}");
     }
   }
 
   static void _logError(String id, String body) {
     if (onError != null) {
-      onError("$id\nBODY: $body}");
+      onError?.call("$id\nBODY: $body}");
     }
   }
 
   static void _logout() {
     try {
       onLogout?.call();
-    } catch (e) {
-      print(e);
+    } catch (err) {
+      print(err);
     }
   }
 
   static void _logoutIfMethodEnable(String module, String method) {
-    final enable = isMethodEnable(module, method);
+    final enable = isMethodEnable?.call(module, method) ?? false;
     if (enable) _logout();
   }
 }

@@ -9,14 +9,14 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 
-/// Callers can lookup localized strings with an instance of AppLocalizations returned
-/// by `AppLocalizations.of(context)`.
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
 ///
 /// Applications need to include `AppLocalizations.delegate()` in their app's
-/// localizationDelegates list, and the locales they support in the app's
-/// supportedLocales list. For example:
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
 ///
-/// ```
+/// ```dart
 /// import 'l10n/app_localizations.dart';
 ///
 /// return MaterialApp(
@@ -31,14 +31,14 @@ import 'app_localizations_en.dart';
 /// Please make sure to update your pubspec.yaml to include the following
 /// packages:
 ///
-/// ```
+/// ```yaml
 /// dependencies:
 ///   # Internationalization support.
 ///   flutter_localizations:
 ///     sdk: flutter
 ///   intl: any # Use the pinned version from flutter_localizations
 ///
-///   # rest of dependencies
+///   # Rest of dependencies
 /// ```
 ///
 /// ## iOS Applications
@@ -1719,6 +1719,12 @@ abstract class AppLocalizations {
   /// **'The text contains no keys that can be imported.'**
   String get hint_pgp_no_keys_to_import;
 
+  /// No description provided for @label_encryption_module_not_exist.
+  ///
+  /// In en, this message translates to:
+  /// **'The encryption module\nis not available on the backend'**
+  String get label_encryption_module_not_exist;
+
   /// No description provided for @hint_pgp_external_private_keys.
   ///
   /// In en, this message translates to:
@@ -1760,6 +1766,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show history'**
   String get label_show_history;
+
+  /// No description provided for @clear_cache_during_login.
+  ///
+  /// In en, this message translates to:
+  /// **'When changing the user, it is necessary to clear the cached data and keys from the previous user.'**
+  String get clear_cache_during_login;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -82,7 +82,7 @@ packages:
     dependency: "direct dev"
     description:
       path: "."
-      ref: "flutter_2.10"
+      ref: HEAD
       resolved-ref: eca4ea76cbef95258d96c5664a0f901409a8f916
       url: "https://github.com/afterlogic/build_variant"
     source: git

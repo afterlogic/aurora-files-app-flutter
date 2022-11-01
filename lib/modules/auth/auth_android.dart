@@ -6,7 +6,6 @@ import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/screens/fido_auth/fido_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth_route.dart';
 import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
-import 'package:aurorafiles/modules/auth/state/auth_state.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/app_input.dart';
@@ -91,6 +90,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
     }
     if (errMsg.isEmpty) {
       final showHost = await _authState.onLogin(
+        context: context,
         isFormValid: _authFormKey.currentState?.validate() ?? false,
         onTwoFactorAuth: (request) {
           if (request.hasSecurityKey == true && BuildProperty.useYubiKit) {

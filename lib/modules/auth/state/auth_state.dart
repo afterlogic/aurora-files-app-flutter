@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aurora_ui_kit/components/dialogs/am_confirmation_dialog.dart';
 import 'package:aurorafiles/database/pgp_key/pgp_key_dao.dart';
 import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_api.dart';
 import 'package:aurorafiles/modules/auth/repository/auth_local_storage.dart';
@@ -117,6 +118,7 @@ abstract class _AuthState with Store {
 
   // returns true the host field needs to be revealed because auto discover was unsuccessful
   Future<bool> onLogin({
+    required BuildContext context,
     required bool isFormValid,
     required Function() onSuccess,
     required Function(RequestTwoFactor) onTwoFactorAuth,
@@ -156,6 +158,7 @@ abstract class _AuthState with Store {
         final int id = res['AuthenticatedUserId'];
         final oldUserId = await _authLocal.getUserIdFromStorage();
         if (oldUserId != null && oldUserId != id) {
+          final s = context.l10n;
           final result = await AMConfirmationDialog.show(
             context,
             s.clear_cache,
@@ -167,7 +170,7 @@ abstract class _AuthState with Store {
             await _clearCachedData();
           } else {
             isLoggingIn = false;
-            return null;
+            return false;
             // throw s.clear_cache_during_login;
           }
         }

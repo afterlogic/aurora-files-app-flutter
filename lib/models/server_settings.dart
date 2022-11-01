@@ -8,9 +8,6 @@ class ServerSettings {
   });
 
   bool isModuleEnable(String module) {
-    if (module == null) {
-      return false;
-    }
     //request for available modules is still in progress
     if (availableModules.isEmpty) {
       return true;
@@ -19,18 +16,15 @@ class ServerSettings {
   }
 
   bool isMethodEnable(String module, String method) {
-    if (module == null || method == null) {
-      return false;
-    }
     final moduleEnable = isModuleEnable(module);
     if (moduleEnable == false) {
       return false;
     }
-    final settings = modulesSettings[module] as Map<String, dynamic>;
-    if (settings == null || settings.length == 0) {
+    final settings = modulesSettings[module] as Map<String, dynamic>?;
+    if (settings == null || settings.isEmpty) {
       return true;
     }
-    bool methodEnable;
+    bool? methodEnable;
     if (module == "CoreParanoidEncryptionWebclientPlugin") {
       switch (method) {
         case "UpdateSettings":

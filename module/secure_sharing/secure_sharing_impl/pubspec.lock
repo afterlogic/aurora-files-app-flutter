@@ -44,7 +44,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: bd5e2d264b18e195a7817e20fa0c8e1664634ead
-      url: "https://github.com/afterlogic/aurora_ui_kit_flutter.git"
+      url: "https://github.com/afterlogic/aurora_ui_kit_flutter"
     source: git
     version: "0.0.5"
   aurorafiles:
@@ -53,7 +53,7 @@ packages:
       path: "../../.."
       relative: true
     source: path
-    version: "2.4.0+165"
+    version: "2.4.0+164"
   bloc:
     dependency: transitive
     description:
@@ -300,7 +300,7 @@ packages:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.5.2"
+    version: "4.5.1"
   firebase_core_web:
     dependency: transitive
     description:

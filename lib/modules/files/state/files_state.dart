@@ -138,7 +138,7 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future _getOnlineStorages(Function(String) onError) async {
+  Future _getOnlineStorages(Function(String)? onError) async {
     try {
       currentStorages = await _filesApi.getStorages();
       currentStorages.sort((a, b) => a.order.compareTo(b.order));

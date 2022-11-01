@@ -18,11 +18,17 @@ class SettingApi {
     if (resBody['Result'] != null) {
       if (resBody['Result'] is Map) {
         return EncryptionSetting(
-          resBody['Result']["EnableModule"] ?? false,
-          resBody['Result']["EnableInPersonalStorage"] ?? false,
+          exist: true,
+          enable: resBody['Result']["EnableModule"] ?? false,
+          enableInPersonalStorage:
+              resBody['Result']["EnableInPersonalStorage"] ?? false,
         );
       } else {
-        return EncryptionSetting(false, false);
+        return EncryptionSetting(
+          exist: false,
+          enable: false,
+          enableInPersonalStorage: false,
+        );
       }
     } else {
       throw CustomException(getErrMsg(resBody));

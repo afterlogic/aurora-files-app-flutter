@@ -870,6 +870,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hint_pgp_no_keys_to_import => 'The text contains no keys that can be imported.';
 
   @override
+  String get label_encryption_module_not_exist => 'The encryption module\nis not available on the backend';
+
+  @override
   String get hint_pgp_external_private_keys => 'External private keys are not supported and will not be imported';
 
   @override
@@ -889,4 +892,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get label_show_history => 'Show history';
+
+  @override
+  String get clear_cache_during_login => 'When changing the user, it is necessary to clear the cached data and keys from the previous user.';
 }

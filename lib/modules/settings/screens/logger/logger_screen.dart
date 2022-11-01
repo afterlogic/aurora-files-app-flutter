@@ -15,7 +15,7 @@ class LoggerScreen extends StatefulWidget {
 
 class _LoggerScreenState extends State<LoggerScreen> {
   final _storage = SettingsLocalStorage();
-  bool _showResponseBody;
+  late bool _showResponseBody;
   bool _initComplete = false;
 
   @override
@@ -30,7 +30,8 @@ class _LoggerScreenState extends State<LoggerScreen> {
     if (mounted) setState(() {});
   }
 
-  void _updateShowResponseBody(bool value) {
+  void _updateShowResponseBody(bool? value) {
+    if (value == null) return;
     setState(() {
       _showResponseBody = value;
     });
@@ -53,7 +54,7 @@ class _LoggerScreenState extends State<LoggerScreen> {
               children: [
                 CheckboxListTile(
                   value: _showResponseBody,
-                  title: Text('Show response body'),
+                  title: const Text('Show response body'),
                   onChanged: _updateShowResponseBody,
                 ),
                 Expanded(

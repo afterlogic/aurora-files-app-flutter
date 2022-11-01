@@ -75,7 +75,7 @@
 crypto_plugin/ios/Classes/
 
 
-
+ios/Runner/Info.plist
 /ios/Runner/Runner.entitlements
 /ios/Flutter/flutter_export_environment.sh
 /lib/modules/auth/auth_data.dart

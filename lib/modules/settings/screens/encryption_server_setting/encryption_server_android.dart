@@ -9,8 +9,6 @@ import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
-import 'package:aurorafiles/utils/show_snack.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +25,7 @@ class _EncryptionServerState extends State<EncryptionServer> {
   bool showBackwardCompatibility = false;
   bool progress = false;
   bool isInit = true;
-  bool encryptionExist;
+  bool encryptionExist = false;
   bool? encryptionEnable;
   bool? encryptionInPersonalStorage;
   EncryptionSetting? encryptionSetting;
@@ -78,28 +76,30 @@ class _EncryptionServerState extends State<EncryptionServer> {
                       CheckboxListTile(
                         value: encryptionInPersonalStorage,
                         title: Text(s.btn_encryption_personal_storage),
-                        onChanged: encryptionEnable
-                            ? (bool value) {
+                        onChanged: encryptionEnable ?? false
+                            ? (value) {
                                 setState(() {
                                   encryptionInPersonalStorage = value;
                                 });
                               }
                             : null,
                       ),
-                      const  SizedBox(height: 48),
+                      const SizedBox(height: 48),
                       AMButton(
                         isLoading: progress,
-                        child: Text(s.label_save),
                         onPressed: progress ? null : () => _onSave(context),
+                        child: Text(s.label_save),
                       ),
-                      const  SizedBox(height: 20),
-                      if (!showBackwardCompatibility && encryptionEnable)
+                      const SizedBox(height: 20),
+                      if (!showBackwardCompatibility &&
+                          (encryptionEnable ?? false))
                         AMButton(
                           child: Text(s.btn_enable_backward_compatibility),
                           onPressed: () =>
                               setState(() => showBackwardCompatibility = true),
                         ),
-                      if (showBackwardCompatibility && encryptionEnable) ...[
+                      if (showBackwardCompatibility &&
+                          (encryptionEnable ?? false)) ...[
                         Text(s.hint_backward_compatibility_aes_key),
                         ..._buildAddingKey(),
                         ..._buildKeyOptions(),
@@ -126,21 +126,18 @@ class _EncryptionServerState extends State<EncryptionServer> {
     _setProgress(true);
     try {
       await _settingsState.setEncryptionSetting(
-        // EncryptionSetting(
-        //   encryptionEnable ?? false,
-        //   encryptionInPersonalStorage ?? false,
-        // ),
         EncryptionSetting(
           exist: encryptionExist,
-          enable: encryptionEnable,
-          enableInPersonalStorage: encryptionInPersonalStorage,
+          enable: encryptionEnable ?? false,
+          enableInPersonalStorage: encryptionInPersonalStorage ?? false,
         ),
       );
       _refreshStorages();
+      if (!mounted) return;
       Navigator.pop(context);
     } catch (err) {
       _setProgress(false);
-      AuroraSnackBar.showSnack(msg: e.toString());
+      AuroraSnackBar.showSnack(msg: '$err');
     }
   }
 

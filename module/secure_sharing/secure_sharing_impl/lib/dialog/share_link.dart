@@ -14,7 +14,6 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/toast_widget.dart';
 import 'package:aurorafiles/utils/case_util.dart';
 import 'package:aurorafiles/utils/mail_template.dart';
-import 'package:aurorafiles/utils/offline_utils.dart';
 import 'package:aurorafiles/utils/pgp_key_util.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:flutter/material.dart';

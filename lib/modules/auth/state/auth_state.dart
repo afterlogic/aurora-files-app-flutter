@@ -140,14 +140,15 @@ abstract class _AuthState with Store {
       }
 
       // auto discover domain
-      if (host.isEmpty) {
-        final autoDiscoveredHost = await _authApi.autoDiscoverHostname(email);
-        if (autoDiscoveredHost == null || autoDiscoveredHost.isEmpty) {
-          isLoggingIn = false;
-          return true;
-        } else {
-          host = autoDiscoveredHost;
+      final autoDiscoveredHost = await _authApi.autoDiscoverHostname(email);
+      if (autoDiscoveredHost?.isNotEmpty == true) {
+        if (host != autoDiscoveredHost) {
+          host = autoDiscoveredHost ?? '';
         }
+      }
+      if (host.isEmpty) {
+        isLoggingIn = false;
+        return true;
       }
 
       host = host.startsWith("http") ? host : "https://$host";

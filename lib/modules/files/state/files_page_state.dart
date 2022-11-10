@@ -1,6 +1,7 @@
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/database/files/files_dao.dart';
 import 'package:aurorafiles/di/di.dart';
+import 'package:aurorafiles/models/file_group.dart';
 import 'package:aurorafiles/models/file_to_delete.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/storage.dart';
@@ -33,6 +34,7 @@ abstract class _FilesPageState with Store {
 
   String pagePath = "";
   List<LocalFile> currentFiles = [];
+  List<FileGroup> searchResult = [];
 
   @observable
   Map<String, LocalFile> selectedFilesIds = {};
@@ -64,20 +66,26 @@ abstract class _FilesPageState with Store {
   Future<void> onGetFiles({
     String? path,
     FilesLoadingType showLoading = FilesLoadingType.filesVisible,
-    String searchPattern = "",
+    String? searchPattern,
     Function(String)? onError,
   }) async {
     if (AppStore.filesState.isOfflineMode) {
-      return _getOfflineFiles(showLoading, path, searchPattern, onError);
+      await _getOfflineFiles(showLoading, path, searchPattern, onError);
+      if (searchPattern != null) {
+        _updateSearchResult();
+      }
     } else {
-      return _getOnlineFiles(showLoading, path, searchPattern, onError);
+      await _getOnlineFiles(showLoading, path, searchPattern, onError);
+      if (searchPattern != null) {
+        _updateSearchResult();
+      }
     }
   }
 
   Future _getOnlineFiles(
     FilesLoadingType showLoading,
     String? path,
-    String searchPattern,
+    String? searchPattern,
     Function(String)? onError,
   ) async {
     try {
@@ -131,13 +139,13 @@ abstract class _FilesPageState with Store {
   Future<void> _getOfflineFiles(
     FilesLoadingType showLoading,
     String? path,
-    String searchPattern,
+    String? searchPattern,
     Function(String)? onError,
   ) async {
     AppStore.filesState.quota = null;
     try {
       filesLoading = showLoading;
-      if (searchPattern.isNotEmpty) {
+      if (searchPattern != null) {
         currentFiles = await _filesDao.searchFiles(pagePath, searchPattern);
       } else {
         currentFiles = await _filesDao.getFilesAtPath(pagePath);
@@ -249,5 +257,57 @@ abstract class _FilesPageState with Store {
     } catch (err) {
       onError(err.toString());
     }
+  }
+
+  void _updateSearchResult() {
+    searchResult.clear();
+    if (currentFiles.isEmpty) {
+      return;
+    }
+    //group files by path
+    final Map<String, List<int>> groupMap = {};
+    for (var i = 0; i < currentFiles.length; i++) {
+      final path = currentFiles[i].path;
+      if (groupMap.containsKey(path)) {
+        groupMap[path]?.add(i);
+      } else {
+        groupMap[path] = [i];
+      }
+    }
+    // print('!!! groupMap = $groupMap');
+
+    //sort paths by levels
+    final pathArr = [...groupMap.keys.toList()];
+    pathArr.sort((String a, String b) {
+      final aLevel = a.split('/').length;
+      final bLevel = b.split('/').length;
+      if (aLevel == bLevel) {
+        return a.compareTo(b);
+      } else {
+        return aLevel.compareTo(bLevel);
+      }
+    });
+    // print('!!! pathArr = $pat  hArr');
+
+    //filling in search results in sorted order
+    for (var groupPath in pathArr) {
+      final indexArr = groupMap[groupPath] ?? [];
+      final groupFiles = <LocalFile>[];
+      for (var index in indexArr) {
+        groupFiles.add(currentFiles[index]);
+      }
+
+      //sort folder first
+      // widget._filesPageState.currentFiles.sort((a, b) =>
+      // a.isFolder ? -1 : a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+      searchResult.add(
+        FileGroup(
+          path: groupPath,
+          files: groupFiles,
+        ),
+      );
+    }
+    // print('!!! searchResult = $searchResult');
   }
 }

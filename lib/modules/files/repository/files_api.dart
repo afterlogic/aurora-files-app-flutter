@@ -54,11 +54,11 @@ class FilesApi {
   }
 
   Future<GetFilesResponse> getFiles(
-      String type, String path, String pattern) async {
+      String type, String path, String? pattern) async {
     final parameters = json.encode({
       "Type": type,
       "Path": path,
-      "Pattern": pattern.toLowerCase().trim(),
+      if (pattern != null) "Pattern": pattern.toLowerCase().trim(),
       "PathRequired": false,
     });
 

@@ -7,6 +7,7 @@ import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/state/auth_state.dart';
+import 'package:aurorafiles/modules/files/components/founded_files_list.dart';
 import 'package:aurorafiles/modules/files/components/upload_options.dart';
 import 'package:aurorafiles/modules/files/dialogs/encrypt_ask_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -284,7 +285,9 @@ class _FilesAndroidState extends State<FilesAndroid>
         ],
       );
     } else {
-      return FilesList(filesPageState: _filesPageState);
+      return _filesPageState.isSearchMode
+          ? FoundedFilesList(fileGroups: _filesPageState.searchResult)
+          : FilesList(files: _filesPageState.currentFiles);
     }
   }
 

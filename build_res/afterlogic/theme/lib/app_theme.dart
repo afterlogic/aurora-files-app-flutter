@@ -3,6 +3,17 @@ import 'package:flutter/services.dart';
 import 'app_color.dart';
 
 class AppTheme {
+  static final ThemeData? login = null;
+
+  static final Color? loginTextColor = null;
+
+  static TextStyle subtitle1NewTextStyle(bool isDark) => TextStyle(
+        color: isDark ? AppColorDark.subtext : AppColorLight.subtext,
+        fontSize: 12.0,
+        // height: 10 / 12,
+        fontWeight: FontWeight.w400,
+      );
+
   static final light = ThemeData(
     colorScheme: ColorScheme(
       brightness: Brightness.light,
@@ -24,34 +35,12 @@ class AppTheme {
     disabledColor: AppColorLight.onBackground.withOpacity(0.4),
     scaffoldBackgroundColor: AppColorLight.background,
     toggleableActiveColor: AppColorLight.secondary,
-    textTheme: TextTheme(
-      headline4: TextStyle(
-        color: AppColorLight.onBackground,
-        fontSize: 32.0,
-        fontWeight: FontWeight.w500,
-      ),
-    ),
-    appBarTheme: AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.light,
-      ),
-      color: AppColorLight.background,
-      iconTheme: IconThemeData(color: AppColorLight.onBackground),
-      actionsIconTheme: IconThemeData(color: AppColorLight.onBackground),
-      titleTextStyle: TextStyle(
-        color: AppColorLight.onBackground,
-        fontSize: 18.0,
-        fontWeight: FontWeight.w500,
-      ),
-      toolbarTextStyle: TextStyle(
-        color: AppColorLight.onBackground,
-        fontSize: 12.0,
-        fontWeight: FontWeight.w400,
-      ),
-    ),
+    textTheme: _textThemeLight,
+    appBarTheme: _appBarThemeLight,
     floatingActionButtonTheme: _floatThemeLight,
     cardTheme: _cardTheme,
     textSelectionTheme: _textSelectionThemeLight,
+    dividerColor: AppColorLight.divider,
   );
 
   static final dark = ThemeData(
@@ -75,40 +64,14 @@ class AppTheme {
     disabledColor: AppColorDark.onBackground.withOpacity(0.4),
     scaffoldBackgroundColor: AppColorDark.background,
     toggleableActiveColor: AppColorDark.secondary,
-    textTheme: TextTheme(
-      headline4: TextStyle(
-        color: AppColorDark.onBackground,
-        fontSize: 32.0,
-        fontWeight: FontWeight.w500,
-      ),
-    ),
-    appBarTheme: AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.dark,
-      ),
-      color: AppColorDark.background,
-      iconTheme: IconThemeData(color: AppColorDark.onBackground),
-      actionsIconTheme: IconThemeData(color: AppColorDark.onBackground),
-      titleTextStyle: TextStyle(
-        color: AppColorDark.onBackground,
-        fontSize: 18.0,
-        fontWeight: FontWeight.w500,
-      ),
-      toolbarTextStyle: TextStyle(
-        color: AppColorDark.onBackground,
-        fontSize: 12.0,
-        fontWeight: FontWeight.w400,
-      ),
-    ),
+    textTheme: _textThemeDark,
+    appBarTheme: _appBarThemeDark,
     floatingActionButtonTheme: _floatThemeDark,
     cardTheme: _cardTheme,
     bottomAppBarColor: Colors.black,
     textSelectionTheme: _textSelectionThemeDark,
+    dividerColor: AppColorLight.divider,
   );
-
-  static final ThemeData? login = null;
-
-  static final Color? loginTextColor = null;
 
   static final _dialogTheme = DialogTheme(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -148,5 +111,69 @@ class AppTheme {
     cursorColor: AppColorDark.secondary,
     selectionColor: AppColorDark.secondary,
     selectionHandleColor: AppColorDark.secondary,
+  );
+
+  static const _textThemeLight = TextTheme(
+    headline4: TextStyle(
+      color: AppColorLight.onBackground,
+      fontSize: 32.0,
+      fontWeight: FontWeight.w500,
+    ),
+    // subtitle1: TextStyle(
+    //   color: AppColorLight.subtext,
+    //   fontSize: 12.0,
+    //   fontWeight: FontWeight.w400,
+    // ),
+  );
+
+  static const _textThemeDark = TextTheme(
+    headline4: TextStyle(
+      color: AppColorDark.onBackground,
+      fontSize: 32.0,
+      fontWeight: FontWeight.w500,
+    ),
+    // subtitle1: TextStyle(
+    //   color: AppColorDark.subtext,
+    //   fontSize: 12.0,
+    //   fontWeight: FontWeight.w400,
+    // ),
+  );
+
+  static const _appBarThemeLight = AppBarTheme(
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.light,
+    ),
+    color: AppColorLight.background,
+    iconTheme: IconThemeData(color: AppColorLight.onBackground),
+    actionsIconTheme: IconThemeData(color: AppColorLight.onBackground),
+    titleTextStyle: TextStyle(
+      color: AppColorLight.onBackground,
+      fontSize: 18.0,
+      fontWeight: FontWeight.w500,
+    ),
+    toolbarTextStyle: TextStyle(
+      color: AppColorLight.onBackground,
+      fontSize: 12.0,
+      fontWeight: FontWeight.w400,
+    ),
+  );
+
+  static const _appBarThemeDark = AppBarTheme(
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.dark,
+    ),
+    color: AppColorDark.background,
+    iconTheme: IconThemeData(color: AppColorDark.onBackground),
+    actionsIconTheme: IconThemeData(color: AppColorDark.onBackground),
+    titleTextStyle: TextStyle(
+      color: AppColorDark.onBackground,
+      fontSize: 18.0,
+      fontWeight: FontWeight.w500,
+    ),
+    toolbarTextStyle: TextStyle(
+      color: AppColorDark.onBackground,
+      fontSize: 12.0,
+      fontWeight: FontWeight.w400,
+    ),
   );
 }

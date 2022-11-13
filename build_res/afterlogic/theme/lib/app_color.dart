@@ -15,6 +15,9 @@ class AppColorLight {
 
   static const error = Color(0xFFF44336);
   static const onError = Colors.white;
+
+  static const divider = Color(0xFFF6F6F6);
+  static const subtext = Color(0xFF969494);
 }
 
 class AppColorDark {
@@ -32,4 +35,7 @@ class AppColorDark {
 
   static const error = Color(0xFFF44336);
   static const onError = Colors.white;
+
+  static const divider = Color(0xFF4B4A4A);
+  static const subtext = Color(0xFF969494);
 }

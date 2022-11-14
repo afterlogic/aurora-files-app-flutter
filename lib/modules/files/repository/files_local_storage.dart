@@ -14,7 +14,7 @@ import 'package:crypto_stream/algorithm/aes.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as encrypt_lib;
 import 'package:file_picker/file_picker.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 
@@ -50,7 +50,7 @@ class FilesLocalStorage {
 
   Future<void> openFileWith(File? file) async {
 //    final tempFileForShare = await cacheFile(fileBytes, file);
-    await OpenFile.open(file?.path);
+    await OpenFilex.open(file?.path);
   }
 
 //  Future<String> saveFileInDownloads(

@@ -159,7 +159,7 @@ PODS:
     - nanopb/encode (= 2.30909.0)
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
-  - open_file (0.0.1):
+  - open_filex (0.0.2):
     - Flutter
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
@@ -204,7 +204,7 @@ DEPENDENCIES:
   - flutter_custom_tabs (from `.symlinks/plugins/flutter_custom_tabs/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
-  - open_file (from `.symlinks/plugins/open_file/ios`)
+  - open_filex (from `.symlinks/plugins/open_filex/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
@@ -259,8 +259,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
-  open_file:
-    :path: ".symlinks/plugins/open_file/ios"
+  open_filex:
+    :path: ".symlinks/plugins/open_filex/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider_ios:
@@ -305,7 +305,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
-  open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
+  open_filex: 6e26e659846ec990262224a12ef1c528bb4edbe4
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
@@ -322,6 +322,6 @@ SPEC CHECKSUMS:
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
 
-PODFILE CHECKSUM: 1a904660a04eaa523768446e3408091926787fae
+PODFILE CHECKSUM: defeb97bc8725ce9b9ee17990cf23cd4e387175d
 
 COCOAPODS: 1.11.2

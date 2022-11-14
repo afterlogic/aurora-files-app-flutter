@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
+import 'package:aurorafiles/shared_ui/highlighted_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -107,7 +108,10 @@ class _FolderWidgetState extends State<FolderWidget> {
                 children: <Widget>[
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Text(widget.folder.name),
+                    child: HighlightedText(
+                      text: widget.folder.name,
+                      highlightedPart: _filesPageState.searchText,
+                    ),
                   ),
                   if (widget.folder.published || widget.folder.localId != -1)
                     const SizedBox(height: 7.0),

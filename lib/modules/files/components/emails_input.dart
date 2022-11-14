@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aurorafiles/models/recipient.dart';
 import 'package:aurorafiles/modules/files/components/compose_type_ahead.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
+import 'package:aurorafiles/utils/text_utils.dart';
 import 'package:flutter/material.dart';
 
 class EmailsInput extends StatefulWidget {
@@ -85,54 +86,14 @@ class EmailsInputState extends State<EmailsInput> {
 
   TextSpan _searchMatch(String match) {
     final color = theme.textTheme.bodyText2?.color;
-    final posRes = TextStyle(fontWeight: FontWeight.w700, color: color);
-    final negRes = TextStyle(fontWeight: FontWeight.w400, color: color);
+    final positiveStyle = TextStyle(fontWeight: FontWeight.w700, color: color);
+    final negativeStyle = TextStyle(fontWeight: FontWeight.w400, color: color);
 
-    if (_search == null || _search == "") {
-      return TextSpan(text: match, style: negRes);
-    }
-    var refinedMatch = match.toLowerCase();
-    var refinedSearch = _search?.toLowerCase() ?? '';
-    if (refinedMatch.contains(refinedSearch)) {
-      if (refinedMatch.substring(0, refinedSearch.length) == refinedSearch) {
-        return TextSpan(
-          style: posRes,
-          text: match.substring(0, refinedSearch.length),
-          children: [
-            _searchMatch(
-              match.substring(
-                refinedSearch.length,
-              ),
-            ),
-          ],
-        );
-      } else if (refinedMatch.length == refinedSearch.length) {
-        return TextSpan(text: match, style: posRes);
-      } else {
-        return TextSpan(
-          style: negRes,
-          text: match.substring(
-            0,
-            refinedMatch.indexOf(refinedSearch),
-          ),
-          children: [
-            _searchMatch(
-              match.substring(
-                refinedMatch.indexOf(refinedSearch),
-              ),
-            ),
-          ],
-        );
-      }
-    } else if (!refinedMatch.contains(refinedSearch)) {
-      return TextSpan(text: match, style: negRes);
-    }
-    return TextSpan(
-      text: match.substring(0, refinedMatch.indexOf(refinedSearch)),
-      style: negRes,
-      children: [
-        _searchMatch(match.substring(refinedMatch.indexOf(refinedSearch)))
-      ],
+    return TextUtils.highlightPartOfText(
+      text: match,
+      part: _search,
+      positiveStyle: positiveStyle,
+      negativeStyle: negativeStyle,
     );
   }
 

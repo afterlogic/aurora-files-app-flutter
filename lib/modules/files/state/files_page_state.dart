@@ -42,6 +42,8 @@ abstract class _FilesPageState with Store {
   @observable
   bool isSearchMode = false;
 
+  String searchText = "";
+
   bool isInsideZip = false;
 
   @observable
@@ -274,8 +276,6 @@ abstract class _FilesPageState with Store {
         groupMap[path] = [i];
       }
     }
-    // print('!!! groupMap = $groupMap');
-
     //sort paths by levels
     final pathArr = [...groupMap.keys.toList()];
     pathArr.sort((String a, String b) {
@@ -287,8 +287,6 @@ abstract class _FilesPageState with Store {
         return aLevel.compareTo(bLevel);
       }
     });
-    // print('!!! pathArr = $pat  hArr');
-
     //filling in search results in sorted order
     for (var groupPath in pathArr) {
       final indexArr = groupMap[groupPath] ?? [];
@@ -296,11 +294,6 @@ abstract class _FilesPageState with Store {
       for (var index in indexArr) {
         groupFiles.add(currentFiles[index]);
       }
-
-      //sort folder first
-      // widget._filesPageState.currentFiles.sort((a, b) =>
-      // a.isFolder ? -1 : a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-
       searchResult.add(
         FileGroup(
           path: groupPath,
@@ -308,6 +301,5 @@ abstract class _FilesPageState with Store {
         ),
       );
     }
-    // print('!!! searchResult = $searchResult');
   }
 }

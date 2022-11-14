@@ -16,6 +16,7 @@ import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
+import 'package:aurorafiles/shared_ui/highlighted_text.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
@@ -31,10 +32,7 @@ import 'package:provider/provider.dart';
 class FileWidget extends StatefulWidget {
   final LocalFile file;
 
-  const FileWidget({
-    Key? key,
-    required this.file,
-  }) : super(key: key);
+  const FileWidget({Key? key, required this.file}) : super(key: key);
 
   @override
   _FileWidgetState createState() => _FileWidgetState();
@@ -406,7 +404,10 @@ class _FileWidgetState extends State<FileWidget> {
                   children: <Widget>[
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: Text(widget.file.name),
+                      child: HighlightedText(
+                        text: widget.file.name,
+                        highlightedPart: _filesPageState.searchText,
+                      ),
                     ),
                     const SizedBox(height: 7.0),
                     Theme(

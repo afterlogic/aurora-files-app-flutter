@@ -66,6 +66,7 @@ class _FilesAppBarState extends State<FilesAppBar>
 
   void _search() {
     // FocusScope.of(context).requestFocus(FocusNode());
+    _filesPageState.searchText = _searchInputCtrl.text;
     _filesPageState.onGetFiles(
       searchPattern: _searchInputCtrl.text,
     );
@@ -285,6 +286,7 @@ class _FilesAppBarState extends State<FilesAppBar>
               onPressed: () {
                 _searchInputCtrl.text = "";
                 _filesPageState.isSearchMode = false;
+                _filesPageState.searchText = '';
                 _filesPageState.onGetFiles(
                   showLoading: FilesLoadingType.filesHidden,
                 );
@@ -302,6 +304,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                     onPressed: () {
                       _searchInputCtrl.text = "";
                       _filesPageState.isSearchMode = false;
+                      _filesPageState.searchText = '';
                       _filesPageState.onGetFiles(
                         showLoading: FilesLoadingType.filesHidden,
                       );
@@ -328,6 +331,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           onPressed: () {
             _searchInputCtrl.text = "";
             _filesPageState.isSearchMode = false;
+            _filesPageState.searchText = '';
             _filesPageState.onGetFiles(
               showLoading: FilesLoadingType.filesHidden,
             );

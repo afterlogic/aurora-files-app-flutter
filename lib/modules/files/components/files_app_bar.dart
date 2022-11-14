@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
@@ -35,6 +37,8 @@ class _FilesAppBarState extends State<FilesAppBar>
   late FilesPageState _filesPageState;
   late AnimationController _appBarIconAnimCtrl;
   final _searchInputCtrl = TextEditingController();
+  Timer? _debounce;
+  String _lastSearch = '';
 
   @override
   void initState() {
@@ -61,9 +65,22 @@ class _FilesAppBarState extends State<FilesAppBar>
   }
 
   void _search() {
-    FocusScope.of(context).requestFocus(FocusNode());
+    // FocusScope.of(context).requestFocus(FocusNode());
     _filesPageState.onGetFiles(
       searchPattern: _searchInputCtrl.text,
+    );
+  }
+
+  void _onSearchTextChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(
+      const Duration(milliseconds: 700),
+      () {
+        if (value != _lastSearch) {
+          _lastSearch = value;
+          _search();
+        }
+      },
     );
   }
 
@@ -337,40 +354,27 @@ class _FilesAppBarState extends State<FilesAppBar>
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: Container(
-            padding: const EdgeInsets.all(12.0),
+            height: 48,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: PlatformOverride.isIOS
                 ? CupertinoTextField(
-                    onSubmitted: (_) => _search(),
                     autofocus: true,
+                    onSubmitted: (_) => _search(),
+                    onChanged: _onSearchTextChanged,
                     controller: _searchInputCtrl,
                     placeholder: s.search,
-                    suffix: IconButton(
-                        icon: const Icon(Icons.search),
-                        color: Colors.white,
-                        onPressed: _search),
                   )
-                : ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                    child: Container(
-                      color: Colors.white54,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12.0, top: 2.0),
-                        child: TextField(
-                          autofocus: true,
-                          onSubmitted: (_) => _search(),
-                          style: const TextStyle(color: Colors.black),
-                          controller: _searchInputCtrl,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintStyle: const TextStyle(color: Colors.black38),
-                              hintText: s.search,
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.search),
-                                color: Colors.black,
-                                onPressed: _search,
-                              )),
-                        ),
-                      ),
+                : TextField(
+                    autofocus: true,
+                    onSubmitted: (_) => _search(),
+                    onChanged: _onSearchTextChanged,
+                    style: const TextStyle(color: Colors.black),
+                    controller: _searchInputCtrl,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintStyle: const TextStyle(color: Colors.black38),
+                      hintText: s.search,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
                   ),
           ),

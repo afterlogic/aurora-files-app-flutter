@@ -415,7 +415,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                             !_filesState.isShareUpload &&
                             _filesPageState.selectedFilesIds.isEmpty &&
                             !isTablet
-                        ? 2.3
+                        ? 2
                         : 1)),
                 child: FilesAppBar(
                   onDeleteFiles: _deleteSelected,

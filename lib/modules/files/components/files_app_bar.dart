@@ -65,8 +65,7 @@ class _FilesAppBarState extends State<FilesAppBar>
   }
 
   void _search() {
-    // FocusScope.of(context).requestFocus(FocusNode());
-    _filesPageState.searchText = _searchInputCtrl.text;
+    FocusScope.of(context).requestFocus(FocusNode());
     _filesPageState.onGetFiles(
       searchPattern: _searchInputCtrl.text,
     );
@@ -83,6 +82,22 @@ class _FilesAppBarState extends State<FilesAppBar>
         }
       },
     );
+  }
+
+  void _onCloseSearch() {
+    _searchInputCtrl.text = "";
+    _filesPageState.isSearchMode = false;
+    _lastSearch = '';
+    _filesPageState.searchResult.clear();
+    _filesPageState.onGetFiles(
+      showLoading: FilesLoadingType.filesHidden,
+    );
+  }
+
+  void _onCloseMove() {
+    _filesState.isMoveModeEnabled
+        ? _filesState.disableMoveMode
+        : _filesState.disableUploadShared;
   }
 
   AMAppBar _getAppBar(BuildContext context) {
@@ -181,9 +196,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           backgroundColor: Theme.of(context).colorScheme.secondary,
           leading: IconButton(
             icon: const Icon(Icons.close),
-            onPressed: _filesState.isMoveModeEnabled
-                ? _filesState.disableMoveMode
-                : _filesState.disableUploadShared,
+            onPressed: _onCloseMove,
           ),
           title: Text(_filesState.isMoveModeEnabled
               ? s.move_file_or_folder
@@ -206,6 +219,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           ],
         );
       }
+
       return AMAppBar(
         key: const Key("move"),
         backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -216,9 +230,7 @@ class _FilesAppBarState extends State<FilesAppBar>
               )
             : IconButton(
                 icon: const Icon(Icons.close),
-                onPressed: _filesState.isMoveModeEnabled
-                    ? _filesState.disableMoveMode
-                    : _filesState.disableUploadShared,
+                onPressed: _onCloseMove,
               ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -283,37 +295,21 @@ class _FilesAppBarState extends State<FilesAppBar>
           actions: [
             IconButton(
               icon: const Icon(Icons.close),
-              onPressed: () {
-                _searchInputCtrl.text = "";
-                _filesPageState.isSearchMode = false;
-                _filesPageState.searchText = '';
-                _filesPageState.onGetFiles(
-                  showLoading: FilesLoadingType.filesHidden,
-                );
-              },
+              onPressed: _onCloseSearch,
             ),
           ],
           title: PlatformOverride.isIOS
               ? CupertinoTextField(
-                  onSubmitted: (_) => _search(),
                   autofocus: true,
+                  onSubmitted: (_) => _search(),
+                  onChanged: _onSearchTextChanged,
                   controller: _searchInputCtrl,
                   placeholder: s.search,
-                  suffix: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      _searchInputCtrl.text = "";
-                      _filesPageState.isSearchMode = false;
-                      _filesPageState.searchText = '';
-                      _filesPageState.onGetFiles(
-                        showLoading: FilesLoadingType.filesHidden,
-                      );
-                    },
-                  ),
                 )
               : TextField(
                   autofocus: true,
                   onSubmitted: (_) => _search(),
+                  onChanged: _onSearchTextChanged,
                   style: const TextStyle(color: Colors.black),
                   controller: _searchInputCtrl,
                   decoration: InputDecoration.collapsed(
@@ -324,18 +320,12 @@ class _FilesAppBarState extends State<FilesAppBar>
                 ),
         );
       }
+
       return AMAppBar(
         key: const Key("search"),
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () {
-            _searchInputCtrl.text = "";
-            _filesPageState.isSearchMode = false;
-            _filesPageState.searchText = '';
-            _filesPageState.onGetFiles(
-              showLoading: FilesLoadingType.filesHidden,
-            );
-          },
+          onPressed: _onCloseSearch,
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

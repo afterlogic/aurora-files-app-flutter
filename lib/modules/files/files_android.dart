@@ -155,6 +155,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       [FilesLoadingType showLoading = FilesLoadingType.filesVisible]) async {
     return _filesPageState.onGetFiles(
       showLoading: showLoading,
+      searchPattern: _filesPageState.searchText,
       onError: (String err) => AuroraSnackBar.showSnack(msg: err),
     );
   }

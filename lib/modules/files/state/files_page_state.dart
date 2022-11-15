@@ -42,7 +42,7 @@ abstract class _FilesPageState with Store {
   @observable
   bool isSearchMode = false;
 
-  String searchText = "";
+  String? searchText;
 
   bool isInsideZip = false;
 
@@ -73,15 +73,11 @@ abstract class _FilesPageState with Store {
   }) async {
     if (AppStore.filesState.isOfflineMode) {
       await _getOfflineFiles(showLoading, path, searchPattern, onError);
-      if (searchPattern != null) {
-        _updateSearchResult();
-      }
     } else {
       await _getOnlineFiles(showLoading, path, searchPattern, onError);
-      if (searchPattern != null) {
-        _updateSearchResult();
-      }
     }
+    searchText = searchPattern;
+    _updateSearchResult();
   }
 
   Future _getOnlineFiles(

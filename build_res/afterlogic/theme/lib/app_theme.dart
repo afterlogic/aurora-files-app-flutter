@@ -10,7 +10,6 @@ class AppTheme {
   static TextStyle subtitle1NewTextStyle(bool isDark) => TextStyle(
         color: isDark ? AppColorDark.subtext : AppColorLight.subtext,
         fontSize: 12.0,
-        // height: 10 / 12,
         fontWeight: FontWeight.w400,
       );
 
@@ -70,7 +69,7 @@ class AppTheme {
     cardTheme: _cardTheme,
     bottomAppBarColor: Colors.black,
     textSelectionTheme: _textSelectionThemeDark,
-    dividerColor: AppColorLight.divider,
+    dividerColor: AppColorDark.divider,
   );
 
   static final _dialogTheme = DialogTheme(
@@ -119,11 +118,6 @@ class AppTheme {
       fontSize: 32.0,
       fontWeight: FontWeight.w500,
     ),
-    // subtitle1: TextStyle(
-    //   color: AppColorLight.subtext,
-    //   fontSize: 12.0,
-    //   fontWeight: FontWeight.w400,
-    // ),
   );
 
   static const _textThemeDark = TextTheme(
@@ -132,11 +126,6 @@ class AppTheme {
       fontSize: 32.0,
       fontWeight: FontWeight.w500,
     ),
-    // subtitle1: TextStyle(
-    //   color: AppColorDark.subtext,
-    //   fontSize: 12.0,
-    //   fontWeight: FontWeight.w400,
-    // ),
   );
 
   static const _appBarThemeLight = AppBarTheme(

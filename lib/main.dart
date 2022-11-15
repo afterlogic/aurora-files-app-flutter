@@ -22,7 +22,13 @@ void main() async {
   if (!kDebugMode) {
     // FirebaseCrashlytics.instance.enableInDevMode = true;
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
   }
+
   LoggerSetting.init(LoggerSetting(
     defaultInterceptor: LoggerInterceptorAdapter(),
   ));
@@ -36,15 +42,5 @@ void main() async {
 
   PlatformOverride.setPlatform(Platform.isIOS);
   DI.init();
-
-  runZonedGuarded<void>(
-    () {
-      runApp(
-        LoggerControllerWidget.wrap(const App()),
-      );
-    },
-    (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    },
-  );
+  runApp(const App());
 }

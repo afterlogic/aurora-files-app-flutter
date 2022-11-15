@@ -103,6 +103,8 @@ class _FilesAppBarState extends State<FilesAppBar>
   AMAppBar _getAppBar(BuildContext context) {
     final s = context.l10n;
     final isTablet = LayoutConfig.of(context).isTablet;
+    final theme = Theme.of(context);
+
     if (widget.isAppBar && isTablet) {
       return AMAppBar(
         key: const Key("default"),
@@ -154,8 +156,7 @@ class _FilesAppBarState extends State<FilesAppBar>
     if (_filesPageState.selectedFilesIds.isNotEmpty) {
       return AMAppBar(
         key: const Key("select"),
-        backgroundColor:
-            widget.isAppBar ? Theme.of(context).primaryColorDark : null,
+        backgroundColor: widget.isAppBar ? theme.primaryColorDark : null,
         leading: IconButton(
           icon: const Icon(Icons.clear),
           onPressed: () => _filesPageState.quitSelectMode(),
@@ -193,7 +194,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       if (!widget.isAppBar) {
         return AMAppBar(
           key: const Key("move"),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
+          backgroundColor: theme.colorScheme.secondary,
           leading: IconButton(
             icon: const Icon(Icons.close),
             onPressed: _onCloseMove,
@@ -222,7 +223,7 @@ class _FilesAppBarState extends State<FilesAppBar>
 
       return AMAppBar(
         key: const Key("move"),
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        backgroundColor: theme.colorScheme.secondary,
         leading: _filesPageState.pagePath.isNotEmpty
             ? IconButton(
                 icon: const Icon(Icons.arrow_back_ios),
@@ -305,17 +306,19 @@ class _FilesAppBarState extends State<FilesAppBar>
                   onChanged: _onSearchTextChanged,
                   controller: _searchInputCtrl,
                   placeholder: s.search,
+                  style: TextStyle(color: theme.colorScheme.onBackground),
+                  decoration: const BoxDecoration(),
                 )
               : TextField(
                   autofocus: true,
                   onSubmitted: (_) => _search(),
                   onChanged: _onSearchTextChanged,
-                  style: const TextStyle(color: Colors.black),
                   controller: _searchInputCtrl,
+                  style: TextStyle(color: theme.colorScheme.onBackground),
                   decoration: InputDecoration.collapsed(
                     border: InputBorder.none,
-                    hintStyle: const TextStyle(color: Colors.black38),
                     hintText: s.search,
+                    hintStyle: const TextStyle(color: Colors.black38),
                   ),
                 ),
         );
@@ -357,17 +360,18 @@ class _FilesAppBarState extends State<FilesAppBar>
                     onChanged: _onSearchTextChanged,
                     controller: _searchInputCtrl,
                     placeholder: s.search,
+                    style: TextStyle(color: theme.colorScheme.onBackground),
                   )
                 : TextField(
                     autofocus: true,
                     onSubmitted: (_) => _search(),
                     onChanged: _onSearchTextChanged,
-                    style: const TextStyle(color: Colors.black),
                     controller: _searchInputCtrl,
+                    style: TextStyle(color: theme.colorScheme.onBackground),
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
-                      hintStyle: const TextStyle(color: Colors.black38),
                       hintText: s.search,
+                      hintStyle: const TextStyle(color: Colors.black38),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
                   ),

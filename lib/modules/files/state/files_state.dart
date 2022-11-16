@@ -281,7 +281,7 @@ abstract class _FilesState with Store {
     }
   }
 
-  Future addDecryptedKey(
+  Future<void> addDecryptedKey(
       BuildContext context, LocalFile file, List<String> contactKey) async {
     if (contactKey.isEmpty) {
       return _filesApi.updateKeyShared(file, null, [], null);
@@ -295,7 +295,7 @@ abstract class _FilesState with Store {
     return _filesApi.updateKeyShared(file, key, contactKey, password);
   }
 
-  Future addDecryptedPublicKey(
+  Future<void> addDecryptedPublicKey(
       BuildContext context, LocalFile file, List<String> contactKey) async {
     final password = await KeyRequestDialog.request(context);
     if (password == null) {
@@ -313,7 +313,7 @@ abstract class _FilesState with Store {
             .replaceAll("\n", "\r\n"));
   }
 
-  Future addDecryptedPublicPassword(
+  Future<void> addDecryptedPublicPassword(
       BuildContext context, LocalFile file, String password) async {
     return _filesApi.updateExtendedPropsPublicKey(file, password);
   }

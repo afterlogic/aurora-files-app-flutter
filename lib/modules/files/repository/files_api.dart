@@ -437,7 +437,7 @@ class FilesApi {
     }
   }
 
-  Future createFolder(String type, String path, String folderName) async {
+  Future<void> createFolder(String type, String path, String folderName) async {
     final parameters =
         json.encode({"Type": type, "Path": path, "FolderName": folderName});
 
@@ -453,7 +453,7 @@ class FilesApi {
     }
   }
 
-  Future delete(String type, String path,
+  Future<void> delete(String type, String path,
       List<Map<String, dynamic>> filesToDelete) async {
     final parameters =
         json.encode({"Type": type, "Path": path, "Items": filesToDelete});
@@ -532,7 +532,7 @@ class FilesApi {
     }
   }
 
-  Future deletePublicLink(String type, String path, String name) async {
+  Future<void> deletePublicLink(String type, String path, String name) async {
     final parameters = json.encode({
       "Type": type,
       "Path": path,
@@ -551,7 +551,7 @@ class FilesApi {
     }
   }
 
-  Future copyMoveFiles({
+  Future<void> copyMoveFiles({
     required bool copy,
     required String fromType,
     required String toType,
@@ -581,7 +581,7 @@ class FilesApi {
     }
   }
 
-  Future updateKeyShared(LocalFile file, String? encryptionKey,
+  Future<void> updateKeyShared(LocalFile file, String? encryptionKey,
       List<String> contactKey, String? password) async {
     final parameters = json.encode({
       "Type": file.type,
@@ -613,7 +613,7 @@ class FilesApi {
     }
   }
 
-  Future updateExtendedPropsPublicKey(
+  Future<void> updateExtendedPropsPublicKey(
       LocalFile file, String paranoidKeyPublic) async {
     final parameters = json.encode({
       "Type": file.type,

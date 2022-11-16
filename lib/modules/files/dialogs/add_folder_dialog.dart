@@ -50,8 +50,10 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   if (errMsg.isNotEmpty)
-                    Text(errMsg,
-                        style: TextStyle(color: Theme.of(context).errorColor)),
+                    Text(
+                      errMsg,
+                      style: TextStyle(color: Theme.of(context).errorColor),
+                    ),
                   TextFormField(
                     controller: _folderNameCtrl,
                     autofocus: true,
@@ -93,9 +95,9 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                         errMsg = err;
                         setState(() => isAdding = false);
                       },
-                      onSuccess: (String newNameFromServer) {
+                      onSuccess: () {
                         widget.filesPageState.onGetFiles();
-                        Navigator.pop(context, newNameFromServer);
+                        Navigator.pop(context);
                       },
                     );
                   },

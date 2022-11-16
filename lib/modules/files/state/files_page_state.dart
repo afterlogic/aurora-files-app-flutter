@@ -242,16 +242,16 @@ abstract class _FilesPageState with Store {
   void onCreateNewFolder({
     required String folderName,
     required Storage storage,
-    required Function(String) onSuccess,
+    required Function() onSuccess,
     required Function(String) onError,
   }) async {
     try {
-      final String newFolderNameFromServer = await _filesApi.createFolder(
+      await _filesApi.createFolder(
         StorageTypeHelper.toName(storage.type),
         pagePath,
         folderName,
       );
-      onSuccess(newFolderNameFromServer);
+      onSuccess();
     } catch (err) {
       onError(err.toString());
     }

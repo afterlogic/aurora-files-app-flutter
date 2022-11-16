@@ -14,6 +14,7 @@ import 'package:crypto_stream/algorithm/aes.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt.dart' as encrypt_lib;
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
@@ -108,8 +109,7 @@ class FilesLocalStorage {
     if (!Platform.isIOS) await getStoragePermissions();
 
     final Directory dir = await getTemporaryDirectory();
-    final File dartFile =
-        File("${dir.path}/images/${file.guid}_${file.name}");
+    final File dartFile = File("${dir.path}/images/${file.guid}_${file.name}");
     final bool exist = await dartFile.exists();
     if (exist) {
       return dartFile;
@@ -168,19 +168,31 @@ class FilesLocalStorage {
       for (final file in files) {
         File cachedFile = File("${dir.path}/images/${file.guid}");
         if (cachedFile.existsSync()) {
-          await cachedFile.delete(recursive: true);
+          try {
+            await cachedFile.delete(recursive: true);
+          } catch (err) {
+            debugPrint('deleteFilesFromCache() error: $err');
+          }
         }
       }
     } else {
       if (deleteCachedImages == true) {
         final cacheDir = Directory(dir.path);
         if (cacheDir.existsSync()) {
-          await cacheDir.delete(recursive: true);
+          try {
+            await cacheDir.delete(recursive: true);
+          } catch (err) {
+            debugPrint('deleteFilesFromCache() error: $err');
+          }
         }
       } else {
         final cacheDir = Directory("${dir.path}/files_to_delete");
         if (cacheDir.existsSync()) {
-          await cacheDir.delete(recursive: true);
+          try {
+            await cacheDir.delete(recursive: true);
+          } catch (err) {
+            debugPrint('deleteFilesFromCache() error: $err');
+          }
         }
       }
     }

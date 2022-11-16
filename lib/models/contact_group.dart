@@ -29,7 +29,7 @@ class ContactGroup extends SharePrincipal {
   String getId() => '$id';
 
   @override
-  String getLabel() => '\u25FE $name';
+  String getLabel() => '* $name';
 
   @override
   Map<String, dynamic> toMap() {

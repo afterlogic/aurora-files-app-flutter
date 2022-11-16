@@ -32,6 +32,7 @@ class SignCheckBoxState extends State<SignCheckBox> {
             style: !widget.enable ? const TextStyle(color: Colors.grey) : null,
           ),
           trailing: Switch.adaptive(
+            activeColor: Theme.of(context).primaryColor,
             value: widget.checked,
             onChanged: widget.enable ? widget.onCheck : null,
           ),

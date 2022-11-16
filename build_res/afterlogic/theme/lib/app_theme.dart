@@ -27,6 +27,7 @@ class AppTheme {
       error: AppColorLight.error,
       onError: AppColorLight.onError,
     ),
+    primaryColor: AppColorLight.primary,
     buttonTheme: _buttonThemeLight,
     dialogTheme: _dialogTheme,
     splashFactory: InkRipple.splashFactory,
@@ -40,6 +41,7 @@ class AppTheme {
     cardTheme: _cardTheme,
     textSelectionTheme: _textSelectionThemeLight,
     dividerColor: AppColorLight.divider,
+    iconTheme: _iconThemeLight,
   );
 
   static final dark = ThemeData(
@@ -56,6 +58,7 @@ class AppTheme {
       error: AppColorDark.error,
       onError: AppColorDark.onError,
     ),
+    primaryColor: AppColorDark.primary,
     buttonTheme: _buttonThemeDark,
     dialogTheme: _dialogTheme,
     splashFactory: InkRipple.splashFactory,
@@ -70,18 +73,19 @@ class AppTheme {
     bottomAppBarColor: Colors.black,
     textSelectionTheme: _textSelectionThemeDark,
     dividerColor: AppColorDark.divider,
+    iconTheme: _iconThemeDark,
   );
 
   static final _dialogTheme = DialogTheme(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
   );
 
-  static final _buttonThemeLight = ButtonThemeData(
+  static const _buttonThemeLight = ButtonThemeData(
     buttonColor: AppColorLight.secondary,
     textTheme: ButtonTextTheme.primary,
   );
 
-  static final _buttonThemeDark = ButtonThemeData(
+  static const _buttonThemeDark = ButtonThemeData(
     buttonColor: AppColorDark.secondary,
     textTheme: ButtonTextTheme.primary,
   );
@@ -96,17 +100,25 @@ class AppTheme {
     backgroundColor: AppColorDark.secondary,
   );
 
-  static final _cardTheme = CardTheme(
+  static const _cardTheme = CardTheme(
     elevation: 0,
   );
 
-  static final _textSelectionThemeLight = TextSelectionThemeData(
+  static const _iconThemeLight = IconThemeData(
+    color: AppColorLight.onBackground,
+  );
+
+  static const _iconThemeDark = IconThemeData(
+    color: AppColorDark.onBackground,
+  );
+
+  static const _textSelectionThemeLight = TextSelectionThemeData(
     cursorColor: AppColorLight.secondary,
     selectionColor: AppColorLight.secondary,
     selectionHandleColor: AppColorLight.secondary,
   );
 
-  static final _textSelectionThemeDark = TextSelectionThemeData(
+  static const _textSelectionThemeDark = TextSelectionThemeData(
     cursorColor: AppColorDark.secondary,
     selectionColor: AppColorDark.secondary,
     selectionHandleColor: AppColorDark.secondary,
@@ -133,8 +145,8 @@ class AppTheme {
       statusBarBrightness: Brightness.light,
     ),
     color: AppColorLight.background,
-    iconTheme: IconThemeData(color: AppColorLight.onBackground),
-    actionsIconTheme: IconThemeData(color: AppColorLight.onBackground),
+    iconTheme: _iconThemeLight,
+    actionsIconTheme: _iconThemeLight,
     titleTextStyle: TextStyle(
       color: AppColorLight.onBackground,
       fontSize: 18.0,
@@ -152,8 +164,8 @@ class AppTheme {
       statusBarBrightness: Brightness.dark,
     ),
     color: AppColorDark.background,
-    iconTheme: IconThemeData(color: AppColorDark.onBackground),
-    actionsIconTheme: IconThemeData(color: AppColorDark.onBackground),
+    iconTheme: _iconThemeDark,
+    actionsIconTheme: _iconThemeDark,
     titleTextStyle: TextStyle(
       color: AppColorDark.onBackground,
       fontSize: 18.0,

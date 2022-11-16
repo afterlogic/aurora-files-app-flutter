@@ -67,7 +67,16 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
       if (widget.file.initVector != null) {
         principals.removeWhere((e) => e is ContactGroup);
       }
-      principals.sort((a, b) => a.getLabel().compareTo(b.getLabel()));
+      principals.sort(
+        (a, b) {
+          if (a is ContactGroup && b is Recipient) {
+            return 1;
+          } else if (a is Recipient && b is ContactGroup) {
+            return -1;
+          }
+          return a.getLabel().compareTo(b.getLabel());
+        },
+      );
       _sharePrincipals.addAll(principals);
     } catch (err) {
       _onError(err);
@@ -86,7 +95,15 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
 
   void _fileSharesSort() {
     _fileShares.sort(
-        (a, b) => a.principal.getLabel().compareTo(b.principal.getLabel()));
+      (a, b) {
+        if (a.principal is ContactGroup && b.principal is Recipient) {
+          return 1;
+        } else if (a.principal is Recipient && b.principal is ContactGroup) {
+          return -1;
+        }
+        return a.principal.getLabel().compareTo(b.principal.getLabel());
+      },
+    );
   }
 
   Future<List<SharePrincipal>> _searchContact(String pattern) {
@@ -252,8 +269,8 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
       children: [
         AMDialog(
           title: Text(s.label_share_with_teammates),
-          insetPadding: const EdgeInsets.symmetric(
-              horizontal: 8.0, vertical: 24.0),
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 8.0, vertical: 24.0),
           content: SizedBox(
             width: 350,
             child: Column(

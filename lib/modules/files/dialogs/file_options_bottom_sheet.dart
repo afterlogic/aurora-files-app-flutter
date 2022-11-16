@@ -338,6 +338,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               leading: const Icon(Icons.airplanemode_active),
               title: Text(s.offline),
               trailing: Switch.adaptive(
+                activeColor: Theme.of(context).primaryColor,
                 value: widget.file.localId != -1,
                 onChanged: (bool val) =>
                     onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
@@ -380,7 +381,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 Asset.svg.iconShareLeave,
                 width: 24,
                 height: 24,
-                color: Theme.of(context).disabledColor,
+                color: Theme.of(context).iconTheme.color,
               ),
               title: Text(s.label_leave_share),
               onTap: () => _leaveShare(context),

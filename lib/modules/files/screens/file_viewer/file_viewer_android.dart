@@ -601,7 +601,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                                 Asset.svg.iconShareLeave,
                                 width: 24,
                                 height: 24,
-                                color: Theme.of(context).disabledColor,
+                                color: Theme.of(context).iconTheme.color,
                               ),
                               title: Text(s.label_leave_share),
                             ),
@@ -678,8 +678,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     leading: const Icon(Icons.airplanemode_active),
                     title: Text(s.offline),
                     trailing: Switch.adaptive(
+                      activeColor: Theme.of(context).primaryColor,
                       value: _isFileOffline,
-                      activeColor: Theme.of(context).colorScheme.secondary,
                       onChanged: _isSyncingForOffline
                           ? null
                           : (bool val) => _setFileForOffline(),

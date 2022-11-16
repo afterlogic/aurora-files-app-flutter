@@ -174,7 +174,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
             children: <Widget>[
 //              SwitchListTile.adaptive(
 //                value: _settingsState.isParanoidEncryptionEnabled,
-//                activeColor: Theme.of(context).accentColor,
+//                activeColor: Theme.of(context).primaryColor,
 //                onChanged: (bool v) {
 //                  _settingsState.isParanoidEncryptionEnabled = v;
 //                  final filesState = AppStore.filesState;

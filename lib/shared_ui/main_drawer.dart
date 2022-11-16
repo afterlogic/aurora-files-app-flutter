@@ -1,3 +1,4 @@
+import 'package:aurora_ui_kit/components/am_circle_icon.dart';
 import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/quota.dart';
@@ -145,6 +146,7 @@ class MainDrawer extends StatelessWidget {
                       }),
                       const Divider(),
                       SwitchListTile.adaptive(
+                        activeColor: Theme.of(context).primaryColor,
                         value: filesState.isOfflineMode,
                         onChanged: (bool val) async {
                           if (Navigator.canPop(context)) {
@@ -160,19 +162,11 @@ class MainDrawer extends StatelessWidget {
                         },
                         title: ListTile(
                           contentPadding: EdgeInsets.zero,
-                          leading: const Icon(Icons.airplanemode_active),
+                          leading:
+                              const AMCircleIcon(Icons.airplanemode_active),
                           title: Text(s.offline_mode),
                         ),
                       ),
-//                  SwitchListTile.adaptive(
-//                    value: false,
-//                    onChanged: (bool val) {},
-//                    title: ListTile(
-//                      contentPadding: EdgeInsets.zero,
-//                      leading: Icon(Icons.link),
-//                      title: Text("Public links"),
-//                    ),
-//                  ),
                     ],
                   ),
                 ),
@@ -182,7 +176,7 @@ class MainDrawer extends StatelessWidget {
               height: 0,
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
+              leading: const AMCircleIcon(Icons.settings),
               title: Text(s.settings),
               onTap: () {
                 if (Navigator.canPop(context)) {

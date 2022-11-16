@@ -70,12 +70,12 @@ abstract class _SettingsState with Store {
       _settingsLocal.getDarkThemeFromStorage(),
       connectivity.checkConnectivity(),
     ]);
-    isDarkTheme = result[0] as bool;
+    isDarkTheme = result[0] as bool?;
     internetConnection = result[1] as ConnectivityResult;
     return true;
   }
 
-  void toggleDarkTheme(bool val) {
+  void toggleDarkTheme(bool? val) {
     isDarkTheme = val;
     _settingsLocal.setDarkThemeToStorage(val);
   }

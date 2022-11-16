@@ -90,14 +90,16 @@ class SettingsLocalStorage {
 
   static const _isDarkThemeEnabled = "isDarkThemeEnabled";
 
-  Future<bool> getDarkThemeFromStorage() async {
+  Future<bool?> getDarkThemeFromStorage() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_isDarkThemeEnabled) ?? false;
+    return prefs.getBool(_isDarkThemeEnabled);
   }
 
-  Future<bool> setDarkThemeToStorage(bool value) async {
+  Future<bool> setDarkThemeToStorage(bool? value) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.setBool(_isDarkThemeEnabled, value);
+    return value == null
+        ? prefs.remove(_isDarkThemeEnabled)
+        : prefs.setBool(_isDarkThemeEnabled, value);
   }
 
   static const _encryptEnable = "EncryptEnable";

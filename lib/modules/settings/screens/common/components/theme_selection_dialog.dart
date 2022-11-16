@@ -3,14 +3,14 @@ import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class ThemeSelectionDialog extends StatelessWidget {
-  final bool theme;
+  final bool? isDarkTheme;
   final Function(bool?) onItemSelected;
 
-  const ThemeSelectionDialog(this.onItemSelected, this.theme, {super.key});
+  const ThemeSelectionDialog(this.onItemSelected, this.isDarkTheme, {super.key});
 
   static void show(
     BuildContext context,
-    bool selected,
+    bool? selected,
     Function(bool?) onItemSelected,
   ) {
     AMDialog.show(
@@ -32,27 +32,27 @@ class ThemeSelectionDialog extends StatelessWidget {
             activeColor: Theme.of(context).colorScheme.secondary,
             title: Text(s.system_theme),
             value: null,
-            groupValue: theme,
+            groupValue: isDarkTheme,
             onChanged: (val) {
               onItemSelected(null);
               Navigator.pop(context);
             },
           ),
-          RadioListTile<bool>(
+          RadioListTile<bool?>(
             activeColor: Theme.of(context).colorScheme.secondary,
             title: Text(s.dark_theme),
             value: true,
-            groupValue: theme,
+            groupValue: isDarkTheme,
             onChanged: (val) {
               onItemSelected(true);
               Navigator.pop(context);
             },
           ),
-          RadioListTile<bool>(
+          RadioListTile<bool?>(
             activeColor: Theme.of(context).colorScheme.secondary,
             title: Text(s.light_theme),
             value: false,
-            groupValue: theme,
+            groupValue: isDarkTheme,
             onChanged: (val) {
               onItemSelected(false);
               Navigator.pop(context);

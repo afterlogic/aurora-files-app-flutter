@@ -72,10 +72,8 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
               ),
               onTap: () => ThemeSelectionDialog.show(
                 context,
-                _settingsState.isDarkTheme ?? false,
-                (val) {
-                  if (val != null) _settingsState.toggleDarkTheme(val);
-                },
+                _settingsState.isDarkTheme,
+                _settingsState.toggleDarkTheme,
               ),
             ),
           ),

@@ -70,13 +70,17 @@ abstract class _FilesPageState with Store {
     FilesLoadingType showLoading = FilesLoadingType.filesVisible,
     String? searchPattern,
     Function(String)? onError,
+    bool afterRename = false,
   }) async {
+    final actualPath = afterRename ? null : path;
+    final actualSearch = afterRename ? searchText : searchPattern;
+
     if (AppStore.filesState.isOfflineMode) {
-      await _getOfflineFiles(showLoading, path, searchPattern, onError);
+      await _getOfflineFiles(showLoading, actualPath, actualSearch, onError);
     } else {
-      await _getOnlineFiles(showLoading, path, searchPattern, onError);
+      await _getOnlineFiles(showLoading, actualPath, actualSearch, onError);
     }
-    searchText = searchPattern;
+    searchText = actualSearch;
     _updateSearchResult();
   }
 

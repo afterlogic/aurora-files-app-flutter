@@ -406,7 +406,7 @@ class _FileWidgetState extends State<FileWidget> {
                       scrollDirection: Axis.horizontal,
                       child: HighlightedText(
                         text: widget.file.name,
-                        highlightedPart: _filesPageState.searchText,
+                        highlightedPart: _filesPageState.searchText?.trim(),
                       ),
                     ),
                     const SizedBox(height: 7.0),

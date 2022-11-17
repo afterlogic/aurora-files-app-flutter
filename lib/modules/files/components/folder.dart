@@ -110,7 +110,7 @@ class _FolderWidgetState extends State<FolderWidget> {
                     scrollDirection: Axis.horizontal,
                     child: HighlightedText(
                       text: widget.folder.name,
-                      highlightedPart: _filesPageState.searchText,
+                      highlightedPart: _filesPageState.searchText?.trim(),
                     ),
                   ),
                   if (widget.folder.published || widget.folder.localId != -1)

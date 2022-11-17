@@ -65,7 +65,6 @@ class _FilesAppBarState extends State<FilesAppBar>
   }
 
   void _search() {
-    FocusScope.of(context).requestFocus(FocusNode());
     _filesPageState.onGetFiles(
       searchPattern: _searchInputCtrl.text,
     );
@@ -289,9 +288,12 @@ class _FilesAppBarState extends State<FilesAppBar>
     } else if (_filesPageState.isSearchMode) {
       if (!widget.isAppBar) {
         return AMAppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: _search,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: _search,
+            ),
           ),
           actions: [
             IconButton(
@@ -318,7 +320,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   decoration: InputDecoration.collapsed(
                     border: InputBorder.none,
                     hintText: s.search,
-                    hintStyle: const TextStyle(color: Colors.black38),
+                    hintStyle: TextStyle(color: theme.disabledColor),
                   ),
                 ),
         );
@@ -371,7 +373,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       hintText: s.search,
-                      hintStyle: const TextStyle(color: Colors.black38),
+                      hintStyle: TextStyle(color: theme.disabledColor),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
                   ),
@@ -382,13 +384,23 @@ class _FilesAppBarState extends State<FilesAppBar>
       if (!widget.isAppBar) {
         return AMAppBar(
           key: const Key("default"),
-          leading: IconButton(
-            icon: const Icon(Icons.search),
-            tooltip: s.search,
-            onPressed: () => _filesPageState.isSearchMode = true,
+          title: InkWell(
+            onTap: () => _filesPageState.isSearchMode = true,
+            child: Expanded(
+              child: Row(
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                    child: Icon(Icons.search),
+                  ),
+                  Expanded(child: SizedBox.shrink()),
+                ],
+              ),
+            ),
           ),
         );
       }
+
       return AMAppBar(
         key: const Key("default"),
         leading: !widget.isAppBar
@@ -443,11 +455,6 @@ class _FilesAppBarState extends State<FilesAppBar>
             tooltip: s.search,
             onPressed: () => _filesPageState.isSearchMode = true,
           ),
-//          IconButton(
-//            icon: Icon(Icons.menu),
-//            tooltip: "Menu",
-//            onPressed: _filesPageState.scaffoldKey.currentState.openDrawer,
-//          ),
         ],
       );
     }
@@ -548,6 +555,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           return appBar;
         } else {
           return ListTile(
+            contentPadding: EdgeInsets.zero,
             leading: appBar.leading,
             title: appBar.title,
             trailing: appBar.actions?.isNotEmpty == true

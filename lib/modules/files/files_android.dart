@@ -402,61 +402,68 @@ class _FilesAndroidState extends State<FilesAndroid>
           onWillPop: !PlatformOverride.isIOS
               ? null
               : () async => !Navigator.of(context).userGestureInProgress,
-          child: Scaffold(
-            key: _filesPageState.scaffoldKey,
-            drawer: (_filesState.isMoveModeEnabled ||
-                    _filesState.isShareUpload ||
-                    isTablet)
-                ? null
-                : const MainDrawer(),
-            appBar: PreferredSize(
-                preferredSize: Size.fromHeight(kToolbarHeight *
-                    (_filesPageState.isSearchMode &&
-                            !_filesState.isMoveModeEnabled &&
-                            !_filesState.isShareUpload &&
-                            _filesPageState.selectedFilesIds.isEmpty &&
-                            !isTablet
-                        ? 2
-                        : 1)),
-                child: FilesAppBar(
-                  onDeleteFiles: _deleteSelected,
-                )),
-            body: body,
-            floatingActionButton: Observer(
-              builder: (_) => _filesState.isShareUpload ||
-                      _filesState.isMoveModeEnabled ||
-                      _filesState.isOfflineMode ||
-                      (_settingsState.internetConnection ==
-                              ConnectivityResult.none &&
-                          _filesPageState.currentFiles.isEmpty) ||
-                      _filesPageState.isSearchMode ||
-                      _filesState.selectedStorage.type == StorageType.shared ||
-                      _filesPageState.isInsideZip
-                  ? const SizedBox()
-                  : FloatingActionButton(
-                      heroTag: widget.path,
-                      child: const Icon(Icons.add),
-                      onPressed: () {
-                        AuroraSnackBar.hideSnack();
-                        Navigator.push(
-                            context,
-                            CustomSpeedDial(tag: widget.path, children: [
-                              MiniFab(
-                                icon: const Icon(Icons.create_new_folder),
-                                onPressed: () => AMDialog.show(
-                                  context: context,
-                                  builder: (_) => AddFolderDialogAndroid(
-                                    filesState: _filesState,
-                                    filesPageState: _filesPageState,
+          child: Listener(
+            onPointerDown: (_) {
+              if (_filesPageState.isSearchMode) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+            },
+            child: Scaffold(
+              key: _filesPageState.scaffoldKey,
+              drawer: (_filesState.isMoveModeEnabled ||
+                      _filesState.isShareUpload ||
+                      isTablet)
+                  ? null
+                  : const MainDrawer(),
+              appBar: PreferredSize(
+                  preferredSize: Size.fromHeight(kToolbarHeight *
+                      (_filesPageState.isSearchMode &&
+                              !_filesState.isMoveModeEnabled &&
+                              !_filesState.isShareUpload &&
+                              _filesPageState.selectedFilesIds.isEmpty &&
+                              !isTablet
+                          ? 2
+                          : 1)),
+                  child: FilesAppBar(
+                    onDeleteFiles: _deleteSelected,
+                  )),
+              body: body,
+              floatingActionButton: Observer(
+                builder: (_) => _filesState.isShareUpload ||
+                        _filesState.isMoveModeEnabled ||
+                        _filesState.isOfflineMode ||
+                        (_settingsState.internetConnection ==
+                                ConnectivityResult.none &&
+                            _filesPageState.currentFiles.isEmpty) ||
+                        _filesPageState.isSearchMode ||
+                        _filesState.selectedStorage.type == StorageType.shared ||
+                        _filesPageState.isInsideZip
+                    ? const SizedBox()
+                    : FloatingActionButton(
+                        heroTag: widget.path,
+                        child: const Icon(Icons.add),
+                        onPressed: () {
+                          AuroraSnackBar.hideSnack();
+                          Navigator.push(
+                              context,
+                              CustomSpeedDial(tag: widget.path, children: [
+                                MiniFab(
+                                  icon: const Icon(Icons.create_new_folder),
+                                  onPressed: () => AMDialog.show(
+                                    context: context,
+                                    builder: (_) => AddFolderDialogAndroid(
+                                      filesState: _filesState,
+                                      filesPageState: _filesPageState,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              MiniFab(
-                                  icon: const Icon(MdiIcons.filePlus),
-                                  onPressed: _uploadFile),
-                            ]));
-                      },
-                    ),
+                                MiniFab(
+                                    icon: const Icon(MdiIcons.filePlus),
+                                    onPressed: _uploadFile),
+                              ]));
+                        },
+                      ),
+              ),
             ),
           ),
         ),

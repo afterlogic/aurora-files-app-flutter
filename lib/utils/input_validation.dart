@@ -12,6 +12,7 @@ String? validateInput(
   List<ValidationTypes> types, [
   List<dynamic>? otherItems,
   String? fileExtension,
+  String? filePath,
 ]) {
   if (types.contains(ValidationTypes.uniqueName) && otherItems == null) {
     throw Exception(
@@ -28,13 +29,24 @@ String? validateInput(
   }
   if (otherItems != null && types.contains(ValidationTypes.uniqueName)) {
     bool exists = false;
-    final valueToCheck =
-        fileExtension != null ? "$value.$fileExtension" : value;
-    otherItems.forEach((item) {
+    for (var i = 0; i < otherItems.length; i++) {
+      final item = otherItems[i];
       if (item is LocalFile) {
-        if (item.name == valueToCheck) exists = true;
+        String valueToCheck = value;
+        if (filePath != null) {
+          valueToCheck = filePath + valueToCheck;
+        }
+        if (fileExtension != null) {
+          valueToCheck = valueToCheck + '.' + fileExtension;
+        }
+        final checkedName =
+            filePath == null ? item.name : item.path + item.name;
+        if (checkedName == valueToCheck) {
+          exists = true;
+          break;
+        }
       }
-    });
+    }
 
     if (exists) return "This name already exists";
   }

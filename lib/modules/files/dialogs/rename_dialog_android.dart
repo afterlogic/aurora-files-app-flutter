@@ -89,6 +89,8 @@ class _RenameDialogState extends State<RenameDialog> {
                       ValidationTypes.fileName,
                     ],
                     widget.filesPageState.currentFiles,
+                    null,
+                    widget.file.path,
                   ),
                 ),
               ),

@@ -12,7 +12,7 @@ String? validateInput(
   List<ValidationTypes> types, [
   List<dynamic>? otherItems,
   String? fileExtension,
-  String? filePath,
+  bool? isFolder,
 ]) {
   if (types.contains(ValidationTypes.uniqueName) && otherItems == null) {
     throw Exception(
@@ -31,19 +31,19 @@ String? validateInput(
     bool exists = false;
     for (var i = 0; i < otherItems.length; i++) {
       final item = otherItems[i];
-      if (item is LocalFile) {
-        String valueToCheck = value;
-        if (filePath != null) {
-          valueToCheck = filePath + valueToCheck;
-        }
-        if (fileExtension != null) {
-          valueToCheck = valueToCheck + '.' + fileExtension;
-        }
-        final checkedName =
-            filePath == null ? item.name : item.path + item.name;
-        if (checkedName == valueToCheck) {
+      if (item is String) {
+        if (item == value) {
           exists = true;
           break;
+        }
+      } else if (item is LocalFile) {
+        final valueToCheck =
+            fileExtension == null ? value : '$value.$fileExtension';
+        if (item.name == valueToCheck) {
+          if (isFolder == null || item.isFolder == isFolder) {
+            exists = true;
+            break;
+          }
         }
       }
     }

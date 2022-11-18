@@ -88,9 +88,10 @@ class _RenameDialogState extends State<RenameDialog> {
                       ValidationTypes.uniqueName,
                       ValidationTypes.fileName,
                     ],
-                    widget.filesPageState.currentFiles,
+                    _getFilesInFolder(
+                        widget.filesPageState.currentFiles, widget.file.path),
                     null,
-                    widget.file.path,
+                    widget.file.isFolder,
                   ),
                 ),
               ),
@@ -127,5 +128,18 @@ class _RenameDialogState extends State<RenameDialog> {
             child: Text(s.rename)),
       ],
     );
+  }
+
+  List<LocalFile> _getFilesInFolder(List<LocalFile> allFiles, String path) {
+    if (allFiles.isEmpty) {
+      return [];
+    }
+    final result = <LocalFile>[];
+    for (var file in allFiles) {
+      if (file.path == path) {
+        result.add(file);
+      }
+    }
+    return result;
   }
 }

@@ -55,8 +55,10 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                       labelText: s.email,
                       alignLabelWithHint: true,
                     ),
-                    validator: (v) =>
-                        validateInput(v ?? '', [ValidationTypes.email]),
+                    validator: (v) => validateInput(
+                      value: v ?? '',
+                      types: [ValidationTypes.email],
+                    ),
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                   ),
@@ -74,8 +76,10 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                         },
                       ),
                     ),
-                    validator: (v) =>
-                        validateInput(v ?? '', [ValidationTypes.empty]),
+                    validator: (v) => validateInput(
+                      value: v ?? '',
+                      types: [ValidationTypes.empty],
+                    ),
                     controller: _passwordController,
                     obscureText: _obscure,
                   ),

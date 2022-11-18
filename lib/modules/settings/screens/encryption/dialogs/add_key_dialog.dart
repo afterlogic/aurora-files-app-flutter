@@ -60,9 +60,9 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                       border: const UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
-                      value ?? '',
-                      [ValidationTypes.empty, ValidationTypes.uniqueName],
-                      widget.settingsState.encryptionKeys.keys.toList(),
+                      value: value ?? '',
+                      types: [ValidationTypes.empty, ValidationTypes.uniqueName],
+                      otherItems: widget.settingsState.encryptionKeys.keys.toList(),
                     ),
                   ),
                   if (widget.isImport) const SizedBox(height: 8.0),
@@ -76,8 +76,8 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                         border: const UnderlineInputBorder(),
                       ),
                       validator: (value) => validateInput(
-                        value ?? '',
-                        [ValidationTypes.empty],
+                        value: value ?? '',
+                        types: [ValidationTypes.empty],
                       ),
                     ),
                 ],

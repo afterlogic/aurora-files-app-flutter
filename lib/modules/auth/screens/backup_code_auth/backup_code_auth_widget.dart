@@ -98,8 +98,10 @@ class _BackupCodeAuthWidgetState extends State<BackupCodeAuthWidget> {
                       controller: pinCtrl,
                       labelText: s.tfa_input_backup_code,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (value) =>
-                          validateInput(value ?? '', [ValidationTypes.empty]),
+                      validator: (value) => validateInput(
+                        value: value ?? '',
+                        types: [ValidationTypes.empty],
+                      ),
                       enabled: !loading,
                     ),
                     const SizedBox(height: 20),

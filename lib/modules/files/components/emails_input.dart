@@ -136,8 +136,10 @@ class EmailsInputState extends State<EmailsInput> {
     textCtrl.text = " ";
     textCtrl.selection = const TextSelection.collapsed(offset: 1);
     lastSuggestions = [];
-    final error =
-        validateInput(email, [ValidationTypes.email, ValidationTypes.empty]);
+    final error = validateInput(
+      value: email,
+      types: [ValidationTypes.email, ValidationTypes.empty],
+    );
     if (error == null) {
       setState(() => widget.emails.add(email));
     }

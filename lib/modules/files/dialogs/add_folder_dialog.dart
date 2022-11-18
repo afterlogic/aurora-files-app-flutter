@@ -62,13 +62,13 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                       border: const UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
-                      value ?? '',
-                      [
+                      value: value ?? '',
+                      types: [
                         ValidationTypes.empty,
                         ValidationTypes.fileName,
                         ValidationTypes.uniqueName,
                       ],
-                      widget.filesPageState.currentFiles,
+                      otherItems: widget.filesPageState.currentFiles,
                     ),
                   ),
                 ],

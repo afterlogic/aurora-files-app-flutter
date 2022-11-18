@@ -7,13 +7,12 @@ enum ValidationTypes {
   uniqueName,
 }
 
-String? validateInput(
-  String value,
-  List<ValidationTypes> types, [
+String? validateInput({
+  required String value,
+  required List<ValidationTypes> types,
   List<dynamic>? otherItems,
-  String? fileExtension,
   bool? isFolder,
-]) {
+}) {
   if (types.contains(ValidationTypes.uniqueName) && otherItems == null) {
     throw Exception(
         "In order to check if a name is unique the list must be provided");
@@ -37,9 +36,7 @@ String? validateInput(
           break;
         }
       } else if (item is LocalFile) {
-        final valueToCheck =
-            fileExtension == null ? value : '$value.$fileExtension';
-        if (item.name == valueToCheck) {
+        if (item.name == value) {
           if (isFolder == null || item.isFolder == isFolder) {
             exists = true;
             break;
@@ -47,7 +44,6 @@ String? validateInput(
         }
       }
     }
-
     if (exists) return "This name already exists";
   }
 

@@ -105,8 +105,10 @@ class _TwoFactorAuthWidgetState extends State<TwoFactorAuthWidget> {
                         controller: pinCtrl,
                         labelText: s.input_2fa_pin,
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) =>
-                            validateInput(value ?? '', [ValidationTypes.empty]),
+                        validator: (value) => validateInput(
+                          value: value ?? '',
+                          types: [ValidationTypes.empty],
+                        ),
                         enabled: !loading,
                       ),
                       const SizedBox(height: 20),

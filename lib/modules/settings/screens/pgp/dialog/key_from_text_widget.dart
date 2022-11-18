@@ -40,8 +40,10 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
               child: Form(
                 key: formKey,
                 child: TextFormField(
-                  validator: (v) =>
-                      validateInput(v ?? '', [ValidationTypes.empty]),
+                  validator: (v) => validateInput(
+                    value: v ?? '',
+                    types: [ValidationTypes.empty],
+                  ),
                   controller: _textController,
                   expands: true,
                   keyboardType: TextInputType.multiline,

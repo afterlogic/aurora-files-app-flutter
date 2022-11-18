@@ -152,7 +152,9 @@ class _AuthAndroidState extends State<AuthAndroid> {
         controller: _authState.emailCtrl,
         keyboardType: TextInputType.emailAddress,
         validator: (value) => validateInput(
-            value ?? '', [ValidationTypes.empty, ValidationTypes.email]),
+          value: value ?? '',
+          types: [ValidationTypes.empty, ValidationTypes.email],
+        ),
         labelText: s.email,
         inputCase: InputCase.underline,
       ),
@@ -160,8 +162,10 @@ class _AuthAndroidState extends State<AuthAndroid> {
       AppInput(
         inputCase: InputCase.underline,
         controller: _authState.passwordCtrl,
-        validator: (value) =>
-            validateInput(value ?? '', [ValidationTypes.empty]),
+        validator: (value) => validateInput(
+          value: value ?? '',
+          types: [ValidationTypes.empty],
+        ),
         obscureText: _obscureText,
         labelText: s.password,
         suffix: GestureDetector(

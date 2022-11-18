@@ -7,9 +7,7 @@ class FileUtils {
   }
 
   static Object getHeroTag(LocalFile file) {
-    return file.localId != -1
-        ? file.localId
-        : file.guid ?? file.hash;
+    return file.localId != -1 ? file.localId : file.guid ?? file.hash;
   }
 
   static String reduceFilePath({
@@ -55,5 +53,21 @@ class FileUtils {
         1;
     final croppedText = path.substring(cropLength);
     return delimiterSplit[0] + delimiterText + overflowText + croppedText;
+  }
+
+  static List<LocalFile> getFilesFromFolder(
+    List<LocalFile> allFiles,
+    String folderPath,
+  ) {
+    if (allFiles.isEmpty) {
+      return [];
+    }
+    final result = <LocalFile>[];
+    for (var file in allFiles) {
+      if (file.path == folderPath) {
+        result.add(file);
+      }
+    }
+    return result;
   }
 }

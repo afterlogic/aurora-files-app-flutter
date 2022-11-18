@@ -3,6 +3,7 @@ import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
 
@@ -82,16 +83,17 @@ class _RenameDialogState extends State<RenameDialog> {
                     border: const UnderlineInputBorder(),
                   ),
                   validator: (value) => validateInput(
-                    value ?? '',
-                    [
+                    value: value ?? '',
+                    types: [
                       ValidationTypes.empty,
                       ValidationTypes.uniqueName,
                       ValidationTypes.fileName,
                     ],
-                    _getFilesInFolder(
-                        widget.filesPageState.currentFiles, widget.file.path),
-                    null,
-                    widget.file.isFolder,
+                    otherItems: FileUtils.getFilesFromFolder(
+                      widget.filesPageState.currentFiles,
+                      widget.file.path,
+                    ),
+                    isFolder: widget.file.isFolder,
                   ),
                 ),
               ),
@@ -128,18 +130,5 @@ class _RenameDialogState extends State<RenameDialog> {
             child: Text(s.rename)),
       ],
     );
-  }
-
-  List<LocalFile> _getFilesInFolder(List<LocalFile> allFiles, String path) {
-    if (allFiles.isEmpty) {
-      return [];
-    }
-    final result = <LocalFile>[];
-    for (var file in allFiles) {
-      if (file.path == path) {
-        result.add(file);
-      }
-    }
-    return result;
   }
 }

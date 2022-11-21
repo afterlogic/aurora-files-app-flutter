@@ -56,12 +56,16 @@ class _FilesAppBarState extends State<FilesAppBar>
   }
 
   String _getFolderName() {
+    final splitPath = _getSplitFullPath();
+    return splitPath.last.isNotEmpty ? splitPath.last : BuildProperty.appName;
+  }
+
+  List<String> _getSplitFullPath() {
     String fullPath = _filesPageState.pagePath;
     if (fullPath.endsWith("/")) {
       fullPath = fullPath.substring(0, fullPath.length - 1);
     }
-    final splitPath = fullPath.split(RegExp(r"/|\$ZIP:"));
-    return splitPath.last.isNotEmpty ? splitPath.last : BuildProperty.appName;
+    return fullPath.split(RegExp(r"/|\$ZIP:"));
   }
 
   void _search() {
@@ -119,13 +123,8 @@ class _FilesAppBarState extends State<FilesAppBar>
           children: <Widget>[
             PopupMenuButton<String>(
               enabled: _filesPageState.pagePath.isNotEmpty,
-              onSelected: (String folder) {
-                Navigator.popUntil(
-                  context,
-                  ModalRoute.withName(FilesRoute.name + folder),
-                );
-              },
-              itemBuilder: _getFolderPopupMenu,
+              onSelected: _onPopupMenuSelected,
+              itemBuilder: _getFolderPathPopupMenu,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -419,13 +418,8 @@ class _FilesAppBarState extends State<FilesAppBar>
                 children: <Widget>[
                   PopupMenuButton<String>(
                     enabled: _filesPageState.pagePath.isNotEmpty,
-                    onSelected: (String folder) {
-                      Navigator.popUntil(
-                        context,
-                        ModalRoute.withName(FilesRoute.name + folder),
-                      );
-                    },
-                    itemBuilder: _getFolderPopupMenu,
+                    onSelected: _onPopupMenuSelected,
+                    itemBuilder: _getFolderPathPopupMenu,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -460,7 +454,8 @@ class _FilesAppBarState extends State<FilesAppBar>
     }
   }
 
-  List<PopupMenuEntry<String>> _getFolderPopupMenu(BuildContext context) {
+  List<PopupMenuEntry<String>> _getFolderHistoryPopupMenu(
+      BuildContext context) {
     final result = <PopupMenuEntry<String>>[];
     for (int i = 0; i < _filesState.folderNavStack.length; i++) {
       if (i == _filesState.folderNavStack.length - 1) {
@@ -504,6 +499,63 @@ class _FilesAppBarState extends State<FilesAppBar>
       result.add(menuItem);
     }
     return result;
+  }
+
+  List<PopupMenuEntry<String>> _getFolderPathPopupMenu(BuildContext context) {
+    final result = <PopupMenuEntry<String>>[];
+    final splitPath = _getSplitFullPath();
+    final length = splitPath.length;
+    for (int i = 0; i < length; i++) {
+      final path = splitPath.join('/');
+      PopupMenuEntry<String> menuItem;
+      if (path.isNotEmpty && (path.endsWith(".zip"))) {
+        menuItem = PopupMenuItem<String>(
+          value: path,
+          child: ListTile(
+            leading: const Icon(MdiIcons.zipBoxOutline),
+            title: Text(
+              path.split("/").last,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
+      } else if (path.isNotEmpty) {
+        menuItem = PopupMenuItem<String>(
+          value: path,
+          child: ListTile(
+            leading: const Icon(Icons.folder),
+            title: Text(
+              path.split("/").last,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
+      } else {
+        menuItem = PopupMenuItem<String>(
+          value: "",
+          child: ListTile(
+            leading: const Icon(Icons.storage),
+            title: Text(_filesState.selectedStorage.displayName),
+          ),
+        );
+      }
+      result.add(menuItem);
+      splitPath.removeLast();
+    }
+    return result.reversed.toList();
+  }
+
+  void _onPopupMenuSelected(String folderPath) {
+    Navigator.pushNamed(
+      context,
+      FilesRoute.name,
+      arguments: FilesScreenArguments(
+        path: folderPath,
+        // isZip: _filesPageState.isInsideZip,
+      ),
+    );
   }
 
   List<PopupMenuEntry<Storage>> _getStoragePopupMenu(BuildContext context) {

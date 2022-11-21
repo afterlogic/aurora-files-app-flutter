@@ -67,8 +67,8 @@ class _FolderWidgetState extends State<FolderWidget> {
     }
   }
 
-  Future _showModalBottomSheet(
-      context, FilesState filesState, FilesPageState filesPageState) async {
+  Future _showModalBottomSheet(BuildContext context, FilesState filesState,
+      FilesPageState filesPageState) async {
     FileOptionsBottomSheet.show(
       context: context,
       file: widget.folder,

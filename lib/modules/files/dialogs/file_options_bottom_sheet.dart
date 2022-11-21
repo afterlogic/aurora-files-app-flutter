@@ -36,6 +36,7 @@ enum FileOptionsBottomSheetResult {
 }
 
 class FileOptionsBottomSheet extends StatefulWidget {
+  final BuildContext externalContext;
   final LocalFile file;
   final FilesState filesState;
   final FilesPageState filesPageState;
@@ -44,6 +45,7 @@ class FileOptionsBottomSheet extends StatefulWidget {
 
   const FileOptionsBottomSheet._({
     Key? key,
+    required this.externalContext,
     required this.file,
     required this.filesState,
     required this.filesPageState,
@@ -68,6 +70,7 @@ class FileOptionsBottomSheet extends StatefulWidget {
           content: SizedBox(
             width: LayoutConfig.formWidth,
             child: FileOptionsBottomSheet._(
+              externalContext: context,
               file: file,
               filesState: filesState,
               filesPageState: filesPageState,
@@ -82,6 +85,7 @@ class FileOptionsBottomSheet extends StatefulWidget {
         context,
         CustomBottomSheet(
           child: FileOptionsBottomSheet._(
+            externalContext: context,
             file: file,
             filesState: filesState,
             filesPageState: filesPageState,
@@ -119,7 +123,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     isFolder = widget.file.isFolder;
   }
 
-  void _download() async {
+  Future<void> _downloadFile() async {
     bool canDownload = true;
     if (widget.file.initVector != null) {
       if (widget.file.encryptedDecryptionKey != null) {
@@ -135,7 +139,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     }
   }
 
-  void _shareFile() async {
+  void _shareFile(BuildContext externalContext) async {
     final bottomCenter = MediaQuery.of(context).size.bottomCenter(Offset.zero);
     bool canDownload = true;
     if (widget.file.initVector != null) {
@@ -149,7 +153,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       if (!mounted) return;
       Navigator.pop(context);
       final result = await AMDialog.show(
-        context: context,
+        context: externalContext,
         builder: (_) => ShareDialog(
           filesState: widget.filesState,
           file: widget.file,
@@ -174,9 +178,28 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     Navigator.pop(context, result);
   }
 
-  void _deleteFile() async {
+  void _copyOrMoveFile() {
+    widget.filesState.updateFilesCb = widget.filesPageState.onGetFiles;
+    widget.filesState.enableMoveMode(filesToMove: [widget.file]);
+    Navigator.pop(context);
+  }
+
+  Future<void> _renameFile(BuildContext externalContext) async {
+    Navigator.pop(context);
+    await AMDialog.show(
+      context: externalContext,
+      builder: (_) => RenameDialog(
+        file: widget.file,
+        filesState: widget.filesState,
+        filesPageState: widget.filesPageState,
+      ),
+    );
+  }
+
+  void _deleteFile(BuildContext externalContext) async {
+    Navigator.pop(context);
     final shouldDelete = await AMDialog.show<bool>(
-      context: context,
+      context: externalContext,
       builder: (_) => DeleteConfirmationDialog(
         itemsNumber: 1,
         isFolder: widget.file.isFolder,
@@ -192,48 +215,56 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     }
   }
 
-  Future<void> _secureSharing() async {
+  Future<void> _secureSharing(BuildContext externalContext) async {
     final s = context.l10n;
     if (widget.file.published == false && widget.file.initVector != null) {
       if (widget.file.encryptedDecryptionKey == null) {
+        Navigator.pop(context);
         return AMDialog.show(
-          context: context,
+          context: externalContext,
           builder: (_) => AMDialog(
             content: Text(s.error_backward_compatibility_sharing_not_supported),
             actions: [
               TextButton(
                 child: Text(s.oK),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(externalContext),
               ),
             ],
           ),
         );
       }
-      return _secureEncryptSharing(PreparedForShare(null, widget.file));
+      return _secureEncryptSharing(
+        externalContext,
+        PreparedForShare(null, widget.file),
+      );
     }
     final preparedForShare = PreparedForShare(null, widget.file);
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
     if (!mounted) return;
+    Navigator.pop(context);
     await secureSharing.sharing(
-      context,
+      externalContext,
       widget.filesState,
       userPrivateKey,
       userPublicKey,
       pgpKeyUtil,
       preparedForShare,
     );
-    setState(() {});
   }
 
-  _secureEncryptSharing(PreparedForShare preparedForShare) async {
+  Future<void> _secureEncryptSharing(
+    BuildContext externalContext,
+    PreparedForShare preparedForShare,
+  ) async {
     final pgpKeyUtil = PgpKeyUtil.instance;
     final userPrivateKey = await pgpKeyUtil.userPrivateKey();
     final userPublicKey = await pgpKeyUtil.userPublicKey();
     if (!mounted) return;
+    Navigator.pop(context);
     secureSharing.encryptSharing(
-      context,
+      externalContext,
       widget.filesState,
       userPrivateKey,
       userPublicKey,
@@ -246,29 +277,28 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       },
       DI.get(),
     );
-    setState(() {});
   }
 
-  Future<void> _shareWithTeammates(BuildContext context) async {
+  Future<void> _shareWithTeammates(BuildContext externalContext) async {
     final s = context.l10n;
     Navigator.pop(context);
     if (widget.file.initVector != null &&
         widget.file.encryptedDecryptionKey == null) {
       return AMDialog.show(
-        context: context,
+        context: externalContext,
         builder: (_) => AMDialog(
           content: Text(s.error_backward_compatibility_sharing_not_supported),
           actions: [
             TextButton(
               child: Text(s.oK),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(externalContext),
             ),
           ],
         ),
       );
     } else {
       final file = await AMDialog.show<LocalFile>(
-        context: context,
+        context: externalContext,
         builder: (_) => ShareTeammateDialog(
           fileState: widget.filesState,
           file: widget.file,
@@ -281,8 +311,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     }
   }
 
-  Future<void> _leaveShare(BuildContext context) async {
-    final result = await _confirmLeaveShare();
+  Future<void> _leaveShare(BuildContext externalContext) async {
+    final result = await _confirmLeaveShare(externalContext);
     if (result == true) {
       try {
         await widget.filesState.leaveFileShare(widget.file);
@@ -295,9 +325,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     }
   }
 
-  Future<bool> _confirmLeaveShare() async {
+  Future<bool> _confirmLeaveShare(BuildContext externalContext) async {
     final result = await AMDialog.show<bool>(
-      context: context,
+      context: externalContext,
       builder: (_) => LeaveShareDialog(
         name: widget.file.name,
         isFolder: widget.file.isFolder,
@@ -349,12 +379,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ListTile(
               leading: Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove),
               title: Text(s.copy_or_move),
-              onTap: () {
-                widget.filesState.updateFilesCb =
-                    widget.filesPageState.onGetFiles;
-                widget.filesState.enableMoveMode(filesToMove: [widget.file]);
-                Navigator.pop(context);
-              },
+              onTap: _copyOrMoveFile,
             ),
           if (!offline &&
               BuildProperty.secureSharingEnable &&
@@ -367,13 +392,13 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               title: Text(widget.file.initVector != null
                   ? s.btn_encrypted_shareable_link
                   : s.btn_shareable_link),
-              onTap: _secureSharing,
+              onTap: () => _secureSharing(widget.externalContext),
             ),
           if (!offline && _enableTeamShare)
             ListTile(
               leading: const Icon(Icons.share),
               title: Text(s.label_share_with_teammates),
-              onTap: () => _shareWithTeammates(context),
+              onTap: () => _shareWithTeammates(widget.externalContext),
             ),
           if (!offline && widget.sharedWithMe)
             ListTile(
@@ -384,7 +409,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 color: Theme.of(context).iconTheme.color,
               ),
               title: Text(s.label_leave_share),
-              onTap: () => _leaveShare(context),
+              onTap: () => _leaveShare(widget.externalContext),
             ),
           if (!isFolder)
             ListTile(
@@ -392,38 +417,25 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                   ? MdiIcons.exportVariant
                   : Icons.share),
               title: Text(s.share),
-              onTap: _shareFile,
+              onTap: () => _shareFile(widget.externalContext),
             ),
           if (!PlatformOverride.isIOS && !isFolder)
             ListTile(
               leading: const Icon(Icons.file_download),
               title: Text(s.download),
-              onTap: _download,
+              onTap: _downloadFile,
             ),
           if (!offline)
             ListTile(
               leading: const Icon(Icons.edit),
               title: Text(s.rename),
-              onTap: () async {
-                Navigator.pop(context);
-                await AMDialog.show(
-                  context: context,
-                  builder: (_) => RenameDialog(
-                    file: widget.file,
-                    filesState: widget.filesState,
-                    filesPageState: widget.filesPageState,
-                  ),
-                );
-              },
+              onTap: () => _renameFile(widget.externalContext),
             ),
           if (!offline)
             ListTile(
               leading: const Icon(Icons.delete_outline),
               title: Text(s.delete),
-              onTap: () {
-                Navigator.pop(context);
-                _deleteFile();
-              },
+              onTap: () => _deleteFile(widget.externalContext),
             ),
         ],
       ),

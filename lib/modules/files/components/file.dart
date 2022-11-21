@@ -120,7 +120,7 @@ class _FileWidgetState extends State<FileWidget> {
     if (mounted) setState(() => _progress = num);
   }
 
-  Future<void> _showModalBottomSheet(context) async {
+  Future<void> _showModalBottomSheet(BuildContext context) async {
     final result = await FileOptionsBottomSheet.show(
       context: context,
       file: widget.file,

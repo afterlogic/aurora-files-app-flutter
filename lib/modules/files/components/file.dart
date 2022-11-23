@@ -399,91 +399,111 @@ class _FileWidgetState extends State<FileWidget> {
               leading: _getThumbnail(context),
               title: Padding(
                 padding: EdgeInsets.only(right: isMenuVisible ? 28.0 : 0.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SingleChildScrollView(
+                child: LayoutBuilder(
+                  builder: (context, size) {
+                    return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: HighlightedText(
-                        text: widget.file.name,
-                        highlightedPart: _filesPageState.searchText?.trim(),
-                      ),
-                    ),
-                    const SizedBox(height: 7.0),
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        iconTheme: IconThemeData(
-                          color: Theme.of(context).disabledColor,
-                          size: 14.0,
-                        ),
-                      ),
-                      child: _progress != null ||
-                              _processingFile?.processingType ==
-                                  ProcessingType.upload
-                          ? Row(children: <Widget>[
-                              Expanded(flex: 1, child: Icon(_getProcessIcon())),
-                              const SizedBox(width: 8.0),
-                              Expanded(
-                                flex: 18,
-                                child: SizedBox(
-                                  height: 2.0,
-                                  child: LinearProgressIndicator(
-                                    value: _processingFile?.processingType ==
-                                            ProcessingType.upload
-                                        ? null
-                                        : _progress,
-                                    backgroundColor:
-                                        Colors.grey.withOpacity(0.3),
-                                  ),
-                                ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          HighlightedText(
+                            text: widget.file.name,
+                            highlightedPart: _filesPageState.searchText?.trim(),
+                          ),
+                          const SizedBox(height: 7.0),
+                          Theme(
+                            data: Theme.of(context).copyWith(
+                              iconTheme: IconThemeData(
+                                color: Theme.of(context).disabledColor,
+                                size: 14.0,
                               ),
-                            ])
-                          : Row(
-                              children: <Widget>[
-                                if (_hasShares)
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(right: margin),
-                                    child: Icon(
-                                      Icons.share,
-                                      semanticLabel:
-                                          s.label_share_with_teammates,
-                                    ),
-                                  ),
-                                if (widget.file.published)
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(right: margin),
-                                    child: Icon(
-                                      Icons.link,
-                                      semanticLabel: s.has_public_link,
-                                    ),
-                                  ),
-                                if (widget.file.localId != -1)
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(right: margin),
-                                    child: Icon(
-                                      Icons.airplanemode_active,
-                                      semanticLabel: s.available_offline,
-                                    ),
-                                  ),
-                                Text(filesize(widget.file.size),
-                                    style: Theme.of(context).textTheme.caption),
-                                const SizedBox(width: margin),
-                                Text("|",
-                                    style: Theme.of(context).textTheme.caption),
-                                const SizedBox(width: margin),
-                                Text(
-                                    DateFormatting.formatDateFromSeconds(
-                                      timestamp: widget.file.lastModified,
-                                    ),
-                                    style: Theme.of(context).textTheme.caption),
-                                const SizedBox(width: margin),
-                              ],
                             ),
-                    )
-                  ],
+                            child: _progress != null ||
+                                    _processingFile?.processingType ==
+                                        ProcessingType.upload
+                                ? SizedBox(
+                                    width: size.maxWidth,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          flex: 1,
+                                          child: Icon(_getProcessIcon()),
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        Expanded(
+                                          flex: 18,
+                                          child: SizedBox(
+                                            height: 2.0,
+                                            child: LinearProgressIndicator(
+                                              value: _processingFile
+                                                          ?.processingType ==
+                                                      ProcessingType.upload
+                                                  ? null
+                                                  : _progress,
+                                              backgroundColor:
+                                                  Colors.grey.withOpacity(0.3),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      if (_hasShares)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: margin),
+                                          child: Icon(
+                                            Icons.share,
+                                            semanticLabel:
+                                                s.label_share_with_teammates,
+                                          ),
+                                        ),
+                                      if (widget.file.published)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: margin),
+                                          child: Icon(
+                                            Icons.link,
+                                            semanticLabel: s.has_public_link,
+                                          ),
+                                        ),
+                                      if (widget.file.localId != -1)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: margin),
+                                          child: Icon(
+                                            Icons.airplanemode_active,
+                                            semanticLabel: s.available_offline,
+                                          ),
+                                        ),
+                                      Text(filesize(widget.file.size),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption),
+                                      const SizedBox(width: margin),
+                                      Text("|",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption),
+                                      const SizedBox(width: margin),
+                                      Text(
+                                          DateFormatting.formatDateFromSeconds(
+                                            timestamp: widget.file.lastModified,
+                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption),
+                                      const SizedBox(width: margin),
+                                    ],
+                                  ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

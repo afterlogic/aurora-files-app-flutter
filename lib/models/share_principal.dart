@@ -3,5 +3,7 @@ abstract class SharePrincipal {
 
   String getLabel();
 
+  String? getSvgIconAsset();
+
   Map<String, dynamic> toMap();
 }

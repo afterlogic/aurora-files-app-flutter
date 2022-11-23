@@ -1,6 +1,7 @@
 import 'package:aurorafiles/models/share_access_entry.dart';
 import 'package:aurorafiles/models/share_access_right.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ShareTeammateDialogItem extends StatelessWidget {
   final ShareAccessEntry share;
@@ -26,10 +27,23 @@ class ShareTeammateDialogItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final iconAsset = share.principal.getSvgIconAsset();
+
     return SizedBox(
       height: 40,
       child: Row(
         children: [
+          iconAsset != null
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: SvgPicture.asset(
+                    iconAsset,
+                    color: theme.colorScheme.onSurface,
+                    width: 20,
+                    height: 20,
+                  ),
+                )
+              : const SizedBox.shrink(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 8),

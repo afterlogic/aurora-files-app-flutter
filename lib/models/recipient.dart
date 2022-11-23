@@ -29,6 +29,9 @@ class Recipient extends SharePrincipal {
   String getLabel() => email;
 
   @override
+  String? getSvgIconAsset() => null;
+
+  @override
   Map<String, dynamic> toMap() {
     return {
       "PublicId": email,

@@ -17,6 +17,7 @@ import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ShareTeammateDialog extends StatefulWidget {
   final FilesState fileState;
@@ -235,8 +236,7 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
 
-    //TODO: check this in future packet version
-    //recreate DropdownSearch, because there is no method for cleaning its contents
+    //recreate DropdownSearch, because there is no method for cleaning selected item
     final dropdownSearch = _rebuildingDropdown
         ? Container(
             decoration: BoxDecoration(
@@ -245,22 +245,50 @@ class _ShareTeammateDialogState extends State<ShareTeammateDialog> {
             ),
           )
         : DropdownSearch<SharePrincipal>(
-            mode: Mode.MENU,
             items: _sharePrincipals,
             onChanged: _addShare,
             filterFn: (item, _) => _itemNotInShares(item),
-            itemAsString: (item) => item?.getLabel() ?? '',
-            maxHeight: screenHeight / 3,
-            dropdownSearchDecoration: InputDecoration(
-              hintText: s.hint_select_teammate,
-              contentPadding: const EdgeInsets.only(left: 8),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: theme.disabledColor),
-                borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+            popupProps: PopupProps.menu(
+              constraints: BoxConstraints(
+                maxHeight: screenHeight / 3,
               ),
+              itemBuilder: (context, item, _) {
+                final iconAsset = item.getSvgIconAsset();
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      iconAsset != null
+                          ? Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: SvgPicture.asset(
+                                iconAsset,
+                                color: theme.colorScheme.onSurface,
+                                width: 20,
+                                height: 20,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      Text(
+                        item.getLabel(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-            dropdownSearchBaseStyle: TextStyle(
-              color: theme.colorScheme.onSurface,
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                hintText: s.hint_select_teammate,
+                contentPadding: const EdgeInsets.only(left: 8),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: theme.disabledColor),
+                  borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+                ),
+              ),
             ),
           );
 

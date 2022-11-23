@@ -1,3 +1,4 @@
+import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/models/share_principal.dart';
 
 class ContactGroup extends SharePrincipal {
@@ -29,7 +30,11 @@ class ContactGroup extends SharePrincipal {
   String getId() => '$id';
 
   @override
-  String getLabel() => '* $name';
+  String getLabel() => name;
+
+  @override
+  String? getSvgIconAsset() =>
+      isAll == true ? Asset.svg.iconTeam16 : Asset.svg.iconGroup16;
 
   @override
   Map<String, dynamic> toMap() {

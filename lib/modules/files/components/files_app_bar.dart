@@ -385,8 +385,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           key: const Key("default"),
           title: InkWell(
             onTap: () => _filesPageState.isSearchMode = true,
-            child: Expanded(
-              child: Row(
+            child: Row(
                 children: const [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
@@ -394,7 +393,6 @@ class _FilesAppBarState extends State<FilesAppBar>
                   ),
                   Expanded(child: SizedBox.shrink()),
                 ],
-              ),
             ),
           ),
         );

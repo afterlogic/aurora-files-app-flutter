@@ -53,6 +53,8 @@ class _FilesAppBarState extends State<FilesAppBar>
   void dispose() {
     super.dispose();
     _appBarIconAnimCtrl.dispose();
+    _searchInputCtrl.dispose();
+    super.dispose();
   }
 
   String _getFolderName() {
@@ -287,6 +289,7 @@ class _FilesAppBarState extends State<FilesAppBar>
     } else if (_filesPageState.isSearchMode) {
       if (!widget.isAppBar) {
         return AMAppBar(
+          key: const Key("search"),
           leading: Padding(
             padding: const EdgeInsets.only(left: 16),
             child: IconButton(
@@ -603,7 +606,7 @@ class _FilesAppBarState extends State<FilesAppBar>
     _filesState = Provider.of<FilesState>(context);
     _filesPageState = Provider.of<FilesPageState>(context);
     return Observer(
-      builder: (_) {
+      builder: (context) {
         final appBar = _getAppBar(context);
         if (widget.isAppBar) {
           return appBar;

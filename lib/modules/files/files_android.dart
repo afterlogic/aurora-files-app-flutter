@@ -55,6 +55,8 @@ class _FilesAndroidState extends State<FilesAndroid>
   late FilesPageState _filesPageState;
   late SettingsState _settingsState;
   late StreamSubscription sub;
+  Timer? _debounceUnfocus;
+  bool _needCancelUnfocus = false;
 
   @override
   void initState() {
@@ -300,6 +302,26 @@ class _FilesAndroidState extends State<FilesAndroid>
     _getFiles(context, FilesLoadingType.none);
   }
 
+  void _scheduleUnfocus({bool cancel = false}) {
+    if (_debounceUnfocus?.isActive ?? false) _debounceUnfocus?.cancel();
+    if (_needCancelUnfocus) {
+      _needCancelUnfocus = false;
+      return;
+    }
+    if (cancel) {
+      _needCancelUnfocus = true;
+      return;
+    }
+    _debounceUnfocus = Timer(
+      const Duration(milliseconds: 8),
+      () {
+        if (_filesPageState.isSearchMode) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isTablet = LayoutConfig.of(context).isTablet;
@@ -373,9 +395,13 @@ class _FilesAndroidState extends State<FilesAndroid>
           Expanded(
             child: Column(
               children: [
-                FilesAppBar(
-                  onDeleteFiles: _deleteSelected,
-                  isAppBar: false,
+                Listener(
+                  behavior: HitTestBehavior.translucent,
+                  onPointerDown: (_) => _scheduleUnfocus(cancel: true),
+                  child: FilesAppBar(
+                    onDeleteFiles: _deleteSelected,
+                    isAppBar: false,
+                  ),
                 ),
                 const Divider(height: 1),
                 Expanded(child: body),
@@ -403,11 +429,8 @@ class _FilesAndroidState extends State<FilesAndroid>
               ? null
               : () async => !Navigator.of(context).userGestureInProgress,
           child: Listener(
-            onPointerDown: (_) {
-              if (_filesPageState.isSearchMode) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) => _scheduleUnfocus(),
             child: Scaffold(
               key: _filesPageState.scaffoldKey,
               drawer: (_filesState.isMoveModeEnabled ||

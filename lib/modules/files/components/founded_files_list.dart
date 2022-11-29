@@ -3,6 +3,7 @@ import 'package:aurorafiles/models/file_group.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/components/file.dart';
 import 'package:aurorafiles/modules/files/components/folder.dart';
+import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/utils/file_utils.dart';
 import 'package:aurorafiles/utils/text_utils.dart';
 import 'package:flutter/material.dart';
@@ -11,19 +12,27 @@ import 'package:theme/app_theme.dart';
 
 class FoundedFilesList extends StatelessWidget {
   final List<FileGroup> fileGroups;
+  final FilesPageState filesPageState;
 
-  const FoundedFilesList({Key? key, required this.fileGroups})
-      : super(key: key);
+  const FoundedFilesList({
+    Key? key,
+    required this.fileGroups,
+    required this.filesPageState,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final paddingBottom = MediaQuery.of(context).padding.bottom + 70;
+    final searchTextNotEmpty = filesPageState.searchText?.isNotEmpty == true;
 
     return ListView.builder(
       padding: EdgeInsets.only(bottom: paddingBottom),
       itemCount: fileGroups.length,
       itemBuilder: (_, index) {
-        return _FileGroupWidget(fileGroups[index]);
+        return _FileGroupWidget(
+          group: fileGroups[index],
+          showFolderName: searchTextNotEmpty,
+        );
       },
     );
   }
@@ -31,18 +40,24 @@ class FoundedFilesList extends StatelessWidget {
 
 class _FileGroupWidget extends StatelessWidget {
   final FileGroup group;
+  final bool showFolderName;
 
-  const _FileGroupWidget(this.group, {Key? key}) : super(key: key);
+  const _FileGroupWidget({
+    required this.group,
+    required this.showFolderName,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final visibleFolderName = group.path.isNotEmpty && showFolderName;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Visibility(
-          visible: group.path.isNotEmpty,
+          visible: visibleFolderName,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(28, 16, 24, 8),
             child: Row(

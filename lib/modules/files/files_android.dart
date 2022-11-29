@@ -284,7 +284,10 @@ class _FilesAndroidState extends State<FilesAndroid>
       );
     } else {
       return _filesPageState.isSearchMode
-          ? FoundedFilesList(fileGroups: _filesPageState.searchResult)
+          ? FoundedFilesList(
+              fileGroups: _filesPageState.searchResult,
+              filesPageState: _filesPageState,
+            )
           : FilesList(files: _filesPageState.currentFiles);
     }
   }

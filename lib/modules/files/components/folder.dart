@@ -31,6 +31,7 @@ class _FolderWidgetState extends State<FolderWidget> {
   late FilesPageState _filesPageState;
   Map<String, dynamic> _extendedProps = {};
   ShareAccessRight? _sharedWithMeAccess;
+  bool _hasShares = false;
 
   bool get _sharedWithMe => _sharedWithMeAccess != null;
 
@@ -58,9 +59,10 @@ class _FolderWidgetState extends State<FolderWidget> {
   }
 
   void _initShareProps() {
-    // if (_extendedProps.containsKey("Shares")) {
-    //   final list = _extendedProps["Shares"] as List;
-    // }
+    if (_extendedProps.containsKey("Shares")) {
+      final list = _extendedProps["Shares"] as List;
+      _hasShares = list.isNotEmpty;
+    }
     if (_extendedProps.containsKey("SharedWithMeAccess")) {
       final code = _extendedProps["SharedWithMeAccess"] as int;
       _sharedWithMeAccess = ShareAccessRightHelper.fromCode(code);
@@ -81,8 +83,9 @@ class _FolderWidgetState extends State<FolderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const margin = 5.0;
+    const iconPadding = EdgeInsets.only(right: 5.0, top: 7.0);
     final s = context.l10n;
+
     return Observer(
       builder: (_) => SelectableFilesItemTile(
         file: widget.folder,
@@ -113,8 +116,6 @@ class _FolderWidgetState extends State<FolderWidget> {
                       highlightedPart: _filesPageState.searchText?.trim(),
                     ),
                   ),
-                  if (widget.folder.published || widget.folder.localId != -1)
-                    const SizedBox(height: 7.0),
                   Theme(
                     data: Theme.of(context).copyWith(
                       iconTheme: IconThemeData(
@@ -122,21 +123,34 @@ class _FolderWidgetState extends State<FolderWidget> {
                         size: 14.0,
                       ),
                     ),
-                    child: Row(children: <Widget>[
-                      if (widget.folder.published)
-                        Padding(
-                          padding: const EdgeInsets.only(right: margin),
-                          child: Icon(
-                            Icons.link,
-                            semanticLabel: s.has_public_link,
+                    child: Row(
+                      children: <Widget>[
+                        if (_hasShares)
+                          Padding(
+                            padding: iconPadding,
+                            child: Icon(
+                              Icons.share,
+                              semanticLabel: s.label_share_with_teammates,
+                            ),
                           ),
-                        ),
-                      if (widget.folder.localId != -1)
-                        Icon(
-                          Icons.airplanemode_active,
-                          semanticLabel: s.available_offline,
-                        ),
-                    ]),
+                        if (widget.folder.published)
+                          Padding(
+                            padding: iconPadding,
+                            child: Icon(
+                              Icons.link,
+                              semanticLabel: s.has_public_link,
+                            ),
+                          ),
+                        if (widget.folder.localId != -1)
+                          Padding(
+                            padding: iconPadding,
+                            child: Icon(
+                              Icons.airplanemode_active,
+                              semanticLabel: s.available_offline,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ],
               ),

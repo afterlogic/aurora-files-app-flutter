@@ -18,7 +18,7 @@ class FilesList extends StatelessWidget {
     return ListView.separated(
       padding: EdgeInsets.only(bottom: paddingBottom),
       itemCount: files.length,
-      itemBuilder: (BuildContext context, int index) {
+      itemBuilder: (context, index) {
         if (files.isEmpty) {
           return const SizedBox.shrink();
         }
@@ -29,10 +29,7 @@ class FilesList extends StatelessWidget {
           return FileWidget(key: Key(item.guid ?? ''), file: item);
         }
       },
-      separatorBuilder: (_, __) => const Padding(
-        padding: EdgeInsets.only(left: 80.0, right: 16.0),
-        child: Divider(height: 0.0),
-      ),
+      separatorBuilder: (_, __) => const Divider(height: 0.0),
     );
   }
 }

@@ -247,10 +247,7 @@ class _FilesAndroidState extends State<FilesAndroid>
       return ListView.separated(
         itemBuilder: (_, index) => const SkeletonLoader(),
         itemCount: 6,
-        separatorBuilder: (BuildContext context, int index) => const Padding(
-          padding: EdgeInsets.only(left: 80.0, right: 16.0),
-          child: Divider(height: 0.0),
-        ),
+        separatorBuilder: (_, __) => const Divider(height: 0.0),
       );
     } else if (!_filesState.isOfflineMode &&
         _settingsState.internetConnection == ConnectivityResult.none &&
@@ -436,7 +433,8 @@ class _FilesAndroidState extends State<FilesAndroid>
                                 ConnectivityResult.none &&
                             _filesPageState.currentFiles.isEmpty) ||
                         _filesPageState.isSearchMode ||
-                        _filesState.selectedStorage.type == StorageType.shared ||
+                        _filesState.selectedStorage.type ==
+                            StorageType.shared ||
                         _filesPageState.isInsideZip
                     ? const SizedBox()
                     : FloatingActionButton(

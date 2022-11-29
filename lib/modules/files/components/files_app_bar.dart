@@ -308,6 +308,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   controller: _searchInputCtrl,
                   placeholder: s.search,
                   style: TextStyle(color: theme.colorScheme.onBackground),
+                  textInputAction: TextInputAction.search,
                   decoration: const BoxDecoration(),
                 )
               : TextField(
@@ -316,6 +317,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   onChanged: _onSearchTextChanged,
                   controller: _searchInputCtrl,
                   style: TextStyle(color: theme.colorScheme.onBackground),
+                  textInputAction: TextInputAction.search,
                   decoration: InputDecoration.collapsed(
                     border: InputBorder.none,
                     hintText: s.search,
@@ -362,6 +364,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                     controller: _searchInputCtrl,
                     placeholder: s.search,
                     style: TextStyle(color: theme.colorScheme.onBackground),
+                    textInputAction: TextInputAction.search,
                   )
                 : TextField(
                     autofocus: true,
@@ -369,6 +372,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                     onChanged: _onSearchTextChanged,
                     controller: _searchInputCtrl,
                     style: TextStyle(color: theme.colorScheme.onBackground),
+                    textInputAction: TextInputAction.search,
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       hintText: s.search,
@@ -386,13 +390,13 @@ class _FilesAppBarState extends State<FilesAppBar>
           title: InkWell(
             onTap: () => _filesPageState.isSearchMode = true,
             child: Row(
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-                    child: Icon(Icons.search),
-                  ),
-                  Expanded(child: SizedBox.shrink()),
-                ],
+              children: const [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                  child: Icon(Icons.search),
+                ),
+                Expanded(child: SizedBox.shrink()),
+              ],
             ),
           ),
         );

@@ -252,6 +252,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
       pgpKeyUtil,
       preparedForShare,
     );
+    widget.filesPageState.onGetFiles(
+      showLoading: FilesLoadingType.filesVisible,
+    );
   }
 
   Future<void> _secureEncryptSharing(

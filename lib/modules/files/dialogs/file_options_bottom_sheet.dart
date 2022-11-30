@@ -344,7 +344,10 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final s = context.l10n;
     final offline = widget.filesState.isOfflineMode;
     final isTablet = LayoutConfig.of(context).isTablet;
-    final iconColor = Theme.of(context).iconTheme.color;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconColor = isDark
+        ? Theme.of(context).iconTheme.color
+        : Theme.of(context).disabledColor;
 
     Widget content = SingleChildScrollView(
       padding: EdgeInsets.only(

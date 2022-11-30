@@ -506,7 +506,10 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   @override
   Widget build(BuildContext context) {
     final s = context.l10n;
-    final iconColor = Theme.of(context).iconTheme.color;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconColor = isDark
+        ? Theme.of(context).iconTheme.color
+        : Theme.of(context).disabledColor;
 
     return WillPopScope(
       onWillPop: () async {
@@ -531,11 +534,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             actions: widget.filesState.isOfflineMode
                 ? [
                     IconButton(
-                      icon: Icon(
-                          PlatformOverride.isIOS
-                              ? MdiIcons.exportVariant
-                              : Icons.share,
-                          color: iconColor),
+                      icon: Icon(PlatformOverride.isIOS
+                          ? MdiIcons.exportVariant
+                          : Icons.share),
                       tooltip: s.share,
                       onPressed: () => _shareFile(
                         PreparedForShare(
@@ -546,7 +547,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     ),
                     if (!PlatformOverride.isIOS)
                       IconButton(
-                        icon: Icon(Icons.file_download, color: iconColor),
+                        icon: const Icon(Icons.file_download),
                         tooltip: s.download,
                         onPressed: _downloadFile,
                       ),
@@ -557,7 +558,6 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         icon: AssetIcon(
                           Asset.svg.insertLink,
                           addedSize: 14,
-                          color: iconColor,
                         ),
                         tooltip: widget.immutableFile.initVector != null
                             ? s.btn_encrypted_shareable_link
@@ -566,12 +566,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                       ),
                     if (_file.downloadUrl.isNotEmpty && !PlatformOverride.isIOS)
                       IconButton(
-                        icon: Icon(Icons.file_download, color: iconColor),
+                        icon: const Icon(Icons.file_download),
                         tooltip: s.download,
                         onPressed: _downloadFile,
                       ),
                     IconButton(
-                      icon: Icon(Icons.delete_outline, color: iconColor),
+                      icon: const Icon(Icons.delete_outline),
                       tooltip: s.delete_file,
                       onPressed: _deleteFile,
                     ),

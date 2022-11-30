@@ -6,7 +6,7 @@ import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ExportPgpKeyWidget extends StatefulWidget {
   final List<LocalPgpKey> _pgpKeys;

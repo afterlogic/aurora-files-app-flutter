@@ -160,7 +160,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
         ),
       );
       if (result is PreparedForShare) {
-        widget.filesState.share(
+        widget.filesState.shareFile(
           result,
           Rect.fromCenter(
             center: bottomCenter,

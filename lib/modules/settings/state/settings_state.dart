@@ -9,7 +9,7 @@ import 'package:aurorafiles/utils/custom_exception.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 part 'settings_state.g.dart';
 

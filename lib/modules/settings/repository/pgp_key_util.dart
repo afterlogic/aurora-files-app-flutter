@@ -10,7 +10,7 @@ import 'package:aurorafiles/utils/download_directory.dart';
 import 'package:aurorafiles/utils/permissions.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'encryption_local_storage.dart';
 

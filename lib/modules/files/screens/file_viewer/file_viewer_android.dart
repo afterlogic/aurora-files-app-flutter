@@ -153,7 +153,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   }
 
   void _shareFile(PreparedForShare preparedForShare) {
-    widget.filesState.share(
+    widget.filesState.shareFile(
       preparedForShare,
       Rect.fromCenter(
         center: MediaQuery.of(context).size.bottomCenter(Offset.zero),

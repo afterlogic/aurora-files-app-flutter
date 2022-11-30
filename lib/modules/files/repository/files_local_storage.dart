@@ -17,7 +17,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class FilesLocalStorage {
   Aes aes = DI.get();
@@ -33,18 +33,17 @@ class FilesLocalStorage {
 
   // is used to download files on iOS
   Future<void> shareFile(File? storedFile, LocalFile file, Rect rect) async {
-    String fileType;
-    if (file.contentType.startsWith("image")) {
-      fileType = "image";
-    } else if (file.contentType.startsWith("video")) {
-      fileType = "video";
-    } else {
-      fileType = "file";
-    }
-
-    await Share.shareFiles(
-      [storedFile?.path ?? file.path],
-      mimeTypes: [fileType],
+    final fileType = file.contentType.isNotEmpty
+        ? file.contentType
+        : 'application/octet-stream';
+    final xFile = XFile(
+      storedFile?.path ?? file.path,
+      mimeType: fileType,
+      name: file.name,
+    );
+    await Share.shareXFiles(
+      [xFile],
+      subject: xFile.name,
       sharePositionOrigin: rect,
     );
   }

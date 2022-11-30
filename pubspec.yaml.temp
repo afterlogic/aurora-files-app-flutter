@@ -47,7 +47,7 @@ dependencies:
   encrypt: ^5.0.1
 
   # file share
-  share: ^2.0.4
+  share_plus: ^6.3.0
 
   # opening files with other apps
   open_filex: ^4.3.1

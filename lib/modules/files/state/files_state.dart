@@ -615,7 +615,7 @@ abstract class _FilesState with Store {
     }
   }
 
-  share(PreparedForShare preparedForShare, Rect rect) {
+  void shareFile(PreparedForShare preparedForShare, Rect rect) {
     _filesLocal.shareFile(
         preparedForShare.file, preparedForShare.localFile, rect);
   }

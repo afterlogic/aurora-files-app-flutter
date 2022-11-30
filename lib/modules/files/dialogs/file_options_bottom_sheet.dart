@@ -344,6 +344,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
     final s = context.l10n;
     final offline = widget.filesState.isOfflineMode;
     final isTablet = LayoutConfig.of(context).isTablet;
+    final iconColor = Theme.of(context).iconTheme.color;
+
     Widget content = SingleChildScrollView(
       padding: EdgeInsets.only(
         top: 0.0,
@@ -364,7 +366,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ListTile(
               onTap: () =>
                   onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
-              leading: const Icon(Icons.airplanemode_active),
+              leading: Icon(Icons.airplanemode_active, color: iconColor),
               title: Text(s.offline),
               trailing: Switch.adaptive(
                 activeColor: Theme.of(context).primaryColor,
@@ -376,7 +378,8 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
           const Divider(height: 0),
           if (!offline)
             ListTile(
-              leading: Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove),
+              leading: Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove,
+                  color: iconColor),
               title: Text(s.copy_or_move),
               onTap: _copyOrMoveFile,
             ),
@@ -387,6 +390,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               leading: AssetIcon(
                 Asset.svg.insertLink,
                 addedSize: 14,
+                color: iconColor,
               ),
               title: Text(widget.file.initVector != null
                   ? s.btn_encrypted_shareable_link
@@ -395,7 +399,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!offline && _enableTeamShare)
             ListTile(
-              leading: const Icon(Icons.share),
+              leading: Icon(Icons.share, color: iconColor),
               title: Text(s.label_share_with_teammates),
               onTap: () => _shareWithTeammates(widget.externalContext),
             ),
@@ -405,34 +409,34 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
                 Asset.svg.iconShareLeave,
                 width: 24,
                 height: 24,
-                color: Theme.of(context).iconTheme.color,
+                color: iconColor,
               ),
               title: Text(s.label_leave_share),
               onTap: () => _leaveShare(widget.externalContext),
             ),
           if (!isFolder)
             ListTile(
-              leading: Icon(PlatformOverride.isIOS
-                  ? MdiIcons.exportVariant
-                  : Icons.share),
+              leading: Icon(
+                  PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share,
+                  color: iconColor),
               title: Text(s.share),
               onTap: () => _shareFile(widget.externalContext),
             ),
           if (!PlatformOverride.isIOS && !isFolder)
             ListTile(
-              leading: const Icon(Icons.file_download),
+              leading: Icon(Icons.file_download, color: iconColor),
               title: Text(s.download),
               onTap: _downloadFile,
             ),
           if (!offline)
             ListTile(
-              leading: const Icon(Icons.edit),
+              leading: Icon(Icons.edit, color: iconColor),
               title: Text(s.rename),
               onTap: () => _renameFile(widget.externalContext),
             ),
           if (!offline)
             ListTile(
-              leading: const Icon(Icons.delete_outline),
+              leading: Icon(Icons.delete_outline, color: iconColor),
               title: Text(s.delete),
               onTap: () => _deleteFile(widget.externalContext),
             ),

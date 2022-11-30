@@ -506,6 +506,8 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
   @override
   Widget build(BuildContext context) {
     final s = context.l10n;
+    final iconColor = Theme.of(context).iconTheme.color;
+
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, _file);
@@ -529,9 +531,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
             actions: widget.filesState.isOfflineMode
                 ? [
                     IconButton(
-                      icon: Icon(PlatformOverride.isIOS
-                          ? MdiIcons.exportVariant
-                          : Icons.share),
+                      icon: Icon(
+                          PlatformOverride.isIOS
+                              ? MdiIcons.exportVariant
+                              : Icons.share,
+                          color: iconColor),
                       tooltip: s.share,
                       onPressed: () => _shareFile(
                         PreparedForShare(
@@ -542,7 +546,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                     ),
                     if (!PlatformOverride.isIOS)
                       IconButton(
-                        icon: const Icon(Icons.file_download),
+                        icon: Icon(Icons.file_download, color: iconColor),
                         tooltip: s.download,
                         onPressed: _downloadFile,
                       ),
@@ -553,6 +557,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         icon: AssetIcon(
                           Asset.svg.insertLink,
                           addedSize: 14,
+                          color: iconColor,
                         ),
                         tooltip: widget.immutableFile.initVector != null
                             ? s.btn_encrypted_shareable_link
@@ -561,12 +566,12 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                       ),
                     if (_file.downloadUrl.isNotEmpty && !PlatformOverride.isIOS)
                       IconButton(
-                        icon: const Icon(Icons.file_download),
+                        icon: Icon(Icons.file_download, color: iconColor),
                         tooltip: s.download,
                         onPressed: _downloadFile,
                       ),
                     IconButton(
-                      icon: const Icon(Icons.delete_outline),
+                      icon: Icon(Icons.delete_outline, color: iconColor),
                       tooltip: s.delete_file,
                       onPressed: _deleteFile,
                     ),
@@ -576,9 +581,11 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         PopupMenuItem(
                           value: () => _prepareShareFile(_shareFile),
                           child: ListTile(
-                            leading: Icon(PlatformOverride.isIOS
-                                ? MdiIcons.exportVariant
-                                : Icons.share),
+                            leading: Icon(
+                                PlatformOverride.isIOS
+                                    ? MdiIcons.exportVariant
+                                    : Icons.share,
+                                color: iconColor),
                             title: Text(s.share),
                           ),
                         ),
@@ -586,7 +593,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           PopupMenuItem(
                             value: _shareWithTeammates,
                             child: ListTile(
-                              leading: const Icon(Icons.share),
+                              leading: Icon(Icons.share, color: iconColor),
                               title: Text(s.label_share_with_teammates),
                             ),
                           ),
@@ -598,7 +605,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                                 Asset.svg.iconShareLeave,
                                 width: 24,
                                 height: 24,
-                                color: Theme.of(context).iconTheme.color,
+                                color: iconColor,
                               ),
                               title: Text(s.label_leave_share),
                             ),
@@ -606,14 +613,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         PopupMenuItem(
                           value: _moveFile,
                           child: ListTile(
-                            leading: const Icon(MdiIcons.fileMove),
+                            leading: Icon(MdiIcons.fileMove, color: iconColor),
                             title: Text(s.copy_or_move),
                           ),
                         ),
                         PopupMenuItem(
                           value: _renameFile,
                           child: ListTile(
-                            leading: const Icon(Icons.edit),
+                            leading: Icon(Icons.edit, color: iconColor),
                             title: Text(s.rename),
                           ),
                         ),
@@ -672,7 +679,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     onTap: _isSyncingForOffline ? null : _setFileForOffline,
-                    leading: const Icon(Icons.airplanemode_active),
+                    leading: Icon(Icons.airplanemode_active, color: iconColor),
                     title: Text(s.offline),
                     trailing: Switch.adaptive(
                       activeColor: Theme.of(context).primaryColor,

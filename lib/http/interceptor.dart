@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aurorafiles/error/api_error_code.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
+import 'package:aurorafiles/modules/auth/repository/device_id_storage.dart';
 import 'package:http/http.dart' as http;
 
 class WebMailApi {
@@ -35,6 +36,9 @@ class WebMailApi {
 
     Map<String, String> _headers =
         token == null ? {} : {'Authorization': 'Bearer $token'};
+
+    _headers["X-DeviceId"] = await DeviceIdStorage.getDeviceId();
+
     headers?.forEach((key, value) {
       _headers[key] = value;
     });

@@ -87,3 +87,27 @@
 
    5.3. To build Android version run `sh/build_android.sh`
    Packages built will be placed to `build` directory.
+
+
+# On iOS deployment error
+
+```Validation failed (409)
+Invalid Bundle Executable. The executable file 'Runner.app/Frameworks/Flutter.framework/Flutter' contains incomplete bitcode. To compile binaries with complete bitcode, open Xcode and choose Archive in the Product menu. (ID: xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx)
+```
+
+
+Mistakes mentioned in the 'Runner. The app/Frameworks/Flutter. Framework/Flutter', is actually in .xcarchive files inside.
+
+In Xcode, open the "Organizer" Window (Window -> Organizer"). In the "Archives" TAB, you can see the file you just filed.
+
+The right mouse button Show in the Finder, right click "Show package contents", into Products/Applications/Runner. The app. After see Runner. App, continue to right-click "show package contents", thus into the 'Runner. The app/Frameworks/Flutter. Framework' directory.
+
+Open Flutter.framework in terminal, Run the following command to check whether the framework contains bitcode. If 0 is returned, the framework does not contain Bitcode:
+
+> `otool -l Flutter | grep __LLVM | wc -l`
+
+If the detection result is not 0, proceed to remove Bitcode from Flutter.framework by executing the following command:
+
+> `xcrun bitcode_strip -r Flutter -o Flutter`
+
+Then upload the.xcarchive package to the App Store and the error will no longer appear.

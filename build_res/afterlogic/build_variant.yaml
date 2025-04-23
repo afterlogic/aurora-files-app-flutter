@@ -19,3 +19,5 @@ privacyPolicy: "https://afterlogic.com/privacy-policy"
 pgpEnable: true
 secureSharingEnable: true
 teamSharingEnable: true
+useYubiKit: false
+yubicoFlutterLib: "path: module/mocks/yubico_flutter"

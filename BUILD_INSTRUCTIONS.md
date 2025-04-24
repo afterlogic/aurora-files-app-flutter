@@ -98,7 +98,7 @@ Invalid Bundle Executable. The executable file 'Runner.app/Frameworks/Flutter.fr
 
 Mistakes mentioned in the 'Runner. The app/Frameworks/Flutter. Framework/Flutter', is actually in .xcarchive files inside.
 
-In Xcode, open the "Organizer" Window (Window -> Organizer"). In the "Archives" TAB, you can see the file you just filed.
+In Xcode, open the "Organizer" Window (Window -> Organizer"). In the "Archives" TAB (Product -> Archive for a first time build), you can see the file you just filed. 
 
 The right mouse button Show in the Finder, right click "Show package contents", into Products/Applications/Runner. The app. After see Runner. App, continue to right-click "show package contents", thus into the 'Runner. The app/Frameworks/Flutter. Framework' directory.
 

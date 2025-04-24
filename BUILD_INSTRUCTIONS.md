@@ -73,7 +73,8 @@
    4.2. To create certificates for signing iOS version, open XCode project. Click root project Runner in project structure, and in the new window opened, select Runner from Targets list, then select Signing & Capabilities. Certificates should be created automatically.
 
    4.3. To build iOS version run `sh/build_ios.sh`
-   Package built will be placed to `build` directory, it can be uploaded to TestFlight using [Transporter](https://apps.apple.com/app/transporter/id1450874784?l=en&mt=12) application.
+   <!-- Package built will be placed to `build` directory, it can be uploaded to TestFlight using [Transporter](https://apps.apple.com/app/transporter/id1450874784?l=en&mt=12) application. -->
+   Open the Xcode application and create an archive by selecting "Product" > "Archive". Once you have done this, you will be able to distribute the application.
 
 
 ## Building the app for Android
@@ -98,7 +99,7 @@ Invalid Bundle Executable. The executable file 'Runner.app/Frameworks/Flutter.fr
 
 Mistakes mentioned in the 'Runner. The app/Frameworks/Flutter. Framework/Flutter', is actually in .xcarchive files inside.
 
-In Xcode, open the "Organizer" Window (Window -> Organizer"). In the "Archives" TAB (Product -> Archive for a first time build), you can see the file you just filed. 
+In Xcode, open the "Organizer" Window (Window -> Organizer"). In the "Archives" TAB ("Product" > "Archive" for a first time build), you can see the file you just filed. 
 
 The right mouse button Show in the Finder, right click "Show package contents", into Products/Applications/Runner. The app. After see Runner. App, continue to right-click "show package contents", thus into the 'Runner. The app/Frameworks/Flutter. Framework' directory.
 

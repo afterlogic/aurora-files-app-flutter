@@ -141,6 +141,10 @@ ios/Flutter/.last_build_id
 /build_res/template/crashlytics/**
 /build_res/template/sign/**
 
+/build_res/**/
+!/build_res/afterlogic/
+!/build_res/template/
+
 # Firebase crashlitics
 /android/app/google-services.json
 ios/GoogleService-Info.plist

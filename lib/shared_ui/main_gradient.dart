@@ -13,20 +13,26 @@ class LoginGradient extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          stops: const [0, 1],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: const [0, 0.2, 0.4, 0.6, 0.8, 1],
           colors: [
-            _fromHex(
-              theme.brightness == Brightness.light
-                  ? BuildProperty.splashGradientTop
-                  : BuildProperty.splashGradientTopDark,
-            ),
-            _fromHex(
-              theme.brightness == Brightness.light
-                  ? BuildProperty.splashGradientBottom
-                  : BuildProperty.splashGradientBottomDark,
-            ),
+            // _fromHex(
+            //   theme.brightness == Brightness.light
+            //       ? BuildProperty.splashGradientTop
+            //       : BuildProperty.splashGradientTopDark,
+            // ),
+            // _fromHex(
+            //   theme.brightness == Brightness.light
+            //       ? BuildProperty.splashGradientBottom
+            //       : BuildProperty.splashGradientBottomDark,
+            // ),
+            _fromHex(BuildProperty.splashGradient1),
+            _fromHex(BuildProperty.splashGradient2),
+            _fromHex(BuildProperty.splashGradient3),
+            _fromHex(BuildProperty.splashGradient4),
+            _fromHex(BuildProperty.splashGradient5),
+            _fromHex(BuildProperty.splashGradient6),
           ],
         ),
       ),

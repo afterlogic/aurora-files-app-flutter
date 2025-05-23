@@ -136,6 +136,12 @@ ios/Flutter/.last_build_id
 /.gradle/
 
 # Build_res
+
+/build/
+/build_res/**/
+!/build_res/afterlogic/
+!/build_res/template/
+
 /build_res/afterlogic/crashlytics/**
 /build_res/afterlogic/sign/**
 /build_res/template/crashlytics/**

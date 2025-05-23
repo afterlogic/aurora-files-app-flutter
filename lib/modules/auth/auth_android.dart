@@ -148,35 +148,94 @@ class _AuthAndroidState extends State<AuthAndroid> {
           labelText: s.host,
         ),
       const SizedBox(height: 10),
-      AppInput(
-        controller: _authState.emailCtrl,
-        keyboardType: TextInputType.emailAddress,
+      // AppInput(
+      //   controller: _authState.emailCtrl,
+      //   keyboardType: TextInputType.emailAddress,
+      //   validator: (value) => validateInput(
+      //     value: value ?? '',
+      //     types: [ValidationTypes.empty, ValidationTypes.email],
+      //   ),
+      //   labelText: s.email,
+      //   inputCase: InputCase.underline,
+      // ),
+      TextFormField(
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.5),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 10,
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white.withOpacity(0.3)), borderRadius: BorderRadius.circular(10.0)),
+          focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.white), borderRadius: BorderRadius.circular(10.0)),
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          alignLabelWithHint: true,
+          labelText: s.email,
+        ),
         validator: (value) => validateInput(
           value: value ?? '',
           types: [ValidationTypes.empty, ValidationTypes.email],
         ),
-        labelText: s.email,
-        inputCase: InputCase.underline,
+        keyboardType: TextInputType.emailAddress,
+        controller: _authState.emailCtrl,
+        autocorrect: false,
       ),
       const SizedBox(height: 10),
-      AppInput(
-        inputCase: InputCase.underline,
-        controller: _authState.passwordCtrl,
+      // AppInput(
+      //   inputCase: InputCase.underline,
+      //   controller: _authState.passwordCtrl,
+      //   validator: (value) => validateInput(
+      //     value: value ?? '',
+      //     types: [ValidationTypes.empty],
+      //   ),
+      //   obscureText: _obscureText,
+      //   labelText: s.password,
+      //   suffix: GestureDetector(
+      //     child: Padding(
+      //       padding: const EdgeInsets.only(top: 16.0),
+      //       child: Icon(
+      //         _obscureText ? Icons.visibility : Icons.visibility_off,
+      //       ),
+      //     ),
+      //     onTap: () => setState(() => _obscureText = !_obscureText),
+      //   ),
+      // ),
+      TextFormField(
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.5),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 10,
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white.withOpacity(0.3)), borderRadius: BorderRadius.circular(10.0)),
+          focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.white), borderRadius: BorderRadius.circular(10.0)),
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          alignLabelWithHint: true,
+          labelText: s.password,
+          suffixIcon: SizedBox(
+            height: 50.0,
+            child: IconButton(
+              icon: Icon(
+                _obscureText ? Icons.visibility : Icons.visibility_off,
+                color: const Color(0xFF333333),
+              ),
+              onPressed: () => setState(() => _obscureText = !_obscureText),
+            ),
+          ),
+        ),
         validator: (value) => validateInput(
           value: value ?? '',
           types: [ValidationTypes.empty],
         ),
+        keyboardType: TextInputType.emailAddress,
+        controller: _authState.passwordCtrl,
+        autocorrect: false,
         obscureText: _obscureText,
-        labelText: s.password,
-        suffix: GestureDetector(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: Icon(
-              _obscureText ? Icons.visibility : Icons.visibility_off,
-            ),
-          ),
-          onTap: () => setState(() => _obscureText = !_obscureText),
-        ),
       ),
     ];
   }
@@ -227,9 +286,9 @@ class _AuthAndroidState extends State<AuthAndroid> {
                             SizedBox(
                               width: double.infinity,
                               child: Observer(
-                                builder: (BuildContext context) =>
-                                    _debugRouteToTwoFactor(
+                                builder: (BuildContext context) => _debugRouteToTwoFactor(
                                   AMButton(
+                                    color: const Color(0xFF8C19FF),
                                     isLoading: _authState.isLoggingIn,
                                     onPressed: () => _login(context),
                                     child: Text(s.login),
@@ -259,8 +318,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
         onDoubleTap: () => _navigator.pushNamed(
           TwoFactorAuthRoute.name,
-          arguments:
-              TwoFactorAuthRouteArgs(false, RequestTwoFactor(true, true, true)),
+          arguments: TwoFactorAuthRouteArgs(false, RequestTwoFactor(true, true, true)),
         ),
         child: child,
       );

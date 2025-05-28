@@ -35,7 +35,11 @@ _appIdIos: "{{_appId}}"
 _iosDeveloperId: ""
 _appleGroupId: ""
 version: ""
+<<<<<<< HEAD
 build: 182
+=======
+build: 177
+>>>>>>> origin/fix/bitcode_xcode18
 
 #android sign
 _jksName: "key.jks"

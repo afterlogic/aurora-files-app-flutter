@@ -74,7 +74,6 @@
 
 crypto_plugin/ios/Classes/
 
-
 ios/Runner/Info.plist
 /ios/Runner/Runner.entitlements
 /ios/Flutter/flutter_export_environment.sh
@@ -122,7 +121,6 @@ ios/Runner/Info.plist
 /ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png
 /lib/build_property.dart
 
-
 /ios/AppShareExtension/AppShareExtension.entitlements
 /ios/AppShareExtension/ShareViewController.swift
 
@@ -152,3 +150,9 @@ ios/Flutter/.last_build_id
 ios/GoogleService-Info.plist
 ios/firebase_app_id_file.json
 /lib/firebase_options.dart
+
+# FVM Version Cache
+.fvm/
+
+# VSCode related
+.vscode/

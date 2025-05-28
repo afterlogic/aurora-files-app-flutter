@@ -2,7 +2,11 @@ name: aurorafiles
 description: File management system for ...
 publish_to: none
 
+<<<<<<< HEAD
 version: 1.0.0+182
+=======
+version: 2.4.0+177
+>>>>>>> origin/fix/bitcode_xcode18
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -36,7 +40,11 @@ dependencies:
 
   # file downloading/uploading+
   file:
+<<<<<<< HEAD
   file_picker: 5.2.2
+=======
+  file_picker: 5.2.10
+>>>>>>> origin/fix/bitcode_xcode18
   #  flutter_uploader: 1.0.3+1
   #  flutter_downloader: 1.1.9
   path_provider: 2.0.11
@@ -82,7 +90,11 @@ dependencies:
   firebase_crashlytics: 2.8.6
 
   theme:
+<<<<<<< HEAD
     path: build_res/unlyme/theme
+=======
+    path: build_res/afterlogic/theme
+>>>>>>> origin/fix/bitcode_xcode18
   aurora_ui_kit:
     git: https://github.com/afterlogic/aurora_ui_kit_flutter
   crypto_stream:
@@ -119,9 +131,15 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
+<<<<<<< HEAD
   image_path: build_res/unlyme/image/icon.png
   adaptive_icon_background: ""
   adaptive_icon_foreground: build_res/unlyme/image/icon_foreground.png
+=======
+  image_path: build_res/afterlogic/image/icon.png
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: build_res/afterlogic/image/icon_foreground.png
+>>>>>>> origin/fix/bitcode_xcode18
 
 flutter:
 
@@ -134,8 +152,13 @@ flutter:
   assets:
     - lib/assets/images/
     - lib/assets/svg/
+<<<<<<< HEAD
     - build_res/unlyme/image/icon.png
     - build_res/unlyme/image/main_logo.png
+=======
+    - build_res/afterlogic/image/icon.png
+    - build_res/afterlogic/image/main_logo.png
+>>>>>>> origin/fix/bitcode_xcode18
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

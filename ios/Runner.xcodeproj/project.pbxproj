@@ -3,11 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-<<<<<<< HEAD
-	objectVersion = 54;
-=======
 	objectVersion = 46;
->>>>>>> origin/fix/bitcode_xcode18
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -399,9 +395,6 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
-<<<<<<< HEAD
-		BA3DEBEB118A02532D196BD2 /* [CP] Embed Pods Frameworks */ = {
-=======
 		DEFED735C0CC7A471202957C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -445,7 +438,6 @@
 			shellScript = "\"$PODS_ROOT/FirebaseCrashlytics/upload-symbols\" --flutter-project \"$PROJECT_DIR/firebase_app_id_file.json\" \n";
 		};
 		FEE43B49E5D3BEAF225CD6C9 /* [CP] Embed Pods Frameworks */ = {
->>>>>>> origin/fix/bitcode_xcode18
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

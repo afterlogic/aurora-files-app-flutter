@@ -142,47 +142,20 @@ PODS:
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
     - GoogleUtilities/Privacy
-<<<<<<< HEAD
-  - GoogleUtilities/Environment (7.8.0):
-=======
   - GoogleUtilities/Environment (7.13.3):
->>>>>>> origin/fix/bitcode_xcode18
     - GoogleUtilities/Privacy
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/Logger (7.13.3):
     - GoogleUtilities/Environment
     - GoogleUtilities/Privacy
-<<<<<<< HEAD
-  - GoogleUtilities/MethodSwizzler (7.8.0):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Network (7.8.0):
-=======
   - GoogleUtilities/MethodSwizzler (7.13.3):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - GoogleUtilities/Network (7.13.3):
->>>>>>> origin/fix/bitcode_xcode18
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Privacy
     - GoogleUtilities/Reachability
-<<<<<<< HEAD
-  - "GoogleUtilities/NSData+zlib (7.8.0)":
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (7.8.0)
-  - GoogleUtilities/Reachability (7.8.0):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/UserDefaults (7.8.0):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - nanopb (2.30909.0):
-    - nanopb/decode (= 2.30909.0)
-    - nanopb/encode (= 2.30909.0)
-  - nanopb/decode (2.30909.0)
-  - nanopb/encode (2.30909.0)
-=======
   - "GoogleUtilities/NSData+zlib (7.13.3)":
     - GoogleUtilities/Privacy
   - GoogleUtilities/Privacy (7.13.3)
@@ -197,7 +170,6 @@ PODS:
     - nanopb/encode (= 2.30909.1)
   - nanopb/decode (2.30909.1)
   - nanopb/encode (2.30909.1)
->>>>>>> origin/fix/bitcode_xcode18
   - open_filex (0.0.2):
     - Flutter
   - OpenSSL-Universal (1.0.2.20):
@@ -322,17 +294,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   crypto_stream: 2a2fdbfdec937d8779e8e6b14afb3a5e093a61e4
-<<<<<<< HEAD
-  device_info_plus: 12b1e8155df65f2111c62159390c405a582c32d5
-  DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
-  DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  file_picker: 66efd5411cc4522ca2e84848c17db9e0bae09395
-=======
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
->>>>>>> origin/fix/bitcode_xcode18
   Firebase: 5ae8b7cf8efce559a653aef0ad95bab3f427c351
   firebase_core: 7c28ecc1e5dd74e03829ac3e9ff5ba3314e737a9
   firebase_crashlytics: b9ed860ec9dd2d89cff9497bf2279146674bf177
@@ -346,29 +311,6 @@ SPEC CHECKSUMS:
   flutter_custom_tabs: 7a10a08686955cb748e5d26e0ae586d30689bf89
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
-<<<<<<< HEAD
-  FMDB: 512fa326b46e841f02d6209067ccee9c8e34e716
-  GoogleAppMeasurement: 6de2b1a69e4326eb82ee05d138f6a5cb7311bcb1
-  GoogleDataTransport: dccf2e407e4c7701e8e8e77b3eeed943c25fe7f9
-  GoogleUtilities: 6aa15f22e7fa1151d5c0559f194a4a2c7ba73157
-  nanopb: 04ef5259980422f80ce0735e6ff7e4944468bec3
-  open_filex: 6e26e659846ec990262224a12ef1c528bb4edbe4
-  OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
-  package_info: e0a56100964b80bb2f6fd83187c8f4383b53b297
-  path_provider_ios: cb707857b761f6d3a24daabd0b32e663fd6da534
-  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
-  PromisesObjC: ba1e5ae205dd2bea9faed9351cd1e8865c5430c4
-  Reachability: 7258f44f01b48f53349d2e03da8880538b222455
-  receive_sharing_intent: c0d87310754e74c0f9542947e7cbdf3a0335a3b1
-  RxSwift: b895f83ea3e7138ae08be6757e4bf20784f31636
-  SDWebImage: d81e7e40ae1382c013370f00de3ea47ec2312cdb
-  share_plus: 8f8d15d6cd71150858948216e9fd492661b1cbc2
-  shared_preferences_ios: a1854f032f1b4bf3cf8f33e6e44553c3f35fdfef
-  sqflite: 5a74326fb9ee8f0146ebca1579f86fb3fc169b29
-  SwiftyGif: 7560d791f0f962240061e2f7be2e3f70ee0d2062
-  uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
-  url_launcher_ios: 5560e3765b4dd2de78d4c8608dad6fc98f2d2652
-=======
   FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
   GoogleAppMeasurement: 6de2b1a69e4326eb82ee05d138f6a5cb7311bcb1
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
@@ -390,12 +332,7 @@ SPEC CHECKSUMS:
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
->>>>>>> origin/fix/bitcode_xcode18
 
 PODFILE CHECKSUM: 953e0cf233fc5e5a939af21ed89cec74b2fce61b
 
-<<<<<<< HEAD
-COCOAPODS: 1.15.2
-=======
 COCOAPODS: 1.16.2
->>>>>>> origin/fix/bitcode_xcode18

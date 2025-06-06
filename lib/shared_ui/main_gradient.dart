@@ -8,34 +8,28 @@ class LoginGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: const [0, 0.2, 0.4, 0.6, 0.8, 1],
-          colors: [
-            // _fromHex(
-            //   theme.brightness == Brightness.light
-            //       ? BuildProperty.splashGradientTop
-            //       : BuildProperty.splashGradientTopDark,
-            // ),
-            // _fromHex(
-            //   theme.brightness == Brightness.light
-            //       ? BuildProperty.splashGradientBottom
-            //       : BuildProperty.splashGradientBottomDark,
-            // ),
-            _fromHex(BuildProperty.splashGradient1),
-            _fromHex(BuildProperty.splashGradient2),
-            _fromHex(BuildProperty.splashGradient3),
-            _fromHex(BuildProperty.splashGradient4),
-            _fromHex(BuildProperty.splashGradient5),
-            _fromHex(BuildProperty.splashGradient6),
-          ],
-        ),
-      ),
+      decoration: BuildProperty.useBackgroundImage
+        ? const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(BuildProperty.imageDir + '/login_background.png'),
+              fit: BoxFit.cover,
+            )
+          )
+        : BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: const [0, 1],
+              colors: [
+                _fromHex(isDark ? BuildProperty.splashGradientTopDark : BuildProperty.splashGradientTop),
+                _fromHex(isDark ? BuildProperty.splashGradientBottomDark : BuildProperty.splashGradientBottom),
+              ],
+            )
+          ),
       child: child,
     );
   }

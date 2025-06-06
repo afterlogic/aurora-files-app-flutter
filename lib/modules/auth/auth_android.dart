@@ -19,9 +19,12 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:theme/app_theme.dart';
 
+import 'component/auth_input.dart';
 import 'component/mail_logo.dart';
 import 'component/presentation_header.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 
 class AuthAndroid extends StatefulWidget {
   const AuthAndroid({super.key});
@@ -136,110 +139,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
       AuroraSnackBar.showSnack(msg: errMsg);
     }
   }
-
-  List<Widget> _buildTextFields() {
-    final s = context.l10n;
-    return [
-      if (_showHostField)
-        AppInput(
-          inputCase: InputCase.underline,
-          controller: _authState.hostCtrl,
-          keyboardType: TextInputType.url,
-          labelText: s.host,
-        ),
-      const SizedBox(height: 10),
-      // AppInput(
-      //   controller: _authState.emailCtrl,
-      //   keyboardType: TextInputType.emailAddress,
-      //   validator: (value) => validateInput(
-      //     value: value ?? '',
-      //     types: [ValidationTypes.empty, ValidationTypes.email],
-      //   ),
-      //   labelText: s.email,
-      //   inputCase: InputCase.underline,
-      // ),
-      TextFormField(
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white.withOpacity(0.5),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 10,
-          ),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.3)), borderRadius: BorderRadius.circular(10.0)),
-          focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.white), borderRadius: BorderRadius.circular(10.0)),
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          alignLabelWithHint: true,
-          labelText: s.email,
-        ),
-        validator: (value) => validateInput(
-          value: value ?? '',
-          types: [ValidationTypes.empty, ValidationTypes.email],
-        ),
-        keyboardType: TextInputType.emailAddress,
-        controller: _authState.emailCtrl,
-        autocorrect: false,
-      ),
-      const SizedBox(height: 10),
-      // AppInput(
-      //   inputCase: InputCase.underline,
-      //   controller: _authState.passwordCtrl,
-      //   validator: (value) => validateInput(
-      //     value: value ?? '',
-      //     types: [ValidationTypes.empty],
-      //   ),
-      //   obscureText: _obscureText,
-      //   labelText: s.password,
-      //   suffix: GestureDetector(
-      //     child: Padding(
-      //       padding: const EdgeInsets.only(top: 16.0),
-      //       child: Icon(
-      //         _obscureText ? Icons.visibility : Icons.visibility_off,
-      //       ),
-      //     ),
-      //     onTap: () => setState(() => _obscureText = !_obscureText),
-      //   ),
-      // ),
-      TextFormField(
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white.withOpacity(0.5),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 10,
-          ),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.3)), borderRadius: BorderRadius.circular(10.0)),
-          focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.white), borderRadius: BorderRadius.circular(10.0)),
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          alignLabelWithHint: true,
-          labelText: s.password,
-          suffixIcon: SizedBox(
-            height: 50.0,
-            child: IconButton(
-              icon: Icon(
-                _obscureText ? Icons.visibility : Icons.visibility_off,
-                color: const Color(0xFF333333),
-              ),
-              onPressed: () => setState(() => _obscureText = !_obscureText),
-            ),
-          ),
-        ),
-        validator: (value) => validateInput(
-          value: value ?? '',
-          types: [ValidationTypes.empty],
-        ),
-        keyboardType: TextInputType.emailAddress,
-        controller: _authState.passwordCtrl,
-        autocorrect: false,
-        obscureText: _obscureText,
-      ),
-    ];
-  }
-
   Widget theme(Widget widget) {
     if (AppTheme.login != null) {
       return Theme(
@@ -276,26 +175,52 @@ class _AuthAndroidState extends State<AuthAndroid> {
                       child: Form(
                         key: _authFormKey,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
+                            const Spacer(),
                             const PresentationHeader(),
+                            const Spacer(),
                             Column(
-                              children: _buildTextFields(),
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: Observer(
-                                builder: (BuildContext context) => _debugRouteToTwoFactor(
-                                  AMButton(
-                                    color: const Color(0xFF8C19FF),
-                                    isLoading: _authState.isLoggingIn,
-                                    onPressed: () => _login(context),
-                                    child: Text(s.login),
+                              children: <Widget>[
+                                
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.7),
+                                    borderRadius: BorderRadius.circular(8),
+                                    // border: Border.all(
+                                    //   color: Colors.white.withOpacity(0.3),
+                                    //   width: 1.0,
+                                    // ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.15),
+                                        blurRadius: 30.0,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0,
+                                    vertical: 36.0, 
+                                  ),
+                                  child: Column(
+                                    children: _buildTextFields(),
+                                    
                                   ),
                                 ),
-                              ),
+
+                                   
+                                
+                                
+                                if (BuildProperty.registrationLink.isNotEmpty)
+                                  const SizedBox(height: 30.0),
+                                  _buildRegisterLink(),
+
+                                const SizedBox(height: 50),
+                              ]
                             ),
+                            
                           ],
                         ),
                       ),
@@ -309,7 +234,6 @@ class _AuthAndroidState extends State<AuthAndroid> {
       ),
     );
   }
-
   Widget _debugRouteToTwoFactor(Widget child) {
     if (kDebugMode) {
       return GestureDetector(
@@ -325,5 +249,110 @@ class _AuthAndroidState extends State<AuthAndroid> {
     } else {
       return child;
     }
+  }
+
+  Widget _buildRegisterLink() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        const Text(
+          'Not account yet? ',
+          style: TextStyle(
+            color: Color(0xFF041844),
+            fontSize: 18.0,
+          ),
+        ),
+        GestureDetector(
+          child: const Text(
+            'Register now',
+            style: TextStyle(
+              color: Color(0xFF3975B5),
+              fontSize: 18.0,
+            ),
+          ),
+          onTap: () => launchUrl(Uri.parse(BuildProperty.registrationLink)),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildTextFields() {
+    final s = context.l10n;
+    return [
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          'Sign in',
+          textAlign: TextAlign.left,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontSize: 24.0,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      const SizedBox(height: 10),
+      if (_showHostField)
+        AuthInput(
+          labelText: s.host,
+          controller: _authState.hostCtrl,
+          keyboardType: TextInputType.url,
+          // inputCase: InputCase.underline,
+        ),
+      const SizedBox(height: 10),
+      AuthInput(
+        labelText: s.email,
+        controller: _authState.emailCtrl,
+        keyboardType: TextInputType.emailAddress,
+        validator: (value) => validateInput(
+          value: value ?? '',
+          types: [ValidationTypes.empty, ValidationTypes.email],
+        ),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Colors.black,
+        ),
+      ),
+      const SizedBox(height: 10),
+      AuthInput(
+        labelText: s.password,
+        controller: _authState.passwordCtrl,
+        keyboardType: TextInputType.visiblePassword,
+        validator: (value) => validateInput(
+          value: value ?? '',
+          types: [ValidationTypes.empty],
+        ),
+        obscureText: _obscureText,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Colors.black,
+        ),
+        suffix: SizedBox(
+          height: 50.0,
+          child: IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: const Color(0xFF333333),
+            ),
+            onPressed: () => setState(() => _obscureText = !_obscureText),
+          ),
+        ),
+      ),
+      const SizedBox(height: 20),
+      SizedBox(
+        width: double.infinity,
+        child: Observer(
+          builder: (BuildContext context) => _debugRouteToTwoFactor(
+            AMButton(
+              color: Color(0xFF3975B5),
+              radius: BorderRadius.circular(10.0),
+              // shadow: AppColor.enableShadow ? null : BoxShadow(),
+              shadow: const BoxShadow(),
+              isLoading: _authState.isLoggingIn,
+              onPressed: () => _login(context),
+              child: Text(s.login),
+            ),
+          ),
+        ),
+      ),
+    ];
   }
 }

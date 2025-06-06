@@ -48,9 +48,11 @@ deepLink: "{{_appId}}"
 
 #style
 #image
-icon: "{{_dir}}/image/icon.png"
-mainLogo: "{{_dir}}/image/main_logo.png"
-foregroundIcon: "{{_dir}}/image/icon_foreground.png"
+icon: "{{imageDir}}/icon.png"
+mainLogo: "{{imageDir}}/main_logo.png"
+imageDir: "{{_dir}}/image"
+
+foregroundIcon: "{{imageDir}}/icon_foreground.png"
 #theme module
 _themeModule: "{{_dir}}/theme"
 #color

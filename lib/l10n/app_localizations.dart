@@ -1044,6 +1044,12 @@ abstract class AppLocalizations {
   /// No description provided for @enter_host.
   ///
   /// In en, this message translates to:
+  /// **'Sign in'**
+  String get login_form_title;
+
+  /// No description provided for @enter_host.
+  ///
+  /// In en, this message translates to:
   /// **'Could not detect domain from this email, please specify your server URL manually.'**
   String get enter_host;
 
@@ -1058,6 +1064,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login'**
   String get login;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Not account yet?'**
+  String get registration_link_hint;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Register now'**
+  String get registration_link_text;
 
   /// No description provided for @encrypted_file_link.
   ///

@@ -7,17 +7,23 @@ _appIdIos: "com.afterlogic.aurorafiles"
 _iosDeveloperId: "J7AW6VHJK4"
 _appleGroupId: "group.com.afterlogic.aurora"
 
+# Android splash screen
 backgroundColor: "#FFFFFF"
+useBackgroundImage: false
+#=== light ===
 splashGradientTop: "#FFFFFF"
 splashGradientBottom: "#FFFFFF"
+#=== dark ===
 splashGradientTopDark: "#000000"
-splashGradientBottomDark: "#000000"
+splashGradientBottomDark: "#222222"
 
 autodiscoverUrl: "https://{domain}/aurora-autodiscover.json?email={email}"
 privacyPolicy: "https://afterlogic.com/privacy-policy"
+registrationLink: ""
 
 pgpEnable: true
 secureSharingEnable: true
 teamSharingEnable: true
+
 useYubiKit: false
 yubicoFlutterLib: "path: module/mocks/yubico_flutter"

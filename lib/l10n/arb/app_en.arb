@@ -279,8 +279,11 @@
   "please_enter_email": "Please enter email",
   "please_enter_password": "Please enter password",
   "enter_host": "Could not detect domain from this email, please specify your server URL manually.",
+  "login_form_title": "Sign in",
   "host": "Host",
   "login": "Login",
+  "registration_link_hint": "Not account yet?",
+  "registration_link_text": "Register now",
   "encrypted_file_link": "Encrypted file public link:",
   "send": "Send via email",
   "send_encrypted": "Send via encrypted email",
@@ -342,7 +345,7 @@
   "protected_public_link": "Protected public link",
   "send_public_link_to": "Send public link to",
   "copy_password": "You can send the link via email. The password must be sent using a different channel.\n\nYou will be able to retrieve the password when needed.",
-  "copy_encrypted_password": "You can send the link via email. The password must be sent using a different channel.\n\n  Store the password somewhere. You will not be able to recover it otherwise.",
+  "copy_encrypted_password": "You can send the link via email. The password must be sent using a different channel.\n\nStore the password somewhere. You will not be able to recover it otherwise.",
   "encrypted_sign_using_key": "The file is encrypted using {user}'s PGP public key. You can send the link via digitally signed encrypted email.",
   "@encrypted_sign_using_key": {
     "placeholders": {

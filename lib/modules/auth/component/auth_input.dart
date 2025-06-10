@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:theme/auth_input_theme.dart';
 
 class AuthInput extends StatelessWidget {
   final TextStyle? style;
@@ -26,27 +27,23 @@ class AuthInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return TextFormField(
-      style: style,
+      style: isDark 
+        ? AuthInputStyleThemes.dark(context) 
+        : AuthInputStyleThemes.light(context),
       validator: validator,
       keyboardType: keyboardType,
       controller: controller,
       obscureText: obscureText,
       autocorrect: keyboardType != null ? false : true,
       enabled: enabled,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.5),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 10,
-        ),
-        enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white.withOpacity(0.3)), borderRadius: BorderRadius.circular(10.0)),
-        focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white), borderRadius: BorderRadius.circular(10.0)),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
-        alignLabelWithHint: true,
+      decoration: (isDark 
+        ? AuthInputDecorationThemes.dark(context) 
+        : AuthInputDecorationThemes.light(context)
+      ).copyWith(
         labelText: labelText,
         prefixIcon: prefix,
         suffixIcon: suffix,

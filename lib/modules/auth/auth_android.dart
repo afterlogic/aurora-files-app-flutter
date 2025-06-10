@@ -18,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:theme/app_theme.dart';
+import 'package:theme/auth_input_theme.dart';
 
 import 'component/auth_input.dart';
 import 'component/mail_logo.dart';
@@ -139,7 +140,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
       AuroraSnackBar.showSnack(msg: errMsg);
     }
   }
-  Widget theme(Widget widget) {
+  Widget appTheme(Widget widget) {
     if (AppTheme.login != null) {
       return Theme(
         data: AppTheme.login!,
@@ -151,10 +152,12 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   @override
   Widget build(BuildContext context) {
-    final s = context.l10n;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Provider(
       create: (_) => _authState,
-      child: theme(
+      child: appTheme(
         Scaffold(
           body: LoginGradient(
             child: Stack(
@@ -184,38 +187,37 @@ class _AuthAndroidState extends State<AuthAndroid> {
                             Column(
                               children: <Widget>[
                                 
+
                                 Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.7),
-                                    borderRadius: BorderRadius.circular(8),
-                                    // border: Border.all(
-                                    //   color: Colors.white.withOpacity(0.3),
-                                    //   width: 1.0,
-                                    // ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.15),
-                                        blurRadius: 30.0,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
+                                  decoration: isDark 
+                                    ? AuthFormThemes.dark(context) 
+                                    : AuthFormThemes.light(context),
+                                  // decoration: BoxDecoration(
+                                  //   color: Colors.white.withOpacity(0.7),
+                                  //   borderRadius: BorderRadius.circular(8),
+                                  //   // border: Border.all(
+                                  //   //   color: Colors.white.withOpacity(0.3),
+                                  //   //   width: 1.0,
+                                  //   // ),
+                                  //   boxShadow: [
+                                  //     BoxShadow(
+                                  //       color: Colors.black.withOpacity(0.15),
+                                  //       blurRadius: 30.0,
+                                  //       offset: const Offset(0, 4),
+                                  //     ),
+                                  //   ],
+                                  // ),
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 20.0,
                                     vertical: 36.0, 
                                   ),
-                                  child: Column(
-                                    children: _buildTextFields(),
-                                    
-                                  ),
+                                  child: _buildTextFields(),
                                 ),
 
-                                   
-                                
-                                
-                                if (BuildProperty.registrationLink.isNotEmpty)
+                                if (BuildProperty.registrationLink.isNotEmpty) ...[
                                   const SizedBox(height: 30.0),
                                   _buildRegisterLink(),
+                                ],
 
                                 const SizedBox(height: 50),
                               ]
@@ -252,20 +254,21 @@ class _AuthAndroidState extends State<AuthAndroid> {
   }
 
   Widget _buildRegisterLink() {
+    final s = context.l10n;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        const Text(
-          'Not account yet? ',
-          style: TextStyle(
+        Text(
+          '${s.registration_link_hint} ',
+          style: const TextStyle(
             color: Color(0xFF041844),
             fontSize: 18.0,
           ),
         ),
         GestureDetector(
-          child: const Text(
-            'Register now',
-            style: TextStyle(
+          child: Text(
+            s.registration_link_text,
+            style: const TextStyle(
               color: Color(0xFF3975B5),
               fontSize: 18.0,
             ),
@@ -276,83 +279,85 @@ class _AuthAndroidState extends State<AuthAndroid> {
     );
   }
 
-  List<Widget> _buildTextFields() {
+  Widget _buildTextFields() {
     final s = context.l10n;
-    return [
-      Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          'Sign in',
-          textAlign: TextAlign.left,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontSize: 24.0,
-            fontWeight: FontWeight.w600,
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            s.login_form_title,
+            textAlign: TextAlign.left,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: 24.0,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        if (_showHostField)
+          AuthInput(
+            labelText: s.host,
+            controller: _authState.hostCtrl,
+            keyboardType: TextInputType.url,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.black,
+            ),
+            // inputCase: InputCase.underline,
+          ),
+        const SizedBox(height: 10),
+        AuthInput(
+          labelText: s.email,
+          controller: _authState.emailCtrl,
+          keyboardType: TextInputType.emailAddress,
+          validator: (value) => validateInput(
+            value: value ?? '',
+            types: [ValidationTypes.empty, ValidationTypes.email],
+          ),
+        ),
+        const SizedBox(height: 10),
+        AuthInput(
+          labelText: s.password,
+          controller: _authState.passwordCtrl,
+          keyboardType: TextInputType.visiblePassword,
+          validator: (value) => validateInput(
+            value: value ?? '',
+            types: [ValidationTypes.empty],
+          ),
+          obscureText: _obscureText,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Colors.black,
           ),
-        ),
-      ),
-      const SizedBox(height: 10),
-      if (_showHostField)
-        AuthInput(
-          labelText: s.host,
-          controller: _authState.hostCtrl,
-          keyboardType: TextInputType.url,
-          // inputCase: InputCase.underline,
-        ),
-      const SizedBox(height: 10),
-      AuthInput(
-        labelText: s.email,
-        controller: _authState.emailCtrl,
-        keyboardType: TextInputType.emailAddress,
-        validator: (value) => validateInput(
-          value: value ?? '',
-          types: [ValidationTypes.empty, ValidationTypes.email],
-        ),
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Colors.black,
-        ),
-      ),
-      const SizedBox(height: 10),
-      AuthInput(
-        labelText: s.password,
-        controller: _authState.passwordCtrl,
-        keyboardType: TextInputType.visiblePassword,
-        validator: (value) => validateInput(
-          value: value ?? '',
-          types: [ValidationTypes.empty],
-        ),
-        obscureText: _obscureText,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Colors.black,
-        ),
-        suffix: SizedBox(
-          height: 50.0,
-          child: IconButton(
-            icon: Icon(
-              _obscureText ? Icons.visibility : Icons.visibility_off,
-              color: const Color(0xFF333333),
-            ),
-            onPressed: () => setState(() => _obscureText = !_obscureText),
-          ),
-        ),
-      ),
-      const SizedBox(height: 20),
-      SizedBox(
-        width: double.infinity,
-        child: Observer(
-          builder: (BuildContext context) => _debugRouteToTwoFactor(
-            AMButton(
-              color: Color(0xFF3975B5),
-              radius: BorderRadius.circular(10.0),
-              // shadow: AppColor.enableShadow ? null : BoxShadow(),
-              shadow: const BoxShadow(),
-              isLoading: _authState.isLoggingIn,
-              onPressed: () => _login(context),
-              child: Text(s.login),
+          suffix: SizedBox(
+            height: 50.0,
+            child: IconButton(
+              icon: Icon(
+                _obscureText ? Icons.visibility : Icons.visibility_off,
+                color: const Color(0xFF333333),
+              ),
+              onPressed: () => setState(() => _obscureText = !_obscureText),
             ),
           ),
         ),
-      ),
-    ];
+        const SizedBox(height: 20),
+        SizedBox(
+          width: double.infinity,
+          child: Observer(
+            builder: (BuildContext context) => _debugRouteToTwoFactor(
+              AMButton(
+                color: AppTheme.loginButtonColor,
+                radius: AppTheme.loginButtonRadius,
+                // shadow: AppColor.enableShadow ? null : BoxShadow(),
+                shadow: const BoxShadow(),
+                isLoading: _authState.isLoggingIn,
+                onPressed: () => _login(context),
+                child: Text(s.login),
+              ),
+            ),
+          ),
+        ),
+      ]
+    );
   }
 }

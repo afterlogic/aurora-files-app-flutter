@@ -516,10 +516,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enter_host => 'Could not detect domain from this email, please specify your server URL manually.';
 
   @override
+  String get login_form_title => 'Sign in';
+
+  @override
   String get host => 'Host';
 
   @override
   String get login => 'Login';
+  
+  @override
+  String get registration_link_hint => 'Not account yet?';
+  
+  @override
+  String get registration_link_text => 'Register now';
 
   @override
   String get encrypted_file_link => 'Encrypted file public link:';
@@ -629,7 +638,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy_password => 'You can send the link via email. The password must be sent using a different channel.\n\nYou will be able to retrieve the password when needed.';
 
   @override
-  String get copy_encrypted_password => 'You can send the link via email. The password must be sent using a different channel.\n\n  Store the password somewhere. You will not be able to recover it otherwise.';
+  String get copy_encrypted_password => 'You can send the link via email. The password must be sent using a different channel.\n\nStore the password somewhere. You will not be able to recover it otherwise.';
 
   @override
   String encrypted_sign_using_key(String user) {

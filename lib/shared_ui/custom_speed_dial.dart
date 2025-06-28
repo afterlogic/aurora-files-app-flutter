@@ -1,3 +1,4 @@
+import 'package:aurorafiles/build_property.dart';
 import 'package:flutter/material.dart';
 
 class CustomSpeedDial extends ModalRoute<void> {
@@ -17,7 +18,9 @@ class CustomSpeedDial extends ModalRoute<void> {
   bool get barrierDismissible => false;
 
   @override
-  Color get barrierColor => Colors.black.withOpacity(0.4);
+  Color get barrierColor => BuildProperty.flatDesign
+      ? Colors.transparent
+      : Colors.black.withOpacity(0.4);
 
   @override
   String? get barrierLabel => null;
@@ -141,6 +144,7 @@ class MiniFab extends StatelessWidget {
       backgroundColor: Theme.of(context).cardColor,
       foregroundColor: Theme.of(context).iconTheme.color?.withOpacity(0.5),
       mini: true,
+      elevation: BuildProperty.flatDesign ? 0.0 : null,
       onPressed: onPressed == null
           ? null
           : () {

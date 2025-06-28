@@ -531,6 +531,9 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         child: Scaffold(
           key: _fileViewerScaffoldKey,
           appBar: AMAppBar(
+            shadow: BuildProperty.flatDesign
+                ? const BoxShadow(color: Colors.transparent)
+                : null,
             actions: widget.filesState.isOfflineMode
                 ? [
                     IconButton(

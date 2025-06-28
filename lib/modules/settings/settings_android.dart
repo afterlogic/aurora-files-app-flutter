@@ -2,6 +2,7 @@ import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
+import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/auth/auth_route.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
@@ -12,12 +13,12 @@ import 'package:aurorafiles/modules/settings/screens/logger/logger_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+
 import 'settings_navigator.dart';
-import 'package:aurorafiles/shared_ui/layout_config.dart';
-import 'package:aurorafiles/modules/app_navigation.dart';
 
 class SettingsAndroid extends StatefulWidget {
   const SettingsAndroid({super.key});
@@ -115,41 +116,57 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
       body = Scaffold(
         appBar: AMAppBar(
           title: Text(s.settings),
+          shadow: BuildProperty.flatDesign
+              ? const BoxShadow(color: Colors.transparent)
+              : null,
         ),
-        body: Row(
+        body: Column(
           children: [
-            ClipRRect(
-              child: SizedBox(
-                width: 304,
-                child: Scaffold(
-                  body: DecoratedBox(
-                    position: DecorationPosition.foreground,
-                    decoration: const BoxDecoration(
-                        border: Border(right: BorderSide(width: 0.2))),
-                    child: Drawer(
-                      child: ListTileTheme(
-                        style: ListTileStyle.drawer,
-                        selectedColor: Theme.of(context).colorScheme.secondary,
-                        child: SafeArea(child: body),
+            if (BuildProperty.flatDesign)
+              Divider(
+                height: 1.0,
+                thickness: 1.0,
+                color: Theme.of(context).dividerColor,
+              ),
+            Expanded(
+              child: Row(
+                children: [
+                  ClipRRect(
+                    child: SizedBox(
+                      width: 304,
+                      child: Scaffold(
+                        body: DecoratedBox(
+                          position: DecorationPosition.foreground,
+                          decoration: const BoxDecoration(
+                              border: Border(right: BorderSide(width: 0.2))),
+                          child: Drawer(
+                            child: ListTileTheme(
+                              style: ListTileStyle.drawer,
+                              selectedColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              child: SafeArea(child: body),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Flexible(
-              flex: 3,
-              child: ClipRRect(
-                child: Scaffold(
-                  body: SettingsNavigatorWidget(
-                    key: navigatorKey,
-                    onUpdate: () {
-                      setState(() {});
-                    },
-                    initialRoute: CommonSettingsRoute.name,
-                    routeFactory: AppNavigation.onGenerateRoute,
+                  Flexible(
+                    flex: 3,
+                    child: ClipRRect(
+                      child: Scaffold(
+                        body: SettingsNavigatorWidget(
+                          key: navigatorKey,
+                          onUpdate: () {
+                            setState(() {});
+                          },
+                          initialRoute: CommonSettingsRoute.name,
+                          routeFactory: AppNavigation.onGenerateRoute,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ],
@@ -163,8 +180,21 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               ? null
               : AMAppBar(
                   title: Text(s.settings),
+                  shadow: BuildProperty.flatDesign
+                      ? const BoxShadow(color: Colors.transparent)
+                      : null,
                 ),
-          body: body,
+          body: Column(
+            children: [
+              if (BuildProperty.flatDesign)
+                Divider(
+                  height: 1.0,
+                  thickness: 1.0,
+                  color: Theme.of(context).dividerColor,
+                ),
+              Expanded(child: body),
+            ],
+          ),
         ));
   }
 

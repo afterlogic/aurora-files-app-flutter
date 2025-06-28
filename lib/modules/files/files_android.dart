@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/processing_file.dart';
 import 'package:aurorafiles/models/storage.dart';
@@ -16,6 +17,7 @@ import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:connectivity/connectivity.dart';
@@ -33,7 +35,6 @@ import 'dialogs/add_folder_dialog.dart';
 import 'dialogs/delete_confirmation_dialog.dart';
 import 'files_route.dart';
 import 'state/files_page_state.dart';
-import 'package:aurorafiles/shared_ui/layout_config.dart';
 
 class FilesAndroid extends StatefulWidget {
   final String path;
@@ -403,7 +404,12 @@ class _FilesAndroidState extends State<FilesAndroid>
                     isAppBar: false,
                   ),
                 ),
-                const Divider(height: 1),
+                if (BuildProperty.flatDesign)
+                  Divider(
+                    height: 1.0,
+                    thickness: 1.0,
+                    color: Theme.of(context).dividerColor,
+                  ),
                 Expanded(child: body),
               ],
             ),
@@ -450,7 +456,17 @@ class _FilesAndroidState extends State<FilesAndroid>
                   child: FilesAppBar(
                     onDeleteFiles: _deleteSelected,
                   )),
-              body: body,
+              body: Column(
+                children: [
+                  if (BuildProperty.flatDesign)
+                    Divider(
+                      height: 1.0,
+                      thickness: 1.0,
+                      color: Theme.of(context).dividerColor,
+                    ),
+                  Expanded(child: body),
+                ],
+              ),
               floatingActionButton: Observer(
                 builder: (_) => _filesState.isShareUpload ||
                         _filesState.isMoveModeEnabled ||

@@ -17,6 +17,28 @@ import 'package:provider/provider.dart';
 
 import '../files_route.dart';
 
+// Helper функция для создания AMAppBar с поддержкой плоского дизайна
+AMAppBar _createAppBarWithFlatDesign({
+  Key? key,
+  Widget? leading,
+  Widget? title,
+  List<Widget>? actions,
+  Color? backgroundColor,
+  PreferredSizeWidget? bottom,
+}) {
+  return AMAppBar(
+    key: key,
+    leading: leading,
+    title: title,
+    actions: actions,
+    backgroundColor: backgroundColor,
+    bottom: bottom,
+    shadow: BuildProperty.flatDesign
+        ? const BoxShadow(color: Colors.transparent)
+        : null,
+  );
+}
+
 class FilesAppBar extends StatefulWidget {
   final Function(BuildContext) onDeleteFiles;
   final bool isAppBar;
@@ -111,7 +133,7 @@ class _FilesAppBarState extends State<FilesAppBar>
     final theme = Theme.of(context);
 
     if (widget.isAppBar && isTablet) {
-      return AMAppBar(
+      return _createAppBarWithFlatDesign(
         key: const Key("default"),
         leading: _filesPageState.pagePath.isNotEmpty
             ? IconButton(
@@ -192,7 +214,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else if (_filesState.isMoveModeEnabled || _filesState.isShareUpload) {
       if (!widget.isAppBar) {
-        return AMAppBar(
+        return _createAppBarWithFlatDesign(
           key: const Key("move"),
           backgroundColor: theme.colorScheme.secondary,
           leading: IconButton(
@@ -221,7 +243,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         );
       }
 
-      return AMAppBar(
+      return _createAppBarWithFlatDesign(
         key: const Key("move"),
         backgroundColor: theme.colorScheme.secondary,
         leading: _filesPageState.pagePath.isNotEmpty
@@ -288,7 +310,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else if (_filesPageState.isSearchMode) {
       if (!widget.isAppBar) {
-        return AMAppBar(
+        return _createAppBarWithFlatDesign(
           key: const Key("search"),
           leading: Padding(
             padding: const EdgeInsets.only(left: 16),
@@ -388,7 +410,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       );
     } else {
       if (!widget.isAppBar) {
-        return AMAppBar(
+        return _createAppBarWithFlatDesign(
           key: const Key("default"),
           title: InkWell(
             onTap: () => _filesPageState.isSearchMode = true,
@@ -405,7 +427,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         );
       }
 
-      return AMAppBar(
+      return _createAppBarWithFlatDesign(
         key: const Key("default"),
         leading: !widget.isAppBar
             ? const SizedBox.shrink()

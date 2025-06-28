@@ -1,3 +1,5 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -5,7 +7,6 @@ import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 
 class StorageInfoWidget extends StatelessWidget {
   final bool fromDrawer;
@@ -22,6 +23,9 @@ class StorageInfoWidget extends StatelessWidget {
           ? null
           : AMAppBar(
               title: Text(s.storage_info),
+              shadow: BuildProperty.flatDesign
+                  ? const BoxShadow(color: Colors.transparent)
+                  : null,
             ),
       body: AppStore.filesState.quota == null
           ? Padding(

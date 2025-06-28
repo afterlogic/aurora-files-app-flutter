@@ -1,3 +1,5 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
@@ -5,7 +7,6 @@ import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 
 import 'components/theme_selection_dialog.dart';
 
@@ -59,6 +60,9 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
           ? null
           : AMAppBar(
               title: Text(s.common),
+              shadow: BuildProperty.flatDesign
+                  ? const BoxShadow(color: Colors.transparent)
+                  : null,
             ),
       body: ListView(
         children: <Widget>[

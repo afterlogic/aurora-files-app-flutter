@@ -1,29 +1,30 @@
 #variables
-appName: "Aurora Files"
-version: "2.4.0"
+appName: 'Aurora Files'
+version: '2.4.0'
 
-_appId: "com.afterlogic.aurora.files"
-_appIdIos: "com.afterlogic.aurorafiles"
-_iosDeveloperId: "J7AW6VHJK4"
-_appleGroupId: "group.com.afterlogic.aurora"
+_appId: 'com.afterlogic.aurora.files'
+_appIdIos: 'com.afterlogic.aurorafiles'
+_iosDeveloperId: 'J7AW6VHJK4'
+_appleGroupId: 'group.com.afterlogic.aurora'
 
 # Android splash screen
-backgroundColor: "#FFFFFF"
+backgroundColor: '#FFFFFF'
 useBackgroundImage: false
 #=== light ===
-splashGradientTop: "#FFFFFF"
-splashGradientBottom: "#FFFFFF"
+splashGradientTop: '#FFFFFF'
+splashGradientBottom: '#FFFFFF'
 #=== dark ===
-splashGradientTopDark: "#000000"
-splashGradientBottomDark: "#222222"
+splashGradientTopDark: '#000000'
+splashGradientBottomDark: '#222222'
 
-autodiscoverUrl: "https://{domain}/aurora-autodiscover.json?email={email}"
-privacyPolicy: "https://afterlogic.com/privacy-policy"
-registrationLink: ""
+autodiscoverUrl: 'https://{domain}/aurora-autodiscover.json?email={email}'
+privacyPolicy: 'https://afterlogic.com/privacy-policy'
+registrationLink: ''
 
 pgpEnable: true
 secureSharingEnable: true
 teamSharingEnable: true
+flatDesign: false
 
 useYubiKit: false
-yubicoFlutterLib: "path: module/mocks/yubico_flutter"
+yubicoFlutterLib: 'path: module/mocks/yubico_flutter'

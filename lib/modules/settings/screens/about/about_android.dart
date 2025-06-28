@@ -1,12 +1,11 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-
-import 'package:aurorafiles/shared_ui/layout_config.dart';
 
 class AboutAndroid extends StatefulWidget {
   const AboutAndroid({super.key});
@@ -66,6 +65,9 @@ class _AboutAndroidState extends State<AboutAndroid> {
           ? null
           : AMAppBar(
               title: Text(s.about),
+              shadow: BuildProperty.flatDesign
+                  ? const BoxShadow(color: Colors.transparent)
+                  : null,
             ),
       body: loading
           ? const Center(child: CircularProgressIndicator())

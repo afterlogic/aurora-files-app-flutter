@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurorafiles/build_property.dart';
-import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/http/interceptor.dart';
+import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_navigation.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
@@ -98,26 +98,26 @@ class _AppState extends State<App> {
               snapshot.hasData) {
             _updateAppSettings();
             return LoggerControllerWidget.wrap(
-                Observer(
-              builder: (_) {
-                final theme = _getTheme(_settingsState.isDarkTheme);
-                return MaterialApp(
-                  navigatorKey: _navigatorKey,
-                  scaffoldMessengerKey: _scaffoldMessengerKey,
-                  debugShowCheckedModeBanner: false,
-                  title: BuildProperty.appName,
-                  theme: theme ?? AppTheme.light,
-                  darkTheme: theme ?? AppTheme.dark,
-                  onGenerateRoute: AppNavigation.onGenerateRoute,
-                  localizationsDelegates:
-                      AppLocalizations.localizationsDelegates,
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  initialRoute: _canEnterMainApp(snapshot.data)
-                      ? FilesRoute.name
-                      : AuthRoute.name,
-                );
-              },
-                ),
+              Observer(
+                builder: (_) {
+                  final theme = _getTheme(_settingsState.isDarkTheme);
+                  return MaterialApp(
+                    navigatorKey: _navigatorKey,
+                    scaffoldMessengerKey: _scaffoldMessengerKey,
+                    debugShowCheckedModeBanner: false,
+                    title: BuildProperty.appName,
+                    theme: theme ?? AppTheme.light,
+                    darkTheme: theme ?? AppTheme.dark,
+                    onGenerateRoute: AppNavigation.onGenerateRoute,
+                    localizationsDelegates:
+                        AppLocalizations.localizationsDelegates,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    initialRoute: _canEnterMainApp(snapshot.data)
+                        ? FilesRoute.name
+                        : AuthRoute.name,
+                  );
+                },
+              ),
             );
           } else if (snapshot.hasError) {
             final err = snapshot.error.toString();

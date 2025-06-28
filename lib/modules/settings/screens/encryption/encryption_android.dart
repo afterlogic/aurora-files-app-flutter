@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/add_key_dialog.dart';
@@ -168,28 +169,17 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
       child: Observer(
         builder: (_) => Scaffold(
           key: _scaffoldKey,
-          appBar: isTablet ? null : AMAppBar(title: Text(s.encryption)),
+          appBar: isTablet
+              ? null
+              : AMAppBar(
+                  title: Text(s.encryption),
+                  shadow: BuildProperty.flatDesign
+                      ? const BoxShadow(color: Colors.transparent)
+                      : null,
+                ),
           body: ListView(
             padding: const EdgeInsets.all(16.0),
             children: <Widget>[
-//              SwitchListTile.adaptive(
-//                value: _settingsState.isParanoidEncryptionEnabled,
-//                activeColor: Theme.of(context).primaryColor,
-//                onChanged: (bool v) {
-//                  _settingsState.isParanoidEncryptionEnabled = v;
-//                  final filesState = AppStore.filesState;
-//                  if (filesState.selectedStorage.type == "encrypted") {
-//                    filesState.selectedStorage =
-//                        filesState.currentStorages[0];
-//                        filesState.updateFilesCb();
-//                  }
-//                },
-//                title: Text("Enable Paranoid Encryption"),
-//              ),
-//              Padding(
-//                padding: EdgeInsets.symmetric(horizontal: 16.0),
-//                child: Divider(height: 0),
-//              ),
               Text(
                 s.encryption_description,
                 style: Theme.of(context).textTheme.caption,

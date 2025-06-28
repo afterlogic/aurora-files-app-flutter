@@ -1,26 +1,26 @@
 #variables
-appName: "my.app.id"
-version: "1.0.0"
+appName: 'my.app.id'
+version: '1.0.0'
 
 #Android App ID
-_appId: ""
+_appId: ''
 #iOS App ID
-_appIdIos: ""
+_appIdIos: ''
 #iOS Developer ID
-_iosDeveloperId: ""
+_iosDeveloperId: ''
 #iOS App Group ID
-_appleGroupId: ""
+_appleGroupId: ''
 
 #Colors for android splash screen
-backgroundColor: "#FFFFFF"
-splashGradientTop: "#FFFFFF"
-splashGradientBottom: "#FFFFFF"
-splashGradientTopDark: "#000000"
-splashGradientBottomDark: "#000000"
+backgroundColor: '#FFFFFF'
+splashGradientTop: '#FFFFFF'
+splashGradientBottom: '#FFFFFF'
+splashGradientTopDark: '#000000'
+splashGradientBottomDark: '#000000'
 
-autodiscoverUrl: "https://{domain}/aurora-autodiscover.json?email={email}"
-privacyPolicy: ""
-termsOfService: ""
+autodiscoverUrl: 'https://{domain}/aurora-autodiscover.json?email={email}'
+privacyPolicy: ''
+termsOfService: ''
 
 canUpgradePlan: false
 legacyPgpKey: false
@@ -30,9 +30,10 @@ secureSharingEnable: false
 supportAllowAccess: false
 useMainLogo: true
 teamSharingEnable: false
+flatDesign: false
 
 # fido
 useYubiKit: false
-yubicoFlutterLib: "path: module/mocks/yubico_flutter"
+yubicoFlutterLib: 'path: module/mocks/yubico_flutter'
 #useYubiKit: true
 #yubicoFlutterLib: "git: https://github.com/afterlogic/yubico_flutter"

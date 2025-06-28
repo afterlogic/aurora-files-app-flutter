@@ -1,5 +1,6 @@
 import 'package:aurora_ui_kit/components/am_circle_icon.dart';
 import 'package:aurorafiles/assets/asset.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/models/storage.dart';
@@ -34,158 +35,170 @@ class MainDrawer extends StatelessWidget {
     final s = context.l10n;
     final theme = Theme.of(context);
     return Drawer(
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            InkWell(
-              onTap: null,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        AppStore.authState.friendlyName ?? "",
-                        style: theme.textTheme.headline6,
-                      ),
-                      const SizedBox(height: 8.0),
-                      Row(
-                        children: <Widget>[
-                          Text(authState.userEmail ?? ''),
-                        ],
-                      ),
-                    ],
-                  ),
+      child: Container(
+        decoration: BuildProperty.flatDesign
+            ? const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                      "${BuildProperty.imageDir}/login_background.png"),
+                  fit: BoxFit.cover,
                 ),
-              ),
-            ),
-            Observer(builder: (_) {
-              final quota = filesState.quota ?? Quota(null, null);
-              if (filesState.quota != null) {
-                return GestureDetector(
-                  onTap: () => _showAvailableSpaceInfo(context, quota),
-                  child: Tooltip(
-                    showDuration: const Duration(seconds: 2),
-                    message: s.quota_using(
-                      (quota.progress * 100).round().toString(),
-                      quota.limitFormatted,
-                    ),
-                    child: LinearProgressIndicator(
-                      value: quota.progress,
-                      backgroundColor: theme.disabledColor.withOpacity(0.15),
-                    ),
-                  ),
-                );
-              } else {
-                return const SizedBox();
-              }
-            }),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () {
-                  final futures = [
-                    filesState.refreshQuota(),
-                    filesState.onGetStorages(),
-                  ];
-                  return Future.wait(futures);
-                },
-                child: Observer(
-                  builder: (_) => ListView(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    children: <Widget>[
-                      ...filesState.currentStorages.map((Storage storage) {
-                        if (storage.type == StorageType.encrypted &&
-                            !settingsState.isParanoidEncryptionEnabled) {
-                          return const SizedBox.shrink();
-                        }
-                        bool enable = true;
-                        if (filesState.isMoveModeEnabled ||
-                            filesState.isShareUpload) {
-                          if (storage.type == StorageType.shared) {
-                            enable = false;
-                          }
-                        }
-                        if (filesState.isMoveModeEnabled) {
-                          final copyFromEncrypted = StorageTypeHelper.toEnum(
-                                  filesState.filesToMoveCopy.first.type) ==
-                              StorageType.encrypted;
-                          if (copyFromEncrypted) {
-                            if (storage.type != StorageType.encrypted) {
-                              enable = false;
-                            }
-                          } else {
-                            if (storage.type == StorageType.encrypted) {
-                              enable = false;
-                            }
-                          }
-                        }
-                        final isSelected =
-                            filesState.selectedStorage.type == storage.type;
-                        final color =
-                            isSelected ? Theme.of(context).primaryColor : null;
-                        return ListTile(
-                          enabled: enable,
-                          selected: isSelected,
-                          leading: _getStorageIcon(storage.type, color),
-                          title: Text(storage.displayName),
-                          onTap: () async {
-                            filesState.selectedStorage = storage;
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              FilesRoute.name,
-                              (r) => false,
-                              arguments: FilesScreenArguments(
-                                path: "",
-                              ),
-                            );
-                          },
-                        );
-                      }),
-                      const Divider(),
-                      SwitchListTile.adaptive(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: filesState.isOfflineMode,
-                        onChanged: (bool val) async {
-                          if (Navigator.canPop(context)) {
-                            Navigator.popUntil(
-                              context,
-                              ModalRoute.withName(FilesRoute.name),
-                            );
-                          }
-                          Navigator.pushReplacementNamed(
-                              context, FilesRoute.name,
-                              arguments: FilesScreenArguments(path: ""));
-                          filesState.toggleOffline(val);
-                        },
-                        title: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading:
-                              const AMCircleIcon(Icons.airplanemode_active),
-                          title: Text(s.offline_mode),
+              )
+            : null,
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              InkWell(
+                onTap: null,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          AppStore.authState.friendlyName ?? "",
+                          style: theme.textTheme.headline6,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8.0),
+                        Row(
+                          children: <Widget>[
+                            Text(authState.userEmail ?? ''),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            const Divider(
-              height: 0,
-            ),
-            ListTile(
-              leading: const AMCircleIcon(Icons.settings),
-              title: Text(s.settings),
-              onTap: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.of(context).pop();
+              Observer(builder: (_) {
+                final quota = filesState.quota ?? Quota(null, null);
+                if (filesState.quota != null) {
+                  return GestureDetector(
+                    onTap: () => _showAvailableSpaceInfo(context, quota),
+                    child: Tooltip(
+                      showDuration: const Duration(seconds: 2),
+                      message: s.quota_using(
+                        (quota.progress * 100).round().toString(),
+                        quota.limitFormatted,
+                      ),
+                      child: LinearProgressIndicator(
+                        value: quota.progress,
+                        backgroundColor: theme.disabledColor.withOpacity(0.15),
+                      ),
+                    ),
+                  );
+                } else {
+                  return const SizedBox();
                 }
-                Navigator.pushNamed(context, SettingsRoute.name);
-              },
-            ),
-          ],
+              }),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () {
+                    final futures = [
+                      filesState.refreshQuota(),
+                      filesState.onGetStorages(),
+                    ];
+                    return Future.wait(futures);
+                  },
+                  child: Observer(
+                    builder: (_) => ListView(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      children: <Widget>[
+                        ...filesState.currentStorages.map((Storage storage) {
+                          if (storage.type == StorageType.encrypted &&
+                              !settingsState.isParanoidEncryptionEnabled) {
+                            return const SizedBox.shrink();
+                          }
+                          bool enable = true;
+                          if (filesState.isMoveModeEnabled ||
+                              filesState.isShareUpload) {
+                            if (storage.type == StorageType.shared) {
+                              enable = false;
+                            }
+                          }
+                          if (filesState.isMoveModeEnabled) {
+                            final copyFromEncrypted = StorageTypeHelper.toEnum(
+                                    filesState.filesToMoveCopy.first.type) ==
+                                StorageType.encrypted;
+                            if (copyFromEncrypted) {
+                              if (storage.type != StorageType.encrypted) {
+                                enable = false;
+                              }
+                            } else {
+                              if (storage.type == StorageType.encrypted) {
+                                enable = false;
+                              }
+                            }
+                          }
+                          final isSelected =
+                              filesState.selectedStorage.type == storage.type;
+                          final color = isSelected
+                              ? Theme.of(context).primaryColor
+                              : null;
+                          return ListTile(
+                            enabled: enable,
+                            selected: isSelected,
+                            leading: _getStorageIcon(storage.type, color),
+                            title: Text(storage.displayName),
+                            onTap: () async {
+                              filesState.selectedStorage = storage;
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                FilesRoute.name,
+                                (r) => false,
+                                arguments: FilesScreenArguments(
+                                  path: "",
+                                ),
+                              );
+                            },
+                          );
+                        }),
+                        const Divider(),
+                        SwitchListTile.adaptive(
+                          activeColor: Theme.of(context).primaryColor,
+                          value: filesState.isOfflineMode,
+                          onChanged: (bool val) async {
+                            if (Navigator.canPop(context)) {
+                              Navigator.popUntil(
+                                context,
+                                ModalRoute.withName(FilesRoute.name),
+                              );
+                            }
+                            Navigator.pushReplacementNamed(
+                                context, FilesRoute.name,
+                                arguments: FilesScreenArguments(path: ""));
+                            filesState.toggleOffline(val);
+                          },
+                          title: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading:
+                                const AMCircleIcon(Icons.airplanemode_active),
+                            title: Text(s.offline_mode),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const Divider(
+                height: 0,
+              ),
+              ListTile(
+                leading: const AMCircleIcon(Icons.settings),
+                title: Text(s.settings),
+                onTap: () {
+                  if (Navigator.canPop(context)) {
+                    Navigator.of(context).pop();
+                  }
+                  Navigator.pushNamed(context, SettingsRoute.name);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

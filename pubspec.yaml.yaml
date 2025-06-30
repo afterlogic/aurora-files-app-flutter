@@ -138,6 +138,9 @@ flutter:
     - lib/assets/svg/
     - {{imageDir}}/
     - {{imageDir}}/m-app-bar/
+    - {{imageDir}}/settings/
+    - {{imageDir}}/settings/common/
+    - {{imageDir}}/settings/menu/
     - {{icon}}
     - {{mainLogo}}
 

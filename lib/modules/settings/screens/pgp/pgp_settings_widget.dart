@@ -57,77 +57,101 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
                       onPressed: () => Navigator.of(context).pop(),
                     )
                   : null,
+              shadow: BuildProperty.flatDesign
+                  ? const BoxShadow(color: Colors.transparent)
+                  : null,
             ),
-      body: StreamWidget<KeysState>(
-        keysState,
-        (context, state) {
-          if (state.isProgress) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      body: Column(
+        children: [
+          if (BuildProperty.flatDesign)
+            Divider(
+              height: 1.0,
+              thickness: 1.0,
+              color: Theme.of(context).dividerColor,
+            ),
+          Expanded(
+            child: StreamWidget<KeysState>(
+              keysState,
+              (context, state) {
+                if (state.isProgress) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-          final publicKeys =
-              state.public.map((item) => KeyWidget(item, openKey)).toList();
-          final externalKeys =
-              state.external.map((item) => KeyWidget(item, openKey)).toList();
-          final privateKeys =
-              state.private.map((item) => KeyWidget(item, openKey)).toList();
+                final publicKeys = state.public
+                    .map((item) => KeyWidget(item, openKey))
+                    .toList();
+                final externalKeys = state.external
+                    .map((item) => KeyWidget(item, openKey))
+                    .toList();
+                final privateKeys = state.private
+                    .map((item) => KeyWidget(item, openKey))
+                    .toList();
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    CheckboxListTile(
-                      value: state.storePassword,
-                      title: Text(s.label_store_password_in_session),
-                      onChanged: (bool? value) {
-                        if (value != null) _presenter.setStorePassword(value);
-                      },
-                    ),
-                    if (publicKeys.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10, top: 25),
-                        child: Text(
-                          s.public_keys,
-                          style: theme.textTheme.subtitle1,
-                        ),
-                      ),
-                    if (publicKeys.isNotEmpty) Column(children: publicKeys),
-                    if (privateKeys.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10, top: 25),
-                        child: Text(
-                          s.private_keys,
-                          style: theme.textTheme.subtitle1,
-                        ),
-                      ),
-                    if (privateKeys.isNotEmpty) Column(children: privateKeys),
-                    if (externalKeys.isNotEmpty)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10, top: 25),
-                            child: Text(
-                              s.label_pgp_contact_public_keys,
-                              style: theme.textTheme.subtitle1,
-                            ),
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        children: <Widget>[
+                          CheckboxListTile(
+                            value: state.storePassword,
+                            title: Text(s.label_store_password_in_session),
+                            onChanged: (bool? value) {
+                              if (value != null)
+                                _presenter.setStorePassword(value);
+                            },
                           ),
-                          ...externalKeys,
+                          if (publicKeys.isNotEmpty)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 10, top: 25),
+                              child: Text(
+                                s.public_keys,
+                                style: theme.textTheme.subtitle1,
+                              ),
+                            ),
+                          if (publicKeys.isNotEmpty)
+                            Column(children: publicKeys),
+                          if (privateKeys.isNotEmpty)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 10, top: 25),
+                              child: Text(
+                                s.private_keys,
+                                style: theme.textTheme.subtitle1,
+                              ),
+                            ),
+                          if (privateKeys.isNotEmpty)
+                            Column(children: privateKeys),
+                          if (externalKeys.isNotEmpty)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, top: 25),
+                                  child: Text(
+                                    s.label_pgp_contact_public_keys,
+                                    style: theme.textTheme.subtitle1,
+                                  ),
+                                ),
+                                ...externalKeys,
+                              ],
+                            ),
                         ],
                       ),
+                    ),
+                    buttons(context, state, externalKeys),
                   ],
-                ),
-              ),
-              buttons(context, state, externalKeys),
-            ],
-          );
-        },
-        initialData: KeysState([], [], [], null, true),
+                );
+              },
+              initialData: KeysState([], [], [], null, true),
+            ),
+          ),
+        ],
       ),
     );
   }

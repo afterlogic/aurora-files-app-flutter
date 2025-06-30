@@ -184,15 +184,27 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
                       ? const BoxShadow(color: Colors.transparent)
                       : null,
                 ),
-          body: ListView(
-            padding: const EdgeInsets.all(16.0),
-            children: <Widget>[
-              Text(
-                s.encryption_description,
-                style: Theme.of(context).textTheme.caption,
+          body: Column(
+            children: [
+              if (BuildProperty.flatDesign)
+                Divider(
+                  height: 1.0,
+                  thickness: 1.0,
+                  color: Theme.of(context).dividerColor,
+                ),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(16.0),
+                  children: <Widget>[
+                    Text(
+                      s.encryption_description,
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                    ..._buildAddingKey(),
+                    ..._buildKeyOptions(),
+                  ],
+                ),
               ),
-              ..._buildAddingKey(),
-              ..._buildKeyOptions(),
             ],
           ),
         ),

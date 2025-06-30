@@ -34,66 +34,80 @@ class StorageInfoWidget extends StatelessWidget {
                   ? const BoxShadow(color: Colors.transparent)
                   : null,
             ),
-      body: AppStore.filesState.quota == null
-          ? Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Row(
-                children: <Widget>[
-                  const Icon(Icons.error),
-                  const SizedBox(width: 18.0),
-                  Flexible(
-                      child: Text(
-                          AppStore.filesState.isOfflineMode
-                              ? s.offline_information_is_not_available
-                              : s.information_is_not_available,
-                          style: theme.textTheme.subtitle1)),
-                ],
-              ),
-            )
-          : RefreshIndicator(
-              onRefresh: AppStore.filesState.refreshQuota,
-              child: Observer(
-                builder: (_) {
-                  final quota = AppStore.filesState.quota ?? Quota(null, null);
-
-                  return ListView(
-                    padding: const EdgeInsets.all(16.0),
-                    children: <Widget>[
-                      CircularPercentIndicator(
-                        percent: quota.progress,
-                        backgroundColor: theme.disabledColor.withOpacity(0.25),
-                        circularStrokeCap: CircularStrokeCap.round,
-                        animateFromLastPercent: true,
-                        progressColor: theme.colorScheme.secondary,
-                        center: Text("${(quota.progress * 100).round()}%",
-                            style: theme.textTheme.headline6),
-                        radius: 100.0,
-                      ),
-                      const SizedBox(height: 32.0),
-                      Text(
-                        s.available_space(quota.availableFormatted),
-                        style: theme.textTheme.subtitle1,
-                      ),
-                      const SizedBox(height: 22.0),
-                      Text(
-                          s.used_space(
-                              quota.usedFormatted, quota.limitFormatted),
-                          style: theme.textTheme.subtitle1),
-                      const SizedBox(height: 46.0),
-                      // if (BuildProperty.canUpgradePlan)
-                      //   SizedBox(
-                      //     width: double.infinity,
-                      //     child: AMButton(
-                      //       child: Text(s.upgrade_now),
-                      //       onPressed: () => launch(
-                      //           "https://privatemail.com/members/supporttickets.php"),
-                      //     ),
-                      //   )
-                    ],
-                  );
-                },
-              ),
+      body: Column(
+        children: [
+          if (BuildProperty.flatDesign)
+            Divider(
+              height: 1.0,
+              thickness: 1.0,
+              color: Theme.of(context).dividerColor,
             ),
+          Expanded(
+            child: AppStore.filesState.quota == null
+                ? Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Row(
+                      children: <Widget>[
+                        const Icon(Icons.error),
+                        const SizedBox(width: 18.0),
+                        Flexible(
+                            child: Text(
+                                AppStore.filesState.isOfflineMode
+                                    ? s.offline_information_is_not_available
+                                    : s.information_is_not_available,
+                                style: theme.textTheme.subtitle1)),
+                      ],
+                    ),
+                  )
+                : RefreshIndicator(
+                    onRefresh: AppStore.filesState.refreshQuota,
+                    child: Observer(
+                      builder: (_) {
+                        final quota =
+                            AppStore.filesState.quota ?? Quota(null, null);
+
+                        return ListView(
+                          padding: const EdgeInsets.all(16.0),
+                          children: <Widget>[
+                            CircularPercentIndicator(
+                              percent: quota.progress,
+                              backgroundColor:
+                                  theme.disabledColor.withOpacity(0.25),
+                              circularStrokeCap: CircularStrokeCap.round,
+                              animateFromLastPercent: true,
+                              progressColor: theme.colorScheme.secondary,
+                              center: Text("${(quota.progress * 100).round()}%",
+                                  style: theme.textTheme.headline6),
+                              radius: 100.0,
+                            ),
+                            const SizedBox(height: 32.0),
+                            Text(
+                              s.available_space(quota.availableFormatted),
+                              style: theme.textTheme.subtitle1,
+                            ),
+                            const SizedBox(height: 22.0),
+                            Text(
+                                s.used_space(
+                                    quota.usedFormatted, quota.limitFormatted),
+                                style: theme.textTheme.subtitle1),
+                            const SizedBox(height: 46.0),
+                            // if (BuildProperty.canUpgradePlan)
+                            //   SizedBox(
+                            //     width: double.infinity,
+                            //     child: AMButton(
+                            //       child: Text(s.upgrade_now),
+                            //       onPressed: () => launch(
+                            //           "https://privatemail.com/members/supporttickets.php"),
+                            //     ),
+                            //   )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }

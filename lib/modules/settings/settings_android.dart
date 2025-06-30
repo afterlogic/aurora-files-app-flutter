@@ -15,8 +15,8 @@ import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
+import 'package:aurorafiles/shared_ui/settings_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'settings_navigator.dart';
@@ -64,32 +64,56 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
         ListTile(
           selected: current == CommonSettingsRoute.name,
           title: Text(s.common),
-          leading: const AMCircleIcon(Icons.tune),
+          leading: SettingsIcons.common(),
           onTap: () => navigator(context).setRoot(CommonSettingsRoute.name),
         ),
+        if (BuildProperty.flatDesign)
+          Divider(
+            height: 1.0,
+            thickness: 1.0,
+            color: Theme.of(context).dividerColor,
+          ),
         ListTile(
           selected: current == EncryptionServerRoute.name,
           title: Text(s.encryption),
-          leading: const AMCircleIcon(MdiIcons.alien),
+          leading: SettingsIcons.encryption(),
           onTap: () => navigator(context).setRoot(EncryptionServerRoute.name),
         ),
+        if (BuildProperty.flatDesign)
+          Divider(
+            height: 1.0,
+            thickness: 1.0,
+            color: Theme.of(context).dividerColor,
+          ),
         if (BuildProperty.pgpEnable)
           ListTile(
             selected: current == PgpSettingsRoute.name,
             title: Text(s.openPGP),
-            leading: const AMCircleIcon(MdiIcons.key),
+            leading: SettingsIcons.openPGP(),
             onTap: () => navigator(context).setRoot(PgpSettingsRoute.name),
+          ),
+        if (BuildProperty.pgpEnable && BuildProperty.flatDesign)
+          Divider(
+            height: 1.0,
+            thickness: 1.0,
+            color: Theme.of(context).dividerColor,
           ),
         ListTile(
           selected: current == StorageInfoRoute.name,
           title: Text(s.storage_info),
-          leading: const AMCircleIcon(Icons.storage),
+          leading: SettingsIcons.sync(),
           onTap: () => navigator(context).setRoot(StorageInfoRoute.name),
         ),
+        if (BuildProperty.flatDesign)
+          Divider(
+            height: 1.0,
+            thickness: 1.0,
+            color: Theme.of(context).dividerColor,
+          ),
         ListTile(
           selected: current == AboutRoute.name,
           title: Text(s.about),
-          leading: const AMCircleIcon(Icons.info_outline),
+          leading: SettingsIcons.about(),
           onTap: () => navigator(context).setRoot(AboutRoute.name),
           onLongPress: BuildProperty.logger
               ? () {
@@ -98,6 +122,12 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
                 }
               : null,
         ),
+        if (BuildProperty.flatDesign)
+          Divider(
+            height: 1.0,
+            thickness: 1.0,
+            color: Theme.of(context).dividerColor,
+          ),
         if (showDebug)
           ListTile(
             selected: current == LoggerRoute.name,
@@ -105,9 +135,15 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             title: const Text("Debug"),
             onTap: () => navigator(context).setRoot(LoggerRoute.name),
           ),
+        if (showDebug && BuildProperty.flatDesign)
+          Divider(
+            height: 1.0,
+            thickness: 1.0,
+            color: Theme.of(context).dividerColor,
+          ),
         ListTile(
           selected: current == AuthRoute.name,
-          leading: const AMCircleIcon(Icons.exit_to_app),
+          leading: SettingsIcons.exit(),
           title: Text(s.log_out),
           onTap: _exit,
         ),

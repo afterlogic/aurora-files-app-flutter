@@ -1,123 +1,151 @@
 import 'package:aurorafiles/build_property.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:theme/app_color.dart';
 
-/// Утилитный класс для работы с иконками AppBar
-/// Использует кастомные SVG иконки для плоского дизайна (flatDesign)
-class AppBarIcons {
-  static String get _basePath => '${BuildProperty.imageDir}/m-app-bar/';
-
-  /// Иконка "Назад"
-  static Widget back() {
+class SettingsIcons {
+  static Widget common() {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.primary : AppColorLight.primary;
           return SvgPicture.asset(
-            '${_basePath}back.svg',
-            width: 18,
-            height: 14,
-            color: color,
-          );
-        }
-        return const Icon(Icons.arrow_back_ios);
-      },
-    );
-  }
-
-  /// Иконка "Поиск"
-  static Widget search() {
-    return Builder(
-      builder: (context) {
-        if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
-          return SvgPicture.asset(
-            '${_basePath}search.svg',
-            width: 20,
-            height: 20,
-            color: color,
-          );
-        }
-        return const Icon(Icons.search);
-      },
-    );
-  }
-
-  /// Иконка "Закрыть"
-  static Widget close() {
-    return Builder(
-      builder: (context) {
-        if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
-          return SvgPicture.asset(
-            '${_basePath}close.svg',
+            '${BuildProperty.imageDir}/settings/menu/common.svg',
             width: 24,
             height: 24,
             color: color,
           );
         }
-        return const Icon(Icons.close);
+        return const Icon(Icons.tune);
       },
     );
   }
 
-  /// Иконка "Очистить" (используется как close для compatibility)
-  static Widget clear() {
+  static Widget encryption() {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.primary : AppColorLight.primary;
           return SvgPicture.asset(
-            '${_basePath}close.svg',
+            '${BuildProperty.imageDir}/settings/menu/encryption.svg',
             width: 24,
             height: 24,
             color: color,
           );
         }
-        return const Icon(Icons.clear);
+        return const Icon(MdiIcons.alien);
       },
     );
   }
 
-  /// Иконка "Меню" (burger)
-  static Widget menu() {
+  static Widget openPGP() {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.primary : AppColorLight.primary;
           return SvgPicture.asset(
-            '${_basePath}burger.svg',
-            width: 18,
-            height: 14,
+            '${BuildProperty.imageDir}/settings/menu/openPGP.svg',
+            width: 24,
+            height: 24,
             color: color,
           );
         }
-        return const Icon(Icons.menu);
+        return const Icon(MdiIcons.key);
       },
     );
   }
 
-  /// Иконка "Информация"
-  static Widget info() {
+  static Widget sync() {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.primary : AppColorLight.primary;
           return SvgPicture.asset(
-            '${_basePath}info.svg',
+            '${BuildProperty.imageDir}/settings/menu/sync.svg',
+            width: 24,
+            height: 24,
+            color: color,
+          );
+        }
+        return const Icon(Icons.storage);
+      },
+    );
+  }
+
+  static Widget about() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          return SvgPicture.asset(
+            '${BuildProperty.imageDir}/settings/menu/about.svg',
             width: 24,
             height: 24,
             color: color,
           );
         }
         return const Icon(Icons.info_outline);
+      },
+    );
+  }
+
+  static Widget exit() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          return SvgPicture.asset(
+            '${BuildProperty.imageDir}/settings/menu/exit.svg',
+            width: 24,
+            height: 24,
+            color: color,
+          );
+        }
+        return const Icon(Icons.exit_to_app);
+      },
+    );
+  }
+
+  // Иконки для common settings
+  static Widget appTheme() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          return SvgPicture.asset(
+            '${BuildProperty.imageDir}/settings/common/app-theme.svg',
+            width: 24,
+            height: 24,
+            color: color,
+          );
+        }
+        return const Icon(MdiIcons.themeLightDark);
+      },
+    );
+  }
+
+  static Widget clearCache() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          return SvgPicture.asset(
+            '${BuildProperty.imageDir}/settings/common/clear-cache.svg',
+            width: 24,
+            height: 24,
+            color: color,
+          );
+        }
+        return const Icon(MdiIcons.broom);
       },
     );
   }

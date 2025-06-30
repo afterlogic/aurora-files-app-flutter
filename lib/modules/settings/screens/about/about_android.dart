@@ -79,57 +79,70 @@ class _AboutAndroidState extends State<AboutAndroid> {
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(_appName, style: Theme.of(context).textTheme.headline6),
-                const SizedBox(height: 12.0),
-                Text(
-                  s.version(_version),
-                  style: Theme.of(context)
-                      .textTheme
-                      .caption
-                      ?.copyWith(fontSize: 14.0),
-                ),
-                const SizedBox(height: 22.0),
-                Center(
-                  child: SizedBox(
-                    width: 120.0,
-                    height: 120.0,
-                    child: Image.asset(BuildProperty.icon),
+              children: [
+                if (BuildProperty.flatDesign)
+                  Divider(
+                    height: 1.0,
+                    thickness: 1.0,
+                    color: Theme.of(context).dividerColor,
                   ),
-                ),
-                const SizedBox(height: 42.0),
-                if (BuildProperty.termsOfService.isNotEmpty)
-                  GestureDetector(
-                    child: Text(
-                      s.terms,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        decoration: TextDecoration.underline,
-                        fontSize: 18.0,
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(_appName,
+                          style: Theme.of(context).textTheme.headline6),
+                      const SizedBox(height: 12.0),
+                      Text(
+                        s.version(_version),
+                        style: Theme.of(context)
+                            .textTheme
+                            .caption
+                            ?.copyWith(fontSize: 14.0),
                       ),
-                    ),
-                    onTap: () => launchUrl(
-                      Uri.parse(BuildProperty.termsOfService),
-                    ),
-                  ),
-                const SizedBox(height: 22.0),
-                if (BuildProperty.privacyPolicy.isNotEmpty)
-                  GestureDetector(
-                    child: Text(
-                      s.privacy_policy,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        decoration: TextDecoration.underline,
-                        fontSize: 18.0,
+                      const SizedBox(height: 22.0),
+                      Center(
+                        child: SizedBox(
+                          width: 120.0,
+                          height: 120.0,
+                          child: Image.asset(BuildProperty.icon),
+                        ),
                       ),
-                    ),
-                    onTap: () => launchUrl(
-                      Uri.parse(BuildProperty.privacyPolicy),
-                    ),
+                      const SizedBox(height: 42.0),
+                      if (BuildProperty.termsOfService.isNotEmpty)
+                        GestureDetector(
+                          child: Text(
+                            s.terms,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              decoration: TextDecoration.underline,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          onTap: () => launchUrl(
+                            Uri.parse(BuildProperty.termsOfService),
+                          ),
+                        ),
+                      const SizedBox(height: 22.0),
+                      if (BuildProperty.privacyPolicy.isNotEmpty)
+                        GestureDetector(
+                          child: Text(
+                            s.privacy_policy,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              decoration: TextDecoration.underline,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          onTap: () => launchUrl(
+                            Uri.parse(BuildProperty.privacyPolicy),
+                          ),
+                        ),
+                      const SizedBox(height: 42.0),
+                    ],
                   ),
-                const SizedBox(height: 42.0),
+                ),
               ],
             ),
     );

@@ -6,9 +6,9 @@ import 'package:aurorafiles/modules/settings/screens/common/components/theme_sel
 import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
+import 'package:aurorafiles/shared_ui/settings_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class CommonSettingsAndroid extends StatefulWidget {
   const CommonSettingsAndroid({super.key});
@@ -70,27 +70,45 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
                   ? const BoxShadow(color: Colors.transparent)
                   : null,
             ),
-      body: ListView(
-        children: <Widget>[
-          Observer(
-            builder: (_) => ListTile(
-              leading: const AMCircleIcon(MdiIcons.themeLightDark),
-              title: Text(s.app_theme),
-              trailing: Text(
-                _getThemeName(_settingsState.isDarkTheme),
-                style: Theme.of(context).textTheme.caption,
-              ),
-              onTap: () => ThemeSelectionDialog.show(
-                context,
-                _settingsState.isDarkTheme,
-                _settingsState.toggleDarkTheme,
-              ),
+      body: Column(
+        children: [
+          if (BuildProperty.flatDesign)
+            Divider(
+              height: 1.0,
+              thickness: 1.0,
+              color: Theme.of(context).dividerColor,
             ),
-          ),
-          ListTile(
-            leading: const AMCircleIcon(MdiIcons.broom),
-            title: Text(s.clear_cache),
-            onTap: _clearCache,
+          Expanded(
+            child: ListView(
+              children: <Widget>[
+                Observer(
+                  builder: (_) => ListTile(
+                    leading: SettingsIcons.appTheme(),
+                    title: Text(s.app_theme),
+                    trailing: Text(
+                      _getThemeName(_settingsState.isDarkTheme),
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                    onTap: () => ThemeSelectionDialog.show(
+                      context,
+                      _settingsState.isDarkTheme,
+                      _settingsState.toggleDarkTheme,
+                    ),
+                  ),
+                ),
+                if (BuildProperty.flatDesign)
+                  Divider(
+                    height: 1.0,
+                    thickness: 1.0,
+                    color: Theme.of(context).dividerColor,
+                  ),
+                ListTile(
+                  leading: SettingsIcons.clearCache(),
+                  title: Text(s.clear_cache),
+                  onTap: _clearCache,
+                ),
+              ],
+            ),
           ),
         ],
       ),

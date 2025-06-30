@@ -57,67 +57,83 @@ class _EncryptionServerState extends State<EncryptionServer> {
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     : null,
+                shadow: BuildProperty.flatDesign
+                    ? const BoxShadow(color: Colors.transparent)
+                    : null),
+        body: Column(
+          children: [
+            if (BuildProperty.flatDesign)
+              Divider(
+                height: 1.0,
+                thickness: 1.0,
+                color: Theme.of(context).dividerColor,
               ),
-        body: isInit
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : !encryptionExist
-                ? Center(
-                    child: Text(
-                      s.label_encryption_module_not_exist,
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                : ListView(
-                    padding: const EdgeInsets.all(16.0),
-                    children: <Widget>[
-                      Text(
-                        s.encryption_description,
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                      CheckboxListTile(
-                        value: encryptionEnable,
-                        title: Text(s.btn_encryption_enable),
-                        onChanged: (bool? value) {
-                          setState(() {
-                            encryptionEnable = value;
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        value: encryptionInPersonalStorage,
-                        title: Text(s.btn_encryption_personal_storage),
-                        onChanged: encryptionEnable ?? false
-                            ? (value) {
+            Expanded(
+              child: isInit
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : !encryptionExist
+                      ? Center(
+                          child: Text(
+                            s.label_encryption_module_not_exist,
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : ListView(
+                          padding: const EdgeInsets.all(16.0),
+                          children: <Widget>[
+                            Text(
+                              s.encryption_description,
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                            CheckboxListTile(
+                              value: encryptionEnable,
+                              title: Text(s.btn_encryption_enable),
+                              onChanged: (bool? value) {
                                 setState(() {
-                                  encryptionInPersonalStorage = value;
+                                  encryptionEnable = value;
                                 });
-                              }
-                            : null,
-                      ),
-                      const SizedBox(height: 48),
-                      AMButton(
-                        isLoading: progress,
-                        onPressed: progress ? null : () => _onSave(context),
-                        child: Text(s.label_save),
-                      ),
-                      const SizedBox(height: 20),
-                      if (!showBackwardCompatibility &&
-                          (encryptionEnable ?? false))
-                        AMButton(
-                          child: Text(s.btn_enable_backward_compatibility),
-                          onPressed: () =>
-                              setState(() => showBackwardCompatibility = true),
+                              },
+                            ),
+                            CheckboxListTile(
+                              value: encryptionInPersonalStorage,
+                              title: Text(s.btn_encryption_personal_storage),
+                              onChanged: encryptionEnable ?? false
+                                  ? (value) {
+                                      setState(() {
+                                        encryptionInPersonalStorage = value;
+                                      });
+                                    }
+                                  : null,
+                            ),
+                            const SizedBox(height: 48),
+                            AMButton(
+                              isLoading: progress,
+                              onPressed:
+                                  progress ? null : () => _onSave(context),
+                              child: Text(s.label_save),
+                            ),
+                            const SizedBox(height: 20),
+                            if (!showBackwardCompatibility &&
+                                (encryptionEnable ?? false))
+                              AMButton(
+                                child:
+                                    Text(s.btn_enable_backward_compatibility),
+                                onPressed: () => setState(
+                                    () => showBackwardCompatibility = true),
+                              ),
+                            if (showBackwardCompatibility &&
+                                (encryptionEnable ?? false)) ...[
+                              Text(s.hint_backward_compatibility_aes_key),
+                              ..._buildAddingKey(),
+                              ..._buildKeyOptions(),
+                            ]
+                          ],
                         ),
-                      if (showBackwardCompatibility &&
-                          (encryptionEnable ?? false)) ...[
-                        Text(s.hint_backward_compatibility_aes_key),
-                        ..._buildAddingKey(),
-                        ..._buildKeyOptions(),
-                      ]
-                    ],
-                  ),
+            ),
+          ],
+        ),
       ),
     );
   }

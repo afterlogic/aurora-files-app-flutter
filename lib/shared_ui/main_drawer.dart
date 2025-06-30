@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_widget.dart';
 import 'package:aurorafiles/modules/settings/settings_route.dart';
+import 'package:aurorafiles/shared_ui/drawer_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -174,8 +175,7 @@ class MainDrawer extends StatelessWidget {
                           },
                           title: ListTile(
                             contentPadding: EdgeInsets.zero,
-                            leading:
-                                const AMCircleIcon(Icons.airplanemode_active),
+                            leading: DrawerIcons.offlineMode(),
                             title: Text(s.offline_mode),
                           ),
                         ),
@@ -188,7 +188,7 @@ class MainDrawer extends StatelessWidget {
                 height: 0,
               ),
               ListTile(
-                leading: const AMCircleIcon(Icons.settings),
+                leading: DrawerIcons.settings(),
                 title: Text(s.settings),
                 onTap: () {
                   if (Navigator.canPop(context)) {
@@ -207,17 +207,13 @@ class MainDrawer extends StatelessWidget {
   Widget _getStorageIcon(StorageType type, Color? color) {
     switch (type) {
       case StorageType.encrypted:
-        return SvgPicture.asset(Asset.svg.iconStorageEncrypted,
-            width: 24, height: 24, color: color);
+        return DrawerIcons.encrypted(color: color);
       case StorageType.shared:
-        return SvgPicture.asset(Asset.svg.iconStorageShared,
-            width: 24, height: 24, color: color);
+        return DrawerIcons.shared(color: color);
       case StorageType.personal:
-        return SvgPicture.asset(Asset.svg.iconStoragePersonal,
-            width: 24, height: 24, color: color);
+        return DrawerIcons.personal(color: color);
       case StorageType.corporate:
-        return SvgPicture.asset(Asset.svg.iconStorageCorporate,
-            width: 24, height: 24, color: color);
+        return DrawerIcons.corporate(color: color);
       default:
         return Icon(Icons.storage, color: color);
     }

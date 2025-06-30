@@ -488,6 +488,12 @@ class _FilesAndroidState extends State<FilesAndroid>
                               context,
                               CustomSpeedDial(tag: widget.path, children: [
                                 MiniFab(
+                                  text: BuildProperty.flatDesign
+                                      ? context.l10n.add_folder
+                                      : null,
+                                  iconAsset: BuildProperty.flatDesign
+                                      ? '${BuildProperty.imageDir}/float-button/add-folder.svg'
+                                      : null,
                                   icon: const Icon(Icons.create_new_folder),
                                   onPressed: () => AMDialog.show(
                                     context: context,
@@ -498,8 +504,15 @@ class _FilesAndroidState extends State<FilesAndroid>
                                   ),
                                 ),
                                 MiniFab(
-                                    icon: const Icon(MdiIcons.filePlus),
-                                    onPressed: _uploadFile),
+                                  text: BuildProperty.flatDesign
+                                      ? context.l10n.upload_file
+                                      : null,
+                                  iconAsset: BuildProperty.flatDesign
+                                      ? '${BuildProperty.imageDir}/float-button/add-document.svg'
+                                      : null,
+                                  icon: const Icon(MdiIcons.filePlus),
+                                  onPressed: _uploadFile,
+                                ),
                               ]));
                         },
                       ),

@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/example_widget/test_widget/category_widget.dart';
 import 'package:aurorafiles/example_widget/test_widget/group_label.dart';
 import 'package:aurorafiles/example_widget/test_widget/label_widget.dart';
@@ -87,9 +88,17 @@ class AppCategory extends StatelessWidget {
                     context,
                     CustomSpeedDial(tag: "FloatingActionButton", children: [
                       const MiniFab(
+                        text: BuildProperty.flatDesign ? "Add folder" : null,
+                        iconAsset: BuildProperty.flatDesign
+                            ? '${BuildProperty.imageDir}/float-button/add-folder.svg'
+                            : null,
                         icon: Icon(Icons.create_new_folder),
                       ),
                       const MiniFab(
+                        text: BuildProperty.flatDesign ? "Upload file" : null,
+                        iconAsset: BuildProperty.flatDesign
+                            ? '${BuildProperty.imageDir}/float-button/add-document.svg'
+                            : null,
                         icon: Icon(MdiIcons.filePlus),
                       ),
                     ]));

@@ -29,6 +29,8 @@ enum StorageType {
   shared,
   personal,
   corporate,
+  favorite,
+  trash,
 }
 
 class StorageTypeHelper {
@@ -42,6 +44,11 @@ class StorageTypeHelper {
         return StorageType.personal;
       case 'corporate':
         return StorageType.corporate;
+      case 'favorite':
+      case 'favorites':
+        return StorageType.favorite;
+      case 'trash':
+        return StorageType.trash;
       default:
         return StorageType.personal;
     }

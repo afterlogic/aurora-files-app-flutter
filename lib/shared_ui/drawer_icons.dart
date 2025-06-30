@@ -83,7 +83,7 @@ class DrawerIcons {
     );
   }
 
-  /// Иконка для Encrypted storage (пока нет файла, используем personal.svg как fallback)
+  /// Иконка для Encrypted storage (временно используем trash.svg как fallback)
   static Widget encrypted({Color? color}) {
     return Builder(
       builder: (context) {
@@ -93,7 +93,7 @@ class DrawerIcons {
                   ? AppColorDark.primary
                   : AppColorLight.primary);
           return SvgPicture.asset(
-            '${BuildProperty.imageDir}/drawer/personal.svg', // fallback до появления encrypted.svg
+            '${BuildProperty.imageDir}/drawer/encryption.svg',
             width: 24,
             height: 24,
             color: effectiveColor,
@@ -149,7 +149,7 @@ class DrawerIcons {
     );
   }
 
-  /// Иконка для Favorite (если будет использоваться)
+  /// Иконка для Favorite
   static Widget favorite({Color? color}) {
     return Builder(
       builder: (context) {
@@ -170,7 +170,7 @@ class DrawerIcons {
     );
   }
 
-  /// Иконка для Trash (если будет использоваться)
+  /// Иконка для Trash
   static Widget trash({Color? color}) {
     return Builder(
       builder: (context) {

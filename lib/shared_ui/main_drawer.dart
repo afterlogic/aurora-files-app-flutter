@@ -1,5 +1,3 @@
-import 'package:aurora_ui_kit/components/am_circle_icon.dart';
-import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/quota.dart';
@@ -11,7 +9,6 @@ import 'package:aurorafiles/modules/settings/settings_route.dart';
 import 'package:aurorafiles/shared_ui/drawer_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -214,6 +211,10 @@ class MainDrawer extends StatelessWidget {
         return DrawerIcons.personal(color: color);
       case StorageType.corporate:
         return DrawerIcons.corporate(color: color);
+      case StorageType.favorite:
+        return DrawerIcons.favorite(color: color);
+      case StorageType.trash:
+        return DrawerIcons.trash(color: color);
       default:
         return Icon(Icons.storage, color: color);
     }

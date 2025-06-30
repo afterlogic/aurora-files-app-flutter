@@ -29,7 +29,7 @@ import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/asset_icon.dart';
+import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
 import 'package:aurorafiles/utils/file_content_type.dart';
@@ -531,15 +531,21 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
         child: Scaffold(
           key: _fileViewerScaffoldKey,
           appBar: AMAppBar(
+            leading: BuildProperty.flatDesign
+                ? IconButton(
+                    icon: AppBarIcons.back(),
+                    onPressed: () => Navigator.of(context).pop(_file),
+                  )
+                : null,
             shadow: BuildProperty.flatDesign
                 ? const BoxShadow(color: Colors.transparent)
                 : null,
             actions: widget.filesState.isOfflineMode
                 ? [
                     IconButton(
-                      icon: Icon(PlatformOverride.isIOS
-                          ? MdiIcons.exportVariant
-                          : Icons.share),
+                      icon: PlatformOverride.isIOS
+                          ? Icon(MdiIcons.exportVariant)
+                          : AppBarIcons.share(),
                       tooltip: s.share,
                       onPressed: () => _shareFile(
                         PreparedForShare(
@@ -558,10 +564,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                 : [
                     if (BuildProperty.secureSharingEnable && _enableSecureLink)
                       IconButton(
-                        icon: AssetIcon(
-                          Asset.svg.insertLink,
-                          addedSize: 14,
-                        ),
+                        icon: AppBarIcons.link(),
                         tooltip: widget.immutableFile.initVector != null
                             ? s.btn_encrypted_shareable_link
                             : s.btn_shareable_link,
@@ -574,7 +577,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         onPressed: _downloadFile,
                       ),
                     IconButton(
-                      icon: const Icon(Icons.delete_outline),
+                      icon: AppBarIcons.delete(),
                       tooltip: s.delete_file,
                       onPressed: _deleteFile,
                     ),
@@ -584,11 +587,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         PopupMenuItem(
                           value: () => _prepareShareFile(_shareFile),
                           child: ListTile(
-                            leading: Icon(
-                                PlatformOverride.isIOS
-                                    ? MdiIcons.exportVariant
-                                    : Icons.share,
-                                color: iconColor),
+                            leading: AppBarIcons.share(),
                             title: Text(s.share),
                           ),
                         ),
@@ -596,7 +595,7 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                           PopupMenuItem(
                             value: _shareWithTeammates,
                             child: ListTile(
-                              leading: Icon(Icons.share, color: iconColor),
+                              leading: AppBarIcons.shareWithTeammates(),
                               title: Text(s.label_share_with_teammates),
                             ),
                           ),
@@ -616,14 +615,14 @@ class _FileViewerAndroidState extends State<FileViewerAndroid> {
                         PopupMenuItem(
                           value: _moveFile,
                           child: ListTile(
-                            leading: Icon(MdiIcons.fileMove, color: iconColor),
+                            leading: AppBarIcons.copyMove(),
                             title: Text(s.copy_or_move),
                           ),
                         ),
                         PopupMenuItem(
                           value: _renameFile,
                           child: ListTile(
-                            leading: Icon(Icons.edit, color: iconColor),
+                            leading: AppBarIcons.rename(),
                             title: Text(s.rename),
                           ),
                         ),

@@ -12,8 +12,8 @@ class DrawerIcons {
         if (BuildProperty.flatDesign) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
-                  ? AppColorDark.primary
-                  : AppColorLight.primary);
+                  ? AppColorDark.icons
+                  : AppColorLight.icons);
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/drawer/personal.svg',
             width: 24,
@@ -38,8 +38,8 @@ class DrawerIcons {
         if (BuildProperty.flatDesign) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
-                  ? AppColorDark.primary
-                  : AppColorLight.primary);
+                  ? AppColorDark.icons
+                  : AppColorLight.icons);
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/drawer/corporate.svg',
             width: 24,
@@ -64,8 +64,8 @@ class DrawerIcons {
         if (BuildProperty.flatDesign) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
-                  ? AppColorDark.primary
-                  : AppColorLight.primary);
+                  ? AppColorDark.icons
+                  : AppColorLight.icons);
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/drawer/shared.svg',
             width: 24,
@@ -90,8 +90,8 @@ class DrawerIcons {
         if (BuildProperty.flatDesign) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
-                  ? AppColorDark.primary
-                  : AppColorLight.primary);
+                  ? AppColorDark.icons
+                  : AppColorLight.icons);
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/drawer/encryption.svg',
             width: 24,
@@ -115,8 +115,8 @@ class DrawerIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final color = Theme.of(context).brightness == Brightness.dark
-              ? AppColorDark.primary
-              : AppColorLight.primary;
+              ? AppColorDark.icons
+              : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/drawer/settings.svg',
             width: 24,
@@ -135,8 +135,8 @@ class DrawerIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final color = Theme.of(context).brightness == Brightness.dark
-              ? AppColorDark.primary
-              : AppColorLight.primary;
+              ? AppColorDark.icons
+              : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/drawer/offline-mode.svg',
             width: 24,
@@ -156,8 +156,8 @@ class DrawerIcons {
         if (BuildProperty.flatDesign) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
-                  ? AppColorDark.primary
-                  : AppColorLight.primary);
+                  ? AppColorDark.icons
+                  : AppColorLight.icons);
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/drawer/favorite.svg',
             width: 24,
@@ -177,8 +177,8 @@ class DrawerIcons {
         if (BuildProperty.flatDesign) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
-                  ? AppColorDark.primary
-                  : AppColorLight.primary);
+                  ? AppColorDark.icons
+                  : AppColorLight.icons);
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/drawer/trash.svg',
             width: 24,

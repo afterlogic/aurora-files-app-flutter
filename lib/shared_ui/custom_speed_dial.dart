@@ -173,7 +173,7 @@ class MiniFab extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDark ? const Color(0xFF2D2D2D) : Colors.white;
     final textColor = isDark ? Colors.white : const Color(0xFF031743);
-    final iconColor = isDark ? AppColorDark.primary : AppColorLight.primary;
+    final iconColor = isDark ? AppColorDark.icons : AppColorLight.icons;
 
     return GestureDetector(
       onTap: onPressed == null

@@ -10,7 +10,7 @@ class SettingsIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/settings/menu/common.svg',
             width: 24,
@@ -28,7 +28,7 @@ class SettingsIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/settings/menu/encryption.svg',
             width: 24,
@@ -46,7 +46,7 @@ class SettingsIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/settings/menu/openPGP.svg',
             width: 24,
@@ -64,7 +64,7 @@ class SettingsIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/settings/menu/sync.svg',
             width: 24,
@@ -82,7 +82,7 @@ class SettingsIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/settings/menu/about.svg',
             width: 24,
@@ -100,7 +100,7 @@ class SettingsIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/settings/menu/exit.svg',
             width: 24,
@@ -119,7 +119,7 @@ class SettingsIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/settings/common/app-theme.svg',
             width: 24,
@@ -137,7 +137,7 @@ class SettingsIcons {
       builder: (context) {
         if (BuildProperty.flatDesign) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.primary : AppColorLight.primary;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${BuildProperty.imageDir}/settings/common/clear-cache.svg',
             width: 24,

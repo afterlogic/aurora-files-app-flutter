@@ -2,10 +2,14 @@
 appName: 'Aurora Files'
 version: '2.4.0'
 
+#Android App ID
 _appId: 'com.afterlogic.aurora.files'
-_appIdIos: 'com.afterlogic.aurorafiles'
+#iOS App ID
+_appIdIos: 'com.afterlogic.aurora.files'
+#Apple Group ID
+_appleGroupId: 'group.com.afterlogic.aurora.files'
+#IOS Developer ID
 _iosDeveloperId: 'J7AW6VHJK4'
-_appleGroupId: 'group.com.afterlogic.aurora'
 
 # Android splash screen
 backgroundColor: '#FFFFFF'
@@ -21,6 +25,7 @@ autodiscoverUrl: 'https://{domain}/aurora-autodiscover.json?email={email}'
 privacyPolicy: 'https://afterlogic.com/privacy-policy'
 registrationLink: ''
 
+#App settings
 pgpEnable: true
 secureSharingEnable: true
 teamSharingEnable: true

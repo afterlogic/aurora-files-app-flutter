@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
@@ -7,6 +8,7 @@ import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_k
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/export_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +47,17 @@ class _EncryptionServerState extends State<EncryptionServer> {
       create: (_) => _settingsState,
       child: Scaffold(
         key: scaffoldKey,
-        appBar: isTablet ? null : AMAppBar(title: Text(s.encryption)),
+        appBar: isTablet
+            ? null
+            : AMAppBar(
+                title: Text(s.encryption),
+                leading: BuildProperty.flatDesign
+                    ? IconButton(
+                        icon: AppBarIcons.back(),
+                        onPressed: () => Navigator.of(context).pop(),
+                      )
+                    : null,
+              ),
         body: isInit
             ? const Center(
                 child: CircularProgressIndicator(),

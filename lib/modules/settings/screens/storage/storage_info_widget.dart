@@ -3,6 +3,7 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/quota.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -23,6 +24,12 @@ class StorageInfoWidget extends StatelessWidget {
           ? null
           : AMAppBar(
               title: Text(s.storage_info),
+              leading: BuildProperty.flatDesign
+                  ? IconButton(
+                      icon: AppBarIcons.back(),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  : null,
               shadow: BuildProperty.flatDesign
                   ? const BoxShadow(color: Colors.transparent)
                   : null,

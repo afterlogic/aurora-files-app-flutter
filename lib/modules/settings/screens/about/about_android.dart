@@ -1,6 +1,7 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
+import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,6 +66,12 @@ class _AboutAndroidState extends State<AboutAndroid> {
           ? null
           : AMAppBar(
               title: Text(s.about),
+              leading: BuildProperty.flatDesign
+                  ? IconButton(
+                      icon: AppBarIcons.back(),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  : null,
               shadow: BuildProperty.flatDesign
                   ? const BoxShadow(color: Colors.transparent)
                   : null,

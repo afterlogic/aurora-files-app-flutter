@@ -11,3 +11,8 @@
     
 #include "../BuildVariable.xcconfig"
 #include "../Pods/Target Support Files/Pods-AppShareExtension/Pods-AppShareExtension.debug.xcconfig"
+
+// Fix architecture issues
+ARCHS = $(ARCHS_STANDARD)
+EXCLUDED_ARCHS[sdk=iphonesimulator*] = i386
+EXCLUDED_ARCHS[sdk=iphoneos*] = armv7

@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -137,7 +138,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         key: const Key("default"),
         leading: _filesPageState.pagePath.isNotEmpty
             ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
+                icon: AppBarIcons.back(),
                 onPressed: Navigator.of(context).pop,
               )
             : null,
@@ -180,18 +181,12 @@ class _FilesAppBarState extends State<FilesAppBar>
         key: const Key("select"),
         backgroundColor: widget.isAppBar ? theme.primaryColorDark : null,
         leading: IconButton(
-          icon: const Icon(Icons.clear),
+          icon: AppBarIcons.clear(),
           onPressed: () => _filesPageState.quitSelectMode(),
         ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
         actions: _filesState.isOfflineMode
-            ? [
-//          IconButton(
-//            icon: Icon(Icons.airplanemode_inactive),
-//            tooltip: "Delete files from offline",
-//            onPressed: () {},
-//          ),
-              ]
+            ? []
             : [
                 IconButton(
                   icon: const Icon(MdiIcons.fileMove),
@@ -218,7 +213,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           key: const Key("move"),
           backgroundColor: theme.colorScheme.secondary,
           leading: IconButton(
-            icon: const Icon(Icons.close),
+            icon: AppBarIcons.close(),
             onPressed: _onCloseMove,
           ),
           title: Text(_filesState.isMoveModeEnabled
@@ -248,11 +243,11 @@ class _FilesAppBarState extends State<FilesAppBar>
         backgroundColor: theme.colorScheme.secondary,
         leading: _filesPageState.pagePath.isNotEmpty
             ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
+                icon: AppBarIcons.back(),
                 onPressed: Navigator.of(context).pop,
               )
             : IconButton(
-                icon: const Icon(Icons.close),
+                icon: AppBarIcons.close(),
                 onPressed: _onCloseMove,
               ),
         title: Column(
@@ -315,13 +310,13 @@ class _FilesAppBarState extends State<FilesAppBar>
           leading: Padding(
             padding: const EdgeInsets.only(left: 16),
             child: IconButton(
-              icon: const Icon(Icons.search),
+              icon: AppBarIcons.search(),
               onPressed: _search,
             ),
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.close),
+              icon: AppBarIcons.close(),
               onPressed: _onCloseSearch,
             ),
           ],
@@ -355,7 +350,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       return AMAppBar(
         key: const Key("search"),
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: AppBarIcons.close(),
           onPressed: _onCloseSearch,
         ),
         title: Column(
@@ -415,10 +410,10 @@ class _FilesAppBarState extends State<FilesAppBar>
           title: InkWell(
             onTap: () => _filesPageState.isSearchMode = true,
             child: Row(
-              children: const [
+              children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-                  child: Icon(Icons.search),
+                  child: AppBarIcons.search(),
                 ),
                 Expanded(child: SizedBox.shrink()),
               ],
@@ -433,7 +428,7 @@ class _FilesAppBarState extends State<FilesAppBar>
             ? const SizedBox.shrink()
             : (_filesPageState.pagePath.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
+                    icon: AppBarIcons.back(),
                     onPressed: Navigator.of(context).pop,
                   )
                 : null),
@@ -472,7 +467,7 @@ class _FilesAppBarState extends State<FilesAppBar>
               ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: AppBarIcons.search(),
             tooltip: s.search,
             onPressed: () => _filesPageState.isSearchMode = true,
           ),

@@ -13,6 +13,7 @@ import 'package:aurorafiles/modules/settings/screens/logger/logger_route.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_route.dart';
 import 'package:aurorafiles/modules/settings/screens/storage/storage_info_route.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
+import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -116,6 +117,12 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
       body = Scaffold(
         appBar: AMAppBar(
           title: Text(s.settings),
+          leading: BuildProperty.flatDesign
+              ? IconButton(
+                  icon: AppBarIcons.back(),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null,
           shadow: BuildProperty.flatDesign
               ? const BoxShadow(color: Colors.transparent)
               : null,
@@ -180,6 +187,12 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
               ? null
               : AMAppBar(
                   title: Text(s.settings),
+                  leading: BuildProperty.flatDesign
+                      ? IconButton(
+                          icon: AppBarIcons.back(),
+                          onPressed: () => Navigator.of(context).pop(),
+                        )
+                      : null,
                   shadow: BuildProperty.flatDesign
                       ? const BoxShadow(color: Colors.transparent)
                       : null,

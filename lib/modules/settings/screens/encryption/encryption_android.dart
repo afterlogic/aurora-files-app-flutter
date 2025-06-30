@@ -7,6 +7,7 @@ import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/delete_k
 import 'package:aurorafiles/modules/settings/screens/encryption/dialogs/export_key_dialog.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:aurorafiles/override_platform.dart';
+import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/material.dart';
@@ -173,6 +174,12 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
               ? null
               : AMAppBar(
                   title: Text(s.encryption),
+                  leading: BuildProperty.flatDesign
+                      ? IconButton(
+                          icon: AppBarIcons.back(),
+                          onPressed: () => Navigator.of(context).pop(),
+                        )
+                      : null,
                   shadow: BuildProperty.flatDesign
                       ? const BoxShadow(color: Colors.transparent)
                       : null,

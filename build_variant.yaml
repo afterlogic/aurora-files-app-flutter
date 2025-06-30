@@ -1,6 +1,6 @@
 #config
 _files:
-  - pubspec.yaml.temp
+  - pubspec.yaml.yaml
   - lib/di/di.dart.temp
   - android/build_variable.properties.temp
   - android/app/src/main/res/values/.build_res.xml.temp
@@ -14,56 +14,56 @@ _files:
   - sh/build_appbundle.sh.temp
 
 _copy:
-  "{{mainLogo}}": "android/app/src/main/res/drawable/main_logo.png"
-  "{{_dir}}/sign/key.properties": "android/key.properties"
-  "{{_dir}}/sign/{{_jksName}}": "android/app/key.jks"
-  "{{_dir}}/crashlytics/{{_androidGoogleService}}": "android/app/google-services.json"
-  "{{_dir}}/crashlytics/{{_iosGoogleService}}": "ios/GoogleService-Info.plist"
+  '{{mainLogo}}': 'android/app/src/main/res/drawable/main_logo.png'
+  '{{_dir}}/sign/key.properties': 'android/key.properties'
+  '{{_dir}}/sign/{{_jksName}}': 'android/app/key.jks'
+  '{{_dir}}/crashlytics/{{_androidGoogleService}}': 'android/app/google-services.json'
+  '{{_dir}}/crashlytics/{{_iosGoogleService}}': 'ios/GoogleService-Info.plist'
   # "{{_dir}}/crashlytics/firebase_app_id_file.json": "ios/firebase_app_id_file.json"
   # "{{_dir}}/crashlytics/firebase_options.dart": "lib/firebase_options.dart"
 
 _buildPropertyPath: lib/build_property.dart
 
 #default config
-_buildVariant: "build_res/afterlogic/build_variant.yaml"
+_buildVariant: 'build_res/afterlogic/build_variant.yaml'
 
 #variables
 #app
-appName: ""
-_appId: ""
-_appIdIos: "{{_appId}}"
-_iosDeveloperId: ""
-_appleGroupId: ""
-version: ""
+appName: ''
+_appId: ''
+_appIdIos: '{{_appId}}'
+_iosDeveloperId: ''
+_appleGroupId: ''
+version: ''
 build: 184
 
 #android sign
-_jksName: "key.jks"
+_jksName: 'key.jks'
 
 #google service
-_androidGoogleService: "google-services.json"
-_iosGoogleService: "GoogleService-Info.plist"
+_androidGoogleService: 'google-services.json'
+_iosGoogleService: 'GoogleService-Info.plist'
 
-deepLink: "{{_appId}}"
+deepLink: '{{_appId}}'
 
 #style
 #image
-icon: "{{imageDir}}/icon.png"
-mainLogo: "{{imageDir}}/main_logo.png"
-imageDir: "{{_dir}}/image"
+icon: '{{imageDir}}/icon.png'
+mainLogo: '{{imageDir}}/main_logo.png'
+imageDir: '{{_dir}}/image'
 
-foregroundIcon: "{{imageDir}}/icon_foreground.png"
+foregroundIcon: '{{imageDir}}/icon_foreground.png'
 #theme module
-_themeModule: "{{_dir}}/theme"
+_themeModule: '{{_dir}}/theme'
 #color
-backgroundColor: ""
-splashGradientTop: ""
-splashGradientBottom: ""
+backgroundColor: ''
+splashGradientTop: ''
+splashGradientBottom: ''
 
 #url
-privacyPolicy: ""
-termsOfService: ""
-autodiscoverUrl: ""
+privacyPolicy: ''
+termsOfService: ''
+autodiscoverUrl: ''
 
 #module
 canUpgradePlan: false
@@ -76,6 +76,6 @@ useMainLogo: true
 
 # fido
 useYubiKit: false
-yubicoFlutterLib: "path: module/mocks/yubico_flutter"
+yubicoFlutterLib: 'path: module/mocks/yubico_flutter'
 #useYubiKit: true
 #yubicoFlutterLib: "git: https://github.com/afterlogic/yubico_flutter"

@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/di/di.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
@@ -9,6 +10,7 @@ import 'package:aurorafiles/modules/settings/screens/pgp/key/pgp_key_item_widget
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_presenter.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/pgp_setting_view.dart';
 import 'package:aurorafiles/modules/settings/settings_navigator.dart';
+import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/error_dialog.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
@@ -49,6 +51,12 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
           ? null
           : AMAppBar(
               title: Text(s.openPGP),
+              leading: BuildProperty.flatDesign
+                  ? IconButton(
+                      icon: AppBarIcons.back(),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  : null,
             ),
       body: StreamWidget<KeysState>(
         keysState,

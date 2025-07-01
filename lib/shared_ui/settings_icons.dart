@@ -1,3 +1,4 @@
+import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -146,6 +147,24 @@ class SettingsIcons {
           );
         }
         return const Icon(MdiIcons.broom);
+      },
+    );
+  }
+
+  static Widget debug() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+          return SvgPicture.asset(
+            '${BuildProperty.imageDir}/settings/menu/debug.svg',
+            width: 24,
+            height: 24,
+            color: color,
+          );
+        }
+        return const AMCircleIcon(Icons.perm_device_information);
       },
     );
   }

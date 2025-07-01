@@ -431,7 +431,12 @@ class _FilesAppBarState extends State<FilesAppBar>
                     icon: AppBarIcons.back(),
                     onPressed: Navigator.of(context).pop,
                   )
-                : null),
+                : (Scaffold.maybeOf(context)?.hasDrawer == true
+                    ? IconButton(
+                        icon: AppBarIcons.burger(),
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                      )
+                    : null)),
         title: !widget.isAppBar
             ? null
             : Column(

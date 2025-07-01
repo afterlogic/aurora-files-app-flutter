@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
@@ -53,7 +54,9 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     enabled: false,
                     decoration: InputDecoration(
                       labelText: s.email,
-                      alignLabelWithHint: true,
+                      border: BuildProperty.useOutlinedInputFields
+                          ? const OutlineInputBorder()
+                          : null,
                     ),
                     validator: (v) => validateInput(
                       value: v ?? '',
@@ -62,10 +65,13 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                   ),
+                  const SizedBox(height: 16.0),
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: s.password,
-                      alignLabelWithHint: true,
+                      border: BuildProperty.useOutlinedInputFields
+                          ? const OutlineInputBorder()
+                          : null,
                       suffix: GestureDetector(
                         child: Icon(
                           _obscure ? Icons.visibility : Icons.visibility_off,
@@ -83,11 +89,14 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
                     controller: _passwordController,
                     obscureText: _obscure,
                   ),
+                  const SizedBox(height: 16.0),
                   DropdownButtonFormField<int>(
                     hint: Text(length.toString()),
                     decoration: InputDecoration(
                       labelText: s.length,
-                      alignLabelWithHint: true,
+                      border: BuildProperty.useOutlinedInputFields
+                          ? const OutlineInputBorder()
+                          : null,
                     ),
                     value: length,
                     items: lengths.map((value) {

@@ -131,7 +131,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
         if (showDebug)
           ListTile(
             selected: current == LoggerRoute.name,
-            leading: const AMCircleIcon(Icons.perm_device_information),
+            leading: SettingsIcons.debug(),
             title: const Text("Debug"),
             onTap: () => navigator(context).setRoot(LoggerRoute.name),
           ),

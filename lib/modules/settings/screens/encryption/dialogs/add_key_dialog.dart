@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
@@ -56,13 +57,19 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                     decoration: InputDecoration(
                       isDense: true,
                       icon: const Icon(Icons.title),
-                      hintText: s.key_name,
-                      border: const UnderlineInputBorder(),
+                      labelText: s.key_name,
+                      border: BuildProperty.useOutlinedInputFields
+                          ? const OutlineInputBorder()
+                          : const UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
                       value: value ?? '',
-                      types: [ValidationTypes.empty, ValidationTypes.uniqueName],
-                      otherItems: widget.settingsState.encryptionKeys.keys.toList(),
+                      types: [
+                        ValidationTypes.empty,
+                        ValidationTypes.uniqueName
+                      ],
+                      otherItems:
+                          widget.settingsState.encryptionKeys.keys.toList(),
                     ),
                   ),
                   if (widget.isImport) const SizedBox(height: 8.0),
@@ -72,8 +79,10 @@ class _AddKeyDialogState extends State<AddKeyDialog> {
                       decoration: InputDecoration(
                         isDense: true,
                         icon: const Icon(Icons.vpn_key),
-                        hintText: s.key_text,
-                        border: const UnderlineInputBorder(),
+                        labelText: s.key_text,
+                        border: BuildProperty.useOutlinedInputFields
+                            ? const OutlineInputBorder()
+                            : const UnderlineInputBorder(),
                       ),
                       validator: (value) => validateInput(
                         value: value ?? '',

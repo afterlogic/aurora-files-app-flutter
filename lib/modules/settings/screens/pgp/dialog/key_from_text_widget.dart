@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,13 @@ class _KeyFromTextWidgetState extends State<KeyFromTextWidget> {
                   expands: true,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
+                  textAlignVertical: TextAlignVertical.top,
+                  decoration: const InputDecoration(
+                    border: BuildProperty.useOutlinedInputFields
+                        ? OutlineInputBorder()
+                        : null,
+                    contentPadding: EdgeInsets.all(8.0),
+                  ),
                 ),
               ),
             ),

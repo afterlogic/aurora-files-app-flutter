@@ -12,6 +12,25 @@ import 'asset_icon.dart';
 class AppBarIcons {
   static String get _basePath => '${BuildProperty.imageDir}/m-app-bar/';
 
+  /// Иконка "Бургер" (используется в качестве меню)
+  static Widget burger() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+          return SvgPicture.asset(
+            '${_basePath}burger.svg',
+            width: 18,
+            height: 14,
+            color: color,
+          );
+        }
+        return const Icon(Icons.arrow_back_ios);
+      },
+    );
+  }
+
   /// Иконка "Назад"
   static Widget back() {
     return Builder(

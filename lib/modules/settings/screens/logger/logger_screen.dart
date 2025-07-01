@@ -1,5 +1,6 @@
 import 'package:aurora_logger/aurora_logger.dart';
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
@@ -45,8 +46,20 @@ class _LoggerScreenState extends State<LoggerScreen> {
     return Scaffold(
       appBar: isTablet
           ? null
-          : const AMAppBar(
-              title: Text("Debug"),
+          : AMAppBar(
+              title: const Text("Debug"),
+              shadow: BuildProperty.flatDesign
+                  ? const BoxShadow(color: Colors.transparent)
+                  : null,
+              bottom: BuildProperty.flatDesign
+                  ? PreferredSize(
+                      preferredSize: const Size.fromHeight(1),
+                      child: Container(
+                        height: 1,
+                        color: Theme.of(context).dividerColor,
+                      ),
+                    )
+                  : null,
             ),
       body: _initComplete == false
           ? const SizedBox.shrink()

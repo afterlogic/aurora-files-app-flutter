@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
@@ -58,8 +59,10 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                     controller: _folderNameCtrl,
                     autofocus: true,
                     decoration: InputDecoration(
-                      hintText: s.enter_folder_name,
-                      border: const UnderlineInputBorder(),
+                      labelText: s.enter_folder_name,
+                      border: BuildProperty.useOutlinedInputFields
+                          ? const OutlineInputBorder()
+                          : const UnderlineInputBorder(),
                     ),
                     validator: (value) => validateInput(
                       value: value ?? '',

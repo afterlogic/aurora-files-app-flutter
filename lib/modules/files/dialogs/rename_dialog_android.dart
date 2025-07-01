@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
@@ -79,8 +80,10 @@ class _RenameDialogState extends State<RenameDialog> {
                   autofocus: true,
                   decoration: InputDecoration(
                     errorText: errMsg.isEmpty == true ? null : errMsg,
-                    hintText: s.enter_new_name,
-                    border: const UnderlineInputBorder(),
+                    labelText: s.enter_new_name,
+                    border: BuildProperty.useOutlinedInputFields
+                        ? const OutlineInputBorder()
+                        : const UnderlineInputBorder(),
                   ),
                   validator: (value) => validateInput(
                     value: value ?? '',

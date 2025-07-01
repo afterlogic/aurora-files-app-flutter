@@ -1,3 +1,4 @@
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/settings/repository/encryption_local_storage.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
@@ -74,16 +75,16 @@ class _KeyRequestDialogState extends State<KeyRequestDialog> {
               decoration: InputDecoration(
                 labelText: s.password,
                 helperText: '',
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.only(top: 11),
-                  child: IconButton(
-                    icon: Icon(
-                      obscure ? Icons.visibility : Icons.visibility_off,
-                    ),
-                    onPressed: () {
-                      setState(() => obscure = !obscure);
-                    },
+                border: BuildProperty.useOutlinedInputFields
+                    ? const OutlineInputBorder()
+                    : null,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    obscure ? Icons.visibility : Icons.visibility_off,
                   ),
+                  onPressed: () {
+                    setState(() => obscure = !obscure);
+                  },
                 ),
               ),
               controller: passCtrl,

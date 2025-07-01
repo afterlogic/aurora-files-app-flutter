@@ -26,6 +26,7 @@ privacyPolicy: 'https://afterlogic.com/privacy-policy'
 registrationLink: ''
 
 #App settings
+useOutlinedInputFields: false
 pgpEnable: true
 secureSharingEnable: true
 teamSharingEnable: true

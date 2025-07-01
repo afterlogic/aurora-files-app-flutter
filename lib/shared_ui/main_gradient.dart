@@ -8,28 +8,32 @@ class LoginGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+    final isDark = !BuildProperty.alwaysLightTheme &&
+        Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: double.infinity,
       decoration: BuildProperty.useBackgroundImage
-        ? const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(BuildProperty.imageDir + '/login_background.png'),
+          ? const BoxDecoration(
+              image: DecorationImage(
+              image:
+                  AssetImage(BuildProperty.imageDir + '/login_background.png'),
               fit: BoxFit.cover,
-            )
-          )
-        : BoxDecoration(
-            gradient: LinearGradient(
+            ))
+          : BoxDecoration(
+              gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               stops: const [0, 1],
               colors: [
-                _fromHex(isDark ? BuildProperty.splashGradientTopDark : BuildProperty.splashGradientTop),
-                _fromHex(isDark ? BuildProperty.splashGradientBottomDark : BuildProperty.splashGradientBottom),
+                _fromHex(isDark
+                    ? BuildProperty.splashGradientTopDark
+                    : BuildProperty.splashGradientTop),
+                _fromHex(isDark
+                    ? BuildProperty.splashGradientBottomDark
+                    : BuildProperty.splashGradientBottom),
               ],
-            )
-          ),
+            )),
       child: child,
     );
   }

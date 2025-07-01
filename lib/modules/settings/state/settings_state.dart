@@ -70,14 +70,25 @@ abstract class _SettingsState with Store {
       _settingsLocal.getDarkThemeFromStorage(),
       connectivity.checkConnectivity(),
     ]);
-    isDarkTheme = result[0] as bool?;
+
+    if (BuildProperty.alwaysLightTheme) {
+      isDarkTheme = false;
+    } else {
+      isDarkTheme = result[0] as bool?;
+    }
+
     internetConnection = result[1] as ConnectivityResult;
     return true;
   }
 
   void toggleDarkTheme(bool? val) {
-    isDarkTheme = val;
-    _settingsLocal.setDarkThemeToStorage(val);
+    if (BuildProperty.alwaysLightTheme) {
+      isDarkTheme = false;
+      _settingsLocal.setDarkThemeToStorage(false);
+    } else {
+      isDarkTheme = val;
+      _settingsLocal.setDarkThemeToStorage(val);
+    }
   }
 
   // for both generating and importing from text

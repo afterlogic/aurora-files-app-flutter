@@ -35,7 +35,7 @@ _appIdIos: '{{_appId}}'
 _iosDeveloperId: ''
 _appleGroupId: ''
 version: ''
-build: 186
+build: 187
 
 #android sign
 _jksName: 'key.jks'

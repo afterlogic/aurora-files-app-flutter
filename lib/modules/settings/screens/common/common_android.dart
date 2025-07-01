@@ -81,22 +81,23 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
           Expanded(
             child: ListView(
               children: <Widget>[
-                Observer(
-                  builder: (_) => ListTile(
-                    leading: SettingsIcons.appTheme(),
-                    title: Text(s.app_theme),
-                    trailing: Text(
-                      _getThemeName(_settingsState.isDarkTheme),
-                      style: Theme.of(context).textTheme.caption,
-                    ),
-                    onTap: () => ThemeSelectionDialog.show(
-                      context,
-                      _settingsState.isDarkTheme,
-                      _settingsState.toggleDarkTheme,
+                if (!BuildProperty.alwaysLightTheme)
+                  Observer(
+                    builder: (_) => ListTile(
+                      leading: SettingsIcons.appTheme(),
+                      title: Text(s.app_theme),
+                      trailing: Text(
+                        _getThemeName(_settingsState.isDarkTheme),
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                      onTap: () => ThemeSelectionDialog.show(
+                        context,
+                        _settingsState.isDarkTheme,
+                        _settingsState.toggleDarkTheme,
+                      ),
                     ),
                   ),
-                ),
-                if (BuildProperty.flatDesign)
+                if (!BuildProperty.alwaysLightTheme && BuildProperty.flatDesign)
                   Divider(
                     height: 1.0,
                     thickness: 1.0,

@@ -71,6 +71,9 @@ class _AppState extends State<App> {
   }
 
   ThemeData? _getTheme(bool? isDarkTheme) {
+    if (BuildProperty.alwaysLightTheme) {
+      return AppTheme.light;
+    }
     if (isDarkTheme == false) {
       return AppTheme.light;
     } else if (isDarkTheme == true) {

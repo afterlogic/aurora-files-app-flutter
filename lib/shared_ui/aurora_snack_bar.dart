@@ -1,3 +1,4 @@
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/modules/settings/state/settings_state.dart';
 import 'package:flutter/material.dart';
 import 'package:theme/app_theme.dart';
@@ -26,7 +27,9 @@ class AuroraSnackBar {
     }
 
     final theme =
-        _settingsState.isDarkTheme == true ? AppTheme.dark : AppTheme.light;
+        BuildProperty.alwaysLightTheme || _settingsState.isDarkTheme != true
+            ? AppTheme.light
+            : AppTheme.dark;
     final backgroundColor = isError ? theme.colorScheme.error : null;
     final textColor = isError ? theme.colorScheme.onError : null;
     final snack = SnackBar(

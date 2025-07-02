@@ -4,6 +4,7 @@ import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/modules/settings/screens/pgp/dialog/confirm_delete_key_widget.dart';
+import 'package:aurorafiles/shared_ui/input_utils.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:crypto_stream/algorithm/pgp.dart';
 import 'package:flutter/material.dart';
@@ -50,53 +51,40 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
               key: _formKey,
               child: Column(
                 children: <Widget>[
-                  TextFormField(
+                  InputUtils.buildCustomTextFormField(
+                    controller: _emailController,
+                    labelText: s.email,
+                    keyboardType: TextInputType.emailAddress,
                     enabled: false,
-                    decoration: InputDecoration(
-                      labelText: s.email,
-                      border: BuildProperty.useOutlinedInputFields
-                          ? const OutlineInputBorder()
-                          : null,
-                    ),
                     validator: (v) => validateInput(
                       value: v ?? '',
                       types: [ValidationTypes.email],
                     ),
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 16.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: s.password,
-                      border: BuildProperty.useOutlinedInputFields
-                          ? const OutlineInputBorder()
-                          : null,
-                      suffix: GestureDetector(
-                        child: Icon(
-                          _obscure ? Icons.visibility : Icons.visibility_off,
-                        ),
-                        onTap: () {
-                          _obscure = !_obscure;
-                          setState(() {});
-                        },
+                  InputUtils.buildCustomTextFormField(
+                    controller: _passwordController,
+                    labelText: s.password,
+                    obscureText: _obscure,
+                    suffixIcon: GestureDetector(
+                      child: Icon(
+                        _obscure ? Icons.visibility : Icons.visibility_off,
                       ),
+                      onTap: () {
+                        _obscure = !_obscure;
+                        setState(() {});
+                      },
                     ),
                     validator: (v) => validateInput(
                       value: v ?? '',
                       types: [ValidationTypes.empty],
                     ),
-                    controller: _passwordController,
-                    obscureText: _obscure,
                   ),
                   const SizedBox(height: 16.0),
                   DropdownButtonFormField<int>(
                     hint: Text(length.toString()),
-                    decoration: InputDecoration(
+                    decoration: InputUtils.getCustomInputDecoration(
                       labelText: s.length,
-                      border: BuildProperty.useOutlinedInputFields
-                          ? const OutlineInputBorder()
-                          : null,
                     ),
                     value: length,
                     items: lengths.map((value) {
@@ -136,22 +124,6 @@ class _CreateKeyDialogState extends State<CreateKeyDialog> {
       ],
     );
   }
-
-  // String? _validateInput() {
-  //   _error = null;
-  //   _error = validateInput(_emailController.text, [ValidationTypes.email]);
-  //   if (_error != null) return _error;
-  //   _error = _validatePassword(_passwordController.text);
-  //   return _error;
-  // }
-
-  // String? _validatePassword(String text) {
-  //   final s = context.l10n;
-  //   if (text.isEmpty) {
-  //     return s.password_is_empty;
-  //   }
-  //   return null;
-  // }
 
   _generate() async {
     final s = context.l10n;

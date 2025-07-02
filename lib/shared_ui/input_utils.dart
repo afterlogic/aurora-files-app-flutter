@@ -40,7 +40,7 @@ class InputUtils {
       labelStyle: const TextStyle(color: Color(0xFF6E788D)),
       hintStyle: const TextStyle(color: Color(0xFF6E788D)),
       contentPadding: contentPadding ??
-          const EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
+          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
     );
   }
 
@@ -60,6 +60,19 @@ class InputUtils {
     int? maxLines = 1,
     bool autofocus = false,
   }) {
+    InputDecoration decoration = getCustomInputDecoration(
+      labelText: labelText,
+      hintText: hintText,
+      suffixIcon: suffixIcon,
+    );
+    
+    // Для disabled полей используем те же границы что и для обычных полей
+    if (!enabled && BuildProperty.useCustomInputStyles) {
+      decoration = decoration.copyWith(
+        disabledBorder: decoration.enabledBorder,
+      );
+    }
+    
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -71,11 +84,7 @@ class InputUtils {
       obscureText: obscureText,
       maxLines: maxLines,
       autofocus: autofocus,
-      decoration: getCustomInputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        suffixIcon: suffixIcon,
-      ),
+      decoration: decoration,
     );
   }
 
@@ -94,6 +103,19 @@ class InputUtils {
     int? maxLines = 1,
     bool autofocus = false,
   }) {
+    InputDecoration decoration = getCustomInputDecoration(
+      labelText: labelText,
+      hintText: hintText,
+      suffixIcon: suffixIcon,
+    );
+    
+    // Для disabled полей используем те же границы что и для обычных полей
+    if (!enabled && BuildProperty.useCustomInputStyles) {
+      decoration = decoration.copyWith(
+        disabledBorder: decoration.enabledBorder,
+      );
+    }
+    
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
@@ -104,11 +126,7 @@ class InputUtils {
       obscureText: obscureText,
       maxLines: maxLines,
       autofocus: autofocus,
-      decoration: getCustomInputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        suffixIcon: suffixIcon,
-      ),
+      decoration: decoration,
     );
   }
 }

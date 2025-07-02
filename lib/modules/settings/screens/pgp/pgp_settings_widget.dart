@@ -169,6 +169,7 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
     final children = <Widget>[
       if (externalKeys.isNotEmpty)
         AMButton(
+          shadow: const BoxShadow(),
           child: Text(s.export_all_public_keys),
           onPressed: () {
             exportAll(state.external);
@@ -176,16 +177,19 @@ class _PgpSettingWidgetState extends State<PgpSettingWidget>
         ),
       if (externalKeys.isNotEmpty) space,
       AMButton(
+        shadow: const BoxShadow(),
         onPressed: importKeyDialog,
         child: Text(s.import_keys_from_text),
       ),
       space,
       AMButton(
+        shadow: const BoxShadow(),
         onPressed: _presenter.getKeysFromFile,
         child: Text(s.import_keys_from_file),
       ),
       space,
       AMButton(
+        shadow: const BoxShadow(),
         onPressed: generateKeyDialog,
         child: Text(s.generate_keys),
       ),

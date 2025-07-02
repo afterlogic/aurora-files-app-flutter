@@ -286,11 +286,6 @@ class _EncryptionServerState extends State<EncryptionServer> {
         spacer,
         AMButton(
           color: theme.errorColor,
-          shadow: const BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8.0,
-            offset: Offset(0.0, 3.0),
-          ),
           child: Text(s.delete_key),
           onPressed: () async {
             final result = await AMDialog.show(

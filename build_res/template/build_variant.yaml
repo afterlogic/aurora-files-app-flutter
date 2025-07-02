@@ -37,3 +37,6 @@ useYubiKit: false
 yubicoFlutterLib: 'path: module/mocks/yubico_flutter'
 #useYubiKit: true
 #yubicoFlutterLib: "git: https://github.com/afterlogic/yubico_flutter"
+
+#Custom settings build
+useCustomInputStyles: false

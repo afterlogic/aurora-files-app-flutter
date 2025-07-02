@@ -34,3 +34,6 @@ flatDesign: false
 
 useYubiKit: false
 yubicoFlutterLib: 'path: module/mocks/yubico_flutter'
+
+#Custom settings build
+useCustomInputStyles: false

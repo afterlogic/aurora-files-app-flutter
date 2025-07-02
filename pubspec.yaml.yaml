@@ -141,6 +141,7 @@ flutter:
     - {{imageDir}}/settings/
     - {{imageDir}}/settings/common/
     - {{imageDir}}/settings/menu/
+    - {{imageDir}}/settings/open-pgp/
     - {{imageDir}}/drawer/
     - {{imageDir}}/float-button/
     - {{imageDir}}/file-options/

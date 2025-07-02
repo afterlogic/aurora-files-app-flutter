@@ -244,4 +244,38 @@ class AppBarIcons {
       },
     );
   }
+
+  /// Иконка "Папка"
+  static Widget folder() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          return SvgPicture.asset(
+            '${_basePath}folder.svg',
+            width: 24,
+            height: 24,
+            color: Theme.of(context).iconTheme.color,
+          );
+        }
+        return const Icon(Icons.folder);
+      },
+    );
+  }
+
+  /// Иконка "Personal"
+  static Widget personal() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          return SvgPicture.asset(
+            '${_basePath}personal.svg',
+            width: 24,
+            height: 24,
+            color: Theme.of(context).iconTheme.color,
+          );
+        }
+        return const Icon(Icons.person);
+      },
+    );
+  }
 }

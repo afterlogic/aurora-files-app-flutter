@@ -506,7 +506,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         menuItem = PopupMenuItem<String>(
           value: path,
           child: ListTile(
-            leading: const Icon(Icons.folder),
+            leading: AppBarIcons.folder(),
             title: Text(
               path.split("/").last,
               maxLines: 1,
@@ -518,7 +518,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         menuItem = PopupMenuItem<String>(
           value: "",
           child: ListTile(
-            leading: const Icon(Icons.storage),
+            leading: AppBarIcons.personal(),
             title: Text(_filesState.selectedStorage.displayName),
           ),
         );
@@ -551,7 +551,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         menuItem = PopupMenuItem<String>(
           value: path,
           child: ListTile(
-            leading: const Icon(Icons.folder),
+            leading: AppBarIcons.folder(),
             title: Text(
               path.split("/").last,
               maxLines: 1,
@@ -563,7 +563,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         menuItem = PopupMenuItem<String>(
           value: "",
           child: ListTile(
-            leading: const Icon(Icons.storage),
+            leading: AppBarIcons.personal(),
             title: Text(_filesState.selectedStorage.displayName),
           ),
         );

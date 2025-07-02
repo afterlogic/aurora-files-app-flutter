@@ -14,14 +14,13 @@ import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/asset_icon.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/custom_bottom_sheet.dart';
+import 'package:aurorafiles/shared_ui/file_options_icons.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:secure_sharing/secure_sharing.dart';
 
 import 'delete_confirmation_dialog.dart';
@@ -369,7 +368,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ListTile(
               onTap: () =>
                   onItemSelected(FileOptionsBottomSheetResult.toggleOffline),
-              leading: Icon(Icons.airplanemode_active, color: iconColor),
+              leading: FileOptionsIcons.offline(
+                color: iconColor,
+              ),
               title: Text(s.offline),
               trailing: Switch.adaptive(
                 activeColor: Theme.of(context).primaryColor,
@@ -381,8 +382,10 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
           const Divider(height: 0),
           if (!offline)
             ListTile(
-              leading: Icon(isFolder ? MdiIcons.folderMove : MdiIcons.fileMove,
-                  color: iconColor),
+              leading: FileOptionsIcons.copyMove(
+                color: iconColor,
+                isFolder: isFolder,
+              ),
               title: Text(s.copy_or_move),
               onTap: _copyOrMoveFile,
             ),
@@ -390,9 +393,7 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
               BuildProperty.secureSharingEnable &&
               _enableSecureLink)
             ListTile(
-              leading: AssetIcon(
-                Asset.svg.insertLink,
-                addedSize: 14,
+              leading: FileOptionsIcons.createShareableLink(
                 color: iconColor,
               ),
               title: Text(widget.file.initVector != null
@@ -402,7 +403,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!offline && _enableTeamShare)
             ListTile(
-              leading: Icon(Icons.share, color: iconColor),
+              leading: FileOptionsIcons.shareWithTeammates(
+                color: iconColor,
+              ),
               title: Text(s.label_share_with_teammates),
               onTap: () => _shareWithTeammates(widget.externalContext),
             ),
@@ -419,9 +422,9 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!isFolder)
             ListTile(
-              leading: Icon(
-                  PlatformOverride.isIOS ? MdiIcons.exportVariant : Icons.share,
-                  color: iconColor),
+              leading: FileOptionsIcons.share(
+                color: iconColor,
+              ),
               title: Text(s.share),
               onTap: () => _shareFile(widget.externalContext),
             ),
@@ -433,13 +436,17 @@ class _FileOptionsBottomSheetState extends State<FileOptionsBottomSheet>
             ),
           if (!offline)
             ListTile(
-              leading: Icon(Icons.edit, color: iconColor),
+              leading: FileOptionsIcons.rename(
+                color: iconColor,
+              ),
               title: Text(s.rename),
               onTap: () => _renameFile(widget.externalContext),
             ),
           if (!offline)
             ListTile(
-              leading: Icon(Icons.delete_outline, color: iconColor),
+              leading: FileOptionsIcons.delete(
+                color: iconColor,
+              ),
               title: Text(s.delete),
               onTap: () => _deleteFile(widget.externalContext),
             ),

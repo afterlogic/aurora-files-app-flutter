@@ -143,6 +143,7 @@ flutter:
     - {{imageDir}}/settings/menu/
     - {{imageDir}}/drawer/
     - {{imageDir}}/float-button/
+    - {{imageDir}}/file-options/
     - {{icon}}
     - {{mainLogo}}
 

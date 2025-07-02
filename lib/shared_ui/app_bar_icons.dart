@@ -3,7 +3,6 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:theme/app_color.dart';
 
 import 'asset_icon.dart';
 
@@ -17,13 +16,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}burger.svg',
             width: 18,
             height: 14,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.arrow_back_ios);
@@ -36,13 +33,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}back.svg',
             width: 18,
             height: 14,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.arrow_back_ios);
@@ -55,13 +50,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}search.svg',
             width: 20,
             height: 20,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.search);
@@ -74,13 +67,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}close.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.close);
@@ -93,13 +84,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}close.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.clear);
@@ -112,13 +101,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}burger.svg',
             width: 18,
             height: 14,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.menu);
@@ -131,13 +118,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}info.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.info_outline);
@@ -149,13 +134,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}link.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return AssetIcon(
@@ -170,13 +153,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}delete.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.delete_outline);
@@ -188,13 +169,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}other.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.more_vert);
@@ -206,13 +185,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}share.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.share);
@@ -224,13 +201,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}share-with-teammates.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.share);
@@ -242,13 +217,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}copy-move.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(MdiIcons.fileMove);
@@ -260,13 +233,11 @@ class AppBarIcons {
     return Builder(
       builder: (context) {
         if (BuildProperty.flatDesign) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             '${_basePath}rename.svg',
             width: 24,
             height: 24,
-            color: color,
+            color: Theme.of(context).iconTheme.color,
           );
         }
         return const Icon(Icons.edit);

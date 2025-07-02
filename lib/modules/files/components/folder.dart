@@ -8,6 +8,7 @@ import 'package:aurorafiles/modules/files/dialogs/file_options_bottom_sheet.dart
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
+import 'package:aurorafiles/shared_ui/file_options_icons.dart';
 import 'package:aurorafiles/shared_ui/highlighted_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -166,8 +167,7 @@ class _FolderWidgetState extends State<FolderWidget> {
               bottom: 0.0,
               right: 4.0,
               child: IconButton(
-                icon: Icon(
-                  Icons.more_vert,
+                icon: FileOptionsIcons.menu(
                   color: Theme.of(context).disabledColor,
                 ),
                 onPressed: () => _showModalBottomSheet(

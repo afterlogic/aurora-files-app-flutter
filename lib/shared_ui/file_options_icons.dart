@@ -4,7 +4,6 @@ import 'package:aurorafiles/shared_ui/asset_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:theme/app_color.dart';
 
 class FileOptionsIcons {
   static Widget copyMove({Color? color, bool isFolder = false}) {
@@ -15,13 +14,11 @@ class FileOptionsIcons {
             '${BuildProperty.imageDir}/file-options/copy-move.svg';
 
         try {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final customColor = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             customIconPath,
             width: 24,
             height: 24,
-            color: customColor,
+            color: Theme.of(context).iconTheme.color,
           );
         } catch (e) {
           // Если кастомной иконки нет, используем стандартную
@@ -41,13 +38,11 @@ class FileOptionsIcons {
             '${BuildProperty.imageDir}/file-options/create-shareable-link.svg';
 
         try {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final customColor = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             customIconPath,
             width: 24,
             height: 24,
-            color: customColor,
+            color: Theme.of(context).iconTheme.color,
           );
         } catch (e) {
           return AssetIcon(
@@ -67,13 +62,11 @@ class FileOptionsIcons {
             '${BuildProperty.imageDir}/file-options/share-with-teammates.svg';
 
         try {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final customColor = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             customIconPath,
             width: 24,
             height: 24,
-            color: customColor,
+            color: Theme.of(context).iconTheme.color,
           );
         } catch (e) {
           return Icon(
@@ -92,13 +85,11 @@ class FileOptionsIcons {
             '${BuildProperty.imageDir}/file-options/rename.svg';
 
         try {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final customColor = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             customIconPath,
             width: 24,
             height: 24,
-            color: customColor,
+            color: Theme.of(context).iconTheme.color,
           );
         } catch (e) {
           return Icon(
@@ -117,13 +108,11 @@ class FileOptionsIcons {
             '${BuildProperty.imageDir}/file-options/delete.svg';
 
         try {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final customColor = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             customIconPath,
             width: 24,
             height: 24,
-            color: customColor,
+            color: Theme.of(context).iconTheme.color,
           );
         } catch (e) {
           return Icon(
@@ -142,13 +131,11 @@ class FileOptionsIcons {
             '${BuildProperty.imageDir}/file-options/share.svg';
 
         try {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final customColor = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             customIconPath,
             width: 24,
             height: 24,
-            color: customColor,
+            color: Theme.of(context).iconTheme.color,
           );
         } catch (e) {
           return Icon(
@@ -167,17 +154,45 @@ class FileOptionsIcons {
             '${BuildProperty.imageDir}/file-options/offline.svg';
 
         try {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final customColor = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
             customIconPath,
             width: 24,
             height: 24,
-            color: customColor,
+            color: Theme.of(context).iconTheme.color,
           );
         } catch (e) {
           return Icon(
             Icons.offline_pin,
+            color: color,
+          );
+        }
+      },
+    );
+  }
+
+  static Widget menu({Color? color}) {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          const customIconPath =
+              '${BuildProperty.imageDir}/file-options/menu.svg';
+
+          try {
+            return SvgPicture.asset(
+              customIconPath,
+              width: 24,
+              height: 24,
+              color: Theme.of(context).iconTheme.color,
+            );
+          } catch (e) {
+            return Icon(
+              Icons.more_vert,
+              color: color,
+            );
+          }
+        } else {
+          return Icon(
+            Icons.more_vert,
             color: color,
           );
         }

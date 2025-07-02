@@ -16,6 +16,7 @@ import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/modules/settings/repository/pgp_key_util.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
+import 'package:aurorafiles/shared_ui/file_options_icons.dart';
 import 'package:aurorafiles/shared_ui/highlighted_text.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:aurorafiles/utils/date_formatting.dart';
@@ -528,8 +529,7 @@ class _FileWidgetState extends State<FileWidget> {
                             },
                           )
                     : IconButton(
-                        icon: Icon(
-                          Icons.more_vert,
+                        icon: FileOptionsIcons.menu(
                           color: Theme.of(context).disabledColor,
                         ),
                         onPressed: () => _showModalBottomSheet(context),

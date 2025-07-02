@@ -1,8 +1,8 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
-import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
+import 'package:aurorafiles/shared_ui/input_utils.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
 import 'package:flutter/material.dart';
 
@@ -55,15 +55,10 @@ class _AddFolderDialogAndroidState extends State<AddFolderDialogAndroid> {
                       errMsg,
                       style: TextStyle(color: Theme.of(context).errorColor),
                     ),
-                  TextFormField(
+                  InputUtils.buildCustomTextFormField(
                     controller: _folderNameCtrl,
                     autofocus: true,
-                    decoration: InputDecoration(
-                      labelText: s.enter_folder_name,
-                      border: BuildProperty.useOutlinedInputFields
-                          ? const OutlineInputBorder()
-                          : const UnderlineInputBorder(),
-                    ),
+                    labelText: s.enter_folder_name,
                     validator: (value) => validateInput(
                       value: value ?? '',
                       types: [

@@ -71,6 +71,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         ),
         const SizedBox(height: 32.0),
         AMButton(
+          shadow: const BoxShadow(),
           child: Text(s.import_key_from_text),
           onPressed: () => AMDialog.show(
             context: context,
@@ -82,6 +83,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         ),
         spacer,
         AMButton(
+          shadow: const BoxShadow(),
           child: Text(s.import_key_from_file),
           onPressed: () => _settingsState.onImportKeyFromFile(
             onSuccess: () => AuroraSnackBar.showSnack(
@@ -94,6 +96,7 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
         ),
         spacer,
         AMButton(
+          shadow: const BoxShadow(),
           child: Text(s.generate_key),
           onPressed: () => AMDialog.show(
             context: context,
@@ -125,12 +128,19 @@ class _EncryptionAndroidState extends State<EncryptionAndroid> {
           style: Theme.of(context).textTheme.caption,
         ),
         const SizedBox(height: 32.0),
-        AMButton(onPressed: _shareKey, child: Text(s.share_key)),
+        AMButton(
+            shadow: const BoxShadow(),
+            onPressed: _shareKey,
+            child: Text(s.share_key)),
         if (!PlatformOverride.isIOS) spacer,
         if (!PlatformOverride.isIOS)
-          AMButton(onPressed: _downloadKey, child: Text(s.download_key)),
+          AMButton(
+              shadow: const BoxShadow(),
+              onPressed: _downloadKey,
+              child: Text(s.download_key)),
         spacer,
         AMButton(
+          shadow: const BoxShadow(),
           color: theme.errorColor,
           child: Text(s.delete_key),
           onPressed: () async {

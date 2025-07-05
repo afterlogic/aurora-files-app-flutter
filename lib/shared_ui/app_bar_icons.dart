@@ -229,6 +229,22 @@ class AppBarIcons {
     );
   }
 
+  static Widget moveToFolder() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          return SvgPicture.asset(
+            '${_basePath}move-to-folder.svg',
+            width: 24,
+            height: 24,
+            color: Theme.of(context).iconTheme.color,
+          );
+        }
+        return const Icon(MdiIcons.fileMove);
+      },
+    );
+  }
+
   static Widget rename() {
     return Builder(
       builder: (context) {

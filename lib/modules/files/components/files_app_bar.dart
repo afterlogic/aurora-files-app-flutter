@@ -179,9 +179,19 @@ class _FilesAppBarState extends State<FilesAppBar>
     if (_filesPageState.selectedFilesIds.isNotEmpty) {
       return AMAppBar(
         key: const Key("select"),
-        backgroundColor: widget.isAppBar ? theme.primaryColorDark : null,
+        shadow: BuildProperty.flatDesign
+            ? const BoxShadow(color: Colors.transparent)
+            : null,
+        backgroundColor: BuildProperty.flatDesign
+            ? null
+            : widget.isAppBar
+                ? theme.primaryColorDark
+                : null,
         leading: IconButton(
-          icon: AppBarIcons.clear(),
+          icon: Icon(
+            Icons.clear,
+            color: theme.iconTheme.color ?? Colors.blue[900],
+          ),
           onPressed: () => _filesPageState.quitSelectMode(),
         ),
         title: Text("Selected: ${_filesPageState.selectedFilesIds.length}"),
@@ -189,7 +199,7 @@ class _FilesAppBarState extends State<FilesAppBar>
             ? []
             : [
                 IconButton(
-                  icon: const Icon(MdiIcons.fileMove),
+                  icon: AppBarIcons.moveToFolder(),
                   tooltip: "Move/Copy files",
                   onPressed: () {
                     _filesState.updateFilesCb = _filesPageState.onGetFiles;
@@ -201,7 +211,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline),
+                  icon: AppBarIcons.delete(),
                   tooltip: "Delete files",
                   onPressed: () => widget.onDeleteFiles(context),
                 ),
@@ -412,10 +422,11 @@ class _FilesAppBarState extends State<FilesAppBar>
             child: Row(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                   child: AppBarIcons.search(),
                 ),
-                Expanded(child: SizedBox.shrink()),
+                const Expanded(child: SizedBox.shrink()),
               ],
             ),
           ),

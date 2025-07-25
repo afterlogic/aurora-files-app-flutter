@@ -1,5 +1,3 @@
-//ignore_for_file: non_constant_identifier_names
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -7,7 +5,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_it.dart';
+
+// ignore_for_file: type=lint
 
 /// Callers can lookup localized strings with an instance of AppLocalizations
 /// returned by `AppLocalizations.of(context)`.
@@ -65,8 +68,8 @@ abstract class AppLocalizations {
 
   final String localeName;
 
-  static AppLocalizations of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
   static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
@@ -90,7 +93,10 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('en')
+    Locale('de'),
+    Locale('en'),
+    Locale('fr'),
+    Locale('it')
   ];
 
   /// No description provided for @mail.
@@ -122,6 +128,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tasks'**
   String get tasks;
+
+  /// No description provided for @storage_personal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get storage_personal;
+
+  /// No description provided for @storage_corporate.
+  ///
+  /// In en, this message translates to:
+  /// **'Corporate'**
+  String get storage_corporate;
+
+  /// No description provided for @storage_shared.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared'**
+  String get storage_shared;
+
+  /// No description provided for @storage_encrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted'**
+  String get storage_encrypted;
+
+  /// No description provided for @storage_favorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite'**
+  String get storage_favorite;
+
+  /// No description provided for @storage_trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash'**
+  String get storage_trash;
 
   /// No description provided for @cancel.
   ///
@@ -236,6 +278,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App theme'**
   String get app_theme;
+
+  /// No description provided for @switch_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get switch_language;
+
+  /// No description provided for @system_language.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get system_language;
 
   /// No description provided for @system_theme.
   ///
@@ -1044,14 +1098,14 @@ abstract class AppLocalizations {
   /// No description provided for @enter_host.
   ///
   /// In en, this message translates to:
-  /// **'Sign in'**
-  String get login_form_title;
-
-  /// No description provided for @enter_host.
-  ///
-  /// In en, this message translates to:
   /// **'Could not detect domain from this email, please specify your server URL manually.'**
   String get enter_host;
+
+  /// No description provided for @login_form_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get login_form_title;
 
   /// No description provided for @host.
   ///
@@ -1065,13 +1119,13 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get login;
 
-  /// No description provided for @login.
+  /// No description provided for @registration_link_hint.
   ///
   /// In en, this message translates to:
   /// **'Not account yet?'**
   String get registration_link_hint;
 
-  /// No description provided for @login.
+  /// No description provided for @registration_link_text.
   ///
   /// In en, this message translates to:
   /// **'Register now'**
@@ -1278,7 +1332,7 @@ abstract class AppLocalizations {
   /// No description provided for @copy_encrypted_password.
   ///
   /// In en, this message translates to:
-  /// **'You can send the link via email. The password must be sent using a different channel.\n\n  Store the password somewhere. You will not be able to recover it otherwise.'**
+  /// **'You can send the link via email. The password must be sent using a different channel.\n\nStore the password somewhere. You will not be able to recover it otherwise.'**
   String get copy_encrypted_password;
 
   /// No description provided for @encrypted_sign_using_key.
@@ -1801,7 +1855,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['de', 'en', 'fr', 'it'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1812,7 +1866,10 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
 
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'de': return AppLocalizationsDe();
     case 'en': return AppLocalizationsEn();
+    case 'fr': return AppLocalizationsFr();
+    case 'it': return AppLocalizationsIt();
   }
 
   throw FlutterError(

@@ -1,4 +1,5 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
+import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
@@ -48,6 +49,7 @@ class _PdfViewerState extends State<PdfViewer> {
                     value: _fileViewerState.downloadProgress),
               )
             : AMButton(
+                shadow: BuildProperty.flatDesign ? const BoxShadow() : null,
                 child: Text(s.open_PDF),
                 onPressed: () => _fileViewerState.onOpenPdf(context),
               );

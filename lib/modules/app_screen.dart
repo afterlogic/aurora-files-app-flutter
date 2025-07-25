@@ -115,6 +115,7 @@ class _AppState extends State<App> {
                     localizationsDelegates:
                         AppLocalizations.localizationsDelegates,
                     supportedLocales: AppLocalizations.supportedLocales,
+                    locale: _settingsState.selectedLanguage?.toLocale(),
                     initialRoute: _canEnterMainApp(snapshot.data)
                         ? FilesRoute.name
                         : AuthRoute.name,

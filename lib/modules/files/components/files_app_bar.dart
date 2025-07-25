@@ -80,6 +80,25 @@ class _FilesAppBarState extends State<FilesAppBar>
     super.dispose();
   }
 
+  /// Localization description [_getFolderName] of storage type
+  String _getLocalizedStorageName(BuildContext context, StorageType type) {
+    final s = context.l10n;
+    switch (type) {
+      case StorageType.personal:
+        return s.storage_personal;
+      case StorageType.corporate:
+        return s.storage_corporate;
+      case StorageType.shared:
+        return s.storage_shared;
+      case StorageType.encrypted:
+        return s.storage_encrypted;
+      case StorageType.favorite:
+        return s.storage_favorite;
+      case StorageType.trash:
+        return s.storage_trash;
+    }
+  }
+
   String _getFolderName() {
     final splitPath = _getSplitFullPath();
     return splitPath.last.isNotEmpty ? splitPath.last : BuildProperty.appName;
@@ -168,7 +187,8 @@ class _FilesAppBarState extends State<FilesAppBar>
               const SizedBox(height: 2),
             if (_filesState.selectedStorage.displayName.isNotEmpty)
               Text(
-                _filesState.selectedStorage.displayName,
+                _getLocalizedStorageName(
+                    context, _filesState.selectedStorage.type),
                 style: const TextStyle(fontSize: 10.0),
               )
           ],
@@ -221,9 +241,8 @@ class _FilesAppBarState extends State<FilesAppBar>
       if (!widget.isAppBar) {
         return _createAppBarWithFlatDesign(
           key: const Key("move"),
-          backgroundColor: theme.colorScheme.secondary,
           leading: IconButton(
-            icon: AppBarIcons.close(),
+            icon: AppBarIcons.back(),
             onPressed: _onCloseMove,
           ),
           title: Text(_filesState.isMoveModeEnabled
@@ -234,7 +253,7 @@ class _FilesAppBarState extends State<FilesAppBar>
                   : s.upload_file),
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.create_new_folder),
+              icon: AppBarIcons.addFolder(),
               tooltip: s.add_folder,
               onPressed: () => AMDialog.show(
                 context: context,
@@ -250,14 +269,13 @@ class _FilesAppBarState extends State<FilesAppBar>
 
       return _createAppBarWithFlatDesign(
         key: const Key("move"),
-        backgroundColor: theme.colorScheme.secondary,
         leading: _filesPageState.pagePath.isNotEmpty
             ? IconButton(
                 icon: AppBarIcons.back(),
                 onPressed: Navigator.of(context).pop,
               )
             : IconButton(
-                icon: AppBarIcons.close(),
+                icon: const Icon(Icons.close),
                 onPressed: _onCloseMove,
               ),
         title: Column(
@@ -274,7 +292,8 @@ class _FilesAppBarState extends State<FilesAppBar>
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Text(
-                _filesState.selectedStorage.displayName +
+                _getLocalizedStorageName(
+                        context, _filesState.selectedStorage.type) +
                     _filesPageState.pagePath,
                 style: const TextStyle(fontSize: 10.0),
               ),
@@ -283,7 +302,7 @@ class _FilesAppBarState extends State<FilesAppBar>
         ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.create_new_folder),
+            icon: AppBarIcons.addFolder(),
             tooltip: s.add_folder,
             onPressed: () => AMDialog.show(
               context: context,
@@ -295,7 +314,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           ),
           if (_filesState.currentStorages.length > 1)
             PopupMenuButton<Storage>(
-              icon: const Icon(Icons.storage),
+              icon: AppBarIcons.storage(),
               onSelected: (Storage storage) async {
                 Navigator.of(context).popUntil((Route<dynamic> route) {
                   return route.isFirst;
@@ -326,7 +345,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           ),
           actions: [
             IconButton(
-              icon: AppBarIcons.close(),
+              icon: const Icon(Icons.close),
               onPressed: _onCloseSearch,
             ),
           ],
@@ -360,7 +379,7 @@ class _FilesAppBarState extends State<FilesAppBar>
       return AMAppBar(
         key: const Key("search"),
         leading: IconButton(
-          icon: AppBarIcons.close(),
+          icon: const Icon(Icons.close),
           onPressed: _onCloseSearch,
         ),
         title: Column(
@@ -374,7 +393,8 @@ class _FilesAppBarState extends State<FilesAppBar>
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  _filesState.selectedStorage.displayName +
+                  _getLocalizedStorageName(
+                          context, _filesState.selectedStorage.type) +
                       _filesPageState.pagePath,
                   style: const TextStyle(fontSize: 10.0),
                 ),
@@ -476,7 +496,8 @@ class _FilesAppBarState extends State<FilesAppBar>
                     const SizedBox(height: 2),
                   if (_filesState.selectedStorage.displayName.isNotEmpty)
                     Text(
-                      _filesState.selectedStorage.displayName,
+                      _getLocalizedStorageName(
+                          context, _filesState.selectedStorage.type),
                       style: const TextStyle(fontSize: 10.0),
                     )
                 ],
@@ -530,7 +551,8 @@ class _FilesAppBarState extends State<FilesAppBar>
           value: "",
           child: ListTile(
             leading: AppBarIcons.personal(),
-            title: Text(_filesState.selectedStorage.displayName),
+            title: Text(_getLocalizedStorageName(
+                context, _filesState.selectedStorage.type)),
           ),
         );
       }
@@ -575,7 +597,8 @@ class _FilesAppBarState extends State<FilesAppBar>
           value: "",
           child: ListTile(
             leading: AppBarIcons.personal(),
-            title: Text(_filesState.selectedStorage.displayName),
+            title: Text(_getLocalizedStorageName(
+                context, _filesState.selectedStorage.type)),
           ),
         );
       }
@@ -625,7 +648,7 @@ class _FilesAppBarState extends State<FilesAppBar>
           enabled: storage.type != _filesState.selectedStorage.type,
           value: storage,
           child: ListTile(
-            leading: const Icon(Icons.storage),
+            leading: AppBarIcons.storage(),
             title: Text(storage.displayName),
           ),
         ));

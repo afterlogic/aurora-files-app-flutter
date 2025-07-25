@@ -278,6 +278,40 @@ class AppBarIcons {
     );
   }
 
+  /// Иконка "Добавить папку"
+  static Widget addFolder() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          return SvgPicture.asset(
+            '${_basePath}add-folder.svg',
+            width: 24,
+            height: 24,
+            color: Theme.of(context).iconTheme.color,
+          );
+        }
+        return const Icon(Icons.create_new_folder);
+      },
+    );
+  }
+
+  /// Иконка "Хранилище"
+  static Widget storage() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          return SvgPicture.asset(
+            '${_basePath}storage.svg',
+            width: 24,
+            height: 24,
+            color: Theme.of(context).iconTheme.color,
+          );
+        }
+        return const Icon(Icons.storage);
+      },
+    );
+  }
+
   /// Иконка "Personal"
   static Widget personal() {
     return Builder(

@@ -1,0 +1,477 @@
+{
+  "mail": "Posta",
+  "contacts": "Contatti",
+  "files": "File",
+  "calendar": "Calendario",
+  "tasks": "Attività",
+  "storage_personal": "Personale",
+  "storage_corporate": "Aziendale",
+  "storage_shared": "Condiviso",
+  "storage_encrypted": "Crittografato",
+  "storage_favorite": "Preferiti",
+  "storage_trash": "Cestino",
+  "cancel": "Annulla",
+  "quota_using": "Stai utilizzando il {progress}% del tuo {limit}",
+  "@quota_using": {
+    "placeholders": {
+      "progress": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "offline_mode": "Modalità offline",
+  "settings": "Impostazioni",
+  "log_out": "Disconnetti",
+  "no_route": "Nessuna rotta definita per {name}",
+  "@no_route": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "common": "Comune",
+  "encryption": "Crittografia",
+  "openPGP": "OpenPGP",
+  "storage_info": "Informazioni archiviazione",
+  "about": "Informazioni",
+  "version": "Versione {version}",
+  "@version": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "terms": "Termini di servizio",
+  "privacy_policy": "Informativa sulla privacy",
+  "clear_cache": "Cancella cache",
+  "confirm_delete": "Sei sicuro di voler eliminare tutti i file e le immagini memorizzati nella cache? Questo non influenzerà i file salvati per l'uso offline.",
+  "clear": "Cancella",
+  "cache_cleared_success": "Cache cancellata con successo",
+  "app_theme": "Tema dell'app",
+  "switch_language": "Lingua",
+  "system_language": "Sistema",
+  "system_theme": "Tema di sistema",
+  "dark_theme": "Scuro",
+  "light_theme": "Chiaro",
+  "encryption_description": "I file vengono crittografati/decrittografati direttamente su questo dispositivo, anche il server stesso non può accedere al contenuto originale dei file crittografati in modo paranoico. Il metodo di crittografia è AES256.",
+  "delete_encryption_key_success": "La chiave di crittografia è stata eliminata con successo.",
+  "delete_key": "Elimina chiave",
+  "share_key": "Condividi chiave",
+  "download_key": "Scarica chiave",
+  "encryption_export_description": "Per accedere ai file crittografati su altri dispositivi/browser, esporta la chiave e poi importala su un altro dispositivo/browser.",
+  "encryption_keys": "Chiave di crittografia:",
+  "generate_keys": "Genera chiavi",
+  "key_not_found_in_file": "Impossibile trovare una chiave in questo file",
+  "import_encryption_key_success": "La chiave di crittografia è stata importata con successo",
+  "import_key_from_file": "Importa chiave da file",
+  "import_key_from_text": "Importa chiave da testo",
+  "need_to_set_encryption_key": "Per iniziare a utilizzare la crittografia dei file caricati è necessario impostare una chiave di crittografia.",
+  "oK": "OK",
+  "key_downloaded_into": "La chiave è stata scaricata in: {dir}",
+  "@key_downloaded_into": {
+    "placeholders": {
+      "dir": {
+        "type": "String"
+      }
+    }
+  },
+  "import_key": "Importa chiave",
+  "generate_key": "Genera chiave",
+  "add_key_progress": "Aggiunta chiave di crittografia...",
+  "key_name": "Nome chiave",
+  "key_text": "Testo chiave",
+  "import": "Importa",
+  "generate": "Genera",
+  "delete_key_description": "Attenzione! Non sarai più in grado di decrittografare i file crittografati su questo dispositivo a meno che non importi nuovamente questa chiave.",
+  "delete": "Elimina",
+  "download_key_progress": "Download della chiave...",
+  "download_confirm": "Sei sicuro di voler scaricare questa chiave?",
+  "email": "Email",
+  "password": "Password",
+  "select_length": "Seleziona lunghezza",
+  "length": "Lunghezza",
+  "close": "Chiudi",
+  "password_is_empty": "la password è vuota",
+  "already_have_key": "Hai già la/le chiave/i per questa email",
+  "already_have_keys": "Le chiavi che sono già nel sistema sono disattivate.",
+  "import_selected_keys": "Importa chiavi selezionate",
+  "check_keys": "Controlla chiavi",
+  "all_public_keys": "Tutte le chiavi pubbliche",
+  "send_all": "Invia tutto",
+  "download_all": "Scarica tutto",
+  "downloading_to": "Download di {path}",
+  "@downloading_to": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "private_key": "Chiave privata",
+  "public_key": "Chiave pubblica",
+  "share": "Condividi",
+  "download": "Scarica",
+  "confirm_delete_pgp_key": "Sei sicuro di voler eliminare la chiave OpenPGP per {email}?",
+  "@confirm_delete_pgp_key": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "public_keys": "Chiavi pubbliche",
+  "private_keys": "Chiavi private",
+  "export_all_public_keys": "Esporta tutte le chiavi pubbliche",
+  "import_keys_from_text": "Importa chiavi da testo",
+  "import_keys_from_file": "Importa chiavi da file",
+  "offline_information_is_not_available": "Queste informazioni non sono disponibili quando sei offline.",
+  "information_is_not_available": "Queste informazioni non sono disponibili al momento.",
+  "available_space": "Spazio disponibile: {format}",
+  "@available_space": {
+    "placeholders": {
+      "format": {
+        "type": "String"
+      }
+    }
+  },
+  "used_space": "Spazio utilizzato: {used} su {limit}",
+  "@used_space": {
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "upgrade_now": "Aggiorna ora",
+  "has_public_link": "Ha link pubblico",
+  "available_offline": "Disponibile offline",
+  "synched_successfully": "File sincronizzato con successo",
+  "synch_file_progress": "Sincronizzazione file...",
+  "downloaded_successfully_into": "{name} scaricato con successo in: {path}",
+  "@downloaded_successfully_into": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "Download di {name}",
+  "@downloading": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "set_any_encryption_key": "Hai abilitato la crittografia dei file caricati ma non hai impostato alcuna chiave di crittografia.",
+  "need_an_encryption_to_share": "Hai bisogno di una chiave di crittografia per condividere i file.",
+  "need_an_encryption_to_download": "Hai bisogno di una chiave di crittografia per scaricare i file.",
+  "search": "Cerca",
+  "add_folder": "Aggiungi cartella",
+  "move_file_or_folder": "Sposta file/cartelle",
+  "copy": "Copia",
+  "move": "Sposta",
+  "link_coppied_to_clipboard": "Link copiato negli appunti",
+  "public_link_access": "Accesso link pubblico",
+  "copy_public_link": "Copia link pubblico",
+  "btn_shareable_link": "Crea link condivisibile",
+  "btn_encrypted_shareable_link": "Condividi file crittografato",
+  "has_PGP_public_key": "Il destinatario selezionato ha una chiave pubblica PGP. I dati possono essere crittografati utilizzando questa chiave.",
+  "has_no_PGP_public_key": "Il destinatario selezionato non ha una chiave pubblica PGP. La crittografia basata su chiave non è consentita.",
+  "encryption_type": "Tipo di crittografia:",
+  "key_will_be_used": "Verrà utilizzata la crittografia basata su chiave",
+  "password_will_be_used": "Verrà utilizzata la crittografia basata su password",
+  "encrypt": "Crittografa",
+  "key_based": "Basata su chiave",
+  "password_based": "Basata su password",
+  "not_have_recipiens": "Nessun destinatario specificato",
+  "select_recipient": "Seleziona destinatario:",
+  "cant_load_recipients": "Impossibile caricare i destinatari:",
+  "try_again": "Riprova",
+  "no_name": "Nessun nome",
+  "encrypted_using_key": "Il file è crittografato utilizzando la chiave pubblica PGP di {user}. Puoi inviare il link tramite email crittografata.",
+  "@encrypted_using_key": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "encrypted_using_password": "Se non invii l'email ora, conserva la password da qualche parte. Non sarai in grado di recuperarla altrimenti.",
+  "add_new_folder": "Aggiungi nuova cartella",
+  "adding_folder": "Aggiunta cartella {name}",
+  "@adding_folder": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "enter_folder_name": "Inserisci nome cartella",
+  "add": "Aggiungi",
+  "file": "file",
+  "folder": "cartella",
+  "delete_files": "Elimina file",
+  "delete_file": "Elimina file",
+  "confirm_delete_file": "Sei sicuro di voler eliminare {file}",
+  "@confirm_delete_file": {
+    "placeholders": {
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "these_files": "questi {count} file/cartelle ",
+  "@these_files": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "this_file": "questo {name}?",
+  "@this_file": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offline": "Offline",
+  "copy_or_move": "Copia/Sposta",
+  "rename": "Rinomina",
+  "renaming_to": "Rinominando in {name}",
+  "@renaming_to": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "enter_new_name": "Inserisci nuovo nome",
+  "share_file": "Condividi file",
+  "getting_file_progress": "Ottenimento file per la condivisione...",
+  "decrypt_error": "Si è verificato un errore durante il processo di decrittografia. Forse questo file è stato crittografato con un'altra chiave.",
+  "file_is_damaged": "Si è verificato un errore. Forse questo file è danneggiato.",
+  "encrypted": "Crittografato",
+  "open_PDF": "Apri PDF",
+  "please_wait_until_loading": "Attendi fino al termine del caricamento del file",
+  "delete_from_offline": "Elimina file da offline",
+  "filename": "Nome file",
+  "size": "Dimensione",
+  "created": "Creato",
+  "location": "Posizione",
+  "owner": "Proprietario",
+  "need_an_encryption_to_uploading": "È necessario impostare una chiave di crittografia prima di caricare i file.",
+  "successfully_uploaded": "File caricato con successo",
+  "no_internet_connection": "Nessuna connessione internet",
+  "retry": "Riprova",
+  "go_offline": "Vai offline",
+  "no_results": "Nessun risultato",
+  "empty_here": "Vuoto qui",
+  "upgrade_your_plan": "Le app mobili non sono consentite nel tuo piano di fatturazione.",
+  "please_upgrade_your_plan": "Le app mobili non sono consentite nel tuo piano di fatturazione.\nSi prega di aggiornare il piano.",
+  "back_to_login": "Torna al login",
+  "please_enter_hostname": "Inserisci il nome host",
+  "please_enter_email": "Inserisci email",
+  "please_enter_password": "Inserisci password",
+  "enter_host": "Impossibile rilevare il dominio da questa email, specifica manualmente l'URL del tuo server.",
+  "login_form_title": "Accedi",
+  "host": "Host",
+  "login": "Login",
+  "registration_link_hint": "Non hai ancora un account?",
+  "registration_link_text": "Registrati ora",
+  "encrypted_file_link": "Link pubblico file crittografato:",
+  "send": "Invia tramite email",
+  "send_encrypted": "Invia tramite email crittografata",
+  "upload": "Carica",
+  "encrypt_error": "Errore di crittografia",
+  "encrypted_file_password": "Password file crittografato",
+  "create_link": "Crea link condivisibile",
+  "create_encrypt_link": "Crea link pubblico protetto",
+  "encrypt_link": "Proteggi link pubblico con password",
+  "public_link": "Link pubblico",
+  "remove_link": "Rimuovi link",
+  "send_to": "Invia a..",
+  "recipient": "Destinatario",
+  "encrypted_mail_using_key": "Puoi inviare il link e la password tramite email.",
+  "send_email": "Puoi inviare il link tramite email.",
+  "sending": "Invio..",
+  "sending_complete": "Invio completato",
+  "failed": "Fallito",
+  "keys_not_found": "Chiavi non trovate",
+  "sign_with_not_key": "{data} non può essere firmato perché la chiave privata non è stata aggiunta.",
+  "@sign_with_not_key": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "invalid_password": "Password non valida",
+  "sign_email": "Aggiungi firma digitale",
+  "sign_file_email": "Firma il file e invia email",
+  "data": "dati",
+  "sign_data_with_not_key": "Non firmerò i {data} perché non hai una chiave privata PGP.",
+  "@sign_data_with_not_key": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "sign_mail_with_not_key": "I {data} non saranno firmati perché non hai una chiave privata PGP.",
+  "@sign_mail_with_not_key": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "password_sign": "Per la crittografia basata su password la firma PGP non è supportata.",
+  "email_signed": "L'email sarà firmata utilizzando la tua chiave privata.",
+  "data_signed": "Firmerò i dati con la tua chiave privata.",
+  "data_not_signed": "I {data} non saranno firmati.",
+  "@data_not_signed": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "protected_public_link": "Link pubblico protetto",
+  "send_public_link_to": "Invia link pubblico a",
+  "copy_password": "Puoi inviare il link tramite email. La password deve essere inviata utilizzando un canale diverso.\n\nSarai in grado di recuperare la password quando necessario.",
+  "copy_encrypted_password": "Puoi inviare il link tramite email. La password deve essere inviata utilizzando un canale diverso.\n\nConserva la password da qualche parte. Non sarai in grado di recuperarla altrimenti.",
+  "encrypted_sign_using_key": "Il file è crittografato utilizzando la chiave pubblica PGP di {user}. Puoi inviare il link tramite email crittografata firmata digitalmente.",
+  "@encrypted_sign_using_key": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "email_not_signed": "L'email non sarà firmata.",
+  "two_factor_auth": "Il tuo account è protetto con\nAutenticazione a Due Fattori.\nInserisci il codice PIN.",
+  "pin": "PIN",
+  "verify_pin": "Verifica pin",
+  "invalid_pin": "PIN non valido",
+  "upload_file": "Carica file",
+  "upload_files": "Carica {count} file",
+  "@upload_files": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "login_to_continue": "Accedi per continuare",
+  "confirm_exit": "Sei sicuro di voler uscire?",
+  "exit": "Esci",
+  "error_required_pgp_key": "Chiave PGP richiesta",
+  "label_required_pgp_key": "Chiave PGP richiesta",
+  "hint_upload_encrypt_ask": "Crittografare '{name}'?",
+  "@hint_upload_encrypt_ask": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "btn_do_not_encrypt": "Non crittografare",
+  "label_encryption_always_in_encryption_folder": "Sempre nella cartella Crittografata",
+  "label_encryption_always": "Sempre",
+  "label_encryption_ask": "Chiedimi",
+  "label_encryption_never": "Mai",
+  "label_encryption_enable_paranoid_encryption": "Abilita Crittografia Paranoica",
+  "btn_encryption_enable": "Abilita Crittografia Paranoica",
+  "label_encryption_mode": "Crittografa file caricati",
+  "label_save": "Salva",
+  "label_encryption_password_for_pgp_key": "Password richiesta per chiave PGP",
+  "label_pgp_import_key": "Importa chiavi",
+  "hint_pgp_already_have_keys": "Le chiavi che sono già nel sistema sono disattivate.",
+  "hint_pgp_your_keys": "Le tue chiavi",
+  "hint_pgp_keys_will_be_import_to_contacts": "Le chiavi saranno importate nei contatti",
+  "btn_pgp_import_selected_key": "Importa chiavi selezionate",
+  "label_pgp_contact_public_keys": "Chiavi pubbliche esterne",
+  "error_pgp_required_key": "Nessuna chiave privata trovata per l'utente {user}.",
+  "@error_pgp_required_key": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "label_share_with_teammates": "Condividi con i compagni di squadra",
+  "hint_pgp_share_warning": "Stai per condividere la tua chiave privata PGP. La chiave deve essere tenuta lontana da terze parti. Vuoi continuare?",
+  "label_pgp_share_warning": "Avviso",
+  "hint_share_folder": "I file crittografati non saranno disponibili nella cartella condivisa.",
+  "input_who_cas_see": "Chi può vedere",
+  "input_who_cas_edit": "Chi può modificare",
+  "btn_show_encrypt": "Mostra",
+  "label_store_password_in_session": "Memorizza la password della chiave OpenPGP all'interno di una sessione",
+  "btn_enable_backward_compatibility": "Abilita compatibilità con le versioni precedenti",
+  "error_backward_compatibility_sharing_not_supported": "La condivisione di questo file non è supportata. Il file è crittografato utilizzando la vecchia modalità di crittografia. Il file deve essere caricato e crittografato utilizzando la modalità di crittografia moderna. Scarica e carica nuovamente il file.",
+  "hint_backward_compatibility_aes_key": "La chiave AES sarà utilizzata solo per decrittografare i file che sono crittografati utilizzando la vecchia modalità di crittografia. I nuovi file saranno crittografati utilizzando la modalità di crittografia moderna.",
+  "label_delete_folder": "Elimina cartella",
+  "fido_error_invalid_key": "Chiave di sicurezza non valida",
+  "tfa_label": "Verifica a Due Fattori",
+  "tfa_hint_step": "Questo passaggio aggiuntivo è inteso per confermare che sei davvero tu che stai cercando di accedere",
+  "fido_btn_use_key": "Usa chiave di sicurezza",
+  "fido_label_connect_your_key": "Scansiona la tua chiave di sicurezza o inseriscila nel dispositivo",
+  "fido_label_success": "Successo",
+  "tfa_btn_other_options": "Altre opzioni",
+  "tfa_btn_use_backup_code": "Usa codice di backup",
+  "tfa_btn_use_auth_app": "Usa app Authenticator",
+  "tfa_btn_use_security_key": "Usa la tua chiave di sicurezza",
+  "tfa_label_hint_security_options": "Opzioni di sicurezza disponibili",
+  "fido_label_touch_your_key": "Tocca la tua chiave di sicurezza",
+  "fido_hint_follow_the_instructions": "Segui le istruzioni nella finestra di dialogo popup",
+  "fido_error_title": "C'è stato un problema",
+  "fido_error_hint": "Prova a utilizzare nuovamente la tua chiave di sicurezza o prova un altro modo per verificare che sei tu",
+  "fido_btn_try_again": "Riprova",
+  "tfa_input_hint_code_from_app": "Specifica il codice di verifica dall'app Authenticator",
+  "btn_login_back_to_login": "Torna al login",
+  "input_2fa_pin": "Codice di verifica",
+  "btn_verify_pin": "Verifica",
+  "error_invalid_pin": "Codice non valido",
+  "tfa_label_enter_backup_code": "Inserisci uno dei tuoi codici di backup a 8 caratteri",
+  "tfa_input_backup_code": "Codice di backup",
+  "tfa_label_trust_device": "Sei a posto",
+  "tfa_check_box_trust_device": "Non chiedere più su questo dispositivo per {daysCount} giorni",
+  "@tfa_check_box_trust_device": {
+    "placeholders": {
+      "daysCount": {
+        "type": "String"
+      }
+    }
+  },
+  "tfa_button_continue": "Continua",
+  "logger_label_show_debug_view": "Mostra vista debug",
+  "logger_btn_delete_all": "Elimina tutto",
+  "logger_hint_delete_all_logs": "Sei sicuro di voler eliminare tutti i log",
+  "logger_hint_delete_log": "Sei sicuro di voler eliminare il file",
+  "clear_cache_during_logout": "Elimina dati memorizzati nella cache e chiavi",
+  "btn_encryption_personal_storage": "Consenti crittografia file nell'Archiviazione Personale",
+  "hint_pgp_no_keys_to_import": "Il testo non contiene chiavi che possono essere importate.",
+  "label_encryption_module_not_exist": "Il modulo di crittografia\nnon è disponibile sul backend",
+  "hint_pgp_external_private_keys": "Le chiavi private esterne non sono supportate e non saranno importate",
+  "label_leave_share": "Lascia condivisione",
+  "label_leave_share_of": "Lascia condivisione di ",
+  "label_share_history_title": "Cronologia attività file condiviso",
+  "hint_select_teammate": "Seleziona compagno di squadra",
+  "label_no_share": "Nessuna condivisione ancora",
+  "label_show_history": "Mostra cronologia",
+  "clear_cache_during_login": "Quando si cambia utente, è necessario cancellare i dati memorizzati nella cache e le chiavi dell'utente precedente."
+}

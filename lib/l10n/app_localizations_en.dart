@@ -1,6 +1,8 @@
-//ignore_for_file: non_constant_identifier_names
-
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
@@ -20,6 +22,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tasks => 'Tasks';
+
+  @override
+  String get storage_personal => 'Personal';
+
+  @override
+  String get storage_corporate => 'Corporate';
+
+  @override
+  String get storage_shared => 'Shared';
+
+  @override
+  String get storage_encrypted => 'Encrypted';
+
+  @override
+  String get storage_favorite => 'Favorite';
+
+  @override
+  String get storage_trash => 'Trash';
 
   @override
   String get cancel => 'Cancel';
@@ -83,6 +103,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get app_theme => 'App theme';
+
+  @override
+  String get switch_language => 'Language';
+
+  @override
+  String get system_language => 'System';
 
   @override
   String get system_theme => 'System theme';
@@ -523,10 +549,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get login => 'Login';
-  
+
   @override
   String get registration_link_hint => 'Not account yet?';
-  
+
   @override
   String get registration_link_text => 'Register now';
 

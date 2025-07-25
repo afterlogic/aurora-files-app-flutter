@@ -90,6 +90,36 @@ mixin _$SettingsState on _SettingsState, Store {
     });
   }
 
+  late final _$selectedLanguageAtom =
+      Atom(name: '_SettingsState.selectedLanguage', context: context);
+
+  @override
+  Language? get selectedLanguage {
+    _$selectedLanguageAtom.reportRead();
+    return super.selectedLanguage;
+  }
+
+  @override
+  set selectedLanguage(Language? value) {
+    _$selectedLanguageAtom.reportWrite(value, super.selectedLanguage, () {
+      super.selectedLanguage = value;
+    });
+  }
+
+  late final _$_SettingsStateActionController =
+      ActionController(name: '_SettingsState', context: context);
+
+  @override
+  void setLanguage(Language? language) {
+    final _$actionInfo = _$_SettingsStateActionController.startAction(
+        name: '_SettingsState.setLanguage');
+    try {
+      return super.setLanguage(language);
+    } finally {
+      _$_SettingsStateActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
@@ -97,7 +127,8 @@ internetConnection: ${internetConnection},
 isDarkTheme: ${isDarkTheme},
 isParanoidEncryptionEnabled: ${isParanoidEncryptionEnabled},
 encryptionKeys: ${encryptionKeys},
-selectedKeyName: ${selectedKeyName}
+selectedKeyName: ${selectedKeyName},
+selectedLanguage: ${selectedLanguage}
     ''';
   }
 }

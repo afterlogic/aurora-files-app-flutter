@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/models/server_settings.dart';
+import 'package:aurorafiles/modules/settings/models/language.dart';
 import 'package:aurorafiles/modules/settings/repository/setting_api.dart';
 import 'package:aurorafiles/modules/settings/repository/settings_local_storage.dart';
 import 'package:aurorafiles/utils/custom_exception.dart';
@@ -33,6 +34,9 @@ abstract class _SettingsState with Store {
 
   @observable
   String? selectedKeyName;
+
+  @observable
+  Language? selectedLanguage;
 
   ServerSettings _serverSettings = ServerSettings();
 
@@ -69,6 +73,7 @@ abstract class _SettingsState with Store {
     final result = await Future.wait([
       _settingsLocal.getDarkThemeFromStorage(),
       connectivity.checkConnectivity(),
+      _settingsLocal.getSelectedLanguage(),
     ]);
 
     if (BuildProperty.alwaysLightTheme) {
@@ -78,6 +83,12 @@ abstract class _SettingsState with Store {
     }
 
     internetConnection = result[1] as ConnectivityResult;
+    
+    final languageJson = result[2] as String?;
+    if (languageJson != null) {
+      selectedLanguage = Language.fromJson(languageJson);
+    }
+    
     return true;
   }
 
@@ -89,6 +100,12 @@ abstract class _SettingsState with Store {
       isDarkTheme = val;
       _settingsLocal.setDarkThemeToStorage(val);
     }
+  }
+
+  @action
+  void setLanguage(Language? language) {
+    selectedLanguage = language;
+    _settingsLocal.setSelectedLanguage(language?.toNullableJson());
   }
 
   // for both generating and importing from text

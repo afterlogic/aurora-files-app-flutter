@@ -133,6 +133,25 @@ class SettingsIcons {
     );
   }
 
+  // Иконки для common settings
+  static Widget switchLanguage() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+          return SvgPicture.asset(
+            '${BuildProperty.imageDir}/settings/common/language.svg',
+            width: 24,
+            height: 24,
+            color: color,
+          );
+        }
+        return const Icon(Icons.language);
+      },
+    );
+  }
+
   static Widget clearCache() {
     return Builder(
       builder: (context) {
@@ -165,6 +184,24 @@ class SettingsIcons {
           );
         }
         return const AMCircleIcon(Icons.perm_device_information);
+      },
+    );
+  }
+
+  static Widget arrowRight() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+          return SvgPicture.asset(
+            '${BuildProperty.imageDir}/settings/common/arrow-right.svg',
+            width: 24,
+            height: 24,
+            color: color,
+          );
+        }
+        return const Icon(Icons.arrow_forward_ios);
       },
     );
   }

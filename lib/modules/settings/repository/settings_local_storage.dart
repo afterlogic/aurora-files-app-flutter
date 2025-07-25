@@ -149,4 +149,18 @@ class SettingsLocalStorage {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(_showResponseBody, value);
   }
+
+  static const _selectedLanguage = "SelectedLanguage";
+
+  Future<String?> getSelectedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_selectedLanguage);
+  }
+
+  Future<bool> setSelectedLanguage(String? languageJson) async {
+    final prefs = await SharedPreferences.getInstance();
+    return languageJson == null
+        ? prefs.remove(_selectedLanguage)
+        : prefs.setString(_selectedLanguage, languageJson);
+  }
 }

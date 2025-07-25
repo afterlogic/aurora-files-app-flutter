@@ -13,6 +13,24 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
 
+  String _getLocalizedStorageName(BuildContext context, StorageType type) {
+    final s = context.l10n;
+    switch (type) {
+      case StorageType.personal:
+        return s.storage_personal;
+      case StorageType.corporate:
+        return s.storage_corporate;
+      case StorageType.shared:
+        return s.storage_shared;
+      case StorageType.encrypted:
+        return s.storage_encrypted;
+      case StorageType.favorite:
+        return s.storage_favorite;
+      case StorageType.trash:
+        return s.storage_trash;
+    }
+  }
+
   void _showAvailableSpaceInfo(BuildContext context, Quota quota) {
     Navigator.push(
       context,
@@ -141,7 +159,7 @@ class MainDrawer extends StatelessWidget {
                             enabled: enable,
                             selected: isSelected,
                             leading: _getStorageIcon(storage.type, color),
-                            title: Text(storage.displayName),
+                            title: Text(_getLocalizedStorageName(context, storage.type)),
                             onTap: () async {
                               filesState.selectedStorage = storage;
                               Navigator.of(context).pushNamedAndRemoveUntil(

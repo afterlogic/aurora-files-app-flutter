@@ -1,0 +1,477 @@
+{
+  "mail": "E-Mail",
+  "contacts": "Kontakte",
+  "files": "Dateien",
+  "calendar": "Kalender",
+  "tasks": "Aufgaben",
+  "storage_personal": "Persönlich",
+  "storage_corporate": "Unternehmen",
+  "storage_shared": "Geteilt",
+  "storage_encrypted": "Verschlüsselt",
+  "storage_favorite": "Favoriten",
+  "storage_trash": "Papierkorb",
+  "cancel": "Abbrechen",
+  "quota_using": "Sie verwenden {progress}% von Ihrem {limit}",
+  "@quota_using": {
+    "placeholders": {
+      "progress": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "offline_mode": "Offline-Modus",
+  "settings": "Einstellungen",
+  "log_out": "Abmelden",
+  "no_route": "Keine Route definiert für {name}",
+  "@no_route": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "common": "Allgemein",
+  "encryption": "Verschlüsselung",
+  "openPGP": "OpenPGP",
+  "storage_info": "Speicher-Informationen",
+  "about": "Über",
+  "version": "Version {version}",
+  "@version": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "terms": "Nutzungsbedingungen",
+  "privacy_policy": "Datenschutzrichtlinie",
+  "clear_cache": "Cache leeren",
+  "confirm_delete": "Sind Sie sicher, dass Sie alle zwischengespeicherten Dateien und Bilder löschen möchten? Dies wirkt sich nicht auf gespeicherte Dateien für die Offline-Nutzung aus.",
+  "clear": "Leeren",
+  "cache_cleared_success": "Cache erfolgreich geleert",
+  "app_theme": "App-Design",
+  "switch_language": "Sprache",
+  "system_language": "System",
+  "system_theme": "System-Design",
+  "dark_theme": "Dunkel",
+  "light_theme": "Hell",
+  "encryption_description": "Dateien werden direkt auf diesem Gerät verschlüsselt/entschlüsselt, selbst der Server kann nicht auf den ursprünglichen Inhalt von paranoid verschlüsselten Dateien zugreifen. Die Verschlüsselungsmethode ist AES256.",
+  "delete_encryption_key_success": "Der Verschlüsselungsschlüssel wurde erfolgreich gelöscht.",
+  "delete_key": "Schlüssel löschen",
+  "share_key": "Schlüssel teilen",
+  "download_key": "Schlüssel herunterladen",
+  "encryption_export_description": "Um auf verschlüsselte Dateien auf anderen Geräten/Browsern zuzugreifen, exportieren Sie den Schlüssel und importieren Sie ihn dann auf einem anderen Gerät/Browser.",
+  "encryption_keys": "Verschlüsselungsschlüssel:",
+  "generate_keys": "Schlüssel generieren",
+  "key_not_found_in_file": "Konnte keinen Schlüssel in dieser Datei finden",
+  "import_encryption_key_success": "Der Verschlüsselungsschlüssel wurde erfolgreich importiert",
+  "import_key_from_file": "Schlüssel aus Datei importieren",
+  "import_key_from_text": "Schlüssel aus Text importieren",
+  "need_to_set_encryption_key": "Um die Verschlüsselung hochgeladener Dateien zu verwenden, müssen Sie einen Verschlüsselungsschlüssel festlegen.",
+  "oK": "OK",
+  "key_downloaded_into": "Der Schlüssel wurde heruntergeladen in: {dir}",
+  "@key_downloaded_into": {
+    "placeholders": {
+      "dir": {
+        "type": "String"
+      }
+    }
+  },
+  "import_key": "Schlüssel importieren",
+  "generate_key": "Schlüssel generieren",
+  "add_key_progress": "Verschlüsselungsschlüssel hinzufügen...",
+  "key_name": "Schlüsselname",
+  "key_text": "Schlüsseltext",
+  "import": "Importieren",
+  "generate": "Generieren",
+  "delete_key_description": "Warnung! Sie können verschlüsselte Dateien auf diesem Gerät nicht mehr entschlüsseln, es sei denn, Sie importieren diesen Schlüssel erneut.",
+  "delete": "Löschen",
+  "download_key_progress": "Schlüssel wird heruntergeladen...",
+  "download_confirm": "Sind Sie sicher, dass Sie diesen Schlüssel herunterladen möchten?",
+  "email": "E-Mail",
+  "password": "Passwort",
+  "select_length": "Länge auswählen",
+  "length": "Länge",
+  "close": "Schließen",
+  "password_is_empty": "Passwort ist leer",
+  "already_have_key": "Sie haben bereits den/die Schlüssel für diese E-Mail",
+  "already_have_keys": "Schlüssel, die bereits im System sind, sind ausgegraut.",
+  "import_selected_keys": "Ausgewählte Schlüssel importieren",
+  "check_keys": "Schlüssel überprüfen",
+  "all_public_keys": "Alle öffentlichen Schlüssel",
+  "send_all": "Alle senden",
+  "download_all": "Alle herunterladen",
+  "downloading_to": "Herunterladen nach {path}",
+  "@downloading_to": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "private_key": "Privater Schlüssel",
+  "public_key": "Öffentlicher Schlüssel",
+  "share": "Teilen",
+  "download": "Herunterladen",
+  "confirm_delete_pgp_key": "Sind Sie sicher, dass Sie den OpenPGP-Schlüssel für {email} löschen möchten?",
+  "@confirm_delete_pgp_key": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "public_keys": "Öffentliche Schlüssel",
+  "private_keys": "Private Schlüssel",
+  "export_all_public_keys": "Alle öffentlichen Schlüssel exportieren",
+  "import_keys_from_text": "Schlüssel aus Text importieren",
+  "import_keys_from_file": "Schlüssel aus Datei importieren",
+  "offline_information_is_not_available": "Diese Information ist nicht verfügbar, wenn Sie offline sind.",
+  "information_is_not_available": "Diese Information ist derzeit nicht verfügbar.",
+  "available_space": "Verfügbarer Speicherplatz: {format}",
+  "@available_space": {
+    "placeholders": {
+      "format": {
+        "type": "String"
+      }
+    }
+  },
+  "used_space": "Verwendeter Speicherplatz: {used} von {limit}",
+  "@used_space": {
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "upgrade_now": "Jetzt upgraden",
+  "has_public_link": "Hat öffentlichen Link",
+  "available_offline": "Offline verfügbar",
+  "synched_successfully": "Datei erfolgreich synchronisiert",
+  "synch_file_progress": "Datei wird synchronisiert...",
+  "downloaded_successfully_into": "{name} erfolgreich heruntergeladen nach: {path}",
+  "@downloaded_successfully_into": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "{name} wird heruntergeladen",
+  "@downloading": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "set_any_encryption_key": "Sie haben die Verschlüsselung hochgeladener Dateien aktiviert, aber keinen Verschlüsselungsschlüssel festgelegt.",
+  "need_an_encryption_to_share": "Sie benötigen einen Verschlüsselungsschlüssel, um Dateien zu teilen.",
+  "need_an_encryption_to_download": "Sie benötigen einen Verschlüsselungsschlüssel, um Dateien herunterzuladen.",
+  "search": "Suchen",
+  "add_folder": "Ordner hinzufügen",
+  "move_file_or_folder": "Dateien/Ordner verschieben",
+  "copy": "Kopieren",
+  "move": "Verschieben",
+  "link_coppied_to_clipboard": "Link in die Zwischenablage kopiert",
+  "public_link_access": "Öffentlicher Link-Zugang",
+  "copy_public_link": "Öffentlichen Link kopieren",
+  "btn_shareable_link": "Teilbaren Link erstellen",
+  "btn_encrypted_shareable_link": "Verschlüsselte Datei teilen",
+  "has_PGP_public_key": "Der ausgewählte Empfänger hat einen PGP-öffentlichen Schlüssel. Die Daten können mit diesem Schlüssel verschlüsselt werden.",
+  "has_no_PGP_public_key": "Der ausgewählte Empfänger hat keinen PGP-öffentlichen Schlüssel. Die schlüsselbasierte Verschlüsselung ist nicht erlaubt.",
+  "encryption_type": "Verschlüsselungstyp:",
+  "key_will_be_used": "Die schlüsselbasierte Verschlüsselung wird verwendet",
+  "password_will_be_used": "Die passwortbasierte Verschlüsselung wird verwendet",
+  "encrypt": "Verschlüsseln",
+  "key_based": "Schlüsselbasiert",
+  "password_based": "Passwortbasiert",
+  "not_have_recipiens": "Keine Empfänger angegeben",
+  "select_recipient": "Empfänger auswählen:",
+  "cant_load_recipients": "Empfänger können nicht geladen werden:",
+  "try_again": "Erneut versuchen",
+  "no_name": "Kein Name",
+  "encrypted_using_key": "Die Datei ist mit dem PGP-öffentlichen Schlüssel von {user} verschlüsselt. Sie können den Link per verschlüsselter E-Mail senden.",
+  "@encrypted_using_key": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "encrypted_using_password": "Wenn Sie jetzt keine E-Mail senden, speichern Sie das Passwort irgendwo. Sie können es sonst nicht wiederherstellen.",
+  "add_new_folder": "Neuen Ordner hinzufügen",
+  "adding_folder": "Ordner {name} wird hinzugefügt",
+  "@adding_folder": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "enter_folder_name": "Ordnername eingeben",
+  "add": "Hinzufügen",
+  "file": "Datei",
+  "folder": "Ordner",
+  "delete_files": "Dateien löschen",
+  "delete_file": "Datei löschen",
+  "confirm_delete_file": "Sind Sie sicher, dass Sie {file} löschen möchten",
+  "@confirm_delete_file": {
+    "placeholders": {
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "these_files": "diese {count} Dateien/Ordner ",
+  "@these_files": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "this_file": "diese {name}?",
+  "@this_file": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offline": "Offline",
+  "copy_or_move": "Kopieren/Verschieben",
+  "rename": "Umbenennen",
+  "renaming_to": "Umbenennen zu {name}",
+  "@renaming_to": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "enter_new_name": "Neuen Namen eingeben",
+  "share_file": "Datei teilen",
+  "getting_file_progress": "Datei zum Teilen wird abgerufen...",
+  "decrypt_error": "Ein Fehler ist während des Entschlüsselungsprozesses aufgetreten. Möglicherweise wurde diese Datei mit einem anderen Schlüssel verschlüsselt.",
+  "file_is_damaged": "Ein Fehler ist aufgetreten. Möglicherweise ist diese Datei beschädigt.",
+  "encrypted": "Verschlüsselt",
+  "open_PDF": "PDF öffnen",
+  "please_wait_until_loading": "Bitte warten Sie, bis die Datei vollständig geladen ist",
+  "delete_from_offline": "Datei aus Offline löschen",
+  "filename": "Dateiname",
+  "size": "Größe",
+  "created": "Erstellt",
+  "location": "Ort",
+  "owner": "Besitzer",
+  "need_an_encryption_to_uploading": "Sie müssen einen Verschlüsselungsschlüssel festlegen, bevor Sie Dateien hochladen.",
+  "successfully_uploaded": "Datei erfolgreich hochgeladen",
+  "no_internet_connection": "Keine Internetverbindung",
+  "retry": "Wiederholen",
+  "go_offline": "Offline gehen",
+  "no_results": "Keine Ergebnisse",
+  "empty_here": "Hier ist nichts",
+  "upgrade_your_plan": "Mobile Apps sind in Ihrem Abrechnungsplan nicht erlaubt.",
+  "please_upgrade_your_plan": "Mobile Apps sind in Ihrem Abrechnungsplan nicht erlaubt.\nBitte upgraden Sie Ihren Plan.",
+  "back_to_login": "Zurück zur Anmeldung",
+  "please_enter_hostname": "Bitte geben Sie den Hostnamen ein",
+  "please_enter_email": "Bitte geben Sie die E-Mail ein",
+  "please_enter_password": "Bitte geben Sie das Passwort ein",
+  "enter_host": "Konnte die Domain aus dieser E-Mail nicht erkennen, bitte geben Sie Ihre Server-URL manuell an.",
+  "login_form_title": "Anmelden",
+  "host": "Host",
+  "login": "Anmeldung",
+  "registration_link_hint": "Noch kein Konto?",
+  "registration_link_text": "Jetzt registrieren",
+  "encrypted_file_link": "Öffentlicher Link der verschlüsselten Datei:",
+  "send": "Per E-Mail senden",
+  "send_encrypted": "Per verschlüsselter E-Mail senden",
+  "upload": "Hochladen",
+  "encrypt_error": "Verschlüsselungsfehler",
+  "encrypted_file_password": "Passwort der verschlüsselten Datei",
+  "create_link": "Teilbaren Link erstellen",
+  "create_encrypt_link": "Geschützten öffentlichen Link erstellen",
+  "encrypt_link": "Öffentlichen Link mit Passwort schützen",
+  "public_link": "Öffentlicher Link",
+  "remove_link": "Link entfernen",
+  "send_to": "Senden an..",
+  "recipient": "Empfänger",
+  "encrypted_mail_using_key": "Sie können den Link und das Passwort per E-Mail senden.",
+  "send_email": "Sie können den Link per E-Mail senden.",
+  "sending": "Wird gesendet..",
+  "sending_complete": "Senden abgeschlossen",
+  "failed": "Fehlgeschlagen",
+  "keys_not_found": "Schlüssel nicht gefunden",
+  "sign_with_not_key": "{data} kann nicht signiert werden, da der private Schlüssel nicht hinzugefügt wurde.",
+  "@sign_with_not_key": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "invalid_password": "Ungültiges Passwort",
+  "sign_email": "Digitale Signatur hinzufügen",
+  "sign_file_email": "Datei signieren und per E-Mail senden",
+  "data": "Daten",
+  "sign_data_with_not_key": "Wird die {data} nicht signieren, da Sie keinen privaten PGP-Schlüssel haben.",
+  "@sign_data_with_not_key": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "sign_mail_with_not_key": "Die {data} werden nicht signiert, da Sie keinen privaten PGP-Schlüssel haben.",
+  "@sign_mail_with_not_key": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "password_sign": "Für passwortbasierte Verschlüsselung wird PGP-Signierung nicht unterstützt.",
+  "email_signed": "Die E-Mail wird mit Ihrem privaten Schlüssel signiert.",
+  "data_signed": "Wird die Daten mit Ihrem privaten Schlüssel signieren.",
+  "data_not_signed": "Die {data} werden nicht signiert.",
+  "@data_not_signed": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "protected_public_link": "Geschützter öffentlicher Link",
+  "send_public_link_to": "Öffentlichen Link senden an",
+  "copy_password": "Sie können den Link per E-Mail senden. Das Passwort muss über einen anderen Kanal gesendet werden.\n\nSie können das Passwort bei Bedarf abrufen.",
+  "copy_encrypted_password": "Sie können den Link per E-Mail senden. Das Passwort muss über einen anderen Kanal gesendet werden.\n\nSpeichern Sie das Passwort irgendwo. Sie können es sonst nicht wiederherstellen.",
+  "encrypted_sign_using_key": "Die Datei ist mit dem PGP-öffentlichen Schlüssel von {user} verschlüsselt. Sie können den Link per digital signierter verschlüsselter E-Mail senden.",
+  "@encrypted_sign_using_key": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "email_not_signed": "Die E-Mail wird nicht signiert.",
+  "two_factor_auth": "Ihr Konto ist mit\nZwei-Faktor-Authentifizierung geschützt.\nBitte geben Sie den PIN-Code ein.",
+  "pin": "PIN",
+  "verify_pin": "PIN verifizieren",
+  "invalid_pin": "Ungültige PIN",
+  "upload_file": "Datei hochladen",
+  "upload_files": "{count} Dateien hochladen",
+  "@upload_files": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "login_to_continue": "Anmelden um fortzufahren",
+  "confirm_exit": "Sind Sie sicher, dass Sie beenden möchten?",
+  "exit": "Beenden",
+  "error_required_pgp_key": "PGP-Schlüssel erforderlich",
+  "label_required_pgp_key": "PGP-Schlüssel erforderlich",
+  "hint_upload_encrypt_ask": "'{name}' verschlüsseln?",
+  "@hint_upload_encrypt_ask": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "btn_do_not_encrypt": "Nicht verschlüsseln",
+  "label_encryption_always_in_encryption_folder": "Immer im verschlüsselten Ordner",
+  "label_encryption_always": "Immer",
+  "label_encryption_ask": "Mich fragen",
+  "label_encryption_never": "Niemals",
+  "label_encryption_enable_paranoid_encryption": "Paranoide Verschlüsselung aktivieren",
+  "btn_encryption_enable": "Paranoide Verschlüsselung aktivieren",
+  "label_encryption_mode": "Hochgeladene Dateien verschlüsseln",
+  "label_save": "Speichern",
+  "label_encryption_password_for_pgp_key": "Passwort für PGP-Schlüssel erforderlich",
+  "label_pgp_import_key": "Schlüssel importieren",
+  "hint_pgp_already_have_keys": "Schlüssel, die bereits im System sind, sind ausgegraut.",
+  "hint_pgp_your_keys": "Ihre Schlüssel",
+  "hint_pgp_keys_will_be_import_to_contacts": "Die Schlüssel werden in die Kontakte importiert",
+  "btn_pgp_import_selected_key": "Ausgewählte Schlüssel importieren",
+  "label_pgp_contact_public_keys": "Externe öffentliche Schlüssel",
+  "error_pgp_required_key": "Kein privater Schlüssel für Benutzer {user} gefunden.",
+  "@error_pgp_required_key": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "label_share_with_teammates": "Mit Teamkollegen teilen",
+  "hint_pgp_share_warning": "Sie sind dabei, Ihren privaten PGP-Schlüssel zu teilen. Der Schlüssel muss vor Dritten geschützt werden. Möchten Sie fortfahren?",
+  "label_pgp_share_warning": "Warnung",
+  "hint_share_folder": "Verschlüsselte Dateien sind im geteilten Ordner nicht verfügbar.",
+  "input_who_cas_see": "Wer kann sehen",
+  "input_who_cas_edit": "Wer kann bearbeiten",
+  "btn_show_encrypt": "Anzeigen",
+  "label_store_password_in_session": "OpenPGP-Schlüssel-Passwort in einer Sitzung speichern",
+  "btn_enable_backward_compatibility": "Rückwärtskompatibilität aktivieren",
+  "error_backward_compatibility_sharing_not_supported": "Das Teilen dieser Datei wird nicht unterstützt. Die Datei ist mit dem alten Verschlüsselungsmodus verschlüsselt. Die Datei muss mit dem modernen Verschlüsselungsmodus hochgeladen und verschlüsselt werden. Bitte laden Sie die Datei herunter und laden Sie sie erneut hoch.",
+  "hint_backward_compatibility_aes_key": "Der AES-Schlüssel wird nur verwendet, um Dateien zu entschlüsseln, die mit dem alten Verschlüsselungsmodus verschlüsselt sind. Neue Dateien werden mit dem modernen Verschlüsselungsmodus verschlüsselt.",
+  "label_delete_folder": "Ordner löschen",
+  "fido_error_invalid_key": "Ungültiger Sicherheitsschlüssel",
+  "tfa_label": "Zwei-Faktor-Verifizierung",
+  "tfa_hint_step": "Dieser zusätzliche Schritt soll bestätigen, dass Sie es wirklich sind, der sich anzumelden versucht",
+  "fido_btn_use_key": "Sicherheitsschlüssel verwenden",
+  "fido_label_connect_your_key": "Bitte scannen Sie Ihren Sicherheitsschlüssel oder stecken Sie ihn in das Gerät",
+  "fido_label_success": "Erfolg",
+  "tfa_btn_other_options": "Andere Optionen",
+  "tfa_btn_use_backup_code": "Backup-Code verwenden",
+  "tfa_btn_use_auth_app": "Authentifizierungs-App verwenden",
+  "tfa_btn_use_security_key": "Ihren Sicherheitsschlüssel verwenden",
+  "tfa_label_hint_security_options": "Verfügbare Sicherheitsoptionen",
+  "fido_label_touch_your_key": "Berühren Sie Ihren Sicherheitsschlüssel",
+  "fido_hint_follow_the_instructions": "Bitte folgen Sie den Anweisungen im Popup-Dialog",
+  "fido_error_title": "Es gab ein Problem",
+  "fido_error_hint": "Versuchen Sie, Ihren Sicherheitsschlüssel erneut zu verwenden oder versuchen Sie eine andere Methode, um zu verifizieren, dass Sie es sind",
+  "fido_btn_try_again": "Erneut versuchen",
+  "tfa_input_hint_code_from_app": "Geben Sie den Verifizierungscode aus der Authentifizierungs-App an",
+  "btn_login_back_to_login": "Zurück zur Anmeldung",
+  "input_2fa_pin": "Verifizierungscode",
+  "btn_verify_pin": "Verifizieren",
+  "error_invalid_pin": "Ungültiger Code",
+  "tfa_label_enter_backup_code": "Geben Sie einen Ihrer 8-stelligen Backup-Codes ein",
+  "tfa_input_backup_code": "Backup-Code",
+  "tfa_label_trust_device": "Sie sind bereit",
+  "tfa_check_box_trust_device": "Auf diesem Gerät {daysCount} Tage lang nicht mehr fragen",
+  "@tfa_check_box_trust_device": {
+    "placeholders": {
+      "daysCount": {
+        "type": "String"
+      }
+    }
+  },
+  "tfa_button_continue": "Fortfahren",
+  "logger_label_show_debug_view": "Debug-Ansicht anzeigen",
+  "logger_btn_delete_all": "Alle löschen",
+  "logger_hint_delete_all_logs": "Sind Sie sicher, dass Sie alle Protokolle löschen möchten",
+  "logger_hint_delete_log": "Sind Sie sicher, dass Sie die Datei löschen möchten",
+  "clear_cache_during_logout": "Zwischengespeicherte Daten und Schlüssel löschen",
+  "btn_encryption_personal_storage": "Verschlüsselung von Dateien im persönlichen Speicher erlauben",
+  "hint_pgp_no_keys_to_import": "Der Text enthält keine Schlüssel, die importiert werden können.",
+  "label_encryption_module_not_exist": "Das Verschlüsselungsmodul\nist auf dem Backend nicht verfügbar",
+  "hint_pgp_external_private_keys": "Externe private Schlüssel werden nicht unterstützt und werden nicht importiert",
+  "label_leave_share": "Freigabe verlassen",
+  "label_leave_share_of": "Freigabe verlassen von ",
+  "label_share_history_title": "Aktivitätsverlauf der geteilten Datei",
+  "hint_select_teammate": "Teamkollegen auswählen",
+  "label_no_share": "Noch keine Freigaben",
+  "label_show_history": "Verlauf anzeigen",
+  "clear_cache_during_login": "Beim Wechseln des Benutzers ist es notwendig, die zwischengespeicherten Daten und Schlüssel des vorherigen Benutzers zu löschen."
+}

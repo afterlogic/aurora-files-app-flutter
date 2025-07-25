@@ -37,7 +37,7 @@ abstract class _FilesPageState with Store {
   List<FileGroup> searchResult = [];
 
   @observable
-  Map<String, LocalFile> selectedFilesIds = {};
+  Map<String, LocalFile> selectedFilesIds = <String, LocalFile>{};
 
   @observable
   bool isSearchMode = false;
@@ -62,7 +62,7 @@ abstract class _FilesPageState with Store {
   }
 
   void quitSelectMode() {
-    selectedFilesIds = {};
+    selectedFilesIds = <String, LocalFile>{};
   }
 
   Future<void> onGetFiles({

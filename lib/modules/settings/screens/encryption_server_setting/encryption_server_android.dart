@@ -182,10 +182,10 @@ class _EncryptionServerState extends State<EncryptionServer> {
   }
 
   Future<void> _refreshStorages() async {
-    final currentStorageName = _filesState.selectedStorage.displayName;
+    final currentStorageType = _filesState.selectedStorage.type;
     await _filesState.onGetStorages();
     final index = _filesState.currentStorages
-        .indexWhere((e) => e.displayName == currentStorageName);
+        .indexWhere((e) => e.type == currentStorageType);
     if (index != -1) {
       _filesState.selectedStorage = _filesState.currentStorages[index];
     }

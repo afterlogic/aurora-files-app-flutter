@@ -126,6 +126,7 @@ flutter_icons:
   adaptive_icon_foreground: {{foregroundIcon}}
 
 flutter:
+  generate: true # localization flag
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

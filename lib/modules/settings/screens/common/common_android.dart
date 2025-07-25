@@ -2,6 +2,7 @@ import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/modules/app_store.dart';
+import 'package:aurorafiles/modules/settings/screens/common/components/language_selection_dialog.dart';
 import 'package:aurorafiles/modules/settings/screens/common/components/theme_selection_dialog.dart';
 import 'package:aurorafiles/shared_ui/app_bar_icons.dart';
 import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
@@ -98,6 +99,22 @@ class _CommonSettingsAndroidState extends State<CommonSettingsAndroid> {
                     ),
                   ),
                 if (!BuildProperty.alwaysLightTheme && BuildProperty.flatDesign)
+                  Divider(
+                    height: 1.0,
+                    thickness: 1.0,
+                    color: Theme.of(context).dividerColor,
+                  ),
+                ListTile(
+                  leading: SettingsIcons.switchLanguage(),
+                  title: Text(s.switch_language),
+                  trailing: SettingsIcons.arrowRight(),
+                  onTap: () => LanguageSelectionDialog.show(
+                    context,
+                    _settingsState.selectedLanguage,
+                    _settingsState.setLanguage,
+                  ),
+                ),
+                if (BuildProperty.flatDesign)
                   Divider(
                     height: 1.0,
                     thickness: 1.0,

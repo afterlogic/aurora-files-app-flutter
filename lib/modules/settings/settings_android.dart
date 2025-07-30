@@ -148,7 +148,8 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             title: Text(s.settings_delete_account),
             onTap: () => launchUrl(Uri.parse(BuildProperty.deleteAccountLink)),
           ),
-        if (BuildProperty.flatDesign)
+        if (BuildProperty.flatDesign &&
+            BuildProperty.deleteAccountLink.isNotEmpty)
           Divider(
             height: 1.0,
             thickness: 1.0,

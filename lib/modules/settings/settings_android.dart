@@ -18,6 +18,7 @@ import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/shared_ui/settings_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'settings_navigator.dart';
 
@@ -136,6 +137,18 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             onTap: () => navigator(context).setRoot(LoggerRoute.name),
           ),
         if (showDebug && BuildProperty.flatDesign)
+          Divider(
+            height: 1.0,
+            thickness: 1.0,
+            color: Theme.of(context).dividerColor,
+          ),
+        if (BuildProperty.deleteAccountLink.isNotEmpty)
+          ListTile(
+            leading: SettingsIcons.deleteAccount(),
+            title: Text(s.settings_delete_account),
+            onTap: () => launchUrl(Uri.parse(BuildProperty.deleteAccountLink)),
+          ),
+        if (BuildProperty.flatDesign)
           Divider(
             height: 1.0,
             thickness: 1.0,

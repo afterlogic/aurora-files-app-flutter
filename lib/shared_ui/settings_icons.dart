@@ -205,4 +205,22 @@ class SettingsIcons {
       },
     );
   }
+
+  static Widget deleteAccount() {
+    return Builder(
+      builder: (context) {
+        if (BuildProperty.flatDesign) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+          return SvgPicture.asset(
+            '${BuildProperty.imageDir}/settings/menu/delete-account.svg',
+            width: 24,
+            height: 24,
+            color: color,
+          );
+        }
+        return const Icon(Icons.delete_outline);
+      },
+    );
+  }
 }

@@ -930,4 +930,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get clear_cache_during_login => 'Beim Wechseln des Benutzers ist es notwendig, die zwischengespeicherten Daten und Schlüssel des vorherigen Benutzers zu löschen.';
+
+  @override
+  String get settings_delete_account => 'Konto löschen';
 }

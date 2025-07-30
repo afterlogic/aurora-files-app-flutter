@@ -930,4 +930,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clear_cache_during_login => 'When changing the user, it is necessary to clear the cached data and keys from the previous user.';
+
+  @override
+  String get settings_delete_account => 'Delete account';
 }

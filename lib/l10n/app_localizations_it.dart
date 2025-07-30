@@ -930,4 +930,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get clear_cache_during_login => 'Quando si cambia utente, è necessario cancellare i dati memorizzati nella cache e le chiavi dell\'utente precedente.';
+
+  @override
+  String get settings_delete_account => 'Elimina account';
 }

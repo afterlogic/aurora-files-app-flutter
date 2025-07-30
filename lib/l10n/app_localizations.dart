@@ -1844,6 +1844,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'When changing the user, it is necessary to clear the cached data and keys from the previous user.'**
   String get clear_cache_during_login;
+
+  /// No description provided for @settings_delete_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get settings_delete_account;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

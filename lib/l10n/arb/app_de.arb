@@ -473,5 +473,6 @@
   "hint_select_teammate": "Teamkollegen auswählen",
   "label_no_share": "Noch keine Freigaben",
   "label_show_history": "Verlauf anzeigen",
-  "clear_cache_during_login": "Beim Wechseln des Benutzers ist es notwendig, die zwischengespeicherten Daten und Schlüssel des vorherigen Benutzers zu löschen."
+  "clear_cache_during_login": "Beim Wechseln des Benutzers ist es notwendig, die zwischengespeicherten Daten und Schlüssel des vorherigen Benutzers zu löschen.",
+  "settings_delete_account": "Konto löschen"
 }

@@ -23,7 +23,7 @@ class AppBarIcons {
             color: Theme.of(context).iconTheme.color,
           );
         }
-        return const Icon(Icons.arrow_back_ios);
+        return const Icon(Icons.menu);
       },
     );
   }

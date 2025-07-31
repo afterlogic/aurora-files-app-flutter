@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'app_color.dart';
 
 class AppTheme {
   static final ThemeData? login = null;
 
   static final Color? loginTextColor = null;
+
+  static const loginButtonColor = Color(0xFF3975B5);
+
+  static final loginButtonRadius = BorderRadius.circular(10.0);
 
   static TextStyle subtitle1NewTextStyle(bool isDark) => TextStyle(
         color: isDark ? AppColorDark.subtext : AppColorLight.subtext,
@@ -105,11 +110,11 @@ class AppTheme {
   );
 
   static const _iconThemeLight = IconThemeData(
-    color: AppColorLight.onBackground,
+    color: AppColorLight.icons,
   );
 
   static const _iconThemeDark = IconThemeData(
-    color: AppColorDark.onBackground,
+    color: AppColorDark.icons,
   );
 
   static const _textSelectionThemeLight = TextSelectionThemeData(

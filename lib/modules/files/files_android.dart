@@ -491,7 +491,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                                   text: BuildProperty.flatDesign
                                       ? context.l10n.add_folder
                                       : null,
-                                  iconAsset: BuildProperty.flatDesign
+                                  iconAsset: BuildProperty.useCustomIcons
                                       ? '${BuildProperty.imageDir}/float-button/add-folder.svg'
                                       : null,
                                   icon: const Icon(Icons.create_new_folder),
@@ -507,7 +507,7 @@ class _FilesAndroidState extends State<FilesAndroid>
                                   text: BuildProperty.flatDesign
                                       ? context.l10n.upload_file
                                       : null,
-                                  iconAsset: BuildProperty.flatDesign
+                                  iconAsset: BuildProperty.useCustomIcons
                                       ? '${BuildProperty.imageDir}/float-button/add-document.svg'
                                       : null,
                                   icon: const Icon(MdiIcons.filePlus),

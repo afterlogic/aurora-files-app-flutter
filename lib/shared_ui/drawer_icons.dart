@@ -9,7 +9,7 @@ class DrawerIcons {
   static Widget personal({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
                   ? AppColorDark.icons
@@ -35,7 +35,7 @@ class DrawerIcons {
   static Widget corporate({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
                   ? AppColorDark.icons
@@ -61,7 +61,7 @@ class DrawerIcons {
   static Widget shared({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
                   ? AppColorDark.icons
@@ -87,7 +87,7 @@ class DrawerIcons {
   static Widget encrypted({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
                   ? AppColorDark.icons
@@ -113,7 +113,7 @@ class DrawerIcons {
   static Widget settings() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final color = Theme.of(context).brightness == Brightness.dark
               ? AppColorDark.icons
               : AppColorLight.icons;
@@ -133,7 +133,7 @@ class DrawerIcons {
   static Widget offlineMode() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final color = Theme.of(context).brightness == Brightness.dark
               ? AppColorDark.icons
               : AppColorLight.icons;
@@ -153,7 +153,7 @@ class DrawerIcons {
   static Widget favorite({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
                   ? AppColorDark.icons
@@ -174,7 +174,7 @@ class DrawerIcons {
   static Widget trash({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final effectiveColor = color ??
               (Theme.of(context).brightness == Brightness.dark
                   ? AppColorDark.icons

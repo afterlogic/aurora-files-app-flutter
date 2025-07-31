@@ -56,7 +56,7 @@ class MainDrawer extends StatelessWidget {
             ? const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
-                      "${BuildProperty.imageDir}/login_background.png"),
+                      "${BuildProperty.imageDir}/login_background.jpg"),
                   fit: BoxFit.cover,
                 ),
               )

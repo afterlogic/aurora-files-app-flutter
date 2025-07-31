@@ -1,39 +1,60 @@
-#variables
+# ===================================================================
+# App Info
+# ===================================================================
 appName: 'Aurora Files'
 version: '2.4.0'
 
-#Android App ID
+# ===================================================================
+# App IDs
+# ===================================================================
+# Android App ID
 _appId: 'com.afterlogic.aurora.files'
-#iOS App ID
+# iOS App ID
 _appIdIos: 'com.afterlogic.aurora.files'
-#Apple Group ID
+# Apple Group ID
 _appleGroupId: 'group.com.afterlogic.aurora.files'
-#IOS Developer ID
+# IOS Developer ID
 _iosDeveloperId: 'J7AW6VHJK4'
 
+# ===================================================================
+# Splash Screen
+# ===================================================================
 # Android splash screen
 backgroundColor: '#FFFFFF'
 useBackgroundImage: false
-#=== light ===
+# --- light theme ---
 splashGradientTop: '#FFFFFF'
 splashGradientBottom: '#FFFFFF'
-#=== dark ===
+# --- dark theme ---
 splashGradientTopDark: '#000000'
 splashGradientBottomDark: '#222222'
 
+# ===================================================================
+# URLs & Links
+# ===================================================================
 autodiscoverUrl: 'https://{domain}/aurora-autodiscover.json?email={email}'
+deleteAccountLink: ''
 privacyPolicy: 'https://afterlogic.com/privacy-policy'
 registrationLink: ''
 
-#App settings
-useOutlinedInputFields: false
+# ===================================================================
+# Feature Flags & App Settings
+# ===================================================================
+alwaysLightTheme: false
+flatDesign: false
 pgpEnable: true
 secureSharingEnable: true
 teamSharingEnable: true
-flatDesign: false
+useOutlinedInputFields: false
 
+# ===================================================================
+# FIDO (YubiKey)
+# ===================================================================
 useYubiKit: false
 yubicoFlutterLib: 'path: module/mocks/yubico_flutter'
 
-#Custom settings build
+# ===================================================================
+# Custom Build Settings
+# ===================================================================
+useCustomIcons: false
 useCustomInputStyles: false

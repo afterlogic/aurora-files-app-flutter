@@ -66,6 +66,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           selected: current == CommonSettingsRoute.name,
           title: Text(s.common),
           leading: SettingsIcons.common(),
+          trailing: SettingsIcons.arrowRight(),
           onTap: () => navigator(context).setRoot(CommonSettingsRoute.name),
         ),
         if (BuildProperty.flatDesign)
@@ -78,6 +79,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           selected: current == EncryptionServerRoute.name,
           title: Text(s.encryption),
           leading: SettingsIcons.encryption(),
+          trailing: SettingsIcons.arrowRight(),
           onTap: () => navigator(context).setRoot(EncryptionServerRoute.name),
         ),
         if (BuildProperty.flatDesign)
@@ -91,6 +93,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             selected: current == PgpSettingsRoute.name,
             title: Text(s.openPGP),
             leading: SettingsIcons.openPGP(),
+            trailing: SettingsIcons.arrowRight(),
             onTap: () => navigator(context).setRoot(PgpSettingsRoute.name),
           ),
         if (BuildProperty.pgpEnable && BuildProperty.flatDesign)
@@ -103,6 +106,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           selected: current == StorageInfoRoute.name,
           title: Text(s.storage_info),
           leading: SettingsIcons.sync(),
+          trailing: SettingsIcons.arrowRight(),
           onTap: () => navigator(context).setRoot(StorageInfoRoute.name),
         ),
         if (BuildProperty.flatDesign)
@@ -115,6 +119,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           selected: current == AboutRoute.name,
           title: Text(s.about),
           leading: SettingsIcons.about(),
+          trailing: SettingsIcons.arrowRight(),
           onTap: () => navigator(context).setRoot(AboutRoute.name),
           onLongPress: BuildProperty.logger
               ? () {
@@ -134,6 +139,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
             selected: current == LoggerRoute.name,
             leading: SettingsIcons.debug(),
             title: const Text("Debug"),
+            trailing: SettingsIcons.arrowRight(),
             onTap: () => navigator(context).setRoot(LoggerRoute.name),
           ),
         if (showDebug && BuildProperty.flatDesign)
@@ -146,6 +152,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           ListTile(
             leading: SettingsIcons.deleteAccount(),
             title: Text(s.settings_delete_account),
+            trailing: SettingsIcons.arrowRight(),
             onTap: () => launchUrl(Uri.parse(BuildProperty.deleteAccountLink)),
           ),
         if (BuildProperty.flatDesign &&
@@ -159,6 +166,7 @@ class _SettingsAndroidState extends State<SettingsAndroid> {
           selected: current == AuthRoute.name,
           leading: SettingsIcons.exit(),
           title: Text(s.log_out),
+          trailing: SettingsIcons.arrowRight(),
           onTap: _exit,
         ),
       ],

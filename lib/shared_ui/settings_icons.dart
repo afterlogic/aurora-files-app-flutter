@@ -9,7 +9,7 @@ class SettingsIcons {
   static Widget common() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -27,7 +27,7 @@ class SettingsIcons {
   static Widget encryption() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -37,7 +37,7 @@ class SettingsIcons {
             color: color,
           );
         }
-        return const Icon(MdiIcons.alien);
+        return const Icon(MdiIcons.keyVariant);
       },
     );
   }
@@ -45,7 +45,7 @@ class SettingsIcons {
   static Widget openPGP() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -63,7 +63,7 @@ class SettingsIcons {
   static Widget sync() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -81,7 +81,7 @@ class SettingsIcons {
   static Widget about() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -99,7 +99,7 @@ class SettingsIcons {
   static Widget exit() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -118,7 +118,7 @@ class SettingsIcons {
   static Widget appTheme() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -137,7 +137,7 @@ class SettingsIcons {
   static Widget switchLanguage() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -155,7 +155,7 @@ class SettingsIcons {
   static Widget clearCache() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -173,7 +173,7 @@ class SettingsIcons {
   static Widget debug() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -191,7 +191,7 @@ class SettingsIcons {
   static Widget arrowRight() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(
@@ -209,7 +209,7 @@ class SettingsIcons {
   static Widget deleteAccount() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final color = isDark ? AppColorDark.icons : AppColorLight.icons;
           return SvgPicture.asset(

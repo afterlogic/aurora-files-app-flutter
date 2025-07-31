@@ -2,7 +2,7 @@ name: aurorafiles
 description: File management system for ...
 publish_to: none
 
-version: 1.0.0+182
+version: 2.4.0+204
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -120,10 +120,11 @@ flutter_icons:
   ios: true
   android: true
   image_path: build_res/afterlogic/image/icon.png
-  adaptive_icon_background: ""
+  adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: build_res/afterlogic/image/icon_foreground.png
 
 flutter:
+  generate: true # localization flag
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -135,6 +136,14 @@ flutter:
     - lib/assets/images/
     - lib/assets/svg/
     - build_res/afterlogic/image/
+    - build_res/afterlogic/image/m-app-bar/
+    - build_res/afterlogic/image/settings/
+    - build_res/afterlogic/image/settings/common/
+    - build_res/afterlogic/image/settings/menu/
+    - build_res/afterlogic/image/settings/open-pgp/
+    - build_res/afterlogic/image/drawer/
+    - build_res/afterlogic/image/float-button/
+    - build_res/afterlogic/image/file-options/
     - build_res/afterlogic/image/icon.png
     - build_res/afterlogic/image/main_logo.png
 

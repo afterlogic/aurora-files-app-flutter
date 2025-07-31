@@ -18,6 +18,8 @@ class AppColorLight {
 
   static const divider = Color(0xFFF6F6F6);
   static const subtext = Color(0xFF969494);
+
+  static const icons = Color(0xFF000000);
 }
 
 class AppColorDark {
@@ -38,4 +40,6 @@ class AppColorDark {
 
   static const divider = Color(0xFF4B4A4A);
   static const subtext = Color(0xFF969494);
+
+  static const icons = Color(0xFFFFFFFF);
 }

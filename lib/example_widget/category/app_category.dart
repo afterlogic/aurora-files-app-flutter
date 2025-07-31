@@ -89,14 +89,14 @@ class AppCategory extends StatelessWidget {
                     CustomSpeedDial(tag: "FloatingActionButton", children: [
                       const MiniFab(
                         text: BuildProperty.flatDesign ? "Add folder" : null,
-                        iconAsset: BuildProperty.flatDesign
+                        iconAsset: BuildProperty.useCustomIcons
                             ? '${BuildProperty.imageDir}/float-button/add-folder.svg'
                             : null,
                         icon: Icon(Icons.create_new_folder),
                       ),
                       const MiniFab(
                         text: BuildProperty.flatDesign ? "Upload file" : null,
-                        iconAsset: BuildProperty.flatDesign
+                        iconAsset: BuildProperty.useCustomIcons
                             ? '${BuildProperty.imageDir}/float-button/add-document.svg'
                             : null,
                         icon: Icon(MdiIcons.filePlus),

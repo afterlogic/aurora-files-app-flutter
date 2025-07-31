@@ -15,7 +15,7 @@ class AppBarIcons {
   static Widget burger() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}burger.svg',
             width: 18,
@@ -32,7 +32,7 @@ class AppBarIcons {
   static Widget back() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}back.svg',
             width: 18,
@@ -49,7 +49,7 @@ class AppBarIcons {
   static Widget search() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}search.svg',
             width: 20,
@@ -66,7 +66,7 @@ class AppBarIcons {
   static Widget close() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}close.svg',
             width: 24,
@@ -83,7 +83,7 @@ class AppBarIcons {
   static Widget clear() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}close.svg',
             width: 24,
@@ -100,7 +100,7 @@ class AppBarIcons {
   static Widget menu() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}burger.svg',
             width: 18,
@@ -117,7 +117,7 @@ class AppBarIcons {
   static Widget info() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}info.svg',
             width: 24,
@@ -133,7 +133,7 @@ class AppBarIcons {
   static Widget link() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}link.svg',
             width: 24,
@@ -152,7 +152,7 @@ class AppBarIcons {
   static Widget delete() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}delete.svg',
             width: 24,
@@ -168,7 +168,7 @@ class AppBarIcons {
   static Widget other() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}other.svg',
             width: 24,
@@ -184,7 +184,7 @@ class AppBarIcons {
   static Widget share() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}share.svg',
             width: 24,
@@ -200,7 +200,7 @@ class AppBarIcons {
   static Widget shareWithTeammates() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}share-with-teammates.svg',
             width: 24,
@@ -216,7 +216,7 @@ class AppBarIcons {
   static Widget copyMove() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}copy-move.svg',
             width: 24,
@@ -232,7 +232,7 @@ class AppBarIcons {
   static Widget moveToFolder() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}move-to-folder.svg',
             width: 24,
@@ -248,7 +248,7 @@ class AppBarIcons {
   static Widget rename() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}rename.svg',
             width: 24,
@@ -265,7 +265,7 @@ class AppBarIcons {
   static Widget folder() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}folder.svg',
             width: 24,
@@ -282,7 +282,7 @@ class AppBarIcons {
   static Widget addFolder() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}add-folder.svg',
             width: 24,
@@ -299,7 +299,7 @@ class AppBarIcons {
   static Widget storage() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}storage.svg',
             width: 24,
@@ -316,7 +316,7 @@ class AppBarIcons {
   static Widget personal() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.flatDesign) {
+        if (BuildProperty.useCustomIcons) {
           return SvgPicture.asset(
             '${_basePath}personal.svg',
             width: 24,

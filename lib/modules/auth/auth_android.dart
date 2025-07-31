@@ -8,10 +8,10 @@ import 'package:aurorafiles/modules/auth/screens/two_factor_auth/two_factor_auth
 import 'package:aurorafiles/modules/auth/screens/upgrade_route.dart';
 import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/override_platform.dart';
-import 'package:aurorafiles/shared_ui/app_input.dart';
+import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
+import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
 import 'package:aurorafiles/utils/input_validation.dart';
-import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,13 +19,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:theme/app_theme.dart';
 import 'package:theme/auth_input_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'component/auth_input.dart';
 import 'component/mail_logo.dart';
 import 'component/presentation_header.dart';
-import 'package:aurorafiles/shared_ui/layout_config.dart';
-
-import 'package:url_launcher/url_launcher.dart';
 
 class AuthAndroid extends StatefulWidget {
   const AuthAndroid({super.key});
@@ -140,6 +138,7 @@ class _AuthAndroidState extends State<AuthAndroid> {
       AuroraSnackBar.showSnack(msg: errMsg);
     }
   }
+
   Widget appTheme(Widget widget) {
     if (AppTheme.login != null) {
       return Theme(
@@ -154,88 +153,83 @@ class _AuthAndroidState extends State<AuthAndroid> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Provider(
       create: (_) => _authState,
       child: appTheme(
         Scaffold(
           body: LoginGradient(
-            child: Stack(
-              children: <Widget>[
-                if (!BuildProperty.useMainLogo)
-                  const Positioned(
-                    top: -70.0,
-                    left: -70.0,
-                    child: MailLogo(isBackground: true),
-                  ),
-                Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: LayoutConfig.formWidth,
+            child: SafeArea(
+              child: Stack(
+                children: <Widget>[
+                  if (!BuildProperty.useMainLogo)
+                    const Positioned(
+                      top: -70.0,
+                      left: -70.0,
+                      child: MailLogo(isBackground: true),
                     ),
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 22.0),
-                      child: Form(
-                        key: _authFormKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            const Spacer(),
-                            const PresentationHeader(),
-                            const Spacer(),
-                            Column(
-                              children: <Widget>[
-                                
-
-                                Container(
-                                  decoration: isDark 
-                                    ? AuthFormThemes.dark(context) 
-                                    : AuthFormThemes.light(context),
-                                  // decoration: BoxDecoration(
-                                  //   color: Colors.white.withOpacity(0.7),
-                                  //   borderRadius: BorderRadius.circular(8),
-                                  //   // border: Border.all(
-                                  //   //   color: Colors.white.withOpacity(0.3),
-                                  //   //   width: 1.0,
-                                  //   // ),
-                                  //   boxShadow: [
-                                  //     BoxShadow(
-                                  //       color: Colors.black.withOpacity(0.15),
-                                  //       blurRadius: 30.0,
-                                  //       offset: const Offset(0, 4),
-                                  //     ),
-                                  //   ],
-                                  // ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20.0,
-                                    vertical: 36.0, 
+                  LayoutBuilder(
+                    builder: (context, constraints) => SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraints.maxHeight),
+                        child: IntrinsicHeight(
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                maxWidth: LayoutConfig.formWidth,
+                              ),
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 22.0),
+                                child: Form(
+                                  key: _authFormKey,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      const Spacer(),
+                                      const PresentationHeader(),
+                                      const Spacer(),
+                                      Column(children: <Widget>[
+                                        Container(
+                                          decoration: isDark
+                                              ? AuthFormThemes.dark(context)
+                                              : AuthFormThemes.light(context),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20.0,
+                                            vertical: 36.0,
+                                          ),
+                                          child: _buildTextFields(),
+                                        ),
+                                        if (BuildProperty
+                                            .registrationLink.isNotEmpty) ...[
+                                          const SizedBox(height: 30.0),
+                                          _buildRegisterLink(),
+                                        ],
+                                        const SizedBox(height: 10),
+                                      ]),
+                                    ],
                                   ),
-                                  child: _buildTextFields(),
                                 ),
-
-                                if (BuildProperty.registrationLink.isNotEmpty) ...[
-                                  const SizedBox(height: 30.0),
-                                  _buildRegisterLink(),
-                                ],
-
-                                const SizedBox(height: 50),
-                              ]
+                              ),
                             ),
-                            
-                          ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
+
   Widget _debugRouteToTwoFactor(Widget child) {
     if (kDebugMode) {
       return GestureDetector(
@@ -244,7 +238,8 @@ class _AuthAndroidState extends State<AuthAndroid> {
         ),
         onDoubleTap: () => _navigator.pushNamed(
           TwoFactorAuthRoute.name,
-          arguments: TwoFactorAuthRouteArgs(false, RequestTwoFactor(true, true, true)),
+          arguments:
+              TwoFactorAuthRouteArgs(false, RequestTwoFactor(true, true, true)),
         ),
         child: child,
       );
@@ -255,8 +250,9 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   Widget _buildRegisterLink() {
     final s = context.l10n;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: <Widget>[
         Text(
           '${s.registration_link_hint} ',
@@ -281,83 +277,81 @@ class _AuthAndroidState extends State<AuthAndroid> {
 
   Widget _buildTextFields() {
     final s = context.l10n;
-    return Column(
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            s.login_form_title,
-            textAlign: TextAlign.left,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontSize: 24.0,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
+    return Column(children: [
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          s.login_form_title,
+          textAlign: TextAlign.left,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontSize: 24.0,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
         ),
-        const SizedBox(height: 10),
-        if (_showHostField)
-          AuthInput(
-            labelText: s.host,
-            controller: _authState.hostCtrl,
-            keyboardType: TextInputType.url,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black,
-            ),
-            // inputCase: InputCase.underline,
-          ),
-        const SizedBox(height: 10),
+      ),
+      const SizedBox(height: 10),
+      if (_showHostField)
         AuthInput(
-          labelText: s.email,
-          controller: _authState.emailCtrl,
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) => validateInput(
-            value: value ?? '',
-            types: [ValidationTypes.empty, ValidationTypes.email],
-          ),
-        ),
-        const SizedBox(height: 10),
-        AuthInput(
-          labelText: s.password,
-          controller: _authState.passwordCtrl,
-          keyboardType: TextInputType.visiblePassword,
-          validator: (value) => validateInput(
-            value: value ?? '',
-            types: [ValidationTypes.empty],
-          ),
-          obscureText: _obscureText,
+          labelText: s.host,
+          controller: _authState.hostCtrl,
+          keyboardType: TextInputType.url,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.black,
-          ),
-          suffix: SizedBox(
-            height: 50.0,
-            child: IconButton(
-              icon: Icon(
-                _obscureText ? Icons.visibility : Icons.visibility_off,
-                color: const Color(0xFF333333),
+                color: Colors.black,
               ),
-              onPressed: () => setState(() => _obscureText = !_obscureText),
+          // inputCase: InputCase.underline,
+        ),
+      const SizedBox(height: 10),
+      AuthInput(
+        labelText: s.email,
+        controller: _authState.emailCtrl,
+        keyboardType: TextInputType.emailAddress,
+        validator: (value) => validateInput(
+          value: value ?? '',
+          types: [ValidationTypes.empty, ValidationTypes.email],
+        ),
+      ),
+      const SizedBox(height: 10),
+      AuthInput(
+        labelText: s.password,
+        controller: _authState.passwordCtrl,
+        keyboardType: TextInputType.visiblePassword,
+        validator: (value) => validateInput(
+          value: value ?? '',
+          types: [ValidationTypes.empty],
+        ),
+        obscureText: _obscureText,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.black,
+            ),
+        suffix: SizedBox(
+          height: 50.0,
+          child: IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: const Color(0xFF333333),
+            ),
+            onPressed: () => setState(() => _obscureText = !_obscureText),
+          ),
+        ),
+      ),
+      const SizedBox(height: 20),
+      SizedBox(
+        width: double.infinity,
+        child: Observer(
+          builder: (BuildContext context) => _debugRouteToTwoFactor(
+            AMButton(
+              color: AppTheme.loginButtonColor,
+              radius: AppTheme.loginButtonRadius,
+              // shadow: AppColor.enableShadow ? null : BoxShadow(),
+              shadow: const BoxShadow(),
+              isLoading: _authState.isLoggingIn,
+              onPressed: () => _login(context),
+              child: Text(s.login),
             ),
           ),
         ),
-        const SizedBox(height: 20),
-        SizedBox(
-          width: double.infinity,
-          child: Observer(
-            builder: (BuildContext context) => _debugRouteToTwoFactor(
-              AMButton(
-                color: AppTheme.loginButtonColor,
-                radius: AppTheme.loginButtonRadius,
-                // shadow: AppColor.enableShadow ? null : BoxShadow(),
-                shadow: const BoxShadow(),
-                isLoading: _authState.isLoggingIn,
-                onPressed: () => _login(context),
-                child: Text(s.login),
-              ),
-            ),
-          ),
-        ),
-      ]
-    );
+      ),
+    ]);
   }
 }

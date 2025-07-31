@@ -1,42 +1,61 @@
-#variables
+# ===================================================================
+# App Info
+# ===================================================================
 appName: 'my.app.id'
 version: '1.0.0'
 
-#Android App ID
+# ===================================================================
+# App IDs
+# ===================================================================
+# Android App ID
 _appId: ''
-#iOS App ID
+# iOS App ID
 _appIdIos: ''
-#iOS Developer ID
-_iosDeveloperId: ''
-#iOS App Group ID
+# iOS App Group ID
 _appleGroupId: ''
+# iOS Developer ID
+_iosDeveloperId: ''
 
-#Colors for android splash screen
+# ===================================================================
+# Splash Screen
+# ===================================================================
+# Colors for android splash screen
 backgroundColor: '#FFFFFF'
-splashGradientTop: '#FFFFFF'
 splashGradientBottom: '#FFFFFF'
-splashGradientTopDark: '#000000'
 splashGradientBottomDark: '#000000'
+splashGradientTop: '#FFFFFF'
+splashGradientTopDark: '#000000'
 
+# ===================================================================
+# URLs & Links
+# ===================================================================
 autodiscoverUrl: 'https://{domain}/aurora-autodiscover.json?email={email}'
 privacyPolicy: ''
 termsOfService: ''
 
+# ===================================================================
+# Feature Flags & App Settings
+# ===================================================================
 canUpgradePlan: false
+flatDesign: false
 legacyPgpKey: false
 logger: false
 pgpEnable: false
 secureSharingEnable: false
 supportAllowAccess: false
-useMainLogo: true
 teamSharingEnable: false
-flatDesign: false
+useMainLogo: true
 
+# ===================================================================
+# FIDO (YubiKey)
+# ===================================================================
 # fido
 useYubiKit: false
 yubicoFlutterLib: 'path: module/mocks/yubico_flutter'
 #useYubiKit: true
 #yubicoFlutterLib: "git: https://github.com/afterlogic/yubico_flutter"
 
-#Custom settings build
+# ===================================================================
+# Custom Build Settings
+# ===================================================================
 useCustomInputStyles: false

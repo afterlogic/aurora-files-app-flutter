@@ -8,11 +8,11 @@ version: '2.4.0'
 # App IDs
 # ===================================================================
 # Android App ID
-_appId: 'com.afterlogic.aurora.files'
+_appId: 'com.afterlogic.aurorafiles'
 # iOS App ID
-_appIdIos: 'com.afterlogic.aurora.files'
+_appIdIos: 'com.afterlogic.aurorafiles'
 # Apple Group ID
-_appleGroupId: 'group.com.afterlogic.aurora.files'
+_appleGroupId: 'group.com.afterlogic.aurorafiles'
 # IOS Developer ID
 _iosDeveloperId: 'J7AW6VHJK4'
 

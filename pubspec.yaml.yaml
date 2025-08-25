@@ -120,6 +120,7 @@ dev_dependencies:
 
 flutter_icons:
   ios: true
+  remove_alpha_ios: true
   android: true
   image_path: {{icon}}
   adaptive_icon_background: "{{backgroundColor}}"

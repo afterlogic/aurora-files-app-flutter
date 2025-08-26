@@ -19,6 +19,7 @@ import 'package:aurorafiles/shared_ui/aurora_snack_bar.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/layout_config.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
+import 'package:aurorafiles/shared_ui/mini_fab.dart';
 import 'package:aurorafiles/utils/api_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -485,8 +486,10 @@ class _FilesAndroidState extends State<FilesAndroid>
                         onPressed: () {
                           AuroraSnackBar.hideSnack();
                           Navigator.push(
-                              context,
-                              CustomSpeedDial(tag: widget.path, children: [
+                            context,
+                            CustomSpeedDial(
+                              tag: widget.path,
+                              children: [
                                 MiniFab(
                                   text: BuildProperty.flatDesign
                                       ? context.l10n.add_folder
@@ -513,7 +516,9 @@ class _FilesAndroidState extends State<FilesAndroid>
                                   icon: const Icon(MdiIcons.filePlus),
                                   onPressed: _uploadFile,
                                 ),
-                              ]));
+                              ],
+                            ),
+                          );
                         },
                       ),
               ),

@@ -1,27 +1,23 @@
 import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/shared_ui/asset_icon.dart';
+import 'package:aurorafiles/shared_ui/asset_svg_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class FileOptionsIcons {
   static Widget copyMove({Color? color, bool isFolder = false}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          const customIconPath =
-              '${BuildProperty.imageDir}/file-options/copy-move.svg';
-          return SvgPicture.asset(
-            customIconPath,
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return Icon(
-          isFolder ? MdiIcons.folderMove : MdiIcons.fileMove,
-          color: color,
+        final iconColor = color ?? Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/file-options/copy-move.svg',
+          iconData: isFolder ? MdiIcons.folderMove : MdiIcons.fileMove,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
         );
       },
     );
@@ -30,20 +26,24 @@ class FileOptionsIcons {
   static Widget createShareableLink({Color? color}) {
     return Builder(
       builder: (context) {
+        final iconColor = color ?? Theme.of(context).iconTheme.color;
+
         if (BuildProperty.useCustomIcons) {
-          const customIconPath =
-              '${BuildProperty.imageDir}/file-options/create-shareable-link.svg';
-          return SvgPicture.asset(
-            customIconPath,
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
+          return AssetSvgIcon(
+            showSvg: true,
+            svgPath:
+                '${BuildProperty.imageDir}/file-options/create-shareable-link.svg',
+            iconData: MdiIcons.paperclip,
+            width: 24.0,
+            height: 24.0,
+            color: iconColor,
           );
         }
+
         return AssetIcon(
           Asset.svg.insertLink,
           addedSize: 14,
-          color: color,
+          color: iconColor,
         );
       },
     );
@@ -52,19 +52,16 @@ class FileOptionsIcons {
   static Widget shareWithTeammates({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          const customIconPath =
-              '${BuildProperty.imageDir}/file-options/share-with-teammates.svg';
-          return SvgPicture.asset(
-            customIconPath,
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return Icon(
-          Icons.share,
-          color: color,
+        final iconColor = color ?? Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath:
+              '${BuildProperty.imageDir}/file-options/share-with-teammates.svg',
+          iconData: Icons.share,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
         );
       },
     );
@@ -73,19 +70,15 @@ class FileOptionsIcons {
   static Widget rename({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          const customIconPath =
-              '${BuildProperty.imageDir}/file-options/rename.svg';
-          return SvgPicture.asset(
-            customIconPath,
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return Icon(
-          Icons.edit,
-          color: color,
+        final iconColor = color ?? Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/file-options/rename.svg',
+          iconData: Icons.edit,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
         );
       },
     );
@@ -94,19 +87,15 @@ class FileOptionsIcons {
   static Widget delete({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          const customIconPath =
-              '${BuildProperty.imageDir}/file-options/delete.svg';
-          return SvgPicture.asset(
-            customIconPath,
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return Icon(
-          Icons.delete_outline,
-          color: color,
+        final iconColor = color ?? Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/file-options/delete.svg',
+          iconData: Icons.delete_outline,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
         );
       },
     );
@@ -115,19 +104,15 @@ class FileOptionsIcons {
   static Widget share({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          const customIconPath =
-              '${BuildProperty.imageDir}/file-options/share.svg';
-          return SvgPicture.asset(
-            customIconPath,
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return Icon(
-          Icons.share,
-          color: color,
+        final iconColor = color ?? Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/file-options/share.svg',
+          iconData: Icons.share,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
         );
       },
     );
@@ -136,19 +121,15 @@ class FileOptionsIcons {
   static Widget offline({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          const customIconPath =
-              '${BuildProperty.imageDir}/file-options/offline.svg';
-          return SvgPicture.asset(
-            customIconPath,
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return Icon(
-          Icons.airplanemode_active,
-          color: color,
+        final iconColor = color ?? Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/file-options/offline.svg',
+          iconData: Icons.airplanemode_active,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
         );
       },
     );
@@ -157,19 +138,15 @@ class FileOptionsIcons {
   static Widget menu({Color? color}) {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          const customIconPath =
-              '${BuildProperty.imageDir}/file-options/menu.svg';
-          return SvgPicture.asset(
-            customIconPath,
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return Icon(
-          Icons.more_vert,
-          color: color,
+        final iconColor = color ?? Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/file-options/menu.svg',
+          iconData: Icons.more_vert,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
         );
       },
     );

@@ -1,131 +1,129 @@
 import 'package:aurorafiles/assets/asset.dart';
 import 'package:aurorafiles/build_property.dart';
+import 'package:aurorafiles/shared_ui/asset_svg_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'asset_icon.dart';
 
-/// Утилитный класс для работы с иконками AppBar
-/// Использует кастомные SVG иконки для плоского дизайна (flatDesign)
 class AppBarIcons {
   static String get _basePath => '${BuildProperty.imageDir}/m-app-bar/';
 
-  /// Иконка "Бургер" (используется в качестве меню)
   static Widget burger() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}burger.svg',
-            width: 18,
-            height: 14,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.menu);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}burger.svg',
+          iconData: Icons.menu,
+          width: 18.0,
+          height: 14.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Назад"
   static Widget back() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}back.svg',
-            width: 18,
-            height: 14,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.arrow_back_ios);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}back.svg',
+          iconData: Icons.arrow_back_ios,
+          width: 18.0,
+          height: 14.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Поиск"
   static Widget search() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}search.svg',
-            width: 20,
-            height: 20,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.search);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}search.svg',
+          iconData: Icons.search,
+          width: 20.0,
+          height: 20.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Закрыть"
   static Widget close() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}close.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.close);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}close.svg',
+          iconData: Icons.close,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Очистить" (используется как close для compatibility)
   static Widget clear() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}close.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.clear);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}close.svg',
+          iconData: Icons.clear,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Меню" (burger)
   static Widget menu() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}burger.svg',
-            width: 18,
-            height: 14,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.menu);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}burger.svg',
+          iconData: Icons.menu,
+          width: 18.0,
+          height: 14.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Информация"
   static Widget info() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}info.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.info_outline);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}info.svg',
+          iconData: Icons.info_outline,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
@@ -133,17 +131,23 @@ class AppBarIcons {
   static Widget link() {
     return Builder(
       builder: (context) {
+        final iconColor = Theme.of(context).iconTheme.color;
+
         if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}link.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
+          return AssetSvgIcon(
+            showSvg: true,
+            svgPath: '${_basePath}link.svg',
+            iconData: MdiIcons.paperclip,
+            width: 24.0,
+            height: 24.0,
+            color: iconColor,
           );
         }
+
         return AssetIcon(
           Asset.svg.insertLink,
           addedSize: 14,
+          color: iconColor,
         );
       },
     );
@@ -152,15 +156,16 @@ class AppBarIcons {
   static Widget delete() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}delete.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.delete_outline);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}delete.svg',
+          iconData: Icons.delete_outline,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
@@ -168,15 +173,16 @@ class AppBarIcons {
   static Widget other() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}other.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.more_vert);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}other.svg',
+          iconData: Icons.more_vert,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
@@ -184,15 +190,16 @@ class AppBarIcons {
   static Widget share() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}share.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.share);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}share.svg',
+          iconData: Icons.share,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
@@ -200,15 +207,16 @@ class AppBarIcons {
   static Widget shareWithTeammates() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}share-with-teammates.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.share);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}share-with-teammates.svg',
+          iconData: Icons.share,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
@@ -216,15 +224,16 @@ class AppBarIcons {
   static Widget copyMove() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}copy-move.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(MdiIcons.fileMove);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}copy-move.svg',
+          iconData: MdiIcons.fileMove,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
@@ -232,15 +241,16 @@ class AppBarIcons {
   static Widget moveToFolder() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}move-to-folder.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(MdiIcons.fileMove);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}move-to-folder.svg',
+          iconData: MdiIcons.fileMove,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
@@ -248,83 +258,84 @@ class AppBarIcons {
   static Widget rename() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}rename.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.edit);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}rename.svg',
+          iconData: Icons.edit,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Папка"
   static Widget folder() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}folder.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.folder);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}folder.svg',
+          iconData: Icons.folder,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Добавить папку"
   static Widget addFolder() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}add-folder.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.create_new_folder);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}add-folder.svg',
+          iconData: Icons.create_new_folder,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Хранилище"
   static Widget storage() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}storage.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.storage);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}storage.svg',
+          iconData: Icons.storage,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }
 
-  /// Иконка "Personal"
   static Widget personal() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          return SvgPicture.asset(
-            '${_basePath}personal.svg',
-            width: 24,
-            height: 24,
-            color: Theme.of(context).iconTheme.color,
-          );
-        }
-        return const Icon(Icons.person);
+        final iconColor = Theme.of(context).iconTheme.color;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${_basePath}personal.svg',
+          iconData: Icons.person,
+          width: 24.0,
+          height: 24.0,
+          color: iconColor,
+        );
       },
     );
   }

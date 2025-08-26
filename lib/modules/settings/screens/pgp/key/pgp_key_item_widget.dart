@@ -1,7 +1,7 @@
 import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/database/app_database.dart';
+import 'package:aurorafiles/shared_ui/asset_svg_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class KeyWidget extends StatelessWidget {
   final LocalPgpKey pgpKey;
@@ -41,13 +41,14 @@ class KeyWidget extends StatelessWidget {
                           width: 24,
                           height: 24,
                           child: CircularProgressIndicator())
-                      : BuildProperty.useCustomIcons
-                          ? SvgPicture.asset(
+                      : const AssetSvgIcon(
+                          showSvg: BuildProperty.useCustomIcons,
+                          svgPath:
                               '${BuildProperty.imageDir}/settings/open-pgp/arrow-right.svg',
-                              width: 24,
-                              height: 24,
-                            )
-                          : const Icon(Icons.arrow_forward_ios),
+                          iconData: Icons.arrow_forward_ios,
+                          width: 24.0,
+                          height: 24.0,
+                        ),
                 ),
               ],
             ),

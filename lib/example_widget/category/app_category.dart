@@ -7,6 +7,7 @@ import 'package:aurorafiles/shared_ui/app_input.dart';
 import 'package:aurorafiles/shared_ui/custom_speed_dial.dart';
 import 'package:aurorafiles/shared_ui/main_drawer.dart';
 import 'package:aurorafiles/shared_ui/main_gradient.dart';
+import 'package:aurorafiles/shared_ui/mini_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 

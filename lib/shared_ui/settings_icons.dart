@@ -1,7 +1,7 @@
 import 'package:aurora_ui_kit/aurora_ui_kit.dart';
 import 'package:aurorafiles/build_property.dart';
+import 'package:aurorafiles/shared_ui/asset_svg_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:theme/app_color.dart';
 
@@ -9,17 +9,17 @@ class SettingsIcons {
   static Widget common() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/menu/common.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(Icons.tune);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/menu/common.svg',
+          iconData: Icons.tune,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -27,17 +27,17 @@ class SettingsIcons {
   static Widget encryption() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/menu/encryption.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(MdiIcons.keyVariant);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/menu/encryption.svg',
+          iconData: MdiIcons.keyVariant,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -45,17 +45,17 @@ class SettingsIcons {
   static Widget openPGP() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/menu/openPGP.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(MdiIcons.key);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/menu/openPGP.svg',
+          iconData: MdiIcons.key,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -63,17 +63,17 @@ class SettingsIcons {
   static Widget sync() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/menu/sync.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(Icons.storage);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/menu/sync.svg',
+          iconData: Icons.storage,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -81,17 +81,17 @@ class SettingsIcons {
   static Widget about() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/menu/about.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(Icons.info_outline);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/menu/about.svg',
+          iconData: Icons.info_outline,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -99,17 +99,17 @@ class SettingsIcons {
   static Widget exit() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/menu/exit.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(Icons.exit_to_app);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/menu/exit.svg',
+          iconData: Icons.exit_to_app,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -118,17 +118,17 @@ class SettingsIcons {
   static Widget appTheme() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/common/app-theme.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(MdiIcons.themeLightDark);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/common/app-theme.svg',
+          iconData: MdiIcons.themeLightDark,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -137,17 +137,17 @@ class SettingsIcons {
   static Widget switchLanguage() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/common/language.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(Icons.language);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/common/language.svg',
+          iconData: Icons.language,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -155,17 +155,17 @@ class SettingsIcons {
   static Widget clearCache() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/common/clear-cache.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(MdiIcons.broom);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/common/clear-cache.svg',
+          iconData: MdiIcons.broom,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -173,16 +173,20 @@ class SettingsIcons {
   static Widget debug() {
     return Builder(
       builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
         if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/menu/debug.svg',
-            width: 24,
-            height: 24,
+          return AssetSvgIcon(
+            showSvg: true,
+            svgPath: '${BuildProperty.imageDir}/settings/menu/debug.svg',
+            iconData: Icons.perm_device_information,
+            width: 24.0,
+            height: 24.0,
             color: color,
           );
         }
+
         return const AMCircleIcon(Icons.perm_device_information);
       },
     );
@@ -191,17 +195,17 @@ class SettingsIcons {
   static Widget arrowRight() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/common/arrow-right.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(Icons.arrow_forward_ios);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/common/arrow-right.svg',
+          iconData: Icons.arrow_forward_ios,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }
@@ -209,17 +213,17 @@ class SettingsIcons {
   static Widget deleteAccount() {
     return Builder(
       builder: (context) {
-        if (BuildProperty.useCustomIcons) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final color = isDark ? AppColorDark.icons : AppColorLight.icons;
-          return SvgPicture.asset(
-            '${BuildProperty.imageDir}/settings/menu/delete-account.svg',
-            width: 24,
-            height: 24,
-            color: color,
-          );
-        }
-        return const Icon(Icons.delete_outline);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark ? AppColorDark.icons : AppColorLight.icons;
+
+        return AssetSvgIcon(
+          showSvg: BuildProperty.useCustomIcons,
+          svgPath: '${BuildProperty.imageDir}/settings/menu/delete-account.svg',
+          iconData: Icons.delete_outline,
+          width: 24.0,
+          height: 24.0,
+          color: color,
+        );
       },
     );
   }

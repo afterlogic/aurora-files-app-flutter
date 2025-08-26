@@ -1,13 +1,12 @@
-import 'dart:async';
+import 'dart:io';
 
 import 'package:aurora_logger/aurora_logger.dart';
 // import 'package:aurorafiles/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'di/di.dart';
 import 'modules/app_screen.dart';
@@ -17,8 +16,8 @@ import 'override_platform.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    // options: DefaultFirebaseOptions.currentPlatform,
-  );
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
   if (!kDebugMode) {
     // FirebaseCrashlytics.instance.enableInDevMode = true;
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
@@ -42,5 +41,19 @@ void main() async {
 
   PlatformOverride.setPlatform(Platform.isIOS);
   DI.init();
+
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+  );
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
+
   runApp(const App());
 }

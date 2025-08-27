@@ -2,7 +2,7 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:flutter/material.dart';
 
 class InputUtils {
-  /// Возвращает InputDecoration с кастомными стилями если useCustomInputStyles = true
+  // Returns InputDecoration with custom styles if useCustomInputStyles = true
   static InputDecoration getCustomInputDecoration({
     String? labelText,
     String? hintText,
@@ -44,7 +44,7 @@ class InputUtils {
     );
   }
 
-  /// Обертка для TextFormField с кастомными стилями
+  /// Wrapper for TextFormField with custom styles
   static Widget buildCustomTextFormField({
     required TextEditingController controller,
     String? labelText,
@@ -65,14 +65,14 @@ class InputUtils {
       hintText: hintText,
       suffixIcon: suffixIcon,
     );
-    
-    // Для disabled полей используем те же границы что и для обычных полей
+
+    // For disabled fields, we use the same borders as for regular fields
     if (!enabled && BuildProperty.useCustomInputStyles) {
       decoration = decoration.copyWith(
         disabledBorder: decoration.enabledBorder,
       );
     }
-    
+
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -88,7 +88,7 @@ class InputUtils {
     );
   }
 
-  /// Обертка для TextField с кастомными стилями
+  /// Wrapper for TextField with custom styles
   static Widget buildCustomTextField({
     required TextEditingController controller,
     String? labelText,
@@ -108,14 +108,14 @@ class InputUtils {
       hintText: hintText,
       suffixIcon: suffixIcon,
     );
-    
-    // Для disabled полей используем те же границы что и для обычных полей
+
+    // For disabled fields, we use the same borders as for regular fields
     if (!enabled && BuildProperty.useCustomInputStyles) {
       decoration = decoration.copyWith(
         disabledBorder: decoration.enabledBorder,
       );
     }
-    
+
     return TextField(
       controller: controller,
       keyboardType: keyboardType,

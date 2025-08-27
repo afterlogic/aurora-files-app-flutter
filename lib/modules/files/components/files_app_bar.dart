@@ -5,6 +5,7 @@ import 'package:aurorafiles/build_property.dart';
 import 'package:aurorafiles/l10n/l10n.dart';
 import 'package:aurorafiles/models/storage.dart';
 import 'package:aurorafiles/modules/files/dialogs/add_folder_dialog.dart';
+import 'package:aurorafiles/modules/files/files_route.dart';
 import 'package:aurorafiles/modules/files/state/files_page_state.dart';
 import 'package:aurorafiles/modules/files/state/files_state.dart';
 import 'package:aurorafiles/override_platform.dart';
@@ -16,9 +17,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../files_route.dart';
-
-// Helper функция для создания AMAppBar с поддержкой плоского дизайна
+// Helper function for creating an AMAppBar with flat design support
 AMAppBar _createAppBarWithFlatDesign({
   Key? key,
   Widget? leading,

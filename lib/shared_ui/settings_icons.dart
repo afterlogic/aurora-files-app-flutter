@@ -114,7 +114,7 @@ class SettingsIcons {
     );
   }
 
-  // Иконки для common settings
+  // Icons for common settings
   static Widget appTheme() {
     return Builder(
       builder: (context) {
@@ -133,7 +133,7 @@ class SettingsIcons {
     );
   }
 
-  // Иконки для common settings
+  // Icons for common settings
   static Widget switchLanguage() {
     return Builder(
       builder: (context) {

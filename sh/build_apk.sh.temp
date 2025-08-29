@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 flutter build apk
-mv build/app/outputs/apk/release/app-release.apk build/{{_appId}}-{{version}}+{{build}}.apk
+mkdir -p build_artifacts
+mv build/app/outputs/apk/release/app-release.apk build_artifacts/{{_appId}}-{{version}}+{{build}}.apk

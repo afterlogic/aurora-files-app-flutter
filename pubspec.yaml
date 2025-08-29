@@ -2,7 +2,7 @@ name: aurorafiles
 description: File management system for ...
 publish_to: none
 
-version: 2.4.0+204
+version: 2.4.0+208
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -118,6 +118,7 @@ dev_dependencies:
 
 flutter_icons:
   ios: true
+  remove_alpha_ios: true
   android: true
   image_path: build_res/afterlogic/image/icon.png
   adaptive_icon_background: "#FFFFFF"

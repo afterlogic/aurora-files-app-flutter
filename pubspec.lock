@@ -1367,7 +1367,7 @@ packages:
   theme:
     dependency: "direct main"
     description:
-      path: "build_res/afterlogic/theme"
+      path: "aurora-files-app-customs/unlyme/theme"
       relative: true
     source: path
     version: "0.0.3"

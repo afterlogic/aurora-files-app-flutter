@@ -38,7 +38,7 @@ dependencies:
 
   # file downloading/uploading+
   file:
-  file_picker: 5.2.10
+  file_picker: 5.3.1
   #  flutter_uploader: 1.0.3+1
   #  flutter_downloader: 1.1.9
   path_provider: 2.0.11
@@ -47,7 +47,7 @@ dependencies:
   encrypt: 5.0.1
 
   # file share
-  share_plus: 6.3.0
+  share_plus: any
 
   # opening files with other apps
   open_filex: 4.3.1
@@ -72,7 +72,7 @@ dependencies:
   uuid: 3.0.6
   uni_links: 0.5.1
   package_info: 2.0.2
-  device_info_plus: 8.0.0
+  device_info_plus: any
   get_it: 7.2.0
 
   #async util

@@ -1,4 +1,5 @@
 APP_NAME = {{appName}}
+APP_DISPLAY_NAME = {{iosDisplayName}}
 PRODUCT_ID = {{_appIdIos}}
 DEVELOPMENT_ID = {{_iosDeveloperId}}
 PRODUCT_VERSION = {{version}}

@@ -30,6 +30,7 @@ _buildVariant: 'build_res/afterlogic/build_variant.yaml'
 #variables
 #app
 appName: ''
+iosDisplayName: ''
 _appId: ''
 _appIdIos: '{{_appId}}'
 _iosDeveloperId: ''

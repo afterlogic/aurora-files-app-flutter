@@ -30,6 +30,8 @@
 // end : if
 	<key>CFBundleName</key>
 	<string>$(APP_NAME)</string>
+	<key>CFBundleDisplayName</key>
+	<string>{{iosDisplayName}}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
